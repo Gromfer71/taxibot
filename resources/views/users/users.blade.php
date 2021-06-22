@@ -1,0 +1,83 @@
+@extends('layouts.app')
+
+@section('content')
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Пользователи</h1>
+    </div>
+    <div id="users"></div>
+@endsection
+@push('scripts')
+    <script>
+
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+
+
+
+            let x = "{{ $users }}"
+
+            data1 = x.replace(/&quot;/g, '"')
+            data1 = data1.replace(/[\r\n]/g, " ");
+            data1 = data1.replace(/\\|\//g, '');
+            data1 = JSON.parse(data1)
+
+
+            new FancyGrid({
+                theme: 'bootstrap',
+                renderTo: 'users',
+                height: 800,
+                defaults: {
+                    resizable: true,
+                    autoHeight: true,
+                    sortable: true,
+                    width: 200,
+                    render: function (o) {
+                        o.value = '<a href="users/' + o.data.id + '">' + o.value + '</a>'
+                        return o;
+                    }
+                },
+                paging: {
+                    pageSize: 20,
+                },
+
+                tbar: [{
+                    type: 'search',
+                    width: 350,
+                    emptyText: 'Поиск',
+                    paramsMenu: true,
+                    paramsText: 'Параметры'
+                }],
+                data: data1,
+                columns: [{
+                    index: 'id',
+                    title: 'ID_telegram',
+                    type: 'string',
+
+                },{
+                    index: 'username',
+                    title: 'User',
+                    type: 'string',
+
+                },{
+                    index: 'phone',
+                    title: 'Phone',
+                    type: 'string',
+
+                },{
+                    index: '',
+                    title: 'Action',
+                    render: function (o) {
+                            o.value = '<a href="/users/' + o.data.id + '/delete"><button class="btn btn-sm btn-danger">Удалить</button></a>';
+                        return o;
+                    }
+
+                },
+
+                ]
+            });
+        });
+
+    </script>
+    @endpush
