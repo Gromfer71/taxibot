@@ -46,6 +46,7 @@ Route::group(['midlleware' => 'auth'], function() {
         return \App\Models\Config::getTaxibotConfig()->value;
     });
 
+
     Route::get('test', function () {
         return view('test');
     });
