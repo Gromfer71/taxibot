@@ -78,7 +78,7 @@ class UserController extends Controller
         if ($user = User::find($id)) {
             $user->unblock();
 
-            return back()->with('ok', 'Пользователь успешно раззаблокирован');
+            return back()->with('ok', 'Пользователь успешно разблокирован');
         } else {
             return back()->with('error', 'Пользователь не найден!');
         }

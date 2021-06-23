@@ -45,5 +45,5 @@
   'work as driver' => 'Работа водителем',
   'our site' => 'Наш сайт',
   'our app' => 'Наше приложение',
-    'address history menu' => 'Меню истории адресов'
+   'address history menu' => 'Меню истории адресов',
 );

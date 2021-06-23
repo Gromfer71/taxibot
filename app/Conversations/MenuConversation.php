@@ -121,19 +121,19 @@ class MenuConversation extends BaseConversation
 
 	public function addressesMenu()
     {
-        $question = Question::create('Меню адресов', $this->bot->getUser()->getId());
+        $question = Question::create(trans('messages.addresses menu'), $this->bot->getUser()->getId());
         $user = User::find($this->bot->getUser()->getId());
         foreach ($user->addresses as $address) {
             $question->addButton(Button::create($address->address)->value($address->address));
         }
-        $question->addButton(Button::create(trans('buttons.clean address history'))->value('clean address history'));
+        $question->addButton(Button::create(trans('buttons.clean addresses history'))->value('clean addresses history'));
         $question->addButton(Button::create(trans('buttons.back'))->value('back'));
 
 
         return $this->ask($question, function (Answer $answer) {
             if($answer->getValue() == 'back') {
                 $this->menu(true);
-            } elseif ($answer->getValue() == 'clean address history') {
+            } elseif ($answer->getValue() == 'clean addresses history') {
                     $this->say(trans('messages.clean addresses history'));
                     AddressHistory::clearByUserId($this->bot->getUser()->getId());
                     $this->menu(true);
@@ -145,7 +145,7 @@ class MenuConversation extends BaseConversation
 
     public function addressMenu($address)
     {
-        $question = Question::create('выберите что сделать с адресом ' . $address)
+        $question = Question::create(trans('messages.address menu') . ' ' . $address)
             ->addButtons([
                 Button::create('Удалить')->value('delete'),
                 Button::create('Назад')->value('back'),

@@ -70,6 +70,8 @@ class Config extends Model
         'ask for second address if first address incorrect' => 'Спрашиваем второй адрес если первый был неверный',
         'menu with first address from history incorrect' => 'menu with first address from history incorrect',
         'menu without third address' => 'menu without third address',
+        'addresses menu' => 'Меню адресов',
+        'address menu' => 'Меню выбранного адреса'
 
 
 
