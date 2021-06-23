@@ -56,8 +56,14 @@ class MenuConversation extends BaseConversation
                 Button::create(trans('buttons.clean addresses history'))->value('all about bonuses'),
 			]);
 
-		return $this->ask($question, function (Answer $answer) {
+		return $this->ask($question, function (Answer $answer) use ($user) {
 			Log::newLogAnswer($this->bot, $answer);
+
+            if ($user->isBlocked) {
+                $this->say(trans('messages.you are blocked'));
+                return;
+            }
+
 			if ($answer->isInteractiveMessageReply()) {
 				if ($answer->getValue() == 'take taxi') {
                     $user = User::find($this->bot->getUser()->getId());
