@@ -69,9 +69,9 @@
                     index: '',
                     title: 'Action',
                     render: function (o) {
-                            o.value = '<a href="/users/' + o.data.id + '/delete"><button class="btn btn-sm btn-danger uk-margin-small-right">Удалить</button></a><a href="/users/' + o.data.id + '/block"><button class="btn btn-sm btn-danger">Заблокировать</button></a>';
+                            o.value = '<a href="/users/' + o.data.id + '/delete"><button class="btn btn-sm btn-danger uk-margin-small-right">Удалить</button></a>&#160;';
 
-                        if(o.data.isBlocked == true) {
+                        if(o.data.isBlocked == 0) {
                             o.value += '  <a href="/users/' + o.data.id + '/block"><button class="btn btn-sm btn-danger">Заблокировать</button></a>'
                         } else {
                             o.value += '  <a href="/users/' + o.data.id + '/unblock"><button class="btn btn-sm btn-danger">Разблокировать</button></a>'
