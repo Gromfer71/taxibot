@@ -105,8 +105,7 @@ class MenuConversation extends BaseConversation
                 }  elseif ($answer->getValue() == 'all about bonuses') {
                    $this->bonuses();
                }  elseif($answer->getValue() == 'address history menu') {
-
-				    $this->addressMenu();
+				    $this->addressesMenu();
 //                    $this->say(trans('messages.clean addresses history'));
 //                    AddressHistory::clearByUserId($this->bot->getUser()->getId());
 //                    $this->menu(true);
