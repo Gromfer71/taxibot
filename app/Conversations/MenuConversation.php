@@ -53,7 +53,8 @@ class MenuConversation extends BaseConversation
                 Button::create(trans('buttons.change city'))->value('change city'),
 				Button::create(trans('buttons.price list'))->value('price list'),
                 Button::create(trans('buttons.all about bonuses'))->value('all about bonuses'),
-                Button::create(trans('buttons.address history menu'))->value('address history menu'),
+                //Button::create(trans('buttons.address history menu'))->value('address history menu'),
+                Button::create(trans('buttons.clean addresses history'))->value('clean addresses history'),
 			]);
 
 		return $this->ask($question, function (Answer $answer) use ($user) {
@@ -104,7 +105,8 @@ class MenuConversation extends BaseConversation
 				    $this->menu(true);
                 }  elseif ($answer->getValue() == 'all about bonuses') {
                    $this->bonuses();
-               }  elseif($answer->getValue() == 'address history menu') {
+              // }  elseif($answer->getValue() == 'address history menu') {
+               }  elseif($answer->getValue() == 'clean addresses history') {
 	//			    $this->addressesMenu();
                     $this->say(trans('messages.clean addresses history'));
                     AddressHistory::clearByUserId($this->bot->getUser()->getId());
