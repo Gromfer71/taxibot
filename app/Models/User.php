@@ -74,4 +74,16 @@ class User extends Model
     {
         return $this->hasMany(AddressHistory::class, 'user_id', 'id')->orderBy('created_at', 'desc');;
     }
+
+    public function block()
+    {
+        $this->isBlocked = true;
+        $this->save();
+    }
+
+    public function unblock()
+    {
+        $this->isBlocked = false;
+        $this->save();
+    }
 }

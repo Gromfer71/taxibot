@@ -62,6 +62,28 @@ class UserController extends Controller
         }
     }
 
+    public function block($id)
+    {
+        if ($user = User::find($id)) {
+            $user->block();
+
+            return back()->with('ok', 'Пользователь успешно заблокирован');
+        } else {
+            return back()->with('error', 'Пользователь не найден!');
+        }
+    }
+
+    public function unblock($id)
+    {
+        if ($user = User::find($id)) {
+            $user->unblock();
+
+            return back()->with('ok', 'Пользователь успешно раззаблокирован');
+        } else {
+            return back()->with('error', 'Пользователь не найден!');
+        }
+    }
+
     public function ordersClear($id)
     {
         $user = User::find($id);

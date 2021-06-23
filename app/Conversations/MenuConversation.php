@@ -25,6 +25,9 @@ class MenuConversation extends BaseConversation
         if(! $user) {
             $this->bot->startConversation(new StartConversation());
             return;
+        } elseif ($user->isBlocked) {
+            $this->say(trans('messages.you are blocked'));
+            return;
         } elseif (! $user->phone) {
             $this->confirmPhone();
             return;

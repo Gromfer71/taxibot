@@ -38,6 +38,8 @@ Route::group(['midlleware' => 'auth'], function() {
     Route::get('users/{id}/orders', 'UserController@orders')->name('user_orders');
     Route::get('users/{id}/addresses', 'UserController@addresses')->name('user_addresses');
     Route::get('users/{id}/delete', 'UserController@delete')->name('user_delete');
+    Route::get('users/{id}/block', 'UserController@block')->name('user_block');
+    Route::get('users/{id}/unblock', 'UserController@unblock')->name('user_unblock');
 
     Route::get('users/{id}/orders/clear', 'UserController@ordersClear')->name('user_orders_clear');
     Route::get('users/{id}/addresses/clear', 'UserController@addressesClear')->name('user_addresses_clear');
