@@ -130,9 +130,9 @@ class MenuConversation extends BaseConversation
 
 
         return $this->ask($question, function (Answer $answer) {
-            if($answer->getValue() == 'back') {
+            if($answer->getText() == 'back') {
                 $this->menu(true);
-            } elseif ($answer->getValue() == 'clean addresses history') {
+            } elseif ($answer->getText() == 'clean addresses history') {
                     $this->say(trans('messages.clean addresses history'));
                     AddressHistory::clearByUserId($this->bot->getUser()->getId());
                     $this->menu(true);
@@ -151,7 +151,7 @@ class MenuConversation extends BaseConversation
             ]);
 
         return $this->ask($question, function (Answer $answer) use ($address) {
-            if($answer->getValue() == 'back') {
+            if($answer->getText() == 'back') {
                 $this->addressesMenu();
             } else {
                 $addr = User::find($this->bot->getUser()->getId())->addresses->where('address', $address)->first();
