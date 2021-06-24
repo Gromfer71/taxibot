@@ -27,17 +27,6 @@ class BotManController extends Controller
      */
     public function tinker()
     {
-
-        $api = new OrderApiService();
-        print_r(OrderHistory::getActualOrder(1585139223)->crew_id);
-        $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder(1585139223))->data->crew_id);
-        print_r($driverLocation);
-        if($driverLocation) {
-            OrderApiService::sendDriverLocation(1585139223, $driverLocation->lat, $driverLocation->lon);
-        } else {
-            print_r('error');
-        }
-
         return view('tinker');
     }
 
