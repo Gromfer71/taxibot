@@ -137,7 +137,7 @@ class MenuConversation extends BaseConversation
                     AddressHistory::clearByUserId($this->bot->getUser()->getId());
                     $this->menu(true);
             } else {
-                $this->addressMenu($answer->getValue());
+                $this->addressMenu($answer->getText());
             }
         });
     }
