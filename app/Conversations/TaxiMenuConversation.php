@@ -15,6 +15,7 @@ use App\Services\Options;
 use App\Services\OrderApiService;
 use App\Services\Price;
 use App\Services\WishesService;
+use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -363,7 +364,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                         $api->connectDispatcher(User::find($this->bot->getUser()->getId())->phone);                       
                         $this->bot->startConversation(new \App\Conversations\ClientGoesOutConversation());
                     } elseif($answer->getValue() == 'need map') {
-                        $this->say('need map');
+                        $this->say(new Location(62.086864, 129.724564));
                         $this->currentOrderMenu(true,true);
                     }  else {
                        $this->_fallback($answer);
