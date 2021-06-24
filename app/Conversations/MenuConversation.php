@@ -159,7 +159,7 @@ class MenuConversation extends BaseConversation
                     $addr->delete();
                     $this->say('Адрес удален');
                 } else {
-                    $this->say('Проблемы с адреом');
+                    $this->say('Проблемы с адреом ' . $address);
                 }
                 $this->addressesMenu();
 
