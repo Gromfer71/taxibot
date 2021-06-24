@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Conversations\ExampleConversation;
 use App\Conversations\StartConversation;
+use App\Models\OrderHistory;
 use App\Services\OrderApiService;
 use BotMan\BotMan\BotMan;
 use GuzzleHttp\Client;
@@ -26,6 +27,17 @@ class BotManController extends Controller
      */
     public function tinker()
     {
+
+        $api = new OrderApiService();
+        print_r(OrderHistory::getActualOrder(1585139223)->crew_id);
+        $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder(1585139223))->crew_id);
+        print_r($driverLocation);
+        if($driverLocation) {
+            OrderApiService::sendDriverLocation(1585139223, $driverLocation->lat, $driverLocation->lon);
+        } else {
+            print_r('error');
+        }
+
         return view('tinker');
     }
 
