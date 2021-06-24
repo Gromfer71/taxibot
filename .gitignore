@@ -4,8 +4,6 @@
 /storage/*.key
 /storage/botman
 /vendor/*
-!/vendor/botman/
-!/vendor/botman/*
 /.idea
 /.vagrant
 /.discovery
