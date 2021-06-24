@@ -7,6 +7,7 @@ use App\Conversations\StartConversation;
 use App\Models\OrderHistory;
 use App\Services\OrderApiService;
 use BotMan\BotMan\BotMan;
+use BotMan\Drivers\Telegram\TelegramDriver;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 
@@ -18,6 +19,7 @@ class BotManController extends Controller
     public function handle()
     {
         $botman = app('botman');
+        $botman->say('test', 1585139223, TelegramDriver::class);
 
         $botman->listen();
     }
