@@ -154,8 +154,15 @@ class MenuConversation extends BaseConversation
             if($answer->getValue() == 'back') {
                 $this->addressesMenu();
             } else {
-                User::find($this->bot->getUser()->getId())->addresses->where('address', $address)->first()->delete();
+                $addr = User::find($this->bot->getUser()->getId())->addresses->where('address', $address)->first();
+                if($addr) {
+                    $addr->delete();
+                    $this->say('Адрес удален');
+                } else {
+                    $this->say('Проблемы с адреом');
+                }
                 $this->addressesMenu();
+
             }
         });
     }
