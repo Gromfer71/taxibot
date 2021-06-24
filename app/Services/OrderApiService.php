@@ -375,4 +375,14 @@ class OrderApiService
 
         return $phone;
     }
+
+    public static function getDriverLocation($userId, $lat, $lon)
+    {
+        file_get_contents('https://api.telegram.org/bot' . env('TELEGRAM_TOKEN') . '/sendlocation?chat_id=' . $userId . '&latitude=' . $lat . '&longitude=' . $lon);
+    }
+
+    public static function getCrewCoords($crewId)
+    {
+       // метод для получения коров
+    }
 }

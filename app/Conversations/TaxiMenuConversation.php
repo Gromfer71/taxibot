@@ -364,7 +364,8 @@ class TaxiMenuConversation extends BaseAddressConversation
                         $api->connectDispatcher(User::find($this->bot->getUser()->getId())->phone);                       
                         $this->bot->startConversation(new \App\Conversations\ClientGoesOutConversation());
                     } elseif($answer->getValue() == 'need map') {
-                        $this->say(new Location(62.086864, 129.724564));
+                        //$driverLocation = OrderApiService::getCrewCoords()
+                        //OrderApiService::getDriverLocation($this->bot->getUser()->getId(), );
                         $this->currentOrderMenu(true,true);
                     }  else {
                        $this->_fallback($answer);

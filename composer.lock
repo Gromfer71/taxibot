@@ -148,12 +148,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Gromfer71/botman-driver-telegram-for-sk-taxi.git",
-                "reference": "5970714be3d92da5ae38f498b5bd8538bf52d06a"
+                "reference": "6ddda94d60bdd72f5dbd5b69e3438016d74896d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Gromfer71/botman-driver-telegram-for-sk-taxi/zipball/5970714be3d92da5ae38f498b5bd8538bf52d06a",
-                "reference": "5970714be3d92da5ae38f498b5bd8538bf52d06a",
+                "url": "https://api.github.com/repos/Gromfer71/botman-driver-telegram-for-sk-taxi/zipball/6ddda94d60bdd72f5dbd5b69e3438016d74896d5",
+                "reference": "6ddda94d60bdd72f5dbd5b69e3438016d74896d5",
                 "shasum": ""
             },
             "require": {
@@ -202,7 +202,7 @@
                 "issues": "https://github.com/Gromfer71/botman-driver-telegram-for-sk-taxi/issues",
                 "source": "https://github.com/Gromfer71/botman-driver-telegram-for-sk-taxi/tree/master"
             },
-            "time": "2021-06-24T07:29:40+00:00"
+            "time": "2021-06-24T07:52:55+00:00"
         },
         {
             "name": "botman/botman",
