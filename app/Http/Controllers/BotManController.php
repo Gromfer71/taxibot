@@ -29,9 +29,8 @@ class BotManController extends Controller
     {
 
         $api = new OrderApiService();
-        print_r(OrderHistory::getActualOrder(1585139223)->crew_id);
-        dd($api->getOrderState(OrderHistory::getActualOrder(1585139223)));
-        $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder(1585139223))->crew_id);
+        print_r(OrderHistory::getActualOrder(1585139223)->data->crew_id);
+        $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder(1585139223))->data->crew_id);
         print_r($driverLocation);
         if($driverLocation) {
             OrderApiService::sendDriverLocation(1585139223, $driverLocation->lat, $driverLocation->lon);

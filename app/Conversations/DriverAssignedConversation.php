@@ -70,7 +70,7 @@ class DriverAssignedConversation extends BaseConversation
 					   $this->end();
 				   } elseif($answer->getValue() == 'need map') {
                         $api = new OrderApiService();
-                        $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder($this->bot->getUser()->getId()))->crew_id);
+                        $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder($this->bot->getUser()->getId()))->data->crew_id);
                         if($driverLocation) {
                             OrderApiService::sendDriverLocation($this->bot->getUser()->getId(), $driverLocation->lat, $driverLocation->lon);
                         } else {
