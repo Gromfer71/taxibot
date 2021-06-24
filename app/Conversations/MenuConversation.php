@@ -132,15 +132,14 @@ class MenuConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             if($answer->getValue() == 'back') {
                 $this->bot->startConversation(new MenuConversation());
-                return;
+
             } elseif ($answer->getValue() == 'clean addresses history') {
-                    $this->say(trans('messages.clean addresses history'));
-                    AddressHistory::clearByUserId($this->bot->getUser()->getId());
-                    $this->menu(true);
-                    return;
+                $this->say(trans('messages.clean addresses history'));
+                AddressHistory::clearByUserId($this->bot->getUser()->getId());
+                $this->bot->startConversation(new MenuConversation());
+
             } else {
                 $this->addressMenu($answer->getText());
-                return;
             }
         });
     }
