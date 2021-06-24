@@ -3,6 +3,7 @@
 namespace BotMan\BotMan\Messages\Conversations;
 
 use App\Models\Log;
+use App\Models\User;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Interfaces\ShouldQueue;
 use BotMan\BotMan\Messages\Attachments\Audio;
@@ -64,6 +65,11 @@ abstract class Conversation
      */
     public function ask($question, $next, $additionalParameters = [])
     {
+        if (User::find($this->bot->getUser()->getId())->isBlocked) {
+            $this->say(trans('messages.you are blocked'));
+            return;
+        }
+
         $this->bot->reply($question, $additionalParameters);
         $this->bot->storeConversation($this, $next, $question, $additionalParameters);
 

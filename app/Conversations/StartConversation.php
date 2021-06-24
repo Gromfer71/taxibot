@@ -20,6 +20,7 @@ class StartConversation extends BaseConversation
 		} elseif (!OrderHistory::getActualOrder($user->id)) {
 			$this->bot->startConversation(new MenuConversation());
 		}
+
 	}
 
 
