@@ -395,7 +395,7 @@ class OrderApiService
 
         $response = json_decode($this->file_get_contents_with_logging('https://sk-taxi.ru/tmapi/api.php?method=/common_api/1.0/get_crews_coords', $params));
 
-        if($response->code == 100) {
+        if($response->code != 0) {
             return null;
         } else {
             return collect($response->data->crews_coords)->first();
