@@ -33,6 +33,7 @@ class DriverAssignedConversation extends BaseConversation
                 Button::create(trans('buttons.need dispatcher'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]),
                 Button::create(trans('buttons.need driver')),
                 Button::create(trans('buttons.cancel order')),
+                Button::create(trans('buttons.need map')),
             ]
         );
         $order = OrderHistory::getActualOrder($this->bot->getUser()->getId());
@@ -67,7 +68,16 @@ class DriverAssignedConversation extends BaseConversation
                     } elseif ($answer->getValue() == 'finish order') {
 					   if ($order) $order->finishOrder();
 					   $this->end();
-				   }  else {
+				   } elseif($answer->getValue() == 'need map') {
+                        $api = new OrderApiService();
+                        $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder($this->bot->getUser()->getId()))->crew_id);
+                        if($driverLocation) {
+                            OrderApiService::sendDriverLocation($this->bot->getUser()->getId(), $driverLocation->lat, $driverLocation->lon);
+                        } else {
+                            $this->say('К сожалению на данный момент мы не можем определить где водитель :( ');
+                        }
+                        $this->confirmOrder(true);
+                    }  else {
                         if (!$answer->isInteractiveMessageReply()){
                             $this->confirmOrder(true);
                             return;

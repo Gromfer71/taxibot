@@ -295,7 +295,6 @@ class TaxiMenuConversation extends BaseAddressConversation
                     Button::create(trans('buttons.order info')),
                     Button::create(trans('buttons.cancel order')),
                     Button::create(trans('buttons.change price')),
-                    Button::create(trans('buttons.need map'))
                 ]
             );
 
@@ -305,7 +304,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         return $this->ask(
             $question,
             function (Answer $answer) {
-
+                $api = new OrderApiService();
                 Log::newLogAnswer($this->bot, $answer);
                 if ($answer->isInteractiveMessageReply()) {
                     $this->_sayDebug($answer->getValue());
@@ -324,7 +323,6 @@ class TaxiMenuConversation extends BaseAddressConversation
                     } elseif ($answer->getValue() == 'change price') {
                         $this->changePriceInOrderMenu();
                     } elseif ($answer->getValue() == 'need dispatcher') {
-                        $api = new OrderApiService();
 						$this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
                         $api->connectDispatcher(User::find($this->bot->getUser()->getId())->phone);
                         $this->currentOrderMenu(true,true);
@@ -334,12 +332,10 @@ class TaxiMenuConversation extends BaseAddressConversation
                         $this->bot->startConversation(new DriverAssignedConversation());
                     } elseif($answer->getValue() == 'client_goes_out') {
                         $order = \App\Models\OrderHistory::getActualOrder($this->bot->getUser()->getId());
-                        $api = new OrderApiService();
                         $api->changeOrderState($order, OrderApiService::USER_GOES_OUT);
                         $this->bot->startConversation(new \App\Conversations\ClientGoesOutConversation());
                     } elseif($answer->getValue() == 'client_goes_out_late') {
                         $order = \App\Models\OrderHistory::getActualOrder($this->bot->getUser()->getId());
-                        $api = new OrderApiService();
                         $api->changeOrderState($order, OrderApiService::USER_GOES_OUT);
                         $this->bot->startConversation(new \App\Conversations\ClientGoesOutConversation());
                     } elseif ($answer->getValue() == 'order_cancel') {
@@ -349,7 +345,6 @@ class TaxiMenuConversation extends BaseAddressConversation
                         $this->bot->startConversation(new StartConversation());
                     } elseif($answer->getValue() == 'need driver') {
                         $order = OrderHistory::getActualOrder($this->bot->getUser()->getId());
-                        $api = new OrderApiService();
                         if ($order) $api->connectClientAndDriver($order);
                         $this->say(trans('messages.connect with driver'), $this->bot->getUser()->getId());
                         $this->currentOrderMenu(true,true);
@@ -359,14 +354,9 @@ class TaxiMenuConversation extends BaseAddressConversation
                         $this->bot->say(trans('messages.thx for order'),$this->bot->getUser()->getId());
                         $this->bot->startConversation(new \App\Conversations\StartConversation());
                     } elseif ($answer->getValue() == 'need dispatcher') {
-                        $api = new OrderApiService();
-						 $this->say(trans('messages.wait for dispatcher'),$this->bot->getUser()->getId());
+                        $this->say(trans('messages.wait for dispatcher'),$this->bot->getUser()->getId());
                         $api->connectDispatcher(User::find($this->bot->getUser()->getId())->phone);                       
                         $this->bot->startConversation(new \App\Conversations\ClientGoesOutConversation());
-                    } elseif($answer->getValue() == 'need map') {
-                        //$driverLocation = OrderApiService::getCrewCoords()
-                        //OrderApiService::getDriverLocation($this->bot->getUser()->getId(), );
-                        $this->currentOrderMenu(true,true);
                     }  else {
                        $this->_fallback($answer);
                     }

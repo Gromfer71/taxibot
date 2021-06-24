@@ -20,7 +20,7 @@ Route::get('/botman/tinker', 'BotManController@tinker');
 
 Route::group(['midlleware' => 'auth'], function() {
     Route::get('/home', function () {
-        return redirect(route('bot_settings'));
+        return redirect(route('users'));
     })->name('home');
 
     Route::get('bot_settings', 'BotSettingsController@index')->name('bot_settings');

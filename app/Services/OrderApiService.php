@@ -376,13 +376,29 @@ class OrderApiService
         return $phone;
     }
 
-    public static function getDriverLocation($userId, $lat, $lon)
+    public static function sendDriverLocation($userId, $lat, $lon)
     {
         file_get_contents('https://api.telegram.org/bot' . env('TELEGRAM_TOKEN') . '/sendlocation?chat_id=' . $userId . '&latitude=' . $lat . '&longitude=' . $lon);
     }
 
-    public static function getCrewCoords($crewId)
+    public  function getCrewCoords($crewId)
     {
-       // метод для получения коров
+        $params =  [
+            'method'  => 'POST',
+            'header'  => 'Content-Type: application/json',
+            'content' => json_encode(
+                [
+                    'crew_id' => $crewId,
+                ]
+            ),
+        ];
+
+        $response = json_decode($this->file_get_contents_with_logging('https://sk-taxi.ru/tmapi/api.php?method=/common_api/1.0/get_crews_coords', $params));
+
+        if($response->code == 100) {
+            return null;
+        } else {
+            return collect($response->data->crews_coords)->first();
+        }
     }
 }
