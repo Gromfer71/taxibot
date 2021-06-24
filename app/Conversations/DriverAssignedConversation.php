@@ -69,15 +69,14 @@ class DriverAssignedConversation extends BaseConversation
 					   if ($order) $order->finishOrder();
 					   $this->end();
 				   } elseif($answer->getValue() == 'need map') {
-                        $this->confirmOrder();
-//                        $api = new OrderApiService();
-//                        $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder($this->bot->getUser()->getId()))->data->crew_id ?? null);
-//                        if($driverLocation) {
-//                            OrderApiService::sendDriverLocation($this->bot->getUser()->getId(), $driverLocation->lat, $driverLocation->lon);
-//                        } else {
-//                            $this->say('К сожалению на данный момент мы не можем определить где водитель :( ');
-//                        }
-//                        $this->confirmOrder(true);
+                        $api = new OrderApiService();
+                        $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder($this->bot->getUser()->getId()))->data->crew_id ?? null);
+                        if($driverLocation) {
+                            OrderApiService::sendDriverLocation($this->bot->getUser()->getId(), $driverLocation->lat, $driverLocation->lon);
+                        } else {
+                            $this->say('К сожалению на данный момент мы не можем определить где водитель :( ');
+                        }
+                        $this->confirmOrder(true);
                     }  else {
                         if (!$answer->isInteractiveMessageReply()){
                             $this->confirmOrder(true);
