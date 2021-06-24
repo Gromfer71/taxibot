@@ -19,6 +19,6 @@ return [
 
     // Your driver-specific configuration
 
-    'token' => env('TELEGRAM_TOKEN', '1524067647:AAFYF0JS-K2-2cHM3Wd28gyqAi2xb0cURcs'),
+    'token' => env('TELEGRAM_TOKEN'),
 
 ];
