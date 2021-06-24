@@ -293,7 +293,8 @@ class TaxiMenuConversation extends BaseAddressConversation
                     Button::create(trans('buttons.need dispatcher'))->additionalParameters(['config' => ButtonsFormatterService::CURRENT_ORDER_MENU_FORMAT]),
                     Button::create(trans('buttons.order info')),
                     Button::create(trans('buttons.cancel order')),
-                    Button::create(trans('buttons.change price'))
+                    Button::create(trans('buttons.change price')),
+                    Button::create(trans('buttons.need map'))
                 ]
             );
 
@@ -361,6 +362,9 @@ class TaxiMenuConversation extends BaseAddressConversation
 						 $this->say(trans('messages.wait for dispatcher'),$this->bot->getUser()->getId());
                         $api->connectDispatcher(User::find($this->bot->getUser()->getId())->phone);                       
                         $this->bot->startConversation(new \App\Conversations\ClientGoesOutConversation());
+                    } elseif($answer->getValue() == 'need map') {
+                        $this->say('need map');
+                        $this->currentOrderMenu(true,true);
                     }  else {
                        $this->_fallback($answer);
                     }
