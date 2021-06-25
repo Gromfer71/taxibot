@@ -122,7 +122,7 @@ class MenuConversation extends BaseConversation
     {
         $question = Question::create(trans('messages.addresses menu'), $this->bot->getUser()->getId());
         $user = User::find($this->bot->getUser()->getId());
-        foreach ($user->addresses as $address) {
+        foreach ($user->addresses ?? [] as $address) {
             $question->addButton(Button::create($address->address)->value($address->address));
         }
         $question->addButton(Button::create(trans('buttons.clean addresses history'))->value('clean addresses history'));
