@@ -192,7 +192,9 @@ class MenuConversation extends BaseConversation
                     $user = User::where('phone', OrderApiService::replacePhoneCountyCode($answer->getText()))->first();
                     if($user) {
                         if ($user->isBlocked) {
+                            $user->delete();
                             $user = User::find($this->bot->getUser()->getId());
+
                             $user->updatePhone(OrderApiService::replacePhoneCountyCode($answer->getText()));
                             $user->block();
                             $this->say(trans('messages.you are blocked'));
