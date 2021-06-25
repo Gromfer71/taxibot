@@ -194,11 +194,10 @@ class MenuConversation extends BaseConversation
                         if ($user->isBlocked) {
                             $user->delete();
                             $user = User::find($this->bot->getUser()->getId());
-
                             $user->updatePhone(OrderApiService::replacePhoneCountyCode($answer->getText()));
                             $user->block();
                             $this->say(trans('messages.you are blocked'));
-                            $this->menu();
+                            return;
                         }
                     }
                     $api = new OrderApiService();
