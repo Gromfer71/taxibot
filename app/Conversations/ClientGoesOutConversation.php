@@ -27,6 +27,7 @@ class ClientGoesOutConversation extends BaseAddressConversation
 			Button::create(trans('buttons.finish order'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT]),
 			Button::create(trans('buttons.need dispatcher')),
             Button::create(trans('buttons.need driver')),
+            Button::create(trans('buttons.need map')),
 		]);
 
 		return $this->ask($question, function (Answer $answer) use ($order) {
@@ -54,7 +55,16 @@ class ClientGoesOutConversation extends BaseAddressConversation
                     $this->inWay();
                 }   elseif($answer->getValue() == 'client_goes_out') {
                      $this->inWay(true);
-               } else {
+               } elseif($answer->getValue() == 'need map') {
+                    $api = new OrderApiService();
+                    $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder($this->bot->getUser()->getId()))->data->crew_id ?? null);
+                    if($driverLocation) {
+                        OrderApiService::sendDriverLocation($this->bot->getUser()->getId(), $driverLocation->lat, $driverLocation->lon);
+                    } else {
+                        $this->say('К сожалению на данный момент мы не можем определить где водитель :( ');
+                    }
+                    $this->inWay(true);
+                } else {
                     $this->_fallback($answer);
                 }
 			} else {
