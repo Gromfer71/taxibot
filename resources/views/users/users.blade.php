@@ -8,7 +8,7 @@
     <form action="{{ route('add_user') }}" method="POST">
         @csrf
         <br>
-        <input type="text" name="phone" class="form-control" pattern="[0-9]{10}" placeholder="Номер телефона">
+        <input type="text" name="phone" class="form-control" pattern="[0-9]{10}" placeholder="Номер телефона (в формате 9ХХХХХХХХХ)">
         <br>
         <button type="submit" class="btn btn-primary">Добавить пользователя</button>
         <br><br>
