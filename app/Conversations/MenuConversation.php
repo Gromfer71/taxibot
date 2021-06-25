@@ -240,9 +240,11 @@ class MenuConversation extends BaseConversation
                     $oldUser = User::where('phone', OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')))->first();
                     $this->_sayDebug('номер ' . OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
                     if ($oldUser) {
+                        $user = User::find($this->bot->getUser()->getId());
+                        $user->isBlocked = $oldUser->isBlocked;
                         $oldUser->delete();
                         $this->_sayDebug('Удалили пользователя');
-                        $user = User::find($this->bot->getUser()->getId());
+
                         $user->id = $this->bot->getUser()->getId();
                     }
 
