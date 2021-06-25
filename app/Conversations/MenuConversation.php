@@ -231,7 +231,10 @@ class MenuConversation extends BaseConversation
                 } elseif($answer->getText() == $this->bot->userStorage()->get('sms_code')) {
 			        $oldUser = User::where('phone', $this->bot->userStorage()->get('phone'))->first();
 			        if($oldUser) {
-			            User::find($this->bot->getUser()->getId())->delete();
+			            $user = User::find($this->bot->getUser()->getId());
+			            if($user) {
+			                $user->delete();
+                        }
 			            $oldUser->id = $this->bot->getUser()->getId();
                     }
 
