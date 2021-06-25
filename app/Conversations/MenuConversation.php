@@ -290,6 +290,11 @@ class MenuConversation extends BaseConversation
 
     public function changeCity()
     {
+        if (User::find($this->bot->getUser()->getId())->isBlocked) {
+            $this->say(trans('messages.you are blocked'));
+            return;
+        }
+
         $user = User::find($this->bot->getUser()->getId());
         if ($user->city) {
             $question = Question::create(trans('messages.choose city', ['city' => $user->city]));
