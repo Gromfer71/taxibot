@@ -196,8 +196,7 @@ class MenuConversation extends BaseConversation
                             $user->updatePhone(OrderApiService::replacePhoneCountyCode($answer->getText()));
                             $user->block();
                             $this->say(trans('messages.you are blocked'));
-                            //$this->menu();
-                            return;
+                            $this->menu();
                         }
                     }
                     $api = new OrderApiService();
