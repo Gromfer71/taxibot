@@ -21,7 +21,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::whereNotNull('phone')->whereNotNull('username')->get();
+        $users = User::whereNotNull('phone')->get();
         $users->each(function ($user) {
             $user->userinfo = null;
         });
@@ -106,5 +106,12 @@ class UserController extends Controller
         $user->addresses()->delete();
 
         return back()->with('ok', 'История адресов успешно очищена!');
+    }
+
+    public function addUser(Request $request)
+    {
+        User::firstOrCreate(['phone' => $request->phone]);
+
+        return back();
     }
 }

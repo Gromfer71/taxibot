@@ -40,7 +40,7 @@
             let x = "{{ $orders }}"
             data1 = x.replace(/&quot;/g, '"')
             data1 = data1.replace(/[\r\n]/g, " ");
-            data1 = data1.replace(/\\|\//g, '');
+            data1 = data1.replace(/\\/g, '');
             data1 = JSON.parse(data1)
 
             let prices = "{{ $prices }}"

@@ -34,6 +34,7 @@ Route::group(['midlleware' => 'auth'], function() {
     Route::get('admins/destroy/{id}', 'AdminController@destroy')->name('admins_destroy');
 
     Route::get('users', 'UserController@index')->name('users');
+    Route::post('add_user', 'UserController@addUser')->name('add_user');
     Route::get('users/{id}', 'UserController@user')->name('user');
     Route::get('users/{id}/orders', 'UserController@orders')->name('user_orders');
     Route::get('users/{id}/addresses', 'UserController@addresses')->name('user_addresses');

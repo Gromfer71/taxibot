@@ -1,9 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom uk-margin-bottom">
         <h1 class="h2">Пользователи</h1>
+
     </div>
+    <form action="{{ route('add_user') }}" method="POST">
+        @csrf
+        <br>
+        <input type="text" name="phone" class="form-control" pattern="[789][0-9]{10}" placeholder="Номер телефона">
+        <br>
+        <button type="submit" class="btn btn-primary">Добавить пользователя</button>
+        <br><br>
+    </form>
     <div id="users"></div>
 @endsection
 @push('scripts')
