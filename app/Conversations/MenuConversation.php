@@ -200,7 +200,8 @@ class MenuConversation extends BaseConversation
                             $user = User::find($this->bot->getUser()->getId());
                             $user->updatePhone(OrderApiService::replacePhoneCountyCode($answer->getText()));
                             $user->block();
-                            $this->say(trans('messages.you are blocked'));
+                            //$this->say(trans('messages.you are blocked'));
+                            $this->menu(true);
                             return;
                         }
                     }
