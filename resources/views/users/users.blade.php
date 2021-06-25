@@ -74,7 +74,13 @@
                     title: 'Phone',
                     type: 'string',
 
-                },{
+                },
+                    {
+                        index: 'isBlocked',
+                        title: 'Заблокирован',
+                    },
+
+                    {
                     index: '',
                     title: 'Action',
                     render: function (o) {

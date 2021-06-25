@@ -71,7 +71,9 @@ class Config extends Model
         'menu with first address from history incorrect' => 'menu with first address from history incorrect',
         'menu without third address' => 'menu without third address',
         'addresses menu' => 'Меню адресов',
-        'address menu' => 'Меню выбранного адреса'
+        'address menu' => 'Меню выбранного адреса',
+        'address has been deleted' => 'Сообщение после удаления адреса',
+        'problems with delete address' => 'Сообщение если по каким-то причинам не удалось удалить адрес',
 
 
 

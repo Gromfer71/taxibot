@@ -67,4 +67,6 @@
   'you are blocked' => 'К сожалению, вы заблокированы!',
     'addresses menu' => 'Меню истории адресов',
     'address menu' => 'Выберите что сделать с адресом',
+    'address has been deleted' => 'Адрес успешно удален',
+    'problems with delete address' => 'Проблемы с удалением адреса ',
 );
