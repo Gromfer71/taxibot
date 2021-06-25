@@ -189,13 +189,15 @@ class MenuConversation extends BaseConversation
                 if ($answer->isInteractiveMessageReply()) {
                     $this->menu();
                 } elseif (preg_match('^\+?[78][-\(]?\d{3}\)?-?\d{3}-?\d{2}-?\d{2}$^', $answer->getText())) {
-
-                    if(User::where('phone', $answer->getText())->first()->isBlocked ?? true) {
-                        $user = User::find($this->bot->getUser()->getId());
-                        $user->block();
-                        $this->say(trans('messages.you are blocked'));
-                        //$this->menu();
-                        return;
+                    $user = User::where('phone', $answer->getText())->first();
+                    if($user) {
+                        if ($user->isBlocked) {
+                            $user = User::find($this->bot->getUser()->getId());
+                            $user->block();
+                            $this->say(trans('messages.you are blocked'));
+                            //$this->menu();
+                            return;
+                        }
                     }
                     $api = new OrderApiService();
                     $code = $api->getRandomSMSCode();
