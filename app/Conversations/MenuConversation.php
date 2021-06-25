@@ -189,7 +189,7 @@ class MenuConversation extends BaseConversation
                 if ($answer->isInteractiveMessageReply()) {
                     $this->menu();
                 } elseif (preg_match('^\+?[78][-\(]?\d{3}\)?-?\d{3}-?\d{2}-?\d{2}$^', $answer->getText())) {
-                    $user = User::where('phone', $answer->getText())->first();
+                    $user = User::where('phone', OrderApiService::replacePhoneCountyCode($answer->getText()))->first();
                     if($user) {
                         if ($user->isBlocked) {
                             $user = User::find($this->bot->getUser()->getId());
