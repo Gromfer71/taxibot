@@ -193,18 +193,18 @@ class MenuConversation extends BaseConversation
                 if ($answer->isInteractiveMessageReply()) {
                     $this->menu();
                 } elseif (preg_match('^\+?[78][-\(]?\d{3}\)?-?\d{3}-?\d{2}-?\d{2}$^', $answer->getText())) {
-                    $user = User::where('phone', OrderApiService::replacePhoneCountyCode($answer->getText()))->first();
-                    if ($user) {
-                        if ($user->isBlocked) {
-                            $user->delete();
-                            $user = User::find($this->bot->getUser()->getId());
-                            $user->updatePhone(OrderApiService::replacePhoneCountyCode($answer->getText()));
-                            $user->block();
-                            //$this->say(trans('messages.you are blocked'));
-                            $this->menu(true);
-                            return;
-                        }
-                    }
+//                    $user = User::where('phone', OrderApiService::replacePhoneCountyCode($answer->getText()))->first();
+//                    if ($user) {
+//                        if ($user->isBlocked) {
+//                            $user->delete();
+//                            $user = User::find($this->bot->getUser()->getId());
+//                            $user->updatePhone(OrderApiService::replacePhoneCountyCode($answer->getText()));
+//                            $user->block();
+//                            //$this->say(trans('messages.you are blocked'));
+//                            $this->menu(true);
+//                            return;
+//                        }
+//                    }
                     $api = new OrderApiService();
                     $code = $api->getRandomSMSCode();
                     $this->bot->userStorage()->save(['sms_code' => $code, 'phone' => $answer->getText()]);
@@ -240,15 +240,21 @@ class MenuConversation extends BaseConversation
                     $oldUser = User::where('phone', OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')))->first();
                     $this->_sayDebug('номер ' . OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
                     if ($oldUser) {
-                        $user = User::find($this->bot->getUser()->getId());
-                        $user->isBlocked = $oldUser->isBlocked;
+                        if($oldUser->isBlocked) {
+                            $blocked = true;
+                        }
                         $oldUser->delete();
                         $this->_sayDebug('Удалили пользователя');
+                    }
+                    User::find($this->bot->getUser()->getId())->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
 
-                        $user->id = $this->bot->getUser()->getId();
+                    if($blocked ?? false) {
+                        $user = User::find($this->bot->getUser()->getId());
+                        $user->block();
+                        $this->menu(true);
+                        return;
                     }
 
-                    User::find($this->bot->getUser()->getId())->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
                     $this->say(trans('messages.phone changed', ['phone' => $this->bot->userStorage()->get('phone')]));
                     $this->run();
                 } else {
