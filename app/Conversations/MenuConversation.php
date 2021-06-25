@@ -232,8 +232,10 @@ class MenuConversation extends BaseConversation
                     }
                 } elseif($answer->getText() == $this->bot->userStorage()->get('sms_code')) {
 			        $oldUser = User::where('phone', OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')))->first();
+			        $this->_sayDebug('номер ' . OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
 			        if($oldUser) {
 			            $oldUser->delete();
+			            $this->_sayDebug('Удалили пользователя');
                         $user = User::find($this->bot->getUser()->getId());
 			            $user->id = $this->bot->getUser()->getId();
                     }
