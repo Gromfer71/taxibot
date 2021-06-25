@@ -231,7 +231,7 @@ class MenuConversation extends BaseConversation
 			            $this->confirmCall();
                     }
                 } elseif($answer->getText() == $this->bot->userStorage()->get('sms_code')) {
-			        $oldUser = User::where('phone', $this->bot->userStorage()->get('phone'))->first();
+			        $oldUser = User::where('phone', OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')))->first();
 			        if($oldUser) {
 			            $oldUser->delete();
                         $user = User::find($this->bot->getUser()->getId());
