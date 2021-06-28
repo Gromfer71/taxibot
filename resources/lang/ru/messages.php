@@ -69,4 +69,6 @@
   'address menu' => 'Ненавижу этот вопрос, но задать должен!!!(((  Действительно удалить адрес',
   'address has been deleted' => 'Любой каприз!!! Адрес я удалил, продолжаем)',
   'problems with delete address' => 'Проблемы с удалением адреса',
+    'need map message while driver goes' => 'Геолокация водителя:',
+    'need map message when driver at place' => 'Геолокация водителя:',
 );

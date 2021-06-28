@@ -74,7 +74,8 @@ class Config extends Model
         'address menu' => 'Меню выбранного адреса',
         'address has been deleted' => 'Сообщение после удаления адреса',
         'problems with delete address' => 'Сообщение если по каким-то причинам не удалось удалить адрес',
-
+        'need map message while driver goes' => 'Геолокация водителя когда он едет',
+        'need map message when driver at place' => 'Геолокация водителя когда он на месте',
 
 
 
