@@ -112,25 +112,25 @@
                 <div class="sidebar-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="{{ route('bot_settings') }}">
+                            <a class="nav-link @if(request()->url() == route('bot_settings')) active @endif" href="{{ route('bot_settings') }}">
 
                                 Настройки  <span class="sr-only">(current)</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('users') }}">
+                            <a class="nav-link @if(request()->url() == route('users')) active @endif" href="{{ route('users') }}">
 
                                 Пользователи
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('edit_messages') }}">
+                            <a class="nav-link @if(request()->url() == route('edit_messages')) active @endif" href="{{ route('edit_messages') }}">
 
                                 Сообщения
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('edit_buttons') }}">
+                            <a class="nav-link @if(request()->url() == route('edit_buttons')) active @endif" href="{{ route('edit_buttons') }}">
 
                                 Кнопки
                             </a>
