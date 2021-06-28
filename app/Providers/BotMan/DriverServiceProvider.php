@@ -5,6 +5,7 @@ namespace App\Providers\BotMan;
 use App\Models\Config;
 use BotMan\BotMan\Drivers\DriverManager;
 use BotMan\Studio\Providers\DriverServiceProvider as ServiceProvider;
+use VkBotMan\Drivers\VkDriver;
 
 class DriverServiceProvider extends ServiceProvider
 {
@@ -14,7 +15,7 @@ class DriverServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $drivers = [];
+    protected $drivers = [VkDriver::class];
 
     /**
      * @return void
