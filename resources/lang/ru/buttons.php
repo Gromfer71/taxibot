@@ -41,12 +41,11 @@
   'cancel change price' => 'Отменить изменение цены',
   'all about bonuses' => 'Бонусы и работа с нами',
   'bonus balance' => 'Бонусный баланс',
-  'clean addresses history' => 'Очистить историю адресов',
+  'clean addresses history' => 'Удалить всю историю',
   'work as driver' => 'Работа водителем',
   'our site' => 'Наш сайт',
   'our app' => 'Наше приложение',
-   'address history menu' => 'Меню истории адресов',
-'need map' => 'Запросить геолокацию водителя',
-    'delete' => 'Удалить',
-
-    );
+  'address history menu' => 'Удаление истории адресов',
+  'need map' => 'Посмотреть где моя тачка',
+  'delete' => 'Удалить',
+);
