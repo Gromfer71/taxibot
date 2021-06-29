@@ -14,6 +14,7 @@
         "ext-json": "*",
         "barryvdh/laravel-ide-helper": "^2.1",
         "botman-sk/driver-telegram-for-sk-taxi": "dev-master",
+        "botman-sk/driver-vk-for-sk-taxi": "1.7.x-dev",
         "botman/botman": "~2.1",
         "botman/driver-web": "^1.5",
         "botman/studio-addons": "~1.3",
