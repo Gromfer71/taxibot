@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3b0992ed83e13fc394ef356ff1ef1d58",
+    "content-hash": "873deef34a6c23048ab0fefafa05f37c",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -148,12 +148,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Gromfer71/botman-driver-telegram-for-sk-taxi.git",
-                "reference": "6ddda94d60bdd72f5dbd5b69e3438016d74896d5"
+                "reference": "8b647aab38c42385f49b7d07e60a29f6f68d3e39"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Gromfer71/botman-driver-telegram-for-sk-taxi/zipball/6ddda94d60bdd72f5dbd5b69e3438016d74896d5",
-                "reference": "6ddda94d60bdd72f5dbd5b69e3438016d74896d5",
+                "url": "https://api.github.com/repos/Gromfer71/botman-driver-telegram-for-sk-taxi/zipball/8b647aab38c42385f49b7d07e60a29f6f68d3e39",
+                "reference": "8b647aab38c42385f49b7d07e60a29f6f68d3e39",
                 "shasum": ""
             },
             "require": {
@@ -202,7 +202,7 @@
                 "issues": "https://github.com/Gromfer71/botman-driver-telegram-for-sk-taxi/issues",
                 "source": "https://github.com/Gromfer71/botman-driver-telegram-for-sk-taxi/tree/master"
             },
-            "time": "2021-06-24T07:52:55+00:00"
+            "time": "2021-06-24T10:02:00+00:00"
         },
         {
             "name": "botman/botman",
@@ -4197,50 +4197,6 @@
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
-            "name": "ralouphie/mimey",
-            "version": "2.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ralouphie/mimey.git",
-                "reference": "8f74e6da73f9df7bd965e4e123f3d8fb9acb89ba"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ralouphie/mimey/zipball/8f74e6da73f9df7bd965e4e123f3d8fb9acb89ba",
-                "reference": "8f74e6da73f9df7bd965e4e123f3d8fb9acb89ba",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.4|^7.0"
-            },
-            "require-dev": {
-                "php-coveralls/php-coveralls": "^1.1",
-                "phpunit/phpunit": "^4.8 || ^5.7 || ^6.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Mimey\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ralph Khattar",
-                    "email": "ralph.khattar@gmail.com"
-                }
-            ],
-            "description": "PHP package for converting file extensions to MIME types and vice versa.",
-            "support": {
-                "issues": "https://github.com/ralouphie/mimey/issues",
-                "source": "https://github.com/ralouphie/mimey/tree/develop"
-            },
-            "time": "2019-03-08T08:49:03+00:00"
-        },
-        {
             "name": "ramsey/uuid",
             "version": "3.9.3",
             "source": {
@@ -4411,16 +4367,16 @@
         },
         {
             "name": "react/dns",
-            "version": "v1.6.0",
+            "version": "v1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/dns.git",
-                "reference": "bf76d1c312c0c280c4ce53119cd7d08db23ffb4c"
+                "reference": "a45784faebf8fbd59058fad2d8497f71a787d20c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/dns/zipball/bf76d1c312c0c280c4ce53119cd7d08db23ffb4c",
-                "reference": "bf76d1c312c0c280c4ce53119cd7d08db23ffb4c",
+                "url": "https://api.github.com/repos/reactphp/dns/zipball/a45784faebf8fbd59058fad2d8497f71a787d20c",
+                "reference": "a45784faebf8fbd59058fad2d8497f71a787d20c",
                 "shasum": ""
             },
             "require": {
@@ -4475,7 +4431,7 @@
             ],
             "support": {
                 "issues": "https://github.com/reactphp/dns/issues",
-                "source": "https://github.com/reactphp/dns/tree/v1.6.0"
+                "source": "https://github.com/reactphp/dns/tree/v1.7.0"
             },
             "funding": [
                 {
@@ -4487,7 +4443,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-06-21T11:56:09+00:00"
+            "time": "2021-06-25T10:54:13+00:00"
         },
         {
             "name": "react/event-loop",
@@ -4644,22 +4600,22 @@
         },
         {
             "name": "react/socket",
-            "version": "v1.6.0",
+            "version": "v1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/socket.git",
-                "reference": "e2b96b23a13ca9b41ab343268dbce3f8ef4d524a"
+                "reference": "5d39e3fa56ea7cc443c86f2788a40867cdba1659"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/socket/zipball/e2b96b23a13ca9b41ab343268dbce3f8ef4d524a",
-                "reference": "e2b96b23a13ca9b41ab343268dbce3f8ef4d524a",
+                "url": "https://api.github.com/repos/reactphp/socket/zipball/5d39e3fa56ea7cc443c86f2788a40867cdba1659",
+                "reference": "5d39e3fa56ea7cc443c86f2788a40867cdba1659",
                 "shasum": ""
             },
             "require": {
                 "evenement/evenement": "^3.0 || ^2.0 || ^1.0",
                 "php": ">=5.3.0",
-                "react/dns": "^1.1",
+                "react/dns": "^1.7",
                 "react/event-loop": "^1.0 || ^0.5",
                 "react/promise": "^2.6.0 || ^1.2.1",
                 "react/promise-timer": "^1.4.0",
@@ -4712,7 +4668,7 @@
             ],
             "support": {
                 "issues": "https://github.com/reactphp/socket/issues",
-                "source": "https://github.com/reactphp/socket/tree/v1.6.0"
+                "source": "https://github.com/reactphp/socket/tree/v1.7.0"
             },
             "funding": [
                 {
@@ -4724,7 +4680,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-08-28T12:49:05+00:00"
+            "time": "2021-06-25T11:05:10+00:00"
         },
         {
             "name": "react/stream",
@@ -7364,80 +7320,6 @@
                 }
             ],
             "time": "2021-01-20T14:39:13+00:00"
-        },
-        {
-            "name": "yageorgiy/botman-vk-community-callback-driver",
-            "version": "1.7.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/yageorgiy/botman-vk-community-callback-driver.git",
-                "reference": "92320179b3bad9eccf09b3e91c51cb00c908bc51"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/yageorgiy/botman-vk-community-callback-driver/zipball/92320179b3bad9eccf09b3e91c51cb00c908bc51",
-                "reference": "92320179b3bad9eccf09b3e91c51cb00c908bc51",
-                "shasum": ""
-            },
-            "require": {
-                "botman/botman": "~2.1|~3.0",
-                "ext-curl": "*",
-                "ext-fileinfo": "*",
-                "ext-json": "*",
-                "php": ">=7.0",
-                "ralouphie/mimey": "^2.1"
-            },
-            "require-dev": {
-                "botman/studio-addons": "~1.0",
-                "illuminate/contracts": "~5.5.0",
-                "mockery/mockery": "~1.3.3",
-                "phpunit/phpunit": "~5.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.7.x-dev"
-                },
-                "laravel": {
-                    "providers": [
-                        "BotMan\\Drivers\\VK\\Providers\\VKServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "BotMan\\Drivers\\VK\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Yankovskiy Georgiy",
-                    "email": "admin@yageorgiy.ru"
-                }
-            ],
-            "description": "A VK community callback driver for botman.io framework",
-            "homepage": "http://github.com/yageorgiy/botman-vk-community-callback-driver",
-            "keywords": [
-                "Botman",
-                "VK Callback",
-                "VK Community",
-                "VK Messages",
-                "VK api",
-                "Vkontakte Bot",
-                "Vkontakte Community Bot",
-                "bot",
-                "vk",
-                "vkontakte"
-            ],
-            "support": {
-                "issues": "https://github.com/yageorgiy/botman-vk-community-callback-driver/issues",
-                "source": "https://github.com/yageorgiy/botman-vk-community-callback-driver/tree/1.7.5"
-            },
-            "time": "2021-04-03T10:55:47+00:00"
         },
         {
             "name": "zendframework/zend-diactoros",
