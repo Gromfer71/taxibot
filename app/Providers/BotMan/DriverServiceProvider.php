@@ -15,7 +15,7 @@ class DriverServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $drivers = [];
+    protected $drivers = [VkDriver::class];
 
     /**
      * @return void
