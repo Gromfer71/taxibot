@@ -22,7 +22,7 @@
         "laravel/framework": "5.7.*",
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^5.3.0",
-        "tzepart/botman-vk-driver": "^0.0.4"
+        "yageorgiy/botman-vk-community-callback-driver": "^1.7"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
