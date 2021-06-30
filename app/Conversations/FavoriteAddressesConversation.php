@@ -214,6 +214,10 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                        'user_id' => $this->getUser()->id,
                        'address' => $this->bot->userStorage()->get('address'),
                        'name' => $answer->getText(),
+                       'lat' => $this->bot->userStorage()->get('lat'),
+                       'lon' => $this->bot->userStorage()->get('lon'),
+                       'city' => $this->bot->userStorage()->get('address_city'),
+
                    ]
                );
 
