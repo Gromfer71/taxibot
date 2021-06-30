@@ -19,6 +19,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 
     public function run()
     {
+        $this->_sayDebug('ran f addresses');
         $this->bot->userStorage()->delete();
         $question = Question::create(trans('messages.favorite addresses menu'));
 
