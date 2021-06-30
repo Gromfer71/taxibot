@@ -29,7 +29,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         ]);
 
         foreach ($this->getUser()->favoriteAddresses as $address) {
-            $question->addButton(Button::create($address->name . ' ('. $address->address . ')'));
+            $question->addButton(Button::create($address->address));
         }
 
         return $this->ask($question, function (Answer $answer) {
