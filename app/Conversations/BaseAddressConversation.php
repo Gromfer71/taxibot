@@ -54,7 +54,6 @@ abstract class BaseAddressConversation extends BaseConversation
     public function _addAddressFavoriteButtons($question)
     {
         $favoriteAddresses = FavoriteAddress::where('user_id', $this->getUser()->id)
-            ->orderBy('updated_at', 'desc')
             ->take(10)
             ->get();
 
