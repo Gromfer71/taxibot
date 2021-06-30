@@ -3,6 +3,7 @@ namespace App\Conversations;
 
 
 use App\Models\AddressHistory;
+use App\Models\FavoriteAddress;
 use App\Models\Log;
 use App\Models\OrderHistory;
 use App\Models\User;
@@ -44,6 +45,21 @@ abstract class BaseAddressConversation extends BaseConversation
 
         if ($addressHistory->isNotEmpty()) {
             foreach ($addressHistory as $address) {
+                $question = $question->addButton(Button::create($address->address)->value($address->address));
+            }
+        }
+        return $question;
+    }
+
+    public function _addAddressFavoriteButtons($question)
+    {
+        $favoriteAddresses = FavoriteAddress::where('user_id', $this->getUser()->id)
+            ->orderBy('updated_at', 'desc')
+            ->take(10)
+            ->get();
+
+        if ($favoriteAddresses->isNotEmpty()) {
+            foreach ($favoriteAddresses as $address) {
                 $question = $question->addButton(Button::create($address->address)->value($address->address));
             }
         }

@@ -31,6 +31,7 @@ class TakingAddressConversation extends BaseAddressConversation
             ->addButton(Button::create(trans('buttons.exit'))->value('exit'));
 
         $question = $this->_addAddressHistoryButtons($question);
+        $question = $this->_addAddressFavoriteButtons($question);
 
         return $this->ask($question, function (Answer $answer)  {
             Log::newLogAnswer($this->bot, $answer);
