@@ -77,7 +77,7 @@ class User extends Model
 
     public function favoriteAddresses()
     {
-        $this->hasMany(FavoriteAddress::class, 'user_id', 'id');
+        return $this->hasMany(FavoriteAddress::class, 'user_id', 'id');
     }
 
     public function block()

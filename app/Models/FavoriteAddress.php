@@ -10,4 +10,5 @@ class FavoriteAddress extends Model
 
     protected $guarded = [];
     public $timestamps = false;
+
 }
