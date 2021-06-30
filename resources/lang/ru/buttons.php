@@ -48,4 +48,5 @@
   'address history menu' => 'Удаление истории адресов',
   'need map' => 'Посмотреть где моя тачка',
   'delete' => 'Удалить',
+    'favorite addresses menu' => 'Меню избранных адресов',
 );
