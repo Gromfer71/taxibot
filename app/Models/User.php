@@ -75,6 +75,11 @@ class User extends Model
         return $this->hasMany(AddressHistory::class, 'user_id', 'id')->orderBy('created_at', 'desc');;
     }
 
+    public function favoriteAddresses()
+    {
+        $this->hasMany(FavoriteAddress::class, 'user_id', 'id');
+    }
+
     public function block()
     {
         $this->isBlocked = true;

@@ -88,4 +88,21 @@ abstract class BaseConversation extends Conversation
             $this->bot->startConversation(new MenuConversation());
         });
     }
+
+    public function getUser()
+    {
+        $user = User::find($this->bot->getUser()->getId());
+        if($user) {
+            return $user;
+        } else {
+            throw new \Exception('null user exception');
+        }
+    }
+
+    public function switchConversation(Answer $answer, $word, Conversation $conversation)
+    {
+        if($answer->getValue() == $word) {
+            $this->bot->startConversation($conversation);
+        }
+    }
 }

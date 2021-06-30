@@ -104,8 +104,7 @@ class TakingAddressConversation extends BaseAddressConversation
         );
     }
 
-    public
-    function getAddressAgain()
+    public function getAddressAgain()
     {
         $this->_sayDebug('getAddressAgain');
         $question = Question::create(trans('messages.give address again'), $this->bot->getUser()->getId());
@@ -153,8 +152,7 @@ class TakingAddressConversation extends BaseAddressConversation
         );
     }
 
-    public
-    function forgetWriteHouse()
+    public function forgetWriteHouse()
     {
         $this->_sayDebug('forgetWriteHouse');
         $question = Question::create(trans('messages.forget write house'), $this->bot->getUser()->getId())
@@ -190,8 +188,7 @@ class TakingAddressConversation extends BaseAddressConversation
         });
     }
 
-    public
-    function getEntrance()
+    public function getEntrance()
     {
         $question = Question::create(trans('messages.give entrance'), $this->bot->getUser()->getId())
             ->addButtons([
