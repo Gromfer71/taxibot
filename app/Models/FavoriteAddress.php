@@ -9,5 +9,5 @@ class FavoriteAddress extends Model
     protected $table = 'favorite_addresses';
 
     protected $guarded = [];
-
+    public $timestamps = false;
 }

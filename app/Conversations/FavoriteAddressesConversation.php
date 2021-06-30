@@ -28,7 +28,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             Button::create(trans('buttons.add address'))->value('add address')
         ]);
 
-        foreach ($this->getUser()->addresses as $address) {
+        foreach ($this->getUser()->favoriteAddresses as $address) {
             $question->addButton(Button::create($address->name . ' ('. $address->address . ')'));
         }
 
