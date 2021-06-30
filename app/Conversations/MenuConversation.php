@@ -113,6 +113,7 @@ class MenuConversation extends BaseConversation
 //                    AddressHistory::clearByUserId($this->bot->getUser()->getId());
 //                    $this->menu(true);
                 } elseif($answer->getValue() == 'favorite addresses menu') {
+                    $this->_sayDebug('test');
                     $this->bot->startConversation(new FavoriteAddressesConversation());
                 }
             } else {
