@@ -107,7 +107,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
     public function getAddressAgain()
     {
         $this->_sayDebug('getAddressAgain');
-        $question = Question::create(trans('messages.give address again'), $this->bot->getUser()->getId());
+        $question = Question::create(trans('messages.give favorite address again'), $this->bot->getUser()->getId());
         $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
         $this->_sayDebug('getAddressAgain2');
         $question->addButton(Button::create(trans('buttons.exit'))->value('exit'));
@@ -154,12 +154,11 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 
     public function streetNotFound()
     {
-        $question = Question::create(trans('messages.not found address dorabotka bota'), $this->bot->getUser()->getId());
+        $question = Question::create(trans('messages.not found favorite address'), $this->bot->getUser()->getId());
         $question->addButtons(
             [
                 Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT]),
-                Button::create(trans('buttons.go as indicated')),
-                Button::create(trans('buttons.exit to menu')),
+                Button::create(trans('buttons.save as written')),
             ]
         );
 
@@ -169,9 +168,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                 if ($answer->isInteractiveMessageReply()) {
                     if ($answer->getValue() == 'back') {
                         $this->addAddress();
-                    } elseif ($answer->getValue() == 'exit to menu') {
-                        $this->run();
-                    } elseif ($answer->getValue() == 'go as indicated') {
+                    } elseif ($answer->getValue() == 'save as written') {
                         $this->getEntrance();
                     }
                 } else {
@@ -185,7 +182,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
     public function forgetWriteHouse()
     {
         $this->_sayDebug('forgetWriteHouse');
-        $question = Question::create(trans('messages.forget write house'), $this->bot->getUser()->getId())
+        $question = Question::create(trans('messages.forget write house in favorite address'), $this->bot->getUser()->getId())
             ->addButtons([
                 Button::create(trans('buttons.exit'))->value('exit'),
             ]);;
@@ -209,7 +206,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 
     public function getEntrance()
     {
-        $question = Question::create(trans('messages.give entrance'), $this->bot->getUser()->getId())
+        $question = Question::create(trans('messages.give entrance in favorite address'), $this->bot->getUser()->getId())
             ->addButtons([
                 Button::create(trans('buttons.no entrance'))->value('no entrance'),
                 Button::create(trans('buttons.exit'))->value('exit'),
@@ -242,6 +239,10 @@ class FavoriteAddressesConversation extends BaseAddressConversation
            if($answer->getValue() == 'exit') {
                $this->run();
            } else {
+               if(strlen($answer->getText()) > 32) {
+                   $this->say(trans('messages.address name too long'));
+                   $this->getAddressName();
+               }
                FavoriteAddress::create(
                    [
                        'user_id' => $this->getUser()->id,

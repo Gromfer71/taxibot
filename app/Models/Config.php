@@ -79,7 +79,12 @@ class Config extends Model
         'favorite addresses menu' => 'Меню избранных адресов',
         'favorite address menu' => 'Меню выбранного избранного адреса',
         'give me your favorite address' => 'Сообщение перед вводом избранного адреса',
-
+        'give favorite address again' => 'Когда ввели избранный адрес и бот предлагает выбрать предложенные варианты',
+        'not found favorite address' => 'Не нашелся избранный адрес',
+        'forget write house in favorite address' => 'Забыли написать номер дома при добавлении избранного адреса',
+        'give entrance in favorite address' => 'Сообщение с просьбой указать подъезд при добавлении избранного адреса',
+        'get address name' => 'Сообщение с просьбой указать псевдоним избранного адреса',
+        'address name too long' => 'Сообщение если псевдоним введенного адреса превышает 32 символа',
 
 
 
