@@ -83,7 +83,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
 
         $question = Question::create(trans('messages.give me your favorite address'), $this->bot->getUser()->getId())
-            
+
             ->addButton(Button::create(trans('buttons.exit'))->value('exit'));
 
         return $this->ask($question, function (Answer $answer)  {
@@ -92,7 +92,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                 $this->run();
 
             } else {
-                $this->_saveFirstAddress($answer);
+                $this->_saveFirstAddress($answer->getValue());
 
                 $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
                 if ($addressesList->isEmpty()) {
