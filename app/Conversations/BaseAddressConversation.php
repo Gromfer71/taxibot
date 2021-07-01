@@ -62,7 +62,7 @@ abstract class BaseAddressConversation extends BaseConversation
 
         if ($favoriteAddresses->isNotEmpty()) {
             foreach ($favoriteAddresses as $address) {
-                $question = $question->addButton(Button::create($address->address)->value($address->address));
+                $question = $question->addButton(Button::create($address->name . ' (' . $address->address . ')')->value($address->address));
             }
         }
         return $question;
