@@ -38,10 +38,12 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                         $this->addAddress();
                     } elseif($answer->getValue() == 'back') {
                         $this->bot->startConversation(new MenuConversation());
-                    } else {
+                    } elseif($answer->isInteractiveMessageReply()) {
                         $this->_sayDebug('Выбранный пункт меню - ' . $answer->getText());
                         $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
                         $this->addressMenu();
+                    } else {
+                        $this->run();
                     }
         });
     }
@@ -92,7 +94,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                 $this->run();
 
             } else {
-                $this->_saveFirstAddress($answer->getValue());
+                $this->_saveFirstAddress($answer->getText());
 
                 $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
                 if ($addressesList->isEmpty()) {
