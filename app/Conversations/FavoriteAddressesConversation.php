@@ -142,7 +142,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                         return;
                     }
                     $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
-                    $this->_saveFirstAddress($address->address,$crew_group_id,$address['coords']['lat'],$address['coords']['lon'], $address['city']);
+                    $this->_saveFirstAddress($address['address'], $crew_group_id,$address['coords']['lat'],$address['coords']['lon'], $address['city']);
                     $this->getEntrance();
                 } else {
                     $this->_saveFirstAddress($answer->getText());
