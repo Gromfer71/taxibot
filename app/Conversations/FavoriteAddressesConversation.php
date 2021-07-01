@@ -89,16 +89,16 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             Log::newLogAnswer($this->bot, $answer);
             if ($answer->getValue() == 'exit') {
                 $this->run();
-                return;
-            }
 
-            $this->_saveFirstAddress($answer);
-
-            $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
-            if ($addressesList->isEmpty()) {
-                $this->streetNotFound();
             } else {
-                $this->getAddressAgain();
+                $this->_saveFirstAddress($answer);
+
+                $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
+                if ($addressesList->isEmpty()) {
+                    $this->streetNotFound();
+                } else {
+                    $this->getAddressAgain();
+                }
             }
         });
     }
