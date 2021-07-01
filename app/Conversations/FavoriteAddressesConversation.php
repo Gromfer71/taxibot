@@ -29,20 +29,20 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         ]);
 
         foreach ($this->getUser()->favoriteAddresses as $address) {
-            $question->addButton(Button::create($address->name . ' ('. $address->address . ')'));
+            $question->addButton(Button::create($address->name . ' (' . $address->address . ')'));
         }
 
         return $this->ask($question, function (Answer $answer) {
             Log::newLogAnswer($this->bot, $answer);
-                    if($answer->getValue() == 'add address') {
-                        $this->addAddress();
-                    } elseif($answer->getValue() == 'back') {
-                        $this->bot->startConversation(new MenuConversation());
-                    } else {
-                        $this->_sayDebug('Выбранный пункт меню - ' . $answer->getText());
-                        $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
-                        $this->addressMenu();
-                    }
+            if ($answer->getValue() == 'add address') {
+                $this->addAddress();
+            } elseif ($answer->getValue() == 'back') {
+                $this->bot->startConversation(new MenuConversation());
+            } else {
+                $this->_sayDebug('Выбранный пункт меню - ' . $answer->getText());
+                $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
+                $this->addressMenu();
+            }
         });
     }
 
@@ -56,16 +56,16 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            if($answer->getValue() == 'back') {
+            if ($answer->getValue() == 'back') {
                 $this->run();
-            } elseif($answer->getValue() == 'delete') {
+            } elseif ($answer->getValue() == 'delete') {
                 $this->_sayDebug('Адрес целиком до обрезания до псевдонима - ' . $this->bot->userStorage()->get('address_name'));
                 $address = FavoriteAddress::where([
                     'user_id' => $this->getUser()->id,
                     'name' => trim(stristr($this->bot->userStorage()->get('address_name'), '(', true))
                 ])->first();
                 $this->_sayDebug('Псевдоним адреса после обрезки для бд - ' . trim(stristr($this->bot->userStorage()->get('address_name'), '(', true)));
-                if($address) {
+                if ($address) {
                     $address->delete();
                 }
                 $this->run();
@@ -83,10 +83,9 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
 
         $question = Question::create(trans('messages.give me your favorite address'), $this->bot->getUser()->getId())
-
             ->addButton(Button::create(trans('buttons.exit'))->value('exit'));
 
-        return $this->ask($question, function (Answer $answer)  {
+        return $this->ask($question, function (Answer $answer) {
             Log::newLogAnswer($this->bot, $answer);
             if ($answer->getValue() == 'exit') {
                 $this->run();
@@ -142,7 +141,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                         return;
                     }
                     $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
-                    $this->_saveFirstAddress($answer->getText(), $crew_group_id,$address['coords']['lat'],$address['coords']['lon'], $address['city']);
+                    $this->_saveFirstAddress($answer->getText(), $crew_group_id, $address['coords']['lat'], $address['coords']['lon'], $address['city']);
                     $this->getEntrance();
                 } else {
                     $this->_saveFirstAddress($answer->getText());
@@ -196,11 +195,11 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                 }
             }
 
-                $this->_sayDebug('forgetWriteHouse - адрес откуда');
-                $this->bot->userStorage()->save(
-                    ['address' => $this->bot->userStorage()->get('address') . $answer->getText()]
-                );
-                $this->getAddressAgain();
+            $this->_sayDebug('forgetWriteHouse - адрес откуда');
+            $this->bot->userStorage()->save(
+                ['address' => $this->bot->userStorage()->get('address') . $answer->getText()]
+            );
+            $this->getAddressAgain();
         });
     }
 
@@ -215,16 +214,16 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         return $this->ask($question, function (Answer $answer) {
             $this->_sayDebug('начало');
             Log::newLogAnswer($this->bot, $answer);
-                if ($answer->getValue() == 'exit') {
-                    $this->run();
-                } elseif ($answer->getValue() == 'no entrance') {
-                    $this->getAddressName();
-                } else {
-                    $address = $this->bot->userStorage()->get('address') . ', *п ' . $answer->getText();
-                    $this->bot->userStorage()->save(['address' => $address]);
-                    $this->_sayDebug('getAddressName');
-                    $this->getAddressName();
-                }
+            if ($answer->getValue() == 'exit') {
+                $this->run();
+            } elseif ($answer->getValue() == 'no entrance') {
+                $this->getAddressName();
+            } else {
+                $address = $this->bot->userStorage()->get('address') . ', *п ' . $answer->getText();
+                $this->bot->userStorage()->save(['address' => $address]);
+                $this->_sayDebug('getAddressName');
+                $this->getAddressName();
+            }
         });
     }
 
@@ -234,29 +233,29 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             ->addButton(Button::create(trans('buttons.exit'))->value('exit'));
 
         return $this->ask($question, function (Answer $answer) {
-           if($answer->getValue() == 'exit') {
-               $this->run();
-           } else {
-               if(strlen($answer->getText()) > 32) {
-                   $this->say(trans('messages.address name too long'));
-                   $this->getAddressName();
-               } else {
-                   $this->_sayDebug(json_encode($this->bot->userStorage()->get('address')));
-                   FavoriteAddress::create(
-                       [
-                           'user_id' => $this->getUser()->id,
-                           'address' => $this->bot->userStorage()->get('address'),
-                           'name' => $answer->getText(),
-                           'lat' => $this->bot->userStorage()->get('lat'),
-                           'lon' => $this->bot->userStorage()->get('lon'),
-                           'city' => $this->bot->userStorage()->get('address_city'),
+            if ($answer->getValue() == 'exit') {
+                $this->run();
+            } else {
+                if (strlen($answer->getText()) > 32) {
+                    $this->say(trans('messages.address name too long'));
+                    $this->getAddressName();
+                } else {
+                    $this->_sayDebug(json_encode($this->bot->userStorage()->get('address')));
+                    FavoriteAddress::create(
+                        [
+                            'user_id' => $this->getUser()->id,
+                            'address' => $this->bot->userStorage()->get('address'),
+                            'name' => $answer->getText(),
+                            'lat' => $this->bot->userStorage()->get('lat'),
+                            'lon' => $this->bot->userStorage()->get('lon'),
+                            'city' => $this->bot->userStorage()->get('address_city'),
 
-                       ]
-                   );
+                        ]
+                    );
 
-                   $this->run();
-               }
-           }
+                    $this->run();
+                }
+            }
         });
     }
 }
