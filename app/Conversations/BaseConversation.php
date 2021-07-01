@@ -98,11 +98,4 @@ abstract class BaseConversation extends Conversation
             throw new \Exception('null user exception');
         }
     }
-
-    public function switchConversation(Answer $answer, $word, Conversation $conversation)
-    {
-        if($answer->getValue() == $word) {
-            $this->bot->startConversation($conversation);
-        }
-    }
 }

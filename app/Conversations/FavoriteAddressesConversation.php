@@ -34,19 +34,15 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 
         return $this->ask($question, function (Answer $answer) {
             Log::newLogAnswer($this->bot, $answer);
-           $this->switchConversation($answer, 'back', new MenuConversation());
-                if($answer->isInteractiveMessageReply()) {
                     if($answer->getValue() == 'add address') {
                         $this->addAddress();
+                    } elseif($answer->getValue() == 'back') {
+                        $this->bot->startConversation(new MenuConversation());
                     } else {
                         $this->_sayDebug($answer->getText());
                         $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
                         $this->addressMenu();
                     }
-                }
-
-
-
         });
     }
 
