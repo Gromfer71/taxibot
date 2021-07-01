@@ -55,7 +55,7 @@ class MenuConversation extends BaseConversation
                 Button::create(trans('buttons.price list'))->value('price list'),
                 Button::create(trans('buttons.all about bonuses'))->value('all about bonuses'),
                 Button::create(trans('buttons.address history menu'))->value('address history menu'),
-                Button::create(trans('buttons.favorite addresses menu'))->value('favorite addresses menu'),
+                Button::create(trans('buttons.favorite addresses menu'))->value('favorite addresses menu')
             ]);
 
         return $this->ask($question, function (Answer $answer) use ($user) {

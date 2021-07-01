@@ -71,4 +71,8 @@
   'problems with delete address' => 'Проблемы с удалением адреса',
   'need map message while driver goes' => 'Геолокация водителя:',
   'need map message when driver at place' => 'Геолокация водителя:',
+    'favorite addresses menu' => 'Меню избранных адресов',
+    'favorite address menu' => 'Меню выбранного избранного адреса',
+    'give me your favorite address' => 'Введите адрес который хотите добавить в избранное',
+
 );

@@ -19,7 +19,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 
     public function run()
     {
-        $this->_sayDebug('ran f addresses');
+        $this->_sayDebug('запустили меню избранных адресов');
         $this->bot->userStorage()->delete();
         $question = Question::create(trans('messages.favorite addresses menu'));
 
@@ -39,7 +39,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                     } elseif($answer->getValue() == 'back') {
                         $this->bot->startConversation(new MenuConversation());
                     } else {
-                        $this->_sayDebug($answer->getText());
+                        $this->_sayDebug('Выбранный пункт меню - ' . $answer->getText());
                         $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
                         $this->addressMenu();
                     }
@@ -48,7 +48,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 
     public function addressMenu()
     {
-        $question = Question::create(trans('messages.address menu'))->addButtons(
+        $question = Question::create(trans('messages.favorite address menu'))->addButtons(
             [
                 Button::create(trans('buttons.back'))->value('back'),
                 Button::create(trans('buttons.delete'))->value('delete'),
@@ -59,12 +59,12 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             if($answer->getValue() == 'back') {
                 $this->run();
             } elseif($answer->getValue() == 'delete') {
-                $this->_sayDebug($this->bot->userStorage()->get('address_name'));
+                $this->_sayDebug('Адрес целиком до обрезания до псевдонима - ' . $this->bot->userStorage()->get('address_name'));
                 $address = FavoriteAddress::where([
                     'user_id' => $this->getUser()->id,
                     'name' => trim(stristr($this->bot->userStorage()->get('address_name'), '(', true))
                 ])->first();
-                $this->_sayDebug(trim(stristr($this->bot->userStorage()->get('address_name'), '(', true)));
+                $this->_sayDebug('Псевдоним адреса после обрезки для бд - ' . trim(stristr($this->bot->userStorage()->get('address_name'), '(', true)));
                 if($address) {
                     $address->delete();
                 }
@@ -82,13 +82,14 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         $this->bot->userStorage()->save(['district' => $district]);
         $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
 
-        $question = Question::create(trans('messages.give me your address'), $this->bot->getUser()->getId())
+        $question = Question::create(trans('messages.give me your favorite address'), $this->bot->getUser()->getId())
             ->addButton(Button::create(trans('buttons.exit'))->value('exit'));
 
         return $this->ask($question, function (Answer $answer)  {
             Log::newLogAnswer($this->bot, $answer);
             if ($answer->getValue() == 'exit') {
                 $this->run();
+                return;
             }
 
             $this->_saveFirstAddress($answer);

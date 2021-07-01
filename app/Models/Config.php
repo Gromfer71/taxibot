@@ -76,6 +76,10 @@ class Config extends Model
         'problems with delete address' => 'Сообщение если по каким-то причинам не удалось удалить адрес',
         'need map message while driver goes' => 'Геолокация водителя когда он едет',
         'need map message when driver at place' => 'Геолокация водителя когда он на месте',
+        'favorite addresses menu' => 'Меню избранных адресов',
+        'favorite address menu' => 'Меню выбранного избранного адреса',
+        'give me your favorite address' => 'Сообщение перед вводом избранного адреса',
+
 
 
 
