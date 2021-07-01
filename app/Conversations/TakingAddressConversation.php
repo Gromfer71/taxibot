@@ -62,7 +62,7 @@ class TakingAddressConversation extends BaseAddressConversation
 
 
             } else {
-                $this->_saveFirstAddress($answer);
+                $this->_saveFirstAddress($answer->getText());
 
                 $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
                 if ($addressesList->isEmpty()) {
@@ -99,7 +99,7 @@ class TakingAddressConversation extends BaseAddressConversation
                         $this->getEntrance();
                     }
                 } else {
-                    $this->_saveFirstAddress($answer);
+                    $this->_saveFirstAddress($answer->getText());
                     $this->getAddressAgain();
                 }
             }
@@ -144,10 +144,10 @@ class TakingAddressConversation extends BaseAddressConversation
                         return;
                     }
                     $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
-                    $this->_saveFirstAddress($answer,$crew_group_id,$address['coords']['lat'],$address['coords']['lon'], $address['city']);
+                    $this->_saveFirstAddress($answer->getText(),$crew_group_id,$address['coords']['lat'],$address['coords']['lon'], $address['city']);
                     $this->getEntrance();
                 } else {
-                    $this->_saveFirstAddress($answer);
+                    $this->_saveFirstAddress($answer->getText());
                     $this->getAddressAgain();
                 }
             }
