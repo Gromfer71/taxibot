@@ -83,6 +83,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
 
         $question = Question::create(trans('messages.give me your favorite address'), $this->bot->getUser()->getId())
+            
             ->addButton(Button::create(trans('buttons.exit'))->value('exit'));
 
         return $this->ask($question, function (Answer $answer)  {
