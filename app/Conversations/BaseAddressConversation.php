@@ -122,14 +122,14 @@ abstract class BaseAddressConversation extends BaseConversation
         $this->bot->userStorage()->save($data);
     }
 
-    public function _saveFirstAddress($answer, $crew_group_id = false, $lat = 0, $lon = 0,$city='')
+    public function _saveFirstAddress($address, $crew_group_id = false, $lat = 0, $lon = 0,$city='')
     {
         if (!$crew_group_id) {
             $user = User::find($this->bot->getUser()->getId());
             $crew_group_id = $this->_getCrewGroupIdByCity($user->city ?? null);
         }
         $data = [
-            'address' => $answer->getText(),
+            'address' => $address,
             'crew_group_id' => $crew_group_id,
             'lat' => $lat,
             'lon' => $lon,

@@ -53,7 +53,7 @@ class TakingAddressConversation extends BaseAddressConversation
                 }
                 if ($address['lat'] == 0)  $this->bot->userStorage()->save(['first_address_from_history_incorrect' => 1]);
 
-                $this->_saveFirstAddress( $answer,$crew_group_id, $address['lat'],$address['lon'],$address['city']);
+                $this->_saveFirstAddress($address->address, $crew_group_id, $address['lat'],$address['lon'],$address['city']);
                 if ($this->_hasEntrance($answer->getText())){
                     $this->getAddressTo();
                 } else {
