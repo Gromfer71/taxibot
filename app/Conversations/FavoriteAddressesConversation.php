@@ -39,7 +39,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                 if($answer->getValue() == 'add address') {
                     $this->addAddress();
                 } else {
-                    $this->_sayDebug($answer->getValue());
+                    $this->_sayDebug($answer->getText());
                     $this->bot->userStorage()->save(['address_name' => $answer->getValue()]);
                     $this->addressMenu();
                 }
