@@ -60,6 +60,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             if($answer->getValue() == 'back') {
                 $this->run();
             } elseif($answer->getValue() == 'delete') {
+                $this->_sayDebug($this->bot->userStorage()->get('address_name'));
                 $address = FavoriteAddress::where([
                     'user_id' => $this->getUser()->id,
                     'name' => $this->bot->userStorage()->get('address_name')
