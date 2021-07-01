@@ -29,7 +29,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         ]);
 
         foreach ($this->getUser()->favoriteAddresses as $address) {
-            $question->addButton(Button::create($address->name . ' ('. $address->address . ')')->value($address->name));
+            $question->addButton(Button::create($address->name . ' ('. $address->address . ')'));
         }
 
         return $this->ask($question, function (Answer $answer) {
@@ -40,7 +40,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                     $this->addAddress();
                 } else {
                     $this->_sayDebug($answer->getText());
-                    $this->bot->userStorage()->save(['address_name' => $answer->getValue()]);
+                    $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
                     $this->addressMenu();
                 }
 
@@ -64,8 +64,9 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                 $this->_sayDebug($this->bot->userStorage()->get('address_name'));
                 $address = FavoriteAddress::where([
                     'user_id' => $this->getUser()->id,
-                    'name' => $this->bot->userStorage()->get('address_name')
+                    'name' => trim(stristr($this->bot->userStorage()->get('address_name'), '(', true))
                 ])->first();
+                $this->_sayDebug(trim(stristr($this->bot->userStorage()->get('address_name'), '(', true)));
                 if($address) {
                     $address->delete();
                 }
