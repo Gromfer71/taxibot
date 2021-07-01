@@ -29,16 +29,46 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         ]);
 
         foreach ($this->getUser()->favoriteAddresses as $address) {
-            $question->addButton(Button::create($address->name . ' ('. $address->address . ')'));
+            $question->addButton(Button::create($address->name . ' ('. $address->address . ')')->value($address->name));
         }
 
         return $this->ask($question, function (Answer $answer) {
             Log::newLogAnswer($this->bot, $answer);
            $this->switchConversation($answer, 'back', new MenuConversation());
+            if($answer->isInteractiveMessageReply()) {
+                if($answer->getValue() == 'add address') {
+                    $this->addAddress();
+                } else {
+                    $this->bot->userStorage()->save(['address_name' => $answer->getValue()]);
+                    $this->addressMenu();
+                }
+            }
 
-           if($answer->getValue() == 'add address') {
-                $this->addAddress();
-           }
+        });
+    }
+
+    public function addressMenu()
+    {
+        $question = Question::create(trans('messages.address menu'))->addButtons(
+            [
+                Button::create(trans('buttons.back'))->value('back'),
+                Button::create(trans('buttons.delete'))->value('delete'),
+            ]
+        );
+
+        return $this->ask($question, function (Answer $answer) {
+            if($answer->getValue() == 'back') {
+                $this->run();
+            } elseif($answer->getValue() == 'delete') {
+                $address = FavoriteAddress::where([
+                    'user_id' => $this->getUser()->id,
+                    'name' => $this->bot->userStorage()->get('address_name')
+                ])->first();
+                if($address) {
+                    $address->delete();
+                }
+                $this->run();
+            }
         });
     }
 
