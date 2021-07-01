@@ -38,12 +38,10 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                         $this->addAddress();
                     } elseif($answer->getValue() == 'back') {
                         $this->bot->startConversation(new MenuConversation());
-                    } elseif($answer->isInteractiveMessageReply()) {
+                    } else {
                         $this->_sayDebug('Выбранный пункт меню - ' . $answer->getText());
                         $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
                         $this->addressMenu();
-                    } else {
-                        $this->run();
                     }
         });
     }
