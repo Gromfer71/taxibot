@@ -139,9 +139,9 @@ abstract class BaseAddressConversation extends BaseConversation
         $this->bot->userStorage()->save($data);
     }
 
-    public function _saveSecondAddress($answer, $lat = 0, $lon = 0)
+    public function _saveSecondAddress($address, $lat = 0, $lon = 0)
     {
-        $this->_saveSecondAddressByText($answer->getText(), $lat, $lon);
+        $this->_saveSecondAddressByText($address, $lat, $lon);
     }
 
     public function _saveSecondAddressByText($text, $lat = 0, $lon = 0)

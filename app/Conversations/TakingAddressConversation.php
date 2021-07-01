@@ -268,6 +268,7 @@ class TakingAddressConversation extends BaseAddressConversation
                     Button::create(trans('buttons.exit')),
                 ]
             );
+        $question = $this->_addAddressFavoriteButtons($question);
         $question = $this->_addAddressHistoryButtons($question);
 
         return $this->ask(
@@ -291,7 +292,7 @@ class TakingAddressConversation extends BaseAddressConversation
                 $address = $this->_getAddressFromHistoryByAnswer($answer);
 
                 if ($address) {
-                    $this->_saveSecondAddress($answer,$address['lat'], $address['lon']);
+                    $this->_saveSecondAddress($address->address,$address['lat'], $address['lon']);
                     if ($address['lat'] == 0)  $this->bot->userStorage()->save(['second_address_from_history_incorrect' => 1]);
                     if ($address['lat'] == 0)  $this->bot->userStorage()->save(['second_address_from_history_incorrect_change_text_flag' => 1]);
                     $this->bot->startConversation(new TaxiMenuConversation());
