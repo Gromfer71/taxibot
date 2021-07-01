@@ -243,20 +243,21 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                if(strlen($answer->getText()) > 32) {
                    $this->say(trans('messages.address name too long'));
                    $this->getAddressName();
+               } else {
+                   FavoriteAddress::create(
+                       [
+                           'user_id' => $this->getUser()->id,
+                           'address' => $this->bot->userStorage()->get('address'),
+                           'name' => $answer->getText(),
+                           'lat' => $this->bot->userStorage()->get('lat'),
+                           'lon' => $this->bot->userStorage()->get('lon'),
+                           'city' => $this->bot->userStorage()->get('address_city'),
+
+                       ]
+                   );
+
+                   $this->run();
                }
-               FavoriteAddress::create(
-                   [
-                       'user_id' => $this->getUser()->id,
-                       'address' => $this->bot->userStorage()->get('address'),
-                       'name' => $answer->getText(),
-                       'lat' => $this->bot->userStorage()->get('lat'),
-                       'lon' => $this->bot->userStorage()->get('lon'),
-                       'city' => $this->bot->userStorage()->get('address_city'),
-
-                   ]
-               );
-
-               $this->run();
            }
         });
     }
