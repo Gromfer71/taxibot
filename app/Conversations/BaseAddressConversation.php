@@ -33,9 +33,10 @@ abstract class BaseAddressConversation extends BaseConversation
     {
         $address =  AddressHistory::where(['address' => $answer->getText(), 'user_id' => $this->bot->getUser()->getId()])->get()->first();
         if(!$address) {
-            $str = explode('⭐️', stristr($answer->getText(), '(', true));
+            $addressName = stristr($answer->getText(), '(', true);
+            $str = substr($addressName, strpos($addressName, '⭐️'));
             $this->_sayDebug(json_encode($str));
-            //$address = FavoriteAddress::where(['name' => $str[1], 'user_id' => $this->bot->getUser()->getId()])->get()->first();
+            $address = FavoriteAddress::where(['name' => $str, 'user_id' => $this->bot->getUser()->getId()])->get()->first();
         }
         if ($address) $address->touch();
         return $address;
