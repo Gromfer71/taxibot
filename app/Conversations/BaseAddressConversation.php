@@ -34,7 +34,7 @@ abstract class BaseAddressConversation extends BaseConversation
         $address =  AddressHistory::where(['address' => $answer->getText(), 'user_id' => $this->bot->getUser()->getId()])->get()->first();
         if(!$address) {
 
-            $address = FavoriteAddress::where(['name' => trim(stristr($answer->getText(), '(', true)), 'user_id' => $this->bot->getUser()->getId()])->get()->first();
+            $address = FavoriteAddress::where(['name' => trim(stristr(stristr($answer->getText(), '(', true), '⭐️', true)), 'user_id' => $this->bot->getUser()->getId()])->get()->first();
         }
         if ($address) $address->touch();
         return $address;
@@ -63,7 +63,7 @@ abstract class BaseAddressConversation extends BaseConversation
 
         if ($favoriteAddresses->isNotEmpty()) {
             foreach ($favoriteAddresses as $address) {
-                $question = $question->addButton(Button::create('⭐️' . $address->name . ' (' . $address->address . ')')->value($address->address));
+                $question = $question->addButton(Button::create('⭐️' . $address->name)->value($address->address));
             }
         }
         return $question;
