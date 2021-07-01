@@ -211,14 +211,7 @@ class TakingAddressConversation extends BaseAddressConversation
             } else {
                 $address = $this->bot->userStorage()->get('address') . ', *п ' . $answer->getText();
                 $this->bot->userStorage()->save(['address' => $address]);
-                if(!FavoriteAddress::where(
-                    [
-                        'user_id'  => $this->getUser()->id,
-                        'address' => $address,
-                    ]
-                )->first()) {
-                    AddressHistory::newAddress($this->bot->getUser()->getId(), $address, ['lat' => $this->bot->userStorage()->get('lat'),'lon' => $this->bot->userStorage()->get('lon')], $this->bot->userStorage()->get('address_city'));
-                }
+                AddressHistory::newAddress($this->bot->getUser()->getId(), $address, ['lat' => $this->bot->userStorage()->get('lat'),'lon' => $this->bot->userStorage()->get('lon')], $this->bot->userStorage()->get('address_city'));
                 $this->getAddressTo();
             }
         });

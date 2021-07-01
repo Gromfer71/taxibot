@@ -36,13 +36,20 @@ class AddressHistory extends Model
 
     public static function newAddress($userId, $address, $coords, $city)
     {
-        return self::firstOrCreate([
-            'user_id' => $userId,
-            'address' => $address,
-            'city' => $city,
-            'lat' => $coords['lat'] ?? null,
-            'lon' => $coords['lon'] ?? null,
-        ]);
+        if(!FavoriteAddress::where(
+            [
+                'user_id'  => $userId,
+                'address' => $address,
+            ]
+        )->first()) {
+            return self::firstOrCreate([
+                'user_id' => $userId,
+                'address' => $address,
+                'city' => $city,
+                'lat' => $coords['lat'] ?? null,
+                'lon' => $coords['lon'] ?? null,
+            ]);
+        }
     }
 
 }
