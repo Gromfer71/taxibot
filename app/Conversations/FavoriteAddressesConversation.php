@@ -244,6 +244,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                    $this->say(trans('messages.address name too long'));
                    $this->getAddressName();
                } else {
+                   $this->_sayDebug(json_encode($this->bot->userStorage()->get('address')));
                    FavoriteAddress::create(
                        [
                            'user_id' => $this->getUser()->id,
