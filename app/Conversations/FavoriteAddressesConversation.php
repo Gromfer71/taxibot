@@ -213,6 +213,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             ]);
 
         return $this->ask($question, function (Answer $answer) {
+            $this->_sayDebug('начало');
             Log::newLogAnswer($this->bot, $answer);
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() == 'exit') {
@@ -224,7 +225,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             } else {
                 $address = $this->bot->userStorage()->get('address') . ', *п ' . $answer->getText();
                 $this->bot->userStorage()->save(['address' => $address]);
-
+                $this->_sayDebug('getAddressName');
                 $this->getAddressName();
             }
         });
