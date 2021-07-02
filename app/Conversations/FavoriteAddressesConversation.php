@@ -241,7 +241,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                     $this->getAddressName();
                 } else {
                     $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
-                    $question = Question::create(trans('messages.favorite address'))->addButtons(
+                    $question = Question::create(trans('messages.favorite address', ['name' => $answer->getText(), 'address' => $this->bot->userStorage()->get('address')]))->addButtons(
                         [
                             Button::create(trans('buttons.save')),
                             Button::create(trans('buttons.cancel')),

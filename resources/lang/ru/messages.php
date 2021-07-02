@@ -80,4 +80,5 @@
     'give entrance in favorite address' => 'Чудненько! Укажите, № подъезда, вход, парковка и т.д.',
     'get address name' => 'Напишите всевдоним адреса (не более 32 символов)',
     'address name too long' => 'Всевдоним адреса слишком длинный! Давайте попробуем снова',
+    'favorite address' => ':name :address',
 );
