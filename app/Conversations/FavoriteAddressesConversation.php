@@ -240,20 +240,35 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                     $this->say(trans('messages.address name too long'));
                     $this->getAddressName();
                 } else {
-                    $this->_sayDebug(json_encode($this->bot->userStorage()->get('address')));
-                    FavoriteAddress::create(
+                    $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
+                    $question = Question::create(trans('messages.favorite address'))->addButtons(
                         [
-                            'user_id' => $this->getUser()->id,
-                            'address' => $this->bot->userStorage()->get('address'),
-                            'name' => $answer->getText(),
-                            'lat' => $this->bot->userStorage()->get('lat'),
-                            'lon' => $this->bot->userStorage()->get('lon'),
-                            'city' => $this->bot->userStorage()->get('address_city'),
-
+                            Button::create(trans('buttons.save')),
+                            Button::create(trans('buttons.cancel')),
                         ]
                     );
 
-                    $this->run();
+                    return $this->ask($question, function (Answer $answer) {
+                       if($answer->getValue() == 'save') {
+                           $this->_sayDebug(json_encode($this->bot->userStorage()->get('address')));
+                           FavoriteAddress::create(
+                               [
+                                   'user_id' => $this->getUser()->id,
+                                   'address' => $this->bot->userStorage()->get('address'),
+                                   'name' => $this->bot->userStorage()->get('address_name'),
+                                   'lat' => $this->bot->userStorage()->get('lat'),
+                                   'lon' => $this->bot->userStorage()->get('lon'),
+                                   'city' => $this->bot->userStorage()->get('address_city'),
+
+                               ]
+                           );
+                           $this->run();
+                       }  elseif($answer->getValue() == 'cancel') {
+                           $this->run();
+                       } else {
+                           $this->getAddressName();
+                       }
+                    });
                 }
             }
         });
