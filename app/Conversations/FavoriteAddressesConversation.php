@@ -84,11 +84,30 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 
         $question = Question::create(trans('messages.give me your favorite address'), $this->bot->getUser()->getId())
             ->addButton(Button::create(trans('buttons.exit'))->value('exit'));
+        $question = $this->_addAddressHistoryButtons($question);
 
         return $this->ask($question, function (Answer $answer) {
             Log::newLogAnswer($this->bot, $answer);
             if ($answer->getValue() == 'exit') {
                 $this->run();
+                return;
+            }
+            $address = $this->_getAddressFromHistoryByAnswer($answer);
+
+            if ($address) {
+                if ($address['city'] == '') {
+                    $crew_group_id = false;
+                } else {
+                    $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
+                }
+                if ($address['lat'] == 0) $this->bot->userStorage()->save(['first_address_from_history_incorrect' => 1]);
+
+                $this->_saveFirstAddress($address->address, $crew_group_id, $address['lat'], $address['lon'], $address['city']);
+                if ($this->_hasEntrance($address->address)) {
+                    $this->getAddressName();
+                } else {
+                    $this->getEntrance();
+                }
 
             } else {
                 $this->_saveFirstAddress($answer->getText());
@@ -212,7 +231,6 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             ]);
 
         return $this->ask($question, function (Answer $answer) {
-            $this->_sayDebug('начало');
             Log::newLogAnswer($this->bot, $answer);
             if ($answer->getValue() == 'exit') {
                 $this->run();
@@ -249,25 +267,25 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                     );
 
                     return $this->ask($question, function (Answer $answer) {
-                       if($answer->getValue() == 'save') {
-                           $this->_sayDebug(json_encode($this->bot->userStorage()->get('address')));
-                           FavoriteAddress::create(
-                               [
-                                   'user_id' => $this->getUser()->id,
-                                   'address' => $this->bot->userStorage()->get('address'),
-                                   'name' => $this->bot->userStorage()->get('address_name'),
-                                   'lat' => $this->bot->userStorage()->get('lat'),
-                                   'lon' => $this->bot->userStorage()->get('lon'),
-                                   'city' => $this->bot->userStorage()->get('address_city'),
+                        if ($answer->getValue() == 'save') {
+                            $this->_sayDebug(json_encode($this->bot->userStorage()->get('address')));
+                            FavoriteAddress::create(
+                                [
+                                    'user_id' => $this->getUser()->id,
+                                    'address' => $this->bot->userStorage()->get('address'),
+                                    'name' => $this->bot->userStorage()->get('address_name'),
+                                    'lat' => $this->bot->userStorage()->get('lat'),
+                                    'lon' => $this->bot->userStorage()->get('lon'),
+                                    'city' => $this->bot->userStorage()->get('address_city'),
 
-                               ]
-                           );
-                           $this->run();
-                       }  elseif($answer->getValue() == 'cancel') {
-                           $this->run();
-                       } else {
-                           $this->getAddressName();
-                       }
+                                ]
+                            );
+                            $this->run();
+                        } elseif ($answer->getValue() == 'cancel') {
+                            $this->run();
+                        } else {
+                            $this->getAddressName();
+                        }
                     });
                 }
             }
