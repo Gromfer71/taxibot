@@ -70,7 +70,7 @@
     'address has been deleted' => 'Любой каприз!!! Адрес я удалил, продолжаем)',
     'problems with delete address' => 'Проблемы с удалением адреса',
     'need map message while driver goes' => 'К вам подъедет :auto Время подачи :time минут(-ы).',
-    'need map message when driver at place' => 'Авто :auto',
+    'need map message when driver at place' => 'Вас ожидает :auto',
     'favorite addresses menu' => 'Меню избранных адресов',
     'favorite address menu' => 'Меню выбранного избранного адреса',
     'give me your favorite address' => 'Введите адрес который хотите добавить в избранное',
@@ -81,7 +81,7 @@
     'get address name' => 'Напишите псевдоним адреса (не более 32 символов)',
     'address name too long' => 'Псевдоним адреса слишком длинный! Давайте попробуем снова',
     'favorite address' => ':name :address',
-    'auto info with time' => 'К вам подъедет :auto Время подачи :time минут(-ы).',
+    'auto info with time' => 'К вам подъедет :auto время подачи :time минут(-ы).',
     'auto info without time' => 'К вам подъедет :auto',
     'auto waits for client' => 'Вас ожидает :auto',
 );
