@@ -149,7 +149,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     if ($address['lat'] == 0 && Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage())){
                         $this->bot->userStorage()->save(['additional_address_is_incorrect_change_text_flag' => 1]);
                     }
-                    $this->_saveAnotherAddress($answer, $address['lat'], $address['lon']);
+                    $this->_saveAnotherAddress($address->address, $address['lat'], $address['lon']);
                     $this->menu();
 
                 } else {
