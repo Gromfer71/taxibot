@@ -56,7 +56,7 @@ class CheckOrderStateCommand extends Command
                     $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
                     if ($time == 0) continue;
                     $auto = $actualOrder->getAutoInfo() ?? '';
-                    $question = Question::create(trans('messages.auto info', ['time' => $time, 'auto' => $auto]),
+                    $question = Question::create(trans('messages.auto info with time', ['time' => $time, 'auto' => $auto]),
                         $actualOrder->user_id)->addButtons([
                         Button::create(trans('buttons.order_cancel'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]),
                         Button::create(trans('buttons.order_confirm'))
