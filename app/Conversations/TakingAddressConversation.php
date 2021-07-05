@@ -300,7 +300,7 @@ class TakingAddressConversation extends BaseAddressConversation
                     return;
 
                 }  else {
-                    $this->_saveSecondAddress($answer);
+                    $this->_saveSecondAddress($answer->getText());
                     $addressesList = collect(Address::getAddresses($answer->getText(), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
                     if ($addressesList->isEmpty()) {
                         $this->streetNotFoundAddressTo();
@@ -319,7 +319,6 @@ class TakingAddressConversation extends BaseAddressConversation
     {
         $this->_sayDebug('getAddressToAgain');
         $question = Question::create(trans('messages.give address again'), $this->bot->getUser()->getId());
-        $this->_sayDebug(json_encode($this->bot->userStorage()->get('address')->get(1)));
         $addressesList = collect(Address::getAddresses(collect($this->bot->userStorage()->get('address'))->get(1), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
         $question->addButton(Button::create(trans('buttons.exit')));
         if ($addressesList->isNotEmpty()) {
