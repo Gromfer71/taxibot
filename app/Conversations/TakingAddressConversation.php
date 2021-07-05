@@ -354,10 +354,10 @@ class TakingAddressConversation extends BaseAddressConversation
                     }
 
                     AddressHistory::newAddress($this->bot->getUser()->getId(), $answer->getText(), $address['coords'],$address['city']);
-                    $this->_saveSecondAddress($answer,$address['coords']['lat'], $address['coords']['lon']);
+                    $this->_saveSecondAddress($address->address,$address['coords']['lat'], $address['coords']['lon']);
                     $this->bot->startConversation(new TaxiMenuConversation());
                 } else {
-                    $this->_saveSecondAddress($answer);
+                    $this->_saveSecondAddress($answer->getText());
                     $this->getAddressToAgain();
                 }
             });
