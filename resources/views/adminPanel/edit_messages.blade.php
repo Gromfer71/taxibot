@@ -41,6 +41,10 @@
           <code>:phone</code> - телефон
           <br>
           <code>:city</code> - город
+          <br>
+          <code>:auto</code> - информация об авто
+          <br>
+          <code>:time</code> - время до подачи авто
         </div>
     </div>
 </div>
