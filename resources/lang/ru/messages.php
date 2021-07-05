@@ -81,4 +81,7 @@
     'get address name' => 'Напишите всевдоним адреса (не более 32 символов)',
     'address name too long' => 'Всевдоним адреса слишком длинный! Давайте попробуем снова',
     'favorite address' => ':name :address',
+    'auto info with time' => 'К вам подъедет :auto Время подачи :time минут(-ы).',
+    'auto info without time' => 'К вам подъедет :auto',
+    'auto waits for client' => 'Вас ожидает :auto',
 );

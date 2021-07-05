@@ -86,7 +86,9 @@ class Config extends Model
         'get address name' => 'Сообщение с просьбой указать псевдоним избранного адреса',
         'address name too long' => 'Сообщение если псевдоним введенного адреса превышает 32 символа',
         'favorite address' => 'Сообщение с избранным адресом',
-
+        'auto info with time' => 'Информация о назначенной машине',
+        'auto info without time' => 'Информация о назначенной машине без указания времени',
+        'auto waits for client' => 'Вас ожидает авто',
 
 
 

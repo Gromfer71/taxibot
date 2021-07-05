@@ -56,7 +56,7 @@ class CheckOrderStateCommand extends Command
                     $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
                     if ($time == 0) continue;
                     $auto = $actualOrder->getAutoInfo() ?? '';
-                    $question = Question::create('К вам подъедет ' . $auto . ' Время подачи ' . $time . ' минут(-ы).',
+                    $question = Question::create(trans('messages.auto info', ['time' => $time, 'auto' => $auto]),
                         $actualOrder->user_id)->addButtons([
                         Button::create(trans('buttons.order_cancel'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]),
                         Button::create(trans('buttons.order_confirm'))
@@ -66,7 +66,7 @@ class CheckOrderStateCommand extends Command
                     $botMan->listen();
                 } elseif ($newStateId == OrderHistory::IN_QUEUE) {
                     $auto = $actualOrder->getAutoInfo() ?? '';
-                    $question = Question::create('К вам подъедет ' . $auto ,
+                    $question = Question::create(trans('messages.auto info without time', ['auto' => $auto]),
                         $actualOrder->user_id)->addButtons([
                         Button::create(trans('buttons.order_cancel')),
                     ]);
@@ -90,7 +90,7 @@ class CheckOrderStateCommand extends Command
                 } elseif ($newStateId == OrderHistory::CAR_AT_PLACE) {
 
                     if ($oldStateId == OrderHistory::REQUEST_FOR_ABORT_BY_DRIVER) return;
-                    $question = Question::create('Вас ожидает '.$actualOrder->getAutoInfo(),
+                    $question = Question::create(trans('messages.auto waits for client', ['auto' => $actualOrder->getAutoInfo()]),
                         $actualOrder->user_id)->addButtons([
                         Button::create(trans('buttons.cancel order'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]),
                         Button::create(trans('buttons.client_goes_out')),
