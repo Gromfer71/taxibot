@@ -186,8 +186,8 @@ class MenuConversation extends BaseConversation
             $message = trans('messages.enter phone');
         }
         $question = Question::create($message, $this->bot->getUser()->getId());
-
-        if (User::find($this->bot->getUser()->getId())->phone) {
+        $user = User::find($this->bot->getUser()->getId());
+        if ($user && $user->phone) {
             $question = $question->addButton(Button::create(trans('buttons.back'))->value('back'));
         }
 
