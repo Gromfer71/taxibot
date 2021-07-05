@@ -72,7 +72,10 @@ class DriverAssignedConversation extends BaseConversation
                         $api = new OrderApiService();
                         $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder($this->bot->getUser()->getId()))->data->crew_id ?? null);
                         if($driverLocation) {
-                            $this->say(trans('messages.need map message while driver goes'));
+                            $actualOrder = OrderHistory::getActualOrder($this->getUser()->id);
+                            $auto = $actualOrder->getAutoInfo();
+                            $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
+                            $this->say(trans('messages.need map message while driver goes', ['time' => $time, 'auto' => $auto]));
                             OrderApiService::sendDriverLocation($this->bot->getUser()->getId(), $driverLocation->lat, $driverLocation->lon);
                         } else {
                             $this->say('К сожалению на данный момент мы не можем определить где водитель :( ');

@@ -59,7 +59,9 @@ class ClientGoesOutConversation extends BaseAddressConversation
                     $api = new OrderApiService();
                     $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder($this->bot->getUser()->getId()))->data->crew_id ?? null);
                     if($driverLocation) {
-                        $this->say(trans('messages.need map message when driver at place'));
+                        $actualOrder = OrderHistory::getActualOrder($this->getUser()->id);
+                        $auto = $actualOrder->getAutoInfo();
+                        $this->say(trans('messages.need map message when driver at place', ['auto' => $auto]));
                         OrderApiService::sendDriverLocation($this->bot->getUser()->getId(), $driverLocation->lat, $driverLocation->lon);
                     } else {
                         $this->say('К сожалению на данный момент мы не можем определить где водитель :( ');
