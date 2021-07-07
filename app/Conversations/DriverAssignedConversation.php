@@ -31,9 +31,9 @@ class DriverAssignedConversation extends BaseConversation
         $question = Question::create($message , $this->bot->getUser()->getId())->addButtons(
             [
                 Button::create(trans('buttons.need dispatcher'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]),
-                Button::create(trans('buttons.need driver')),
-                Button::create(trans('buttons.cancel order')),
-                Button::create(trans('buttons.need map')),
+                Button::create(trans('buttons.need driver'))->value('need driver'),
+                Button::create(trans('buttons.cancel order'))->value('cancel order'),
+                Button::create(trans('buttons.need map'))->value('need map'),
             ]
         );
         $order = OrderHistory::getActualOrder($this->bot->getUser()->getId());

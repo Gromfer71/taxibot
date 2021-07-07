@@ -41,7 +41,7 @@ class StartConversation extends BaseConversation
 		$question = Question::create(trans('messages.welcome message'), $this->bot->getUser()->getId())
 			->addButtons(
 				[
-					Button::create(trans('buttons.start menu')),
+					Button::create(trans('buttons.start menu'))->value('start menu'),
 				]
 			);
 

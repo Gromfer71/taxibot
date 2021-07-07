@@ -24,10 +24,10 @@ class ClientGoesOutConversation extends BaseAddressConversation
 		$message = 'Приятной поездки';
 		if ($withoutMessage) $message = '';
 		$question = Question::create($message, $this->bot->getUser()->getId())->addButtons([
-			Button::create(trans('buttons.finish order'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT]),
-			Button::create(trans('buttons.need dispatcher')),
-            Button::create(trans('buttons.need driver')),
-            Button::create(trans('buttons.need map')),
+			Button::create(trans('buttons.finish order'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT])->value('finish order'),
+			Button::create(trans('buttons.need dispatcher'))->value('need dispatcher'),
+            Button::create(trans('buttons.need driver'))->value('need driver'),
+            Button::create(trans('buttons.need map'))->value('need map'),
 		]);
 
 		return $this->ask($question, function (Answer $answer) use ($order) {
