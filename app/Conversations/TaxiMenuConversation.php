@@ -56,23 +56,23 @@ class TaxiMenuConversation extends BaseAddressConversation
         if ($haveEndAddress){
             $question = $question->addButtons(
                 [
-                    Button::create(trans('buttons.exit to menu'))->additionalParameters(['config' => ButtonsFormatterService::TAXI_MENU_FORMAT]),
-                    Button::create(trans('buttons.add address')),
-                    Button::create(trans('buttons.go for cash')),
-                    Button::create(trans('buttons.write comment')),
-                    Button::create(trans('buttons.go for bonuses')),
-                    Button::create(trans('buttons.wishes')),
-                    Button::create(trans('buttons.change price'))
+                    Button::create(trans('buttons.exit to menu'))->additionalParameters(['config' => ButtonsFormatterService::TAXI_MENU_FORMAT])->value('exit to menu'),
+                    Button::create(trans('buttons.add address'))->value('add address'),
+                    Button::create(trans('buttons.go for cash'))->value('go for cash'),
+                    Button::create(trans('buttons.write comment'))->value('write comment'),
+                    Button::create(trans('buttons.go for bonuses'))->value('go for bonuses'),
+                    Button::create(trans('buttons.wishes'))->value('wishes'),
+                    Button::create(trans('buttons.change price'))->value('change price')
                 ]
             );
         } else {
             $question = $question->addButtons(
                 [
-                    Button::create(trans('buttons.exit to menu'))->additionalParameters(['config' => ButtonsFormatterService::TAXI_MENU_FORMAT]),
-                    Button::create(trans('buttons.write comment')),
-                    Button::create(trans('buttons.go for cash')),
-                    Button::create(trans('buttons.wishes')),
-                    Button::create(trans('buttons.change price'))
+                    Button::create(trans('buttons.exit to menu'))->additionalParameters(['config' => ButtonsFormatterService::TAXI_MENU_FORMAT])->value('exit to menu'),
+                    Button::create(trans('buttons.write comment'))->value('write comment'),
+                    Button::create(trans('buttons.go for cash'))->value('go for cash'),
+                    Button::create(trans('buttons.wishes'))->value('wishes'),
+                    Button::create(trans('buttons.change price'))->value('change price')
                 ]
             );
         }
@@ -130,7 +130,7 @@ class TaxiMenuConversation extends BaseAddressConversation
     {
         $this->_sayDebug('addAdditionalAddress');
         $question = Question::create(trans('messages.add additional address'), $this->bot->getUser()->getId());
-        $question = $question->addButton(Button::create(trans('buttons.back')));
+        $question = $question->addButton(Button::create(trans('buttons.back'))->value('back'));
         $question = $this->_addAddressFavoriteButtons($question);
         $question = $this->_addAddressHistoryButtons($question);
         return $this->ask(
@@ -173,11 +173,11 @@ class TaxiMenuConversation extends BaseAddressConversation
         $this->_sayDebug('addAdditionalAddressAgain');
         $question = Question::create(trans('messages.give address again'), $this->bot->getUser()->getId());
         $addressesList = collect(Address::getAddresses(collect($this->bot->userStorage()->get('address'))->last(), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
-        $question->addButton(Button::create(trans('buttons.back')));
+        $question->addButton(Button::create(trans('buttons.back'))->value('back'));
         if ($addressesList->isNotEmpty()) {
             $addressesList = $addressesList->take(25);
             foreach ($addressesList as $address) {
-                $question->addButton(Button::create(Address::toString($address)));
+                $question->addButton(Button::create(Address::toString($address))->value(Address::toString($address)));
             }
         } else {
             $this->streetNotFoundAdditionalAddress();
@@ -219,9 +219,9 @@ class TaxiMenuConversation extends BaseAddressConversation
         $question = Question::create(trans('messages.not found address'), $this->bot->getUser()->getId());
         $question->addButtons(
             [
-                Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT]),
-                Button::create(trans('buttons.go as indicated')),
-                Button::create(trans('buttons.exit to menu')),
+                Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT])->value('back'),
+                Button::create(trans('buttons.go as indicated'))->value('go as indicated'),
+                Button::create(trans('buttons.exit to menu'))->value('exit to menu'),
             ]
         );
 
