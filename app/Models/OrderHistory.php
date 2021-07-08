@@ -81,6 +81,7 @@ class OrderHistory extends Model
 				'wishes' => collect($bot->userStorage()->get('wishes'))->implode(', '),
 				'relevance' => 0,
                 'usebonus' => $useBonus,
+                'platform' => $bot->getDriver()->getName()
 			]);
 		} else {
 			return $response;
