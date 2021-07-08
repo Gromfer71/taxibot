@@ -92,8 +92,8 @@ class User extends Model
         $this->save();
     }
 
-    public function find($id)
+    public static function find($id)
     {
-        return $this->where('vk_id', $id)->orWhere('telegram_id', $id)->first();
+        return self::where('vk_id', $id)->orWhere('telegram_id', $id)->first();
     }
 }
