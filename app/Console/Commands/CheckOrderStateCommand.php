@@ -8,6 +8,7 @@ use App\Services\OrderApiService;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\Drivers\Telegram\TelegramDriver;
+use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
@@ -62,7 +63,7 @@ class CheckOrderStateCommand extends Command
                         Button::create(trans('buttons.order_confirm'))
                     ]);
 
-                    $botMan->say($question, $actualOrder->user_id, get_class($botMan->getDriver()));
+                    $botMan->say($question, $actualOrder->user_id, VkCommunityCallbackDriver::class);
                     $botMan->listen();
                 } elseif ($newStateId == OrderHistory::IN_QUEUE) {
                     $auto = $actualOrder->getAutoInfo() ?? '';
@@ -71,21 +72,21 @@ class CheckOrderStateCommand extends Command
                         Button::create(trans('buttons.order_cancel')),
                     ]);
 
-                    $botMan->say($question, $actualOrder->user_id, get_class($botMan->getDriver()));
+                    $botMan->say($question, $actualOrder->user_id, VkCommunityCallbackDriver::class);
                     $botMan->listen();
                 } elseif ($actualOrder->asAbortedFromQueue()) {
                     $question = Question::create(trans('messages.queue aborted by driver'),
                         $actualOrder->user_id)->addButtons([
                         Button::create(trans('buttons.order_cancel'))
                     ]);
-                    $botMan->say($question, $actualOrder->user_id, get_class($botMan->getDriver()));
+                    $botMan->say($question, $actualOrder->user_id, VkCommunityCallbackDriver::class);
                     $botMan->listen();
                 } elseif ($newStateId == OrderHistory::DRIVER_ABORTED_FROM_ORDER) {
                     $question = Question::create(trans('messages.driver aborted from order'),
                         $actualOrder->user_id)->addButtons([
                         Button::create(trans('buttons.order_cancel'))
                     ]);
-                    $botMan->say($question, $actualOrder->user_id, get_class($botMan->getDriver()));
+                    $botMan->say($question, $actualOrder->user_id, VkCommunityCallbackDriver::class);
                     $botMan->listen();
                 } elseif ($newStateId == OrderHistory::CAR_AT_PLACE) {
 
@@ -96,7 +97,7 @@ class CheckOrderStateCommand extends Command
                         Button::create(trans('buttons.client_goes_out')),
                     ]);
 
-                    $botMan->say($question, $actualOrder->user_id, get_class($botMan->getDriver()));
+                    $botMan->say($question, $actualOrder->user_id, VkCommunityCallbackDriver::class);
                     $botMan->listen();
                 } elseif ( $newStateId == OrderHistory::CLIENT_INSIDE) {
                     $question = Question::create('👍', $actualOrder->user_id)->addButtons([
@@ -104,28 +105,28 @@ class CheckOrderStateCommand extends Command
                         Button::create(trans('buttons.need dispatcher')),
                         Button::create(trans('buttons.need driver')),
                     ]);
-                    $botMan->say($question, $actualOrder->user_id, get_class($botMan->getDriver()));
+                    $botMan->say($question, $actualOrder->user_id, VkCommunityCallbackDriver::class);
                     $botMan->listen();
                 } elseif ( $newStateId == OrderHistory::ABORTED ||$newStateId == OrderHistory::ABORTED_BY_DRIVER) {
                     $actualOrder->setAbortedOrder();
                     $question = Question::create(trans('messages.aborted order'), $actualOrder->user_id)->addButtons([
                         Button::create(trans('buttons.aborted order')),
                     ]);
-                    $botMan->say($question, $actualOrder->user_id, get_class($botMan->getDriver()));
+                    $botMan->say($question, $actualOrder->user_id, VkCommunityCallbackDriver::class);
                     $botMan->listen();
             } elseif ($newStateId == OrderHistory::FINISHED_BY_DRIVER) {
                 $actualOrder->finishOrder();
                 $question = Question::create(trans('messages.thx for order'), $actualOrder->user_id)->addButtons([
                     Button::create(trans('buttons.finished order')),
                 ]);
-                $botMan->say($question, $actualOrder->user_id, get_class($botMan->getDriver()));
+                $botMan->say($question, $actualOrder->user_id, VkCommunityCallbackDriver::class);
                 $botMan->listen();
             }elseif ( $newStateId == OrderHistory::CLIENT_DONT_COME_OUT || $newStateId == OrderHistory::CLIENT_DONT_COME_OUT_2) {
                    $question = Question::create(trans('messages.dont come out'), $actualOrder->user_id)->addButtons([
                         Button::create(trans('buttons.client_goes_out_late'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]),
                         Button::create(trans('buttons.cancel order')),
                     ]);
-                    $botMan->say($question, $actualOrder->user_id, get_class($botMan->getDriver()));
+                    $botMan->say($question, $actualOrder->user_id, VkCommunityCallbackDriver::class);
                     $botMan->listen();
              }elseif ( $newStateId == OrderHistory::ORDER_NOT_FOUND) {
                     //Заказ удален
@@ -135,7 +136,7 @@ class CheckOrderStateCommand extends Command
                     $question = Question::create(trans('messages.aborted order'), $actualOrder->user_id)->addButtons([
                         Button::create(trans('buttons.aborted order')),
                     ]);
-                    $botMan->say($question, $actualOrder->user_id, get_class($botMan->getDriver()));
+                    $botMan->say($question, $actualOrder->user_id, VkCommunityCallbackDriver::class);
                     $botMan->listen();
                 }
 
