@@ -175,8 +175,8 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         $question = Question::create(trans('messages.not found favorite address'), $this->bot->getUser()->getId());
         $question->addButtons(
             [
-                Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT]),
-                Button::create(trans('buttons.save as written')),
+                Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT])->value('back'),
+                Button::create(trans('buttons.save as written'))->value('save as written'),
             ]
         );
 

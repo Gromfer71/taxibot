@@ -22,7 +22,7 @@ class RunStartAfterButtonConversation extends BaseConversation
         $question = Question::create($message, $this->bot->getUser()->getId())
             ->addButtons(
                 [
-                    Button::create(trans('buttons.continue'))
+                    Button::create(trans('buttons.continue'))->value('continue')
                 ]
             );
         $this->_sayDebug('RunStartAfterButtonConversation - end');

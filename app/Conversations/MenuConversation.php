@@ -227,7 +227,7 @@ class MenuConversation extends BaseConversation
         $message = trans('messages.enter sms code');
         if ($withoutMessage) $message = '';
         $question = Question::create($message, $this->bot->getUser()->getId())
-            ->addButton(Button::create(trans('buttons.call')));
+            ->addButton(Button::create(trans('buttons.call'))->value('call'));
 
         return $this->ask(
             $question,
@@ -275,7 +275,7 @@ class MenuConversation extends BaseConversation
         $message = trans('messages.enter call code');
         if ($withoutMessage) $message = '';
         $question = Question::create($message, $this->bot->getUser()->getId())
-            ->addButton(Button::create(trans('buttons.call')));
+            ->addButton(Button::create(trans('buttons.call'))->value('call'));
 
         return $this->ask(
             $question,
@@ -315,7 +315,7 @@ class MenuConversation extends BaseConversation
         }
 
         $options = new Options($this->bot->channelStorage());
-        $question = $question->addButton(Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::CITY_MENU_FORMAT]));
+        $question = $question->addButton(Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::CITY_MENU_FORMAT])->value('back'));
         foreach ($options->getCities() as $city) {
             $question = $question->addButton(Button::create($city->name)->value($city->name));
         }
@@ -344,11 +344,11 @@ class MenuConversation extends BaseConversation
         }
         $question = Question::create($message)
             ->addButtons([
-                Button::create(trans('buttons.bonus balance'))->additionalParameters(['config' => ButtonsFormatterService::BONUS_MENU_FORMAT]),
-                Button::create(trans('buttons.work as driver')),
-                Button::create(trans('buttons.our site')),
-                Button::create(trans('buttons.our app')),
-                Button::create(trans('buttons.exit to menu')),
+                Button::create(trans('buttons.bonus balance'))->additionalParameters(['config' => ButtonsFormatterService::BONUS_MENU_FORMAT])->value('bonus balance'),
+                Button::create(trans('buttons.work as driver'))->value('work as driver'),
+                Button::create(trans('buttons.our site'))->value('our site'),
+                Button::create(trans('buttons.our app'))->value('our app'),
+                Button::create(trans('buttons.exit to menu'))->value('exit to menu'),
             ]);
         return $this->ask(
             $question,

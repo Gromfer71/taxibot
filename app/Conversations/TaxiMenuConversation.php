@@ -292,10 +292,10 @@ class TaxiMenuConversation extends BaseAddressConversation
         $question = Question::create($text, $this->bot->getUser()->getId())
             ->addButtons(
                 [
-                    Button::create(trans('buttons.need dispatcher'))->additionalParameters(['config' => ButtonsFormatterService::CURRENT_ORDER_MENU_FORMAT]),
-                    Button::create(trans('buttons.order info')),
-                    Button::create(trans('buttons.cancel order')),
-                    Button::create(trans('buttons.change price')),
+                    Button::create(trans('buttons.need dispatcher'))->additionalParameters(['config' => ButtonsFormatterService::CURRENT_ORDER_MENU_FORMAT])->value('need dispatcher'),
+                    Button::create(trans('buttons.order info'))->value('order info'),
+                    Button::create(trans('buttons.cancel order'))->value('cancel order'),
+                    Button::create(trans('buttons.change price'))->value('change price'),
                 ]
             );
 
@@ -546,12 +546,12 @@ class TaxiMenuConversation extends BaseAddressConversation
         $question = Question::create(trans('messages.write comment or choose'), $this->bot->getUser()->getId());
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
         if ($haveEndAddress) {
-            $question = $question->addButtons([Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::COMMENT_MENU_FORMAT]),
-                                               Button::create(trans('buttons.go for bonuses')),
-                                               Button::create(trans('buttons.go for cash'))]);
+            $question = $question->addButtons([Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::COMMENT_MENU_FORMAT])->value('back'),
+                                               Button::create(trans('buttons.go for bonuses'))->value('go for bonuses'),
+                                               Button::create(trans('buttons.go for cash'))->value('go for cash')]);
         } else {
             $question = $question->addButtons([Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWO_MENU_FORMAT]),
-                                               Button::create(trans('buttons.go for cash'))]);
+                                               Button::create(trans('buttons.go for cash'))->value('go for cash')]);
         }
 
 
@@ -590,16 +590,16 @@ class TaxiMenuConversation extends BaseAddressConversation
 
         if ($haveEndAddress) {
             $question = Question::create(trans('messages.order info with comment',$data),$this->bot->getUser()->getId());
-            $question = $question->addButtons([Button::create(trans('buttons.go for bonuses'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWO_MENU_FORMAT]),
-                Button::create(trans('buttons.go for cash')),
-                Button::create(trans('buttons.back')),
-                Button::create(trans('buttons.wishes'))]);
+            $question = $question->addButtons([Button::create(trans('buttons.go for bonuses'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWO_MENU_FORMAT])->value('go for bonuses'),
+                Button::create(trans('buttons.go for cash'))->value('go for cash'),
+                Button::create(trans('buttons.back'))->value('back'),
+                Button::create(trans('buttons.wishes'))->value('wishes')]);
 
         } else {
             $question = Question::create(trans('messages.komment_i_pozhelanie_skazhu_voditelu_punkt_6',$data),$this->bot->getUser()->getId());
-            $question = $question->addButtons([Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT]),
-                Button::create(trans('buttons.wishes')),
-                Button::create(trans('buttons.go for cash'))
+            $question = $question->addButtons([Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT])->value('back'),
+                Button::create(trans('buttons.wishes'))->value('wishes'),
+                Button::create(trans('buttons.go for cash'))->value('go for cash')
                 ]);
         }
 
@@ -641,15 +641,15 @@ class TaxiMenuConversation extends BaseAddressConversation
 
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
         if ($haveEndAddress) {
-            $question = $question->addButtons([Button::create(trans('buttons.go for cash'))->additionalParameters(['config' => ButtonsFormatterService::WISH_MENU_FORMAT_WITH_BONUSES]),
-                                               Button::create(trans('buttons.go for bonuses')),
-                                               Button::create(trans('buttons.back')),
-                                               Button::create(trans('buttons.cancel last wish'))
+            $question = $question->addButtons([Button::create(trans('buttons.go for cash'))->additionalParameters(['config' => ButtonsFormatterService::WISH_MENU_FORMAT_WITH_BONUSES])->value('go for cash'),
+                                               Button::create(trans('buttons.go for bonuses'))->value('go for bonuses'),
+                                               Button::create(trans('buttons.back'))->value('back'),
+                                               Button::create(trans('buttons.cancel last wish'))->value('cancel last wish')
                 ]);
         } else {
-            $question = $question->addButtons([Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::WISH_MENU_FORMAT]),
-                Button::create(trans('buttons.go for cash')),
-                Button::create(trans('buttons.cancel last wish'))
+            $question = $question->addButtons([Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::WISH_MENU_FORMAT])->value('back'),
+                Button::create(trans('buttons.go for cash'))->value('go for cash'),
+                Button::create(trans('buttons.cancel last wish'))->value('cancel last wish')
             ]);
         }
 
