@@ -11,6 +11,7 @@ use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 
 class CheckOrderStateCommand extends Command
 {
@@ -62,7 +63,7 @@ class CheckOrderStateCommand extends Command
                         Button::create(trans('buttons.order_cancel'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]),
                         Button::create(trans('buttons.order_confirm'))
                     ]);
-
+                    Log::alert(get_class($botMan->getDriver()));
                     $botMan->say($question, $actualOrder->user_id, VkCommunityCallbackDriver::class);
                     $botMan->listen();
                 } elseif ($newStateId == OrderHistory::IN_QUEUE) {
