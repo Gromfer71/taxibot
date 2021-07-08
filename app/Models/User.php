@@ -91,4 +91,9 @@ class User extends Model
         $this->isBlocked = false;
         $this->save();
     }
+
+    public function find($id)
+    {
+        return $this->where('vk_id', $id)->orWhere('telegram_id', $id)->first();
+    }
 }
