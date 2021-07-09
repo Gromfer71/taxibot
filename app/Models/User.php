@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use BotMan\Drivers\Telegram\TelegramDriver;
+use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Database\Eloquent\Model;
 use App\Services\BonusesApi;
 /**
@@ -96,4 +98,14 @@ class User extends Model
     {
         return self::where('vk_id', $id)->orWhere('telegram_id', $id)->first();
     }
+
+    public function setPlatformId($bot)
+    {
+        if(get_class($bot->getDriver()) == VkCommunityCallbackDriver::class) {
+            $this->vk_id = $bot->getUser()->getId();
+        } elseif(get_class($bot->getDriver()) == TelegramDriver::class) {
+            $this->telegram_id = $bot->getUser()->getId();
+        }
+    }
+
 }

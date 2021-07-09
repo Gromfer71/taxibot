@@ -16,6 +16,8 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use App\Services\ButtonsFormatterService;
+use BotMan\Drivers\Telegram\TelegramDriver;
+use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 
 class MenuConversation extends BaseConversation
 {
@@ -242,22 +244,25 @@ class MenuConversation extends BaseConversation
                     }
                 } elseif ($answer->getText() == $this->bot->userStorage()->get('sms_code')) {
                     $oldUser = User::where('phone', OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')))->first();
+
                     $this->_sayDebug('номер ' . OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
                     if ($oldUser) {
+                        $this->getUser()->delete();
                         if($oldUser->isBlocked) {
                             $blocked = true;
                         }
                         //$oldUser->delete();
                         //$this->_sayDebug('Удалили пользователя');
                     }
-                    $user = User::find($this->bot->getUser()->getId());
-                    $user->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
+                    $oldUser->setPlatformId($this);
+                    $oldUser->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
 
                     if($blocked ?? false) {
-                        $user->block();
+                        $oldUser->block();
                         $this->menu(true);
                         return;
                     }
+                    $oldUser->save();
 
                     $this->say(trans('messages.phone changed', ['phone' => $this->bot->userStorage()->get('phone')]));
                     $this->run();

@@ -35,11 +35,7 @@ class StartConversation extends BaseConversation
 				'lastname' => $this->bot->getUser()->getLastName(),
 				'userinfo' => json_encode($this->bot->getUser()->getInfo()),
 			]);
-			if(get_class($this->bot->getDriver()) == VkCommunityCallbackDriver::class) {
-			    $user->vk_id = $this->bot->getUser()->getId();
-            } elseif(get_class($this->bot->getDriver()) == TelegramDriver::class) {
-			    $user->telegram_id = $this->bot->getUser()->getId();
-            }
+		    $user->setPlatformId($this);
 
 			$user->save();
 		}
