@@ -67,10 +67,6 @@ class CheckOrderStateCommand extends Command
 
 
 
-
-
-
-
             if ($newStateId) {
                 if (config('app.debug')) {
                     $botMan->say('||DEBUG|| Новый статус заказа - ' . $newStateId.' <-- '.$oldStateId.' ', $recipientId, $driverName);
@@ -82,8 +78,8 @@ class CheckOrderStateCommand extends Command
                     $auto = $actualOrder->getAutoInfo() ?? '';
                     $question = Question::create(trans('messages.auto info with time', ['time' => $time, 'auto' => $auto]),
                         $recipientId)->addButtons([
-                        Button::create(trans('buttons.order_cancel'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]),
-                        Button::create(trans('buttons.order_confirm'))
+                        Button::create(trans('buttons.order_cancel'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT])->value('order_cancel'),
+                        Button::create(trans('buttons.order_confirm'))->value('order_confirm')
                     ]);
 
                     $botMan->say($question, $recipientId, $driverName);
@@ -92,7 +88,7 @@ class CheckOrderStateCommand extends Command
                     $auto = $actualOrder->getAutoInfo() ?? '';
                     $question = Question::create(trans('messages.auto info without time', ['auto' => $auto]),
                         $recipientId)->addButtons([
-                        Button::create(trans('buttons.order_cancel')),
+                        Button::create(trans('buttons.order_cancel'))->value('order_cancel'),
                     ]);
 
                     $botMan->say($question, $recipientId, $driverName);
@@ -100,14 +96,14 @@ class CheckOrderStateCommand extends Command
                 } elseif ($actualOrder->asAbortedFromQueue()) {
                     $question = Question::create(trans('messages.queue aborted by driver'),
                         $recipientId)->addButtons([
-                        Button::create(trans('buttons.order_cancel'))
+                        Button::create(trans('buttons.order_cancel'))->value('order_cancel')
                     ]);
                     $botMan->say($question, $recipientId, $driverName);
                     $botMan->listen();
                 } elseif ($newStateId == OrderHistory::DRIVER_ABORTED_FROM_ORDER) {
                     $question = Question::create(trans('messages.driver aborted from order'),
                         $recipientId)->addButtons([
-                        Button::create(trans('buttons.order_cancel'))
+                        Button::create(trans('buttons.order_cancel'))->value('order_cancel')
                     ]);
                     $botMan->say($question, $recipientId, $driverName);
                     $botMan->listen();
@@ -116,38 +112,38 @@ class CheckOrderStateCommand extends Command
                     if ($oldStateId == OrderHistory::REQUEST_FOR_ABORT_BY_DRIVER) return;
                     $question = Question::create(trans('messages.auto waits for client', ['auto' => $actualOrder->getAutoInfo()]),
                         $recipientId)->addButtons([
-                        Button::create(trans('buttons.cancel order'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]),
-                        Button::create(trans('buttons.client_goes_out')),
+                        Button::create(trans('buttons.cancel order'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT])->value('cancel order'),
+                        Button::create(trans('buttons.client_goes_out'))->value('client_goes_out'),
                     ]);
 
                     $botMan->say($question, $recipientId, $driverName);
                     $botMan->listen();
                 } elseif ( $newStateId == OrderHistory::CLIENT_INSIDE) {
                     $question = Question::create('👍', $recipientId)->addButtons([
-                        Button::create(trans('buttons.finish order'))->additionalParameters(['config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT]),
-                        Button::create(trans('buttons.need dispatcher')),
-                        Button::create(trans('buttons.need driver')),
+                        Button::create(trans('buttons.finish order'))->additionalParameters(['config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT])->value('finish order'),
+                        Button::create(trans('buttons.need dispatcher'))->value('need dispatcher'),
+                        Button::create(trans('buttons.need driver'))->value('need driver'),
                     ]);
                     $botMan->say($question, $recipientId, $driverName);
                     $botMan->listen();
                 } elseif ( $newStateId == OrderHistory::ABORTED ||$newStateId == OrderHistory::ABORTED_BY_DRIVER) {
                     $actualOrder->setAbortedOrder();
                     $question = Question::create(trans('messages.aborted order'), $recipientId)->addButtons([
-                        Button::create(trans('buttons.aborted order')),
+                        Button::create(trans('buttons.aborted order'))->value('aborted order'),
                     ]);
                     $botMan->say($question, $recipientId, $driverName);
                     $botMan->listen();
             } elseif ($newStateId == OrderHistory::FINISHED_BY_DRIVER) {
                 $actualOrder->finishOrder();
                 $question = Question::create(trans('messages.thx for order'), $recipientId)->addButtons([
-                    Button::create(trans('buttons.finished order')),
+                    Button::create(trans('buttons.finished order'))->value('finished order'),
                 ]);
                 $botMan->say($question, $recipientId, $driverName);
                 $botMan->listen();
             }elseif ( $newStateId == OrderHistory::CLIENT_DONT_COME_OUT || $newStateId == OrderHistory::CLIENT_DONT_COME_OUT_2) {
                    $question = Question::create(trans('messages.dont come out'), $recipientId)->addButtons([
-                        Button::create(trans('buttons.client_goes_out_late'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]),
-                        Button::create(trans('buttons.cancel order')),
+                        Button::create(trans('buttons.client_goes_out_late'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT])->value('client_goes_out_late'),
+                        Button::create(trans('buttons.cancel order'))->value('cancel order'),
                     ]);
                     $botMan->say($question, $recipientId, $driverName);
                     $botMan->listen();
@@ -157,7 +153,7 @@ class CheckOrderStateCommand extends Command
                     if ($actualOrder->relevance != 0) continue;
                     $actualOrder->setDeletedOrder();
                     $question = Question::create(trans('messages.aborted order'), $recipientId)->addButtons([
-                        Button::create(trans('buttons.aborted order')),
+                        Button::create(trans('buttons.aborted order'))->value('aborted order'),
                     ]);
                     $botMan->say($question, $recipientId, $driverName);
                     $botMan->listen();
