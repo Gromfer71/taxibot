@@ -254,16 +254,28 @@ class MenuConversation extends BaseConversation
                         }
                         //$oldUser->delete();
                         //$this->_sayDebug('Удалили пользователя');
-                    }
-                    $oldUser->setPlatformId($this->bot);
-                    $oldUser->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
+                        $oldUser->setPlatformId($this->bot);
+                        $oldUser->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
+                    } else {
+                        $user = User::find($this->bot->getUser()->getId());
+                        if (!user) {
+                            $user = User::create([
+                                'username' => $this->bot->getUser()->getUsername(),
+                                'firstname' => $this->bot->getUser()->getFirstName(),
+                                'lastname' => $this->bot->getUser()->getLastName(),
+                                'userinfo' => json_encode($this->bot->getUser()->getInfo()),
+                            ]);
+                        }
+                        $user->setPlatformId($this->bot);
+                        $user->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
 
-                    if($blocked ?? false) {
-                        $oldUser->block();
-                        $this->menu(true);
-                        return;
+                        if ($blocked ?? false) {
+                            $user->block();
+                            $this->menu(true);
+                            return;
+                        }
+                        $user->save();
                     }
-                    $oldUser->save();
 
                     $this->say(trans('messages.phone changed', ['phone' => $this->bot->userStorage()->get('phone')]));
                     $this->run();
