@@ -35,7 +35,7 @@ class StartConversation extends BaseConversation
 				'lastname' => $this->bot->getUser()->getLastName(),
 				'userinfo' => json_encode($this->bot->getUser()->getInfo()),
 			]);
-		    $user->setPlatformId($this);
+		    $user->setPlatformId($this->bot);
 
 			$user->save();
 		}

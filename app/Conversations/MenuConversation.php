@@ -254,7 +254,7 @@ class MenuConversation extends BaseConversation
                         //$oldUser->delete();
                         //$this->_sayDebug('Удалили пользователя');
                     }
-                    $oldUser->setPlatformId($this);
+                    $oldUser->setPlatformId($this->bot);
                     $oldUser->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
 
                     if($blocked ?? false) {
