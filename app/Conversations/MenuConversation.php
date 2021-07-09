@@ -91,7 +91,7 @@ class MenuConversation extends BaseConversation
                     $api = new OrderApiService();
                     $user = User::find($this->bot->getUser()->getId());
                     $crew = 25;
-                    $this->_sayDebug('город - ' . $user->city);
+                    //$this->_sayDebug('город - ' . $user->city);
 //                    if ($user->city) {
 //                        $options = new Options($this->bot->userStorage());
 //                        $crew = $options->getCrewGroupIdFromCity($user->city);
