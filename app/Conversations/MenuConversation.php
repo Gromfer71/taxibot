@@ -96,12 +96,12 @@ class MenuConversation extends BaseConversation
                         $options = new Options($this->bot->userStorage());
                         $crew = $options->getCrewGroupIdFromCity($user->city);
                     }
-                    if ($user->city == 'Чульман') {
-                        $crew = 54;
-                    }
-                  //  $this->_sayDebug('crew - ' . $crew);
-                    $this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-                    $api->connectDispatcherWithCrewId(User::find($this->bot->getUser()->getId())->phone, $crew);
+//                    if ($user->city == 'Чульман') {
+//                        $crew = 54;
+//                    }
+//                    $this->_sayDebug('crew - ' . $crew);
+//                    $this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+//                    $api->connectDispatcherWithCrewId(User::find($this->bot->getUser()->getId())->phone, $crew);
                     $this->menu();
                 } elseif ($answer->getValue() == 'price list') {
                     $this->say(trans('messages.price list'));
