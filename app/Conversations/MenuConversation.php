@@ -88,10 +88,10 @@ class MenuConversation extends BaseConversation
                     $this->confirmPhone();
                 } elseif ($answer->getValue() == 'request call') {
                     $this->_sayDebug('request call из главного меню');
-//                    $api = new OrderApiService();
-//                    $user = User::find($this->bot->getUser()->getId());
-//                    $crew = 25;
-//                    $this->_sayDebug('город - ' . $user->city);
+                    $api = new OrderApiService();
+                    $user = User::find($this->bot->getUser()->getId());
+                    $crew = 25;
+                    $this->_sayDebug('город - ' . $user->city);
 //                    if ($user->city) {
 //                        $options = new Options($this->bot->userStorage());
 //                        $crew = $options->getCrewGroupIdFromCity($user->city);
