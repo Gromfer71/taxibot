@@ -247,13 +247,13 @@ class MenuConversation extends BaseConversation
                         if($oldUser->isBlocked) {
                             $blocked = true;
                         }
-                        $oldUser->delete();
-                        $this->_sayDebug('Удалили пользователя');
+                        //$oldUser->delete();
+                        //$this->_sayDebug('Удалили пользователя');
                     }
-                    User::find($this->bot->getUser()->getId())->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
+                    $user = User::find($this->bot->getUser()->getId());
+                    $user->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
 
                     if($blocked ?? false) {
-                        $user = User::find($this->bot->getUser()->getId());
                         $user->block();
                         $this->menu(true);
                         return;
