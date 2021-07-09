@@ -258,7 +258,7 @@ class MenuConversation extends BaseConversation
                         $oldUser->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
                     } else {
                         $user = User::find($this->bot->getUser()->getId());
-                        if (!user) {
+                        if (!$user) {
                             $user = User::create([
                                 'username' => $this->bot->getUser()->getUsername(),
                                 'firstname' => $this->bot->getUser()->getFirstName(),
