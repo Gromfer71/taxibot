@@ -53,6 +53,7 @@ class CheckOrderStateCommand extends Command
             if ($actualOrder->relevance != 0) continue;
 
             $user = User::find($actualOrder->user_id);
+            Log::notice($actualOrder->user_id);
             if($actualOrder->platform == self::TELEGRAM_DRIVER_NAME) {
                 $driverName = TelegramDriver::class;
                 $recipientId = $user->telegram_id;
