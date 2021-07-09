@@ -16,6 +16,9 @@ class StartConversation extends BaseConversation
 {
 	public function run()
 	{
+	    if($this->bot->getUser()->getId() < 0) {
+	        return;
+        }
 		$user = User::find($this->bot->getUser()->getId());
 		if (! $user) {
 			$this->start();
