@@ -9,6 +9,8 @@ use App\Models\OrderHistory;
 use App\Models\User;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Storages\Storage;
+use BotMan\Drivers\Telegram\TelegramDriver;
+use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Carbon;
 
@@ -376,9 +378,20 @@ class OrderApiService
         return $phone;
     }
 
-    public static function sendDriverLocation($userId, $lat, $lon)
+    /**
+     * @param BotMan $bot
+     * @param double $lat
+     * @param double $lon
+     */
+    public static function sendDriverLocation(BotMan $bot, $lat, $lon)
     {
-        file_get_contents('https://api.telegram.org/bot' . env('TELEGRAM_TOKEN') . '/sendlocation?chat_id=' . $userId . '&latitude=' . $lat . '&longitude=' . $lon);
+        if(get_class($bot->getDriver()) == VkCommunityCallbackDriver::class) {
+            $data['lat'] = $lat;
+            $data['long'] = $lon;
+            $bot->getDriver()->api("messages.send", $data);
+        } elseif(get_class($bot->getDriver()) == TelegramDriver::class) {
+            file_get_contents('https://api.telegram.org/bot' . env('TELEGRAM_TOKEN') . '/sendlocation?chat_id=' . $bot->getUser()->getId() . '&latitude=' . $lat . '&longitude=' . $lon);
+        }
     }
 
     public  function getCrewCoords($crewId)

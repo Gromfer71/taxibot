@@ -62,7 +62,7 @@ class ClientGoesOutConversation extends BaseAddressConversation
                         $actualOrder = OrderHistory::getActualOrder($this->getUser()->id);
                         $auto = $actualOrder->getAutoInfo();
                         $this->say(trans('messages.need map message when driver at place', ['auto' => $auto]));
-                        OrderApiService::sendDriverLocation($this->bot->getUser()->getId(), $driverLocation->lat, $driverLocation->lon);
+                        OrderApiService::sendDriverLocation($this->bot, $driverLocation->lat, $driverLocation->lon);
                     } else {
                         $this->say('К сожалению на данный момент мы не можем определить где водитель :( ');
                     }
