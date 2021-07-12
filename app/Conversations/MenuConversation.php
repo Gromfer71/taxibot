@@ -23,6 +23,7 @@ class MenuConversation extends BaseConversation
 {
     public function menu($withoutMessage = false)
     {
+
         $user = User::find($this->bot->getUser()->getId());
 
         if (!$user) {
@@ -42,7 +43,7 @@ class MenuConversation extends BaseConversation
         if (!$user->server_id) {
             $user->registerServerId();
         }
-
+        $this->_sayDebug(config('telegram.token'));
         $this->bot->userStorage()->delete();
         $this->checkConfig();
         OrderHistory::cancelAllOrders($this->bot->getUser()->getId());
