@@ -205,13 +205,13 @@ class TakingAddressConversation extends BaseAddressConversation
                 if ($answer->getValue() == 'exit') {
                     $this->bot->startConversation(new MenuConversation());
                 } elseif ($answer->getValue() == 'no entrance') {
-                    AddressHistory::newAddress($this->bot->getUser()->getId(), $this->bot->userStorage()->get('address'), ['lat' => $this->bot->userStorage()->get('lat'),'lon' => $this->bot->userStorage()->get('lon')], $this->bot->userStorage()->get('address_city'));
+                    AddressHistory::newAddress($this->getUser()->id, $this->bot->userStorage()->get('address'), ['lat' => $this->bot->userStorage()->get('lat'),'lon' => $this->bot->userStorage()->get('lon')], $this->bot->userStorage()->get('address_city'));
                     $this->getAddressTo();
                 }
             } else {
                 $address = $this->bot->userStorage()->get('address') . ', *п ' . $answer->getText();
                 $this->bot->userStorage()->save(['address' => $address]);
-                AddressHistory::newAddress($this->bot->getUser()->getId(), $address, ['lat' => $this->bot->userStorage()->get('lat'),'lon' => $this->bot->userStorage()->get('lon')], $this->bot->userStorage()->get('address_city'));
+                AddressHistory::newAddress($this->getUser()->id, $address, ['lat' => $this->bot->userStorage()->get('lat'),'lon' => $this->bot->userStorage()->get('lon')], $this->bot->userStorage()->get('address_city'));
                 $this->getAddressTo();
             }
         });
@@ -240,7 +240,7 @@ class TakingAddressConversation extends BaseAddressConversation
                     } elseif ($answer->getValue() == 'exit to menu') {
                         $this->bot->startConversation(new MenuConversation());
                     } elseif ($answer->getValue() == 'go as indicated') {
-                        AddressHistory::newAddress($this->bot->getUser()->getId(), collect($this->bot->userStorage()->get('address'))->last(), ['lat' => 0,'lon' => 0], $this->bot->userStorage()->get('address_city'));
+                        AddressHistory::newAddress($this->getUser()->id, collect($this->bot->userStorage()->get('address'))->last(), ['lat' => 0,'lon' => 0], $this->bot->userStorage()->get('address_city'));
                         $this->bot->startConversation(new TaxiMenuConversation());
                         return;
                     }
@@ -353,7 +353,7 @@ class TakingAddressConversation extends BaseAddressConversation
                         return;
                     }
 
-                    AddressHistory::newAddress($this->bot->getUser()->getId(), $answer->getText(), $address['coords'],$address['city']);
+                    AddressHistory::newAddress($this->getUser()->id, $answer->getText(), $address['coords'],$address['city']);
                     $this->_saveSecondAddress($answer->getText(),$address['coords']['lat'], $address['coords']['lon']);
                     $this->bot->startConversation(new TaxiMenuConversation());
                 } else {

@@ -202,7 +202,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                         return;
                     }
 
-                    AddressHistory::newAddress($this->bot->getUser()->getId(), $answer->getText(), $address['coords'], $address['city']);
+                    AddressHistory::newAddress($this->getUser()->id, $answer->getText(), $address['coords'], $address['city']);
                     $this->_saveAnotherAddress($answer, $address['coords']['lat'], $address['coords']['lon'], true);
                     $this->menu();
                 } else {
