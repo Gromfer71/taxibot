@@ -44,6 +44,7 @@ abstract class BaseAddressConversation extends BaseConversation
     {
         $addressHistory = AddressHistory::where('user_id', $this->getUser()->id)
             ->orderBy('updated_at', 'desc')
+
             ->take(10)
             ->get();
 

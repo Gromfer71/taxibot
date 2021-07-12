@@ -145,7 +145,7 @@ class MenuConversation extends BaseConversation
 
             } elseif ($answer->getValue() == 'clean addresses history') {
                 $this->say(trans('messages.clean addresses history'));
-                AddressHistory::clearByUserId($this->bot->getUser()->getId());
+                AddressHistory::clearByUserId($this->getUser()->id);
                 $this->bot->startConversation(new MenuConversation());
 
             } else {
