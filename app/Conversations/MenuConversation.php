@@ -105,7 +105,7 @@ class MenuConversation extends BaseConversation
                     $this->menu();
                 } elseif ($answer->getValue() == 'price list') {
                     $this->say(trans('messages.price list'));
-                    //$this->menu(true);
+                    $this->menu(true);
                 } elseif ($answer->getValue() == 'all about bonuses') {
                     $this->bonuses();
                 } elseif ($answer->getValue() == 'address history menu') {
