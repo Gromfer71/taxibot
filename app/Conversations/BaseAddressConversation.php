@@ -42,7 +42,7 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function _addAddressHistoryButtons($question)
     {
-        $addressHistory = AddressHistory::where('user_id', $this->bot->getUser()->getId())
+        $addressHistory = AddressHistory::where('user_id', $this->getUser()->id)
             ->orderBy('updated_at', 'desc')
             ->take(10)
             ->get();

@@ -203,6 +203,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     }
 
                     AddressHistory::newAddress($this->getUser()->id, $answer->getText(), $address['coords'], $address['city']);
+
                     $this->_saveAnotherAddress($answer, $address['coords']['lat'], $address['coords']['lon'], true);
                     $this->menu();
                 } else {
