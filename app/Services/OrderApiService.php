@@ -13,6 +13,7 @@ use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class OrderApiService
 {
@@ -395,6 +396,7 @@ class OrderApiService
         } elseif(get_class($bot->getDriver()) == TelegramDriver::class) {
             file_get_contents('https://api.telegram.org/bot' . env('TELEGRAM_TOKEN') . '/sendlocation?chat_id=' . $bot->getUser()->getId() . '&latitude=' . $lat . '&longitude=' . $lon);
         }
+        Log::debug(env('TELEGRAM_TOKEN'));
     }
 
     public  function getCrewCoords($crewId)
