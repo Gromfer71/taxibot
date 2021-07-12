@@ -31,10 +31,10 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function _getAddressFromHistoryByAnswer($answer)
     {
-        $address =  AddressHistory::where(['address' => $answer->getText(), 'user_id' => $this->bot->getUser()->getId()])->get()->first();
+        $address =  AddressHistory::where(['address' => $answer->getText(), 'user_id' => $this->getUser()->id])->get()->first();
         if(!$address) {
 
-            $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->bot->getUser()->getId()])->get()->first();
+            $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->getUser()->id])->get()->first();
         }
         if ($address) $address->touch();
         return $address;
