@@ -73,7 +73,7 @@ class OrderHistory extends Model
 		if($response['code'] === 0) {
 			return self::create([
 				'id' => $response['data']['order_id'],
-				'user_id' => $bot->getUser()->getId(),
+				'user_id' => User::find($bot->getUser()->getId())->id,
 				'address' => collect($bot->userStorage()->get('address'))->implode(' - '),
 				'price' => $bot->userStorage()->get('price'),
 				'changed_price' => $bot->userStorage()->get('changed_price') ? $bot->userStorage()->get('changed_price')['id']:null ,
@@ -117,7 +117,7 @@ class OrderHistory extends Model
 	{
 	    $user = User::find($userId);
 
-		return self::where(['user_id' =>  $user->vk_id ?? 0, 'relevance' => 0])->orWhere(['user_id' =>  $user->telegram_id ?? 0, 'relevance' => 0])->get()->first();
+		return self::Where(['user_id' =>  $user->id ?? 0, 'relevance' => 0])->get()->first();
 	}
 
 	public static function getAllActualOrders()
@@ -137,7 +137,7 @@ class OrderHistory extends Model
 	    if ($newState->code != 0) return false;
         //Другой запрос для обработки механизма удаления заказов, который не меняет state_id
         if ($newState->data->finish_time && $newState->data->state_id != self::FINISHED && $newState->data->state_id != self::FINISHED_BY_DRIVER && $newState->data->state_id != self::ABORTED){
-            $currentOrders =  $api->getCurrentOrders(User::find($this->user_id));
+            $currentOrders =  $api->getCurrentOrders(User::where('id', $this->user_id)->first());
             $finded = false;
             foreach ($currentOrders->data->orders as $currentOrder){
                 if ($currentOrder->id == $this->id)   $finded = true;
