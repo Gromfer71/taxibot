@@ -388,6 +388,7 @@ class OrderApiService
         if(get_class($bot->getDriver()) == VkCommunityCallbackDriver::class) {
             $data['lat'] = $lat;
             $data['long'] = $lon;
+            $data['message'] = 'Геолокация водителя:';
             $bot->getDriver()->api("messages.send", $data);
         } elseif(get_class($bot->getDriver()) == TelegramDriver::class) {
             file_get_contents('https://api.telegram.org/bot' . env('TELEGRAM_TOKEN') . '/sendlocation?chat_id=' . $bot->getUser()->getId() . '&latitude=' . $lat . '&longitude=' . $lon);
