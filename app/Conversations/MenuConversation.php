@@ -195,7 +195,7 @@ class MenuConversation extends BaseConversation
 
         return $this->ask(
             $question,
-            function (Answer $answer) {
+            function (Answer $answer) use ($registration) {
                 if ($answer->isInteractiveMessageReply()) {
                     $this->menu();
                 } elseif (preg_match('^\+?[78][-\(]?\d{3}\)?-?\d{3}-?\d{2}-?\d{2}$^', $answer->getText())) {
@@ -243,37 +243,11 @@ class MenuConversation extends BaseConversation
                         $this->confirmCall();
                     }
                 } elseif ($answer->getText() == $this->bot->userStorage()->get('sms_code')) {
-                    $oldUser = User::where('phone', OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')))->first();
-
-                    $this->_sayDebug('номер ' . OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
-                    if ($oldUser) {
-                        $this->getUser()->delete();
-                        if($oldUser->isBlocked) {
-                            $blocked = true;
-                        }
-                        //$oldUser->delete();
-                        //$this->_sayDebug('Удалили пользователя');
-                        $oldUser->setPlatformId($this->bot);
-                        $oldUser->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
-                    } else {
-                        $user = User::find($this->bot->getUser()->getId());
-                        if (!$user) {
-                            $user = User::create([
-                                'username' => $this->bot->getUser()->getUsername(),
-                                'firstname' => $this->bot->getUser()->getFirstName(),
-                                'lastname' => $this->bot->getUser()->getLastName(),
-                                'userinfo' => json_encode($this->bot->getUser()->getInfo()),
-                            ]);
-                        }
-                        $user->setPlatformId($this->bot);
-                        $user->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
-
-                        if ($blocked ?? false) {
-                            $user->block();
-                            $this->menu(true);
-                            return;
-                        }
-                        $user->save();
+                    $phone = $this->getUser()->phone ?? null;
+                    if($phone) {
+                         $this->getUser()->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
+                    }  else {
+                        $this->changePhoneInRegistration();
                     }
 
                     $this->say(trans('messages.phone changed', ['phone' => $this->bot->userStorage()->get('phone')]));
@@ -306,7 +280,7 @@ class MenuConversation extends BaseConversation
                         $this->confirmCall();
                     }
                 } elseif ($answer->getText() == $this->bot->userStorage()->get('sms_code')) {
-                    User::find($this->bot->getUser()->getId())->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
+                  $this->changePhoneInRegistration();
                     $this->say(trans('messages.phone changed', ['phone' => $this->bot->userStorage()->get('phone')]));
                     $this->run();
                 } else {
@@ -315,6 +289,46 @@ class MenuConversation extends BaseConversation
                 }
             }
         );
+    }
+
+    public function changePhone()
+    {
+
+    }
+    public function changePhoneInRegistration()
+    {
+        $oldUser = User::where('phone', OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')))->first();
+
+        $this->_sayDebug('номер ' . OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
+        if ($oldUser) {
+            $this->getUser()->delete();
+            if($oldUser->isBlocked) {
+                $blocked = true;
+            }
+            //$oldUser->delete();
+            //$this->_sayDebug('Удалили пользователя');
+            $oldUser->setPlatformId($this->bot);
+            $oldUser->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
+        } else {
+            $user = User::find($this->bot->getUser()->getId());
+            if (!$user) {
+                $user = User::create([
+                    'username' => $this->bot->getUser()->getUsername(),
+                    'firstname' => $this->bot->getUser()->getFirstName(),
+                    'lastname' => $this->bot->getUser()->getLastName(),
+                    'userinfo' => json_encode($this->bot->getUser()->getInfo()),
+                ]);
+            }
+            $user->setPlatformId($this->bot);
+            $user->updatePhone(OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
+
+            if ($blocked ?? false) {
+                $user->block();
+                $this->menu(true);
+                return;
+            }
+            $user->save();
+        }
     }
 
     public function changeCity()
