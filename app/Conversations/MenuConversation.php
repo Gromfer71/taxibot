@@ -195,7 +195,7 @@ class MenuConversation extends BaseConversation
 
         return $this->ask(
             $question,
-            function (Answer $answer) use ($registration) {
+            function (Answer $answer)  {
                 if ($answer->isInteractiveMessageReply()) {
                     $this->menu();
                 } elseif (preg_match('^\+?[78][-\(]?\d{3}\)?-?\d{3}-?\d{2}-?\d{2}$^', $answer->getText())) {
