@@ -117,7 +117,7 @@ class OrderHistory extends Model
 	{
 	    $user = User::find($userId);
 
-		return self::where(['user_id' =>  $user->vk_id ?: 0, 'relevance' => 0])->orWhere(['user_id' =>  $user->telegram_id ?: 0, 'relevance' => 0])->get()->first();
+		return self::where(['user_id' =>  $user->vk_id ?? 0, 'relevance' => 0])->orWhere(['user_id' =>  $user->telegram_id ?? 0, 'relevance' => 0])->get()->first();
 	}
 
 	public static function getAllActualOrders()
