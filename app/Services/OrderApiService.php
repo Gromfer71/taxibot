@@ -4,6 +4,7 @@
 namespace App\Services;
 
 
+use App\Models\Config;
 use App\Models\LogApi;
 use App\Models\OrderHistory;
 use App\Models\User;
@@ -396,7 +397,7 @@ class OrderApiService
         } elseif(get_class($bot->getDriver()) == TelegramDriver::class) {
             Log::debug(env('TELEGRAM_TOKEN'));
             $query = http_build_query(['chat_id' =>  $bot->getUser()->getId(), 'latitude' => $lat,  'longitude' => $lon]);
-            file_get_contents('https://api.telegram.org/bot' . env('TELEGRAM_TOKEN') . '/sendlocation?' . $query);
+            file_get_contents('https://api.telegram.org/bot' . Config::getToken()->value . '/sendlocation?' . $query);
         }
 
     }

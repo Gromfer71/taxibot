@@ -43,7 +43,6 @@ class MenuConversation extends BaseConversation
         if (!$user->server_id) {
             $user->registerServerId();
         }
-        $this->_sayDebug(config('telegram.token'));
         $this->bot->userStorage()->delete();
         $this->checkConfig();
         OrderHistory::cancelAllOrders($this->bot->getUser()->getId());
