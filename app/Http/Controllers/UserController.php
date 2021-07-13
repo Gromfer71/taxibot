@@ -31,7 +31,7 @@ class UserController extends Controller
 
     public function user($id)
     {
-        if ($user = User::find($id)) {
+        if ($user = User::where('id', $id)->first()) {
             $orders = $user->orders;
 
             $orders->each(function ($item) use ($user) {
@@ -53,7 +53,7 @@ class UserController extends Controller
 
     public function delete($id)
     {
-        if ($user = User::find($id)) {
+        if ($user = User::where('id', $id)->first()) {
             $user->delete();
 
             return back()->with('ok', 'Пользователь успешно удален');
@@ -64,7 +64,7 @@ class UserController extends Controller
 
     public function block($id)
     {
-        if ($user = User::find($id)) {
+        if ($user = User::where('id', $id)->first()) {
             $user->block();
 
             return back()->with('ok', 'Пользователь успешно заблокирован');
@@ -75,7 +75,7 @@ class UserController extends Controller
 
     public function unblock($id)
     {
-        if ($user = User::find($id)) {
+        if ($user = User::where('id', $id)->first()) {
             $user->unblock();
 
             return back()->with('ok', 'Пользователь успешно разблокирован');
@@ -86,7 +86,7 @@ class UserController extends Controller
 
     public function ordersClear($id)
     {
-        $user = User::find($id);
+        $user = User::where('id', $id)->first();
         if(!$user) {
             return back()->with('error', 'Пользователь не найден!');
         }
@@ -98,7 +98,7 @@ class UserController extends Controller
 
     public function addressesClear($id)
     {
-        $user = User::find($id);
+        $user = User::where('id', $id)->first();
         if(!$user) {
             return back()->with('error', 'Пользователь не найден!');
         }
