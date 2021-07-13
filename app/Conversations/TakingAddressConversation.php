@@ -245,7 +245,7 @@ class TakingAddressConversation extends BaseAddressConversation
                         return;
                     }
                 } else {
-                    $this->_saveSecondAddress($answer);
+                    $this->_saveSecondAddress($answer->getText());
                     $this->getAddressToAgain();
                 }
             }
