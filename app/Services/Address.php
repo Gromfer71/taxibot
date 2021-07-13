@@ -53,7 +53,7 @@ class Address
                 ['Content-Type' => 'application/json'],
                 $paramJson
             );
-            self::_log($endpoint,$query->toJson() ?? ''. ' в городе '.$city->name,null);
+            self::_log($endpoint,  ' в городе '.$city->name,null);
             $promises->push($client->sendAsync($request));
         }
 
