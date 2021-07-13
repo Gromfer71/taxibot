@@ -320,6 +320,8 @@ class TakingAddressConversation extends BaseAddressConversation
         $this->_sayDebug('getAddressToAgain');
         $question = Question::create(trans('messages.give address again'), $this->bot->getUser()->getId());
         $addressesList = collect(Address::getAddresses(collect($this->bot->userStorage()->get('address'))->get(1), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
+        \Illuminate\Support\Facades\Log::debug(collect($this->bot->userStorage()->get('address'))->toJson());
+
         $question->addButton(Button::create(trans('buttons.exit'))->value('exit'));
         if ($addressesList->isNotEmpty()) {
             $addressesList = $addressesList->take(25);
