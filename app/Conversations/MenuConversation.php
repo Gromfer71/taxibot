@@ -108,7 +108,6 @@ class MenuConversation extends BaseConversation
                     echo 'OK';
                     ob_end_flush();
                     flush();
-                    fastcgi_finish_request();//required for PHP-FPM (PHP > 5.3.3)
                     $api->connectDispatcherWithCrewId(User::find($this->bot->getUser()->getId())->phone, $crew);
                     $this->menu();
                    end;
