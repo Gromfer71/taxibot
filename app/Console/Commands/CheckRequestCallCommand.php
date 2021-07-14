@@ -35,6 +35,7 @@ class CheckRequestCallCommand extends Command
 
     public function _handle_once($botMan) {
         $users = User::whereNotNull('need_call')->get();
+        echo $users->count();
         foreach ($users as $user) {
             $api = new OrderApiService();
             $crew = 25;
