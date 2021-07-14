@@ -21,7 +21,7 @@ use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 
 class MenuConversation extends BaseConversation
 {
-    public function menu($withoutMessage = false)
+    public function menu($withoutMessage = false, $needRequestCall = false)
     {
 
         $user = User::find($this->bot->getUser()->getId());
@@ -46,6 +46,23 @@ class MenuConversation extends BaseConversation
         $this->bot->userStorage()->delete();
         $this->checkConfig();
         OrderHistory::cancelAllOrders($this->bot->getUser()->getId());
+
+        if($needRequestCall) {
+            $user = User::find($this->bot->getUser()->getId());
+            $crew = 25;
+            $this->_sayDebug('город - ' . $user->city);
+            if ($user->city) {
+                $options = new Options($this->bot->userStorage());
+                $crew = $options->getCrewGroupIdFromCity($user->city);
+            }
+            if ($user->city == 'Чульман') {
+                $crew = 54;
+            }
+            $this->_sayDebug('crew - ' . $crew);
+            $this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+            $api = new OrderApiService();
+            $api->connectDispatcherWithCrewId(User::find($this->bot->getUser()->getId())->phone, $crew);
+        }
 
 
         $question = Question::create($withoutMessage ? '' : trans('messages.choose menu'), $this->bot->getUser()->getId())
@@ -88,21 +105,7 @@ class MenuConversation extends BaseConversation
                     $this->confirmPhone();
                 } elseif ($answer->getValue() == 'request call') {
                     $this->_sayDebug('request call из главного меню');
-                    $api = new OrderApiService();
-                    $user = User::find($this->bot->getUser()->getId());
-                    $crew = 25;
-                    $this->_sayDebug('город - ' . $user->city);
-                    if ($user->city) {
-                        $options = new Options($this->bot->userStorage());
-                        $crew = $options->getCrewGroupIdFromCity($user->city);
-                    }
-                    if ($user->city == 'Чульман') {
-                        $crew = 54;
-                    }
-                    $this->_sayDebug('crew - ' . $crew);
-                    $this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-                  $api->connectDispatcherWithCrewId(User::find($this->bot->getUser()->getId())->phone, $crew);
-                    $this->menu();
+                    $this->menu(false, true);
                 } elseif ($answer->getValue() == 'price list') {
                     $this->say(trans('messages.price list'));
                     $this->menu(true);
