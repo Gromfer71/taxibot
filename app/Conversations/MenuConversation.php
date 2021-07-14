@@ -101,13 +101,31 @@ class MenuConversation extends BaseConversation
                     }
                     $this->_sayDebug('crew - ' . $crew);
                     $this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-                    ignore_user_abort(true);//not required
-                    set_time_limit(0);
+                    // Buffer all upcoming output...
                     ob_start();
-                    //header("HTTP/1.1 200 OK");
-                    echo 'OK';
+
+                    // Send your response.
+                    echo "OK";
+
+                    // Get the size of the output.
+                    $size = ob_get_length();
+
+                    // Disable compression (in case content length is compressed).
+                    header("Content-Encoding: none");
+
+                    // Set the content length of the response.
+                    header("Content-Length: {$size}");
+
+                    // Close the connection.
+                    header("Connection: close");
+
+                    // Flush all output.
                     ob_end_flush();
+                    ob_flush();
                     flush();
+
+                    // Close current session (if it exists).
+                    if(session_id()) session_write_close();
                     $api->connectDispatcherWithCrewId(User::find($this->bot->getUser()->getId())->phone, $crew);
                     $this->menu();
                    end;
