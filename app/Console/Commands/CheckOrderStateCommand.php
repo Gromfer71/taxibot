@@ -172,7 +172,7 @@ class CheckOrderStateCommand extends Command
 	 */
 	public function handle()
 	{
-        $this->info('Запустили команду');
+        $this->info('Запустили команду проверки статусов заказов');
 
         $finishTime = time()+57;
         $targetTimeToEveryExecute = 1000000;//В микросекундах

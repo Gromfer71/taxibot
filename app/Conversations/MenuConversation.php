@@ -87,48 +87,24 @@ class MenuConversation extends BaseConversation
                 } elseif ($answer->getValue() == 'change phone number') {
                     $this->confirmPhone();
                 } elseif ($answer->getValue() == 'request call') {
-                    $this->_sayDebug('request call из главного меню');
-                    $api = new OrderApiService();
-                    $user = User::find($this->bot->getUser()->getId());
-                    $crew = 25;
-                    $this->_sayDebug('город - ' . $user->city);
-                    if ($user->city) {
-                        $options = new Options($this->bot->userStorage());
-                        $crew = $options->getCrewGroupIdFromCity($user->city);
-                    }
-                    if ($user->city == 'Чульман') {
-                        $crew = 54;
-                    }
-                    $this->_sayDebug('crew - ' . $crew);
+//                    $this->_sayDebug('request call из главного меню');
+//                    $api = new OrderApiService();
+//                    $user = User::find($this->bot->getUser()->getId());
+//                    $crew = 25;
+//                    $this->_sayDebug('город - ' . $user->city);
+//                    if ($user->city) {
+//                        $options = new Options($this->bot->userStorage());
+//                        $crew = $options->getCrewGroupIdFromCity($user->city);
+//                    }
+//                    if ($user->city == 'Чульман') {
+//                        $crew = 54;
+//                    }
+//                    $this->_sayDebug('crew - ' . $crew);
+                    $user->need_call =  1;
+                    $user->save();
                     $this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-                    // Buffer all upcoming output...
-                    ob_start();
-
-                    // Send your response.
-                    echo "OK";
-
-                    // Get the size of the output.
-                    $size = ob_get_length();
-
-                    // Disable compression (in case content length is compressed).
-                    header("Content-Encoding: none");
-
-                    // Set the content length of the response.
-                    header("Content-Length: {$size}");
-
-                    // Close the connection.
-                    header("Connection: close");
-
-                    // Flush all output.
-                    ob_end_flush();
-                    ob_flush();
-                    flush();
-
-                    // Close current session (if it exists).
-                    if(session_id()) session_write_close();
-                    $api->connectDispatcherWithCrewId(User::find($this->bot->getUser()->getId())->phone, $crew);
+                  //$api->connectDispatcherWithCrewId(User::find($this->bot->getUser()->getId())->phone, $crew);
                     $this->menu();
-                   end;
                 } elseif ($answer->getValue() == 'price list') {
                     $this->say(trans('messages.price list'));
                     $this->menu(true);
