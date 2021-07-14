@@ -104,7 +104,7 @@ class MenuConversation extends BaseConversation
                     ignore_user_abort(true);//not required
                     set_time_limit(0);
                     ob_start();
-                    header("HTTP/1.1 200 OK");
+                    //header("HTTP/1.1 200 OK");
                     echo 'OK';
                     ob_end_flush();
                     flush();
