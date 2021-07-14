@@ -104,7 +104,7 @@ class MenuConversation extends BaseConversation
                     $user->save();
                     $this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
                   //$api->connectDispatcherWithCrewId(User::find($this->bot->getUser()->getId())->phone, $crew);
-                    $this->menu();
+                    $this->menu(true);
                 } elseif ($answer->getValue() == 'price list') {
                     $this->say(trans('messages.price list'));
                     $this->menu(true);
