@@ -101,10 +101,17 @@ class MenuConversation extends BaseConversation
                     }
                     $this->_sayDebug('crew - ' . $crew);
                     $this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+                    ignore_user_abort(true);//not required
+                    set_time_limit(0);
+                    ob_start();
                     header("HTTP/1.1 200 OK");
                     echo 'OK';
-                  $api->connectDispatcherWithCrewId(User::find($this->bot->getUser()->getId())->phone, $crew);
+                    ob_end_flush();
+                    flush();
+                    fastcgi_finish_request();//required for PHP-FPM (PHP > 5.3.3)
+                    $api->connectDispatcherWithCrewId(User::find($this->bot->getUser()->getId())->phone, $crew);
                     $this->menu();
+                   end;
                 } elseif ($answer->getValue() == 'price list') {
                     $this->say(trans('messages.price list'));
                     $this->menu(true);
