@@ -36,6 +36,10 @@ class AddressHistory extends Model
 
     public static function newAddress($userId, $address, $coords, $city)
     {
+        if(strlen($address) > 255) {
+            $address = substr($address, 0, 255);
+        }
+
         if(!FavoriteAddress::where(
             [
                 'user_id'  => $userId,
