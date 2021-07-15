@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Address;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -36,9 +37,7 @@ class AddressHistory extends Model
 
     public static function newAddress($userId, $address, $coords, $city)
     {
-        if(strlen($address) > 255) {
-            $address = mb_substr($address, 0, 255);
-        }
+       $address = Address::subStrAddress($address);
 
         if(!FavoriteAddress::where(
             [

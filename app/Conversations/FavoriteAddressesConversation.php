@@ -269,10 +269,11 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                     return $this->ask($question, function (Answer $answer) {
                         if ($answer->getValue() == 'save') {
                             $this->_sayDebug(json_encode($this->bot->userStorage()->get('address')));
+                            $address = Address::subStrAddress($this->bot->userStorage()->get('address'));
                             FavoriteAddress::create(
                                 [
                                     'user_id' => $this->getUser()->id,
-                                    'address' => $this->bot->userStorage()->get('address'),
+                                    'address' => $address,
                                     'name' => $this->bot->userStorage()->get('address_name'),
                                     'lat' => $this->bot->userStorage()->get('lat'),
                                     'lon' => $this->bot->userStorage()->get('lon'),

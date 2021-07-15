@@ -17,10 +17,8 @@ use Illuminate\Support\Str;
  */
 class Address
 {
-	/* TODO: сделать функции сервисов чистыми, вынести в интерфейсы либо абстрактные классы, добавить php doc,
-	 * затем переписать диалоги нормально.
-	 * затем можно и тесты сделать.
-	 */
+
+    const MAX_ADDRESS_LENGTH = 255;
     /**
      * @param  string  $query  Адрес который ввел пользователь
      * @param          $cities
@@ -191,6 +189,15 @@ class Address
         }
         if ($address['kind'] ==  'street'){
             return  $address['street'] . ' (' . $address['city'] . ')';
+        }
+    }
+
+    public static function subStrAddress($address)
+    {
+        if(strlen($address) > self::MAX_ADDRESS_LENGTH) {
+            return  mb_substr($address, 0, self::MAX_ADDRESS_LENGTH);
+        } else {
+            return $address;
         }
     }
 
