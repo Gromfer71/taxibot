@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
 class Address
 {
 
-    const MAX_ADDRESS_LENGTH = 255;
+    const MAX_ADDRESS_LENGTH = 240;
     /**
      * @param  string  $query  Адрес который ввел пользователь
      * @param          $cities
