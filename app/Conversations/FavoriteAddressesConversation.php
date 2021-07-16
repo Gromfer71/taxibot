@@ -254,9 +254,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             if ($answer->getValue() == 'exit') {
                 $this->run();
             } else {
-                $this->_sayDebug(strlen($answer->getText()));
-                $this->_sayDebug($answer->getText());
-                if (strlen($answer->getText()) > 32) {
+                if (mb_strlen($answer->getText()) > 32) {
                     $this->say(trans('messages.address name too long'));
                     $this->getAddressName();
                 } else {
