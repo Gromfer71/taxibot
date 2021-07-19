@@ -89,12 +89,12 @@ class ButtonsFormatterService
         return $buttons->split($buttons->count());
     }
 
-    public static function format(Collection $buttons)
+    public static function format(Collection $buttons, $format = null)
     {
-        $firstButton = $buttons->first();
+        $format = $buttons->first()['config'] ?? $format;
         //Если есть конфиг - то форматируем и возвращаем результат
-        if (isset($firstButton['config'])) {
-            return self::formatByConfig($buttons, $firstButton['config']);
+        if ($format) {
+            return self::formatByConfig($buttons, $format);
         }
         //Если конфига нет, то в каждой строке по кнопке
         $buttons = $buttons->split($buttons->count());
