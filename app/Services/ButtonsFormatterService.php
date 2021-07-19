@@ -24,15 +24,24 @@ class ButtonsFormatterService
     const SPLITBYTWO_MENU_FORMAT = 13;
     const SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT = 14;
     const WISH_MENU_FORMAT_WITH_BONUSES =15;
+    const SPLIT_BY_THREE_EXCLUDE_FIRST = 16;
 
     private static function splitByTwo(Collection $buttons){
         $linesCount = ceil($buttons->count()/2);
+        return $buttons->split($linesCount);
+    }
+    private static function splitByThree(Collection $buttons){
+        $linesCount = ceil($buttons->count()/3);
         return $buttons->split($linesCount);
     }
 
     private static function splitByTwoExcludeFirst(Collection $buttons){
         $result = collect([[$buttons->shift()]]);
         return  $result->concat(self::splitByTwo($buttons));
+    }
+    private static function splitByThreeExcludeFirst(Collection $buttons){
+        $result = collect([[$buttons->shift()]]);
+        return  $result->concat(self::splitByThree($buttons));
     }
 
     private static function formatByConfig(Collection $buttons, $config)
@@ -85,6 +94,9 @@ class ButtonsFormatterService
         }
         if ($config == self::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT){
             return self::splitByTwoExcludeFirst($buttons);
+        }
+        if($config == self::SPLIT_BY_THREE_EXCLUDE_FIRST) {
+            return  self::splitByThreeExcludeFirst($buttons);
         }
 
         return $buttons->split($buttons->count());
