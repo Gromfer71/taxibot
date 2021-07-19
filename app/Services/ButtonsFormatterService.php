@@ -95,6 +95,8 @@ class ButtonsFormatterService
         //Если есть конфиг - то форматируем и возвращаем результат
         if (isset($firstButton['config'])) {
             return self::formatByConfig($buttons, $firstButton['config']);
+        } elseif(isset($firstButton['additional']['config'])) {
+            return self::formatByConfig($buttons, $firstButton['additional']['config']);
         }
         //Если конфига нет, то в каждой строке по кнопке
         $buttons = $buttons->split($buttons->count());
