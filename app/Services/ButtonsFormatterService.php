@@ -100,7 +100,6 @@ class ButtonsFormatterService
                 return $buttons;
             }
         } else {
-            return $buttons;
             return self::formatByConfig($buttons, $format);
         }
 
