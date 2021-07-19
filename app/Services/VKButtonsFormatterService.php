@@ -1,12 +1,12 @@
 <?php
 
+
 namespace App\Services;
 
 
-use BotMan\BotMan\Storages\Storage;
 use Illuminate\Support\Collection;
 
-class ButtonsFormatterService
+class VKButtonsFormatterService
 {
     const MAIN_MENU_FORMAT = 1;
     const BONUS_MENU_FORMAT = 2;
@@ -89,12 +89,12 @@ class ButtonsFormatterService
         return $buttons->split($buttons->count());
     }
 
-    public static function format(Collection $buttons)
+    public static function format(Collection $buttons, $format = null)
     {
-        $firstButton = $buttons->first();
+
         //Если есть конфиг - то форматируем и возвращаем результат
-        if (isset($firstButton['config'])) {
-            return self::formatByConfig($buttons, $firstButton['config']);
+        if ($format) {
+            return self::formatByConfig($buttons, $format);
         }
         //Если конфига нет, то в каждой строке по кнопке
         $buttons = $buttons->split($buttons->count());
