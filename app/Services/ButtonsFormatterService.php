@@ -95,6 +95,9 @@ class ButtonsFormatterService
             $firstButton = $buttons->first();
             if (isset($firstButton['config'])) {
                 return self::formatByConfig($buttons, $firstButton['config']);
+            } else {
+                $buttons = $buttons->split($buttons->count());
+                return $buttons;
             }
         } else {
             return self::formatByConfig($buttons, $format);
