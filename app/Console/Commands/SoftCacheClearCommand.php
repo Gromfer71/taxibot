@@ -39,9 +39,9 @@ class SoftCacheClearCommand extends Command
     public function handle()
     {
         $this->info('Запустили команду мягкой очистки кеша');
-        $maxTime = time()+600;
 
-        while(OrderHistory::where('relevance', 0)->get()->isNotEmpty() && time() <= $maxTime){
+
+        while(OrderHistory::where('relevance', 0)->get()->isNotEmpty()) {
             sleep(5);
         }
 
