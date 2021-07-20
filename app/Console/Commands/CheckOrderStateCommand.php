@@ -177,8 +177,6 @@ class CheckOrderStateCommand extends Command
         $finishTime = time()+57;
         $targetTimeToEveryExecute = 1000000;//В микросекундах
 
-
-
         $botMan = resolve('botman');
 
         while(time() <= $finishTime){
