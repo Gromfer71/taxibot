@@ -104,7 +104,7 @@ class ButtonsFormatterService
 
     public static function format(Collection $buttons, $format = null)
     {
-        $format = $buttons->first() instanceof VKKeyboardButton ? $format : $buttons->first()['config'];
+        $format = $buttons->first() instanceof VKKeyboardButton ? $format : ($buttons->first()['config'] ?? null);
         //Если есть конфиг - то форматируем и возвращаем результат
         if ($format) {
             return self::formatByConfig($buttons, $format);
