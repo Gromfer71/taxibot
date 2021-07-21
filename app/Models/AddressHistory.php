@@ -37,6 +37,7 @@ class AddressHistory extends Model
 
     public static function newAddress($userId, $address, $coords, $city)
     {
+       $address = Address::removeEllipsisFromAddressIfExists($address);
        $address = Address::subStrAddress($address);
 
         if(!FavoriteAddress::where(
