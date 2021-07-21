@@ -167,8 +167,7 @@ class Address
                 $subAnswer = $answer->getText();
             }
             \Illuminate\Support\Facades\Log::debug($subAnswer);
-            \Illuminate\Support\Facades\Log::debug($answer->getText());
-            \Illuminate\Support\Facades\Log::debug($item);
+            \Illuminate\Support\Facades\Log::debug(Address::toString(Address::toString($item)));
             if (stripos(Address::toString($item), $subAnswer) != false) {
                 return $item;
             }
