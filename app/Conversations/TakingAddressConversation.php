@@ -146,7 +146,7 @@ class TakingAddressConversation extends BaseAddressConversation
                         return;
                     }
                     $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
-                    $this->_saveFirstAddress($answer->getText(),$crew_group_id,$address['coords']['lat'],$address['coords']['lon'], $address['city']);
+                    $this->_saveFirstAddress(Address::toString($address),$crew_group_id,$address['coords']['lat'],$address['coords']['lon'], $address['city']);
                     $this->getEntrance();
                 } else {
                     $this->_saveFirstAddress($answer->getText());
