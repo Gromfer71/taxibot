@@ -294,15 +294,15 @@ class TakingAddressConversation extends BaseAddressConversation
                     }
                 }
 
-                $address = $this->_getAddressFromHistoryByAnswer($answer);
-
-                if ($address) {
-                    $this->_saveSecondAddress($address->address,$address['lat'], $address['lon']);
-                    if ($address['lat'] == 0)  $this->bot->userStorage()->save(['second_address_from_history_incorrect' => 1]);
-                    if ($address['lat'] == 0)  $this->bot->userStorage()->save(['second_address_from_history_incorrect_change_text_flag' => 1]);
-                    $this->bot->startConversation(new TaxiMenuConversation());
-                    return;
-
+                if($answer->getValue()) {
+                    $address = $this->_getAddressFromHistoryByAnswer($answer);
+                    if ($address) {
+                        $this->_saveSecondAddress($address->address,$address['lat'], $address['lon']);
+                        if ($address['lat'] == 0)  $this->bot->userStorage()->save(['second_address_from_history_incorrect' => 1]);
+                        if ($address['lat'] == 0)  $this->bot->userStorage()->save(['second_address_from_history_incorrect_change_text_flag' => 1]);
+                        $this->bot->startConversation(new TaxiMenuConversation());
+                        return;
+                    }
                 }  else {
                     $this->_saveSecondAddress($answer->getText());
                     $addressesList = collect(Address::getAddresses($answer->getText(), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
