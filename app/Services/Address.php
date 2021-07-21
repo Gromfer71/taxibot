@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Log;
 use App\Models\LogApi;
 use App\Models\User;
 use BotMan\BotMan\Storages\Storage;
@@ -165,6 +166,8 @@ class Address
             } else {
                 $subAnswer = $answer->getText();
             }
+            \Illuminate\Support\Facades\Log::debug($subAnswer);
+            \Illuminate\Support\Facades\Log::debug($answer->getText());
             if (stripos(Address::toString($item), $subAnswer) === true) {
                 return $item;
             }
