@@ -42,9 +42,13 @@ class TakingAddressConversation extends BaseAddressConversation
                     $this->bot->startConversation(new MenuConversation());
                     return;
                 }
+                $address = $this->_getAddressFromHistoryByAnswerFromButton($answer);
+
+            } else {
+                $address = $this->_getAddressFromHistoryByAnswer($answer);
             }
 
-            $address = $this->_getAddressFromHistoryByAnswer($answer);
+
 
             if ($address) {
                 if ($address['city'] == '') {
