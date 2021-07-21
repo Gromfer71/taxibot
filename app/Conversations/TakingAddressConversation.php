@@ -46,21 +46,22 @@ class TakingAddressConversation extends BaseAddressConversation
 
             if($answer->getValue()) {
                 $address = $this->_getAddressFromHistoryByAnswer($answer);
-            }
+                if ($address) {
+                    if ($address['city'] == '') {
+                        $crew_group_id = false;
+                    } else {
+                        $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
+                    }
+                    if ($address['lat'] == 0)  $this->bot->userStorage()->save(['first_address_from_history_incorrect' => 1]);
 
-            if ($address) {
-                if ($address['city'] == '') {
-                    $crew_group_id = false;
-                } else {
-                    $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
-                }
-                if ($address['lat'] == 0)  $this->bot->userStorage()->save(['first_address_from_history_incorrect' => 1]);
+                    $this->_saveFirstAddress($address->address, $crew_group_id, $address['lat'],$address['lon'],$address['city']);
+                    if ($this->_hasEntrance($address->address)){
+                        $this->getAddressTo();
+                    } else {
+                        $this->getEntrance();
+                    }
 
-                $this->_saveFirstAddress($address->address, $crew_group_id, $address['lat'],$address['lon'],$address['city']);
-                if ($this->_hasEntrance($address->address)){
-                    $this->getAddressTo();
-                } else {
-                    $this->getEntrance();
+
                 }
 
 
