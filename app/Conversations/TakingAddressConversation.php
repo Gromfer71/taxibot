@@ -358,7 +358,7 @@ class TakingAddressConversation extends BaseAddressConversation
                         return;
                     }
 
-                    AddressHistory::newAddress($this->getUser()->id, $answer->getText(), $address['coords'],$address['city']);
+                    AddressHistory::newAddress($this->getUser()->id, Address::toString($address), $address['coords'],$address['city']);
                     $this->_saveSecondAddress(Address::toString($address),$address['coords']['lat'], $address['coords']['lon']);
                     $this->bot->startConversation(new TaxiMenuConversation());
                 } else {
