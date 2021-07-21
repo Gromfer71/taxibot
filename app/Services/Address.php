@@ -160,7 +160,12 @@ class Address
 
     public static function findByAnswer($addressesList,$answer){
         return collect($addressesList)->filter(function ($item) use ($answer) {
-            if (Address::toString($item) == $answer->getText()) {
+            if(substr($answer->getText(), -3) === '...') {
+                $subAnswer = substr($answer->getText(), 0, strlen($answer->getText()) - 3);
+            } else {
+                $subAnswer = $answer->getText();
+            }
+            if (stripos(Address::toString($item), $subAnswer) === true) {
                 return $item;
             }
         })->first();
