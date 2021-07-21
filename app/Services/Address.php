@@ -159,19 +159,22 @@ class Address
         }
     }
 
+
     public static function findByAnswer($addressesList,$answer){
         return collect($addressesList)->filter(function ($item) use ($answer) {
-            if(substr($answer->getText(), -3) === '...') {
-                $subAnswer = substr($answer->getText(), 0, strlen($answer->getText()) - 3);
-            } else {
-                $subAnswer = $answer->getText();
-            }
-            \Illuminate\Support\Facades\Log::debug($subAnswer);
-            \Illuminate\Support\Facades\Log::debug($item);
-            if (stripos(Address::toString($item), $subAnswer) !== false) {
+            if (stripos(Address::toString($item), self::removeEllipsisFromAddressIfExists($answer->getText())) !== false) {
                 return $item;
             }
         })->first();
+    }
+
+    public static function removeEllipsisFromAddressIfExists($address)
+    {
+        if(substr($address, -3) === '...') {
+            return substr($address, 0, strlen($address) - 3);
+        } else {
+            return  $address;
+        }
     }
 
 	public static function hasDigit($str)
