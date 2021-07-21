@@ -139,6 +139,7 @@ class TakingAddressConversation extends BaseAddressConversation
                 $address = Address::findByAnswer($addressesList, $answer);
 
                 if ($address) {
+                    \Illuminate\Support\Facades\Log::debug($address);
                     if ($address['kind'] == 'street') {
                         $this->bot->userStorage()->save(['address' => $address['street']]);
                         $this->forgetWriteHouse();
