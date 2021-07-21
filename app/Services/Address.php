@@ -168,7 +168,7 @@ class Address
             }
             \Illuminate\Support\Facades\Log::debug($subAnswer);
             \Illuminate\Support\Facades\Log::debug(Address::toString(Address::toString($item)));
-            if (stripos(Address::toString($item), $subAnswer) != false) {
+            if (stripos(Address::toString($item), $subAnswer) !== false) {
                 return $item;
             }
         })->first();
