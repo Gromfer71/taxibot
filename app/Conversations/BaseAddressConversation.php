@@ -33,7 +33,7 @@ abstract class BaseAddressConversation extends BaseConversation
     public function _getAddressFromHistoryByAnswer($answer)
     {
         $subAnswer = Address::removeEllipsisFromAddressIfExists($answer->getText());
-        $address =  AddressHistory::where('address', 'like',  $subAnswer . '%')->first();
+        $address =  AddressHistory::where('address', 'like', '%' . $subAnswer)->first();
         if(!$address) {
             $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->getUser()->id])->get()->first();
         }
