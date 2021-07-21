@@ -14,6 +14,7 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 abstract class BaseAddressConversation extends BaseConversation
@@ -31,10 +32,9 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function _getAddressFromHistoryByAnswer($answer)
     {
-
-        $address =  AddressHistory::where(['address' => $answer->getText(), 'user_id' => $this->getUser()->id])->get()->first();
+        $subAnswer = Address::removeEllipsisFromAddressIfExists($answer->getText());
+        $address =  AddressHistory::where('address', 'like', '%' . $subAnswer . '%')->first();
         if(!$address) {
-
             $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->getUser()->id])->get()->first();
         }
         if ($address) $address->touch();
