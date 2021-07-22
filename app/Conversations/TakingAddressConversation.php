@@ -40,11 +40,12 @@ class TakingAddressConversation extends BaseAddressConversation
             \Illuminate\Support\Facades\Log::debug($answer->getText());
             \Illuminate\Support\Facades\Log::debug($answer->getValue());
             Log::newLogAnswer($this->bot, $answer);
-            if ($answer->getValue()) {
+            if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() == 'exit') {
                     $this->bot->startConversation(new MenuConversation());
                     return;
                 }
+            }
 
                 $address = $this->_getAddressFromHistoryByAnswer($answer);
                 if ($address) {
@@ -62,10 +63,6 @@ class TakingAddressConversation extends BaseAddressConversation
                         $this->getEntrance();
                     }
                 } else {
-                    throw new BotManException('Адрес был выбран из истории но некорректно обработан после');
-                }
-
-            } else {
                 $this->_saveFirstAddress($answer->getText());
 
                 $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
