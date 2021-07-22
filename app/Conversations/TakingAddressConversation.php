@@ -44,7 +44,7 @@ class TakingAddressConversation extends BaseAddressConversation
                 }
             }
 
-            if($answer->getValue()) {
+            if($answer->isInteractiveMessageReply() || $answer->getValue()) {
                 $address = $this->_getAddressFromHistoryByAnswer($answer);
                 if ($address) {
                     if ($address['city'] == '') {
