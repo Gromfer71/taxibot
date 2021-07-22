@@ -32,12 +32,11 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function _getAddressFromHistoryByAnswer(Answer $answer)
     {
-        \Illuminate\Support\Facades\Log::debug($answer->getText());
-        \Illuminate\Support\Facades\Log::debug($answer->getValue());
-        $address =  AddressHistory::where('address', $answer->getText())->first();
+
+        $address =  AddressHistory::where('address', $answer->getValue())->first();
 
         if(!$address) {
-            $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->getUser()->id])->get()->first();
+            $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getValue())[1] ?? null, 'user_id' => $this->getUser()->id])->get()->first();
         }
         if ($address) $address->touch();
 
