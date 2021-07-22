@@ -35,16 +35,14 @@ class TakingAddressConversation extends BaseAddressConversation
         $question = $this->_addAddressHistoryButtons($question);
 
 
-        return $this->ask($question, function (Answer $answer)  {
+        return $this->ask($question, function (Answer $answer) {
             Log::newLogAnswer($this->bot, $answer);
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() == 'exit') {
                     $this->bot->startConversation(new MenuConversation());
                     return;
                 }
-            }
 
-            if($answer->isInteractiveMessageReply() || $answer->getValue()) {
                 $address = $this->_getAddressFromHistoryByAnswer($answer);
                 if ($address) {
                     if ($address['city'] == '') {
@@ -52,10 +50,10 @@ class TakingAddressConversation extends BaseAddressConversation
                     } else {
                         $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
                     }
-                    if ($address['lat'] == 0)  $this->bot->userStorage()->save(['first_address_from_history_incorrect' => 1]);
+                    if ($address['lat'] == 0) $this->bot->userStorage()->save(['first_address_from_history_incorrect' => 1]);
 
-                    $this->_saveFirstAddress($address->address, $crew_group_id, $address['lat'],$address['lon'],$address['city']);
-                    if ($this->_hasEntrance($address->address)){
+                    $this->_saveFirstAddress($address->address, $crew_group_id, $address['lat'], $address['lon'], $address['city']);
+                    if ($this->_hasEntrance($address->address)) {
                         $this->getAddressTo();
                     } else {
                         $this->getEntrance();
@@ -63,8 +61,6 @@ class TakingAddressConversation extends BaseAddressConversation
 
 
                 }
-
-
             } else {
                 $this->_saveFirstAddress($answer->getText());
 
@@ -149,7 +145,7 @@ class TakingAddressConversation extends BaseAddressConversation
                         return;
                     }
                     $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
-                    $this->_saveFirstAddress(Address::toString($address),$crew_group_id,$address['coords']['lat'],$address['coords']['lon'], $address['city']);
+                    $this->_saveFirstAddress(Address::toString($address), $crew_group_id, $address['coords']['lat'], $address['coords']['lon'], $address['city']);
                     $this->getEntrance();
                 } else {
                     $this->_saveFirstAddress($answer->getText());
@@ -183,7 +179,7 @@ class TakingAddressConversation extends BaseAddressConversation
                 $lastAddressWithEntrance = $lastAddress . $answer->getText();
                 $addresses = $addresses->push($lastAddressWithEntrance);
                 $this->bot->userStorage()->save(['address' => $addresses]);
-                $this->_sayDebug('forgetWriteHouse - адреса '.$addresses->toJson(JSON_UNESCAPED_UNICODE));
+                $this->_sayDebug('forgetWriteHouse - адреса ' . $addresses->toJson(JSON_UNESCAPED_UNICODE));
                 $this->getAddressToAgain();
             } else {
                 $this->_sayDebug('forgetWriteHouse - адрес откуда');
@@ -209,13 +205,13 @@ class TakingAddressConversation extends BaseAddressConversation
                 if ($answer->getValue() == 'exit') {
                     $this->bot->startConversation(new MenuConversation());
                 } elseif ($answer->getValue() == 'no entrance') {
-                    AddressHistory::newAddress($this->getUser()->id, $this->bot->userStorage()->get('address'), ['lat' => $this->bot->userStorage()->get('lat'),'lon' => $this->bot->userStorage()->get('lon')], $this->bot->userStorage()->get('address_city'));
+                    AddressHistory::newAddress($this->getUser()->id, $this->bot->userStorage()->get('address'), ['lat' => $this->bot->userStorage()->get('lat'), 'lon' => $this->bot->userStorage()->get('lon')], $this->bot->userStorage()->get('address_city'));
                     $this->getAddressTo();
                 }
             } else {
                 $address = $this->bot->userStorage()->get('address') . ', *п ' . $answer->getText();
                 $this->bot->userStorage()->save(['address' => $address]);
-                AddressHistory::newAddress($this->getUser()->id, $address, ['lat' => $this->bot->userStorage()->get('lat'),'lon' => $this->bot->userStorage()->get('lon')], $this->bot->userStorage()->get('address_city'));
+                AddressHistory::newAddress($this->getUser()->id, $address, ['lat' => $this->bot->userStorage()->get('lat'), 'lon' => $this->bot->userStorage()->get('lon')], $this->bot->userStorage()->get('address_city'));
                 $this->getAddressTo();
             }
         });
@@ -225,7 +221,7 @@ class TakingAddressConversation extends BaseAddressConversation
     function streetNotFoundAddressTo()
     {
         $this->_sayDebug('streetNotFoundAddressTo');
-        $question = Question::create(trans('messages.not found address dorabotka bota') , $this->bot->getUser()->getId());
+        $question = Question::create(trans('messages.not found address dorabotka bota'), $this->bot->getUser()->getId());
         $question->addButtons(
             [
                 Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT])->value('back'),
@@ -244,7 +240,7 @@ class TakingAddressConversation extends BaseAddressConversation
                     } elseif ($answer->getValue() == 'exit to menu') {
                         $this->bot->startConversation(new MenuConversation());
                     } elseif ($answer->getValue() == 'go as indicated') {
-                        AddressHistory::newAddress($this->getUser()->id, collect($this->bot->userStorage()->get('address'))->last(), ['lat' => 0,'lon' => 0], $this->bot->userStorage()->get('address_city'));
+                        AddressHistory::newAddress($this->getUser()->id, collect($this->bot->userStorage()->get('address'))->last(), ['lat' => 0, 'lon' => 0], $this->bot->userStorage()->get('address_city'));
                         $this->bot->startConversation(new TaxiMenuConversation());
                         return;
                     }
@@ -260,10 +256,10 @@ class TakingAddressConversation extends BaseAddressConversation
     function getAddressTo()
     {
         $this->_sayDebug('getAddressTo');
-        if (Address::haveFirstAddressFromStorageAndFirstAdressesIsReal($this->bot->userStorage())){
-            $message = trans('messages.user address') . collect($this->bot->userStorage()->get('address'))->first().' '.trans('messages.give me end address');
+        if (Address::haveFirstAddressFromStorageAndFirstAdressesIsReal($this->bot->userStorage())) {
+            $message = trans('messages.user address') . collect($this->bot->userStorage()->get('address'))->first() . ' ' . trans('messages.give me end address');
         } else {
-            $message = trans('messages.ask for second address if first address incorrect',['address' => collect($this->bot->userStorage()->get('address'))->first()]);
+            $message = trans('messages.ask for second address if first address incorrect', ['address' => collect($this->bot->userStorage()->get('address'))->first()]);
         }
 
         $question = Question::create($message, $this->bot->getUser()->getId())
@@ -283,7 +279,7 @@ class TakingAddressConversation extends BaseAddressConversation
                 if ($answer->isInteractiveMessageReply()) {
                     if ($answer->getValue() == 'address will say to driver') {
                         $this->_sayDebug('address will say to driver');
-                        $this->_saveSecondAddressByText( '');
+                        $this->_saveSecondAddressByText('');
                         $this->bot->userStorage()->save(['second_address_will_say_to_driver_change_text_flag' => 1]);
                         $this->bot->userStorage()->save(['second_address_will_say_to_driver_flag' => 1]);
                         $this->bot->startConversation(new TaxiMenuConversation());
@@ -294,16 +290,16 @@ class TakingAddressConversation extends BaseAddressConversation
                     }
                 }
 
-                if($answer->getValue()) {
+                if ($answer->getValue()) {
                     $address = $this->_getAddressFromHistoryByAnswer($answer);
                     if ($address) {
-                        $this->_saveSecondAddress($address->address,$address['lat'], $address['lon']);
-                        if ($address['lat'] == 0)  $this->bot->userStorage()->save(['second_address_from_history_incorrect' => 1]);
-                        if ($address['lat'] == 0)  $this->bot->userStorage()->save(['second_address_from_history_incorrect_change_text_flag' => 1]);
+                        $this->_saveSecondAddress($address->address, $address['lat'], $address['lon']);
+                        if ($address['lat'] == 0) $this->bot->userStorage()->save(['second_address_from_history_incorrect' => 1]);
+                        if ($address['lat'] == 0) $this->bot->userStorage()->save(['second_address_from_history_incorrect_change_text_flag' => 1]);
                         $this->bot->startConversation(new TaxiMenuConversation());
                         return;
                     }
-                }  else {
+                } else {
                     $this->_saveSecondAddress($answer->getText());
                     $addressesList = collect(Address::getAddresses($answer->getText(), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
                     if ($addressesList->isEmpty()) {
@@ -345,7 +341,7 @@ class TakingAddressConversation extends BaseAddressConversation
                     return;
                 }
                 $address = Address::findByAnswer($addressesList, $answer);
-                $this->_sayDebug('getAddressToAgain - address -'.json_encode($address,JSON_UNESCAPED_UNICODE));
+                $this->_sayDebug('getAddressToAgain - address -' . json_encode($address, JSON_UNESCAPED_UNICODE));
                 if ($address) {
                     if ($address['kind'] == 'street') {
                         $this->bot->userStorage()->save(
@@ -358,8 +354,8 @@ class TakingAddressConversation extends BaseAddressConversation
                         return;
                     }
 
-                    AddressHistory::newAddress($this->getUser()->id, Address::toString($address), $address['coords'],$address['city']);
-                    $this->_saveSecondAddress(Address::toString($address),$address['coords']['lat'], $address['coords']['lon']);
+                    AddressHistory::newAddress($this->getUser()->id, Address::toString($address), $address['coords'], $address['city']);
+                    $this->_saveSecondAddress(Address::toString($address), $address['coords']['lat'], $address['coords']['lon']);
                     $this->bot->startConversation(new TaxiMenuConversation());
                 } else {
                     $this->_saveSecondAddress($answer->getText());
