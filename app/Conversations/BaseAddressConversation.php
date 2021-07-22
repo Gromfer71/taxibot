@@ -30,16 +30,15 @@ abstract class BaseAddressConversation extends BaseConversation
         return $options->getCrewGroupIdFromCity($city);
     }
 
-    public function _getAddressFromHistoryByAnswer($answer)
+    public function _getAddressFromHistoryByAnswer(Answer $answer)
     {
-        $subAnswer = Address::removeEllipsisFromAddressIfExists($answer->getText());
-        $address =  AddressHistory::where('address', 'like', '%' . $subAnswer . '%')->first();
-
+        $address =  AddressHistory::where('address', $answer->getValue())->first();
 
         if(!$address) {
             $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->getUser()->id])->get()->first();
         }
         if ($address) $address->touch();
+
         return $address;
     }
 
