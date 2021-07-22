@@ -32,7 +32,7 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function _getAddressFromHistoryByAnswer(Answer $answer)
     {
-        $address =  AddressHistory::where('address', $answer->getValue())->orWhere('address', $answer->getText())->first();
+        $address =  AddressHistory::getAddressFromAnswer($answer);
 
 
         if(!$address) {

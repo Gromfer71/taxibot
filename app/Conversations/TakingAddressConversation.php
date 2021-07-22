@@ -291,7 +291,7 @@ class TakingAddressConversation extends BaseAddressConversation
                     }
                 }
 
-                if ($answer->getValue()) {
+
                     $address = $this->_getAddressFromHistoryByAnswer($answer);
                     if ($address) {
                         $this->_saveSecondAddress($address->address, $address['lat'], $address['lon']);
@@ -299,8 +299,7 @@ class TakingAddressConversation extends BaseAddressConversation
                         if ($address['lat'] == 0) $this->bot->userStorage()->save(['second_address_from_history_incorrect_change_text_flag' => 1]);
                         $this->bot->startConversation(new TaxiMenuConversation());
                         return;
-                    }
-                } else {
+                    } else {
                     $this->_saveSecondAddress($answer->getText());
                     $addressesList = collect(Address::getAddresses($answer->getText(), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
                     if ($addressesList->isEmpty()) {

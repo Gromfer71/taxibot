@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\Address;
+use BotMan\BotMan\Messages\Incoming\Answer;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -54,6 +55,11 @@ class AddressHistory extends Model
                 'lon' => $coords['lon'] ?? null,
             ]);
         }
+    }
+
+    public static function getAddressFromAnswer(Answer $answer)
+    {
+        return self::where('address', $answer->getValue())->orWhere('address', $answer->getText())->first();
     }
 
 }
