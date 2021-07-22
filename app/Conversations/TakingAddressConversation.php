@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Services\Address;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
+use BotMan\BotMan\Exceptions\Base\BotManException;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -58,9 +59,10 @@ class TakingAddressConversation extends BaseAddressConversation
                     } else {
                         $this->getEntrance();
                     }
-
-
+                } else {
+                    throw new BotManException('Адрес был выбран из истории но некорректно обработан после');
                 }
+
             } else {
                 $this->_saveFirstAddress($answer->getText());
 
