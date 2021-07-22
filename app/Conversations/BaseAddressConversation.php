@@ -32,7 +32,8 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function _getAddressFromHistoryByAnswer(Answer $answer)
     {
-
+        \Illuminate\Support\Facades\Log::debug($answer->getText());
+        \Illuminate\Support\Facades\Log::debug($answer->getValue());
         $address =  AddressHistory::where('address', $answer->getValue())->first();
 
         if(!$address) {
