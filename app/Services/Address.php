@@ -75,7 +75,6 @@ class Address
         self::_log($endpoint,$cities->toJson(JSON_UNESCAPED_UNICODE),json_encode($addresses,JSON_UNESCAPED_UNICODE));
 
         $result = self::sortAddresses($addresses,$storage);
-        \Illuminate\Support\Facades\Log::debug($result->toArray());
         return $result ?? [];
     }
 
@@ -190,25 +189,27 @@ class Address
 	}
 
 	public static function toString($address){
-	    $res = '';
 	    if ($address['kind'] ==  'house'){
-	        $res .=  $address['street'] . ' ' . $address['house'] . ' (' . $address['city'] . ')';
+	        return  self::checkForLength($address['street'] . ' ' . $address['house'] . ' (' . $address['city'] . ')');
         }
         if ($address['kind'] ==  'point'){
             $street = '';
             if (!empty($address['street'])) $street .=', '.$address['street'];
             if (!empty($address['house'])) $street .=' '.$address['house'];
-            $res .=  $address['point'] . ' (' . $address['city'] .$street. ')';
+            return  self::checkForLength($address['point'] . ' (' . $address['city'] .$street. ')');
         }
         if ($address['kind'] ==  'street'){
-            $res .=  $address['street'] . ' (' . $address['city'] . ')';
+            return  self::checkForLength($address['street'] . ' (' . $address['city'] . ')');
         }
+    }
 
-        if(strlen($res) > 10) {
-            $res = substr($res, 0, 10);
+    public static function checkForLength($address)
+    {
+        if(strlen($address) > 10) {
+            return substr($address, 0, 10);
+        } else {
+            return $address;
         }
-
-        return $res;
     }
 
     public static function subStrAddress($address)
