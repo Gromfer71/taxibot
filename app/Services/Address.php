@@ -19,7 +19,7 @@ use Illuminate\Support\Str;
 class Address
 {
 
-    const MAX_ADDRESS_LENGTH = 200;
+    const MAX_ADDRESS_LENGTH = 120;
     /**
      * @param  string  $query  Адрес который ввел пользователь
      * @param          $cities
@@ -190,27 +190,21 @@ class Address
 
 	public static function toString($address){
 	    if ($address['kind'] ==  'house'){
-	        return  self::checkForLength($address['street'] . ' ' . $address['house'] . ' (' . $address['city'] . ')');
+	        return  self::subStrAddress($address['street'] . ' ' . $address['house'] . ' (' . $address['city'] . ')');
         }
         if ($address['kind'] ==  'point'){
             $street = '';
             if (!empty($address['street'])) $street .=', '.$address['street'];
             if (!empty($address['house'])) $street .=' '.$address['house'];
-            return  self::checkForLength($address['point'] . ' (' . $address['city'] .$street. ')');
+            return  self::subStrAddress($address['point'] . ' (' . $address['city'] .$street. ')');
         }
         if ($address['kind'] ==  'street'){
-            return  self::checkForLength($address['street'] . ' (' . $address['city'] . ')');
+            return  self::subStrAddress($address['street'] . ' (' . $address['city'] . ')');
         }
+
     }
 
-    public static function checkForLength($address)
-    {
-        if(strlen($address) > 128) {
-            return mb_substr($address, 0, 128);
-        } else {
-            return $address;
-        }
-    }
+
 
     public static function subStrAddress($address)
     {
