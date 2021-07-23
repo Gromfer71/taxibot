@@ -190,18 +190,25 @@ class Address
 	}
 
 	public static function toString($address){
+	    $res = '';
 	    if ($address['kind'] ==  'house'){
-	        return  $address['street'] . ' ' . $address['house'] . ' (' . $address['city'] . ')';
+	        $res =  $address['street'] . ' ' . $address['house'] . ' (' . $address['city'] . ')';
         }
         if ($address['kind'] ==  'point'){
             $street = '';
             if (!empty($address['street'])) $street .=', '.$address['street'];
             if (!empty($address['house'])) $street .=' '.$address['house'];
-            return  $address['point'] . ' (' . $address['city'] .$street. ')';
+            $res =  $address['point'] . ' (' . $address['city'] .$street. ')';
         }
         if ($address['kind'] ==  'street'){
-            return  $address['street'] . ' (' . $address['city'] . ')';
+            $res =  $address['street'] . ' (' . $address['city'] . ')';
         }
+
+        if(strlen($res) > 10) {
+            $res = substr($res, 0, 10);
+        }
+
+        return $res;
     }
 
     public static function subStrAddress($address)
