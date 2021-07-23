@@ -205,12 +205,11 @@ class Address
 
     public static function checkForLength($address)
     {
-        return $address;
-//        if(strlen($address) > 10) {
-//            return mb_substr($address, 0, 32);
-//        } else {
-//            return $address;
-//        }
+        if(strlen($address) > 128) {
+            return mb_substr($address, 0, 128);
+        } else {
+            return $address;
+        }
     }
 
     public static function subStrAddress($address)
