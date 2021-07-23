@@ -190,16 +190,25 @@ class Address
 
 	public static function toString($address){
 	    if ($address['kind'] ==  'house'){
-	        return  $address['street'] . ' ' . $address['house'] . ' (' . $address['city'] . ')';
+	        return  self::checkForLength($address['street'] . ' ' . $address['house'] . ' (' . $address['city'] . ')');
         }
         if ($address['kind'] ==  'point'){
             $street = '';
             if (!empty($address['street'])) $street .=', '.$address['street'];
             if (!empty($address['house'])) $street .=' '.$address['house'];
-            return  $address['point'] . ' (' . $address['city'] .$street. ')';
+            return  self::checkForLength($address['point'] . ' (' . $address['city'] .$street. ')');
         }
         if ($address['kind'] ==  'street'){
-            return  $address['street'] . ' (' . $address['city'] . ')';
+            return  self::checkForLength($address['street'] . ' (' . $address['city'] . ')');
+        }
+    }
+
+    public static function checkForLength($address)
+    {
+        if(strlen($address) > 10) {
+            return mb_substr($address, 0, 32);
+        } else {
+            return $address;
         }
     }
 
