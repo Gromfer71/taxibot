@@ -192,16 +192,16 @@ class Address
 	public static function toString($address){
 	    $res = '';
 	    if ($address['kind'] ==  'house'){
-	        $res =  $address['street'] . ' ' . $address['house'] . ' (' . $address['city'] . ')';
+	        $res .=  $address['street'] . ' ' . $address['house'] . ' (' . $address['city'] . ')';
         }
         if ($address['kind'] ==  'point'){
             $street = '';
             if (!empty($address['street'])) $street .=', '.$address['street'];
             if (!empty($address['house'])) $street .=' '.$address['house'];
-            $res =  $address['point'] . ' (' . $address['city'] .$street. ')';
+            $res .=  $address['point'] . ' (' . $address['city'] .$street. ')';
         }
         if ($address['kind'] ==  'street'){
-            $res =  $address['street'] . ' (' . $address['city'] . ')';
+            $res .=  $address['street'] . ' (' . $address['city'] . ')';
         }
 
         if(strlen($res) > 10) {
