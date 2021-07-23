@@ -75,6 +75,7 @@ class Address
         self::_log($endpoint,$cities->toJson(JSON_UNESCAPED_UNICODE),json_encode($addresses,JSON_UNESCAPED_UNICODE));
 
         $result = self::sortAddresses($addresses,$storage);
+        \Illuminate\Support\Facades\Log::debug($result);
         return $result ?? [];
     }
 
