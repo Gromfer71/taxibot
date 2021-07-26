@@ -510,7 +510,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             $question,
             function (Answer $answer) use ($options, $prices) {
                 Log::newLogAnswer($this->bot, $answer);
-                if ($answer->isInteractiveMessageReply()) {
+
                     if ($answer->getValue() == 'back') {
                         $this->menu();
                         return;
@@ -521,7 +521,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                         $this->menu();
                         return;
                     }
-                }
+
                 $this->_sayDebug(json_encode($prices, JSON_UNESCAPED_UNICODE));
                 $this->_sayDebug($answer->getText());
 
