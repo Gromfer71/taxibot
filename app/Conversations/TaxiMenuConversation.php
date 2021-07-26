@@ -514,30 +514,29 @@ class TaxiMenuConversation extends BaseAddressConversation
                     if ($answer->getValue() == 'back') {
                         $this->menu();
                         return;
-                    }
-                    if ($answer->getValue() == 'cancel change price') {
+                    } elseif ($answer->getValue() == 'cancel change price') {
                         $this->bot->userStorage()->save(['changed_price' => null]);
                         $this->_sayDebug(json_encode($this->bot->userStorage()->get('changed_price'), JSON_UNESCAPED_UNICODE));
                         $this->menu();
                         return;
+                    } else {
+                        $this->_sayDebug(json_encode($prices, JSON_UNESCAPED_UNICODE));
+                        $this->_sayDebug($answer->getText());
+
+                        $price = collect($prices)->filter(function ($item) use ($answer) {
+                            if ($item->description == $answer->getText()) {
+                                return $item;
+                            }
+                        })->first();
+                        if (!$price) {
+                            $this->changePrice();
+                            return;
+                        }
+                        $this->_sayDebug('Выбрано изменение цены' . json_encode($price, JSON_UNESCAPED_UNICODE));
+                        $this->bot->userStorage()->save(['changed_price' => $price]);
+
+                        $this->menu();
                     }
-
-                $this->_sayDebug(json_encode($prices, JSON_UNESCAPED_UNICODE));
-                $this->_sayDebug($answer->getText());
-
-                $price = collect($prices)->filter(function ($item) use ($answer) {
-                    if ($item->description == $answer->getText()) {
-                        return $item;
-                    }
-                })->first();
-                if (!$price) {
-                    $this->changePrice();
-                    return;
-                }
-                $this->_sayDebug('Выбрано изменение цены' . json_encode($price, JSON_UNESCAPED_UNICODE));
-                $this->bot->userStorage()->save(['changed_price' => $price]);
-
-                $this->menu();
             }
         );
     }
