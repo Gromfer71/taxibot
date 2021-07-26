@@ -510,7 +510,6 @@ class TaxiMenuConversation extends BaseAddressConversation
             $question,
             function (Answer $answer) use ($options, $prices) {
                 Log::newLogAnswer($this->bot, $answer);
-
                     if ($answer->getValue() == 'back') {
                         $this->menu();
                         return;

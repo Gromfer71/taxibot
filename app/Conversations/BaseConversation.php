@@ -73,8 +73,8 @@ abstract class BaseConversation extends Conversation
     }
 
     public function _addChangePriceDefaultButtons($question){
-        $question->addButton(Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::CHANGE_PRICE_MENU_FORMAT]));
-        $question->addButton(Button::create(trans('buttons.cancel change price')));
+        $question->addButton(Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::CHANGE_PRICE_MENU_FORMAT])->value('back'));
+        $question->addButton(Button::create(trans('buttons.cancel change price'))->value('cancel change price'));
         return $question;
     }
     public function end()
