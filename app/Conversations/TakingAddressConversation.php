@@ -29,8 +29,24 @@ class TakingAddressConversation extends BaseAddressConversation
         $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
         $this->bot->userStorage()->save(['district' => $district]);
         $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
+        $questionText = trans('messages.give me your address');
+        if(property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+            foreach ($this->getUser()->favoriteAddresses()->take(10) as $key => $address) {
+                $questionText .= $key .'⭐️ ' . $address . '\n';
+            }
+
+            if(!isset($key)) $key = 0;
+
+            foreach ($this->getUser()->favoriteAddresses()->take(10) as $historyAddressKey => $address) {
+                $questionText .= $historyAddressKey + $key . $address . '\n';
+            }
+
+        }
+
+
         $question = Question::create(trans('messages.give me your address'), $this->bot->getUser()->getId())
             ->addButton(Button::create(trans('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
+
 
         $question = $this->_addAddressFavoriteButtons($question);
         $question = $this->_addAddressHistoryButtons($question);
