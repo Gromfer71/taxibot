@@ -29,7 +29,7 @@ class TakingAddressConversation extends BaseAddressConversation
         $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
         $this->bot->userStorage()->save(['district' => $district]);
         $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
-        $questionText = trans('messages.give me your address') . "\n";
+        $questionText = trans('messages.give me your address');
         $questionText = $this->addAddressesToMessage($questionText);
 
 

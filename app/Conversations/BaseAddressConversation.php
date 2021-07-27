@@ -181,6 +181,7 @@ abstract class BaseAddressConversation extends BaseConversation
     public function addAddressesToMessage($questionText)
     {
         if(property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+            $questionText .= "\n";
             $this->_sayDebug('property exists');
             foreach ($this->getUser()->favoriteAddresses as $key => $address) {
                 $questionText .= $key+1 .' ⭐️ ' .$address->name . ' ' . $address->address . "\n";
