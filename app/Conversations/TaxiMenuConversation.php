@@ -408,7 +408,7 @@ class TaxiMenuConversation extends BaseAddressConversation
 
                         $this->_sayDebug(json_encode($this->bot->userStorage()->get('changed_price_in_order'), JSON_UNESCAPED_UNICODE));
 
-                        $order = OrderHistory::where('user_id', $this->bot->getUser()->getId())->get()->last();
+                        $order = OrderHistory::getActualOrder($this->bot->getUser()->getId());
                         $order->changed_price = null;
                         $order->save();
                         $this->bot->userStorage()->save(['changed_price_in_order' => null,'price' => $order->price]);
@@ -483,8 +483,9 @@ class TaxiMenuConversation extends BaseAddressConversation
                     $this->changePriceInOrderMenu();
                     return;
                 }
-                $order = OrderHistory::where('user_id', $this->bot->getUser()->getId())->get()->last();
+                $order = OrderHistory::getActualOrder($this->bot->getUser()->getId());
                 $order->changed_price = (int)$price->id;
+
                 $order->save();
                 $this->bot->userStorage()->save(['changed_price_in_order' => $price,'price' => $order->price + $price->value]);
                 $order->changePrice($this->bot);
