@@ -38,7 +38,7 @@ class TakingAddressConversation extends BaseAddressConversation
 
             if(!isset($key)) $key = 0;
 
-            foreach ($this->getUser()->favoriteAddresses as $historyAddressKey => $address) {
+            foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
                 $questionText .= $historyAddressKey + $key . $address->address . '\n';
             }
 
