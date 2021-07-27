@@ -44,7 +44,7 @@ class TakingAddressConversation extends BaseAddressConversation
         }
 
 
-        $question = Question::create(trans('messages.give me your address'), $this->bot->getUser()->getId())
+        $question = Question::create($questionText, $this->bot->getUser()->getId())
             ->addButton(Button::create(trans('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
 
 
