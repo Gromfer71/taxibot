@@ -30,7 +30,7 @@ class TakingAddressConversation extends BaseAddressConversation
         $this->bot->userStorage()->save(['district' => $district]);
         $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
         $question = Question::create(trans('messages.give me your address'), $this->bot->getUser()->getId())
-            ->addButton(Button::create(trans('buttons.exit'))->value('exit'));
+            ->addButton(Button::create(trans('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
 
         $question = $this->_addAddressFavoriteButtons($question);
         $question = $this->_addAddressHistoryButtons($question);
