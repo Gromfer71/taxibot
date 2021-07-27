@@ -39,7 +39,7 @@ class TakingAddressConversation extends BaseAddressConversation
             if(!isset($key)) $key = 0;
 
             foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
-                $questionText .= $historyAddressKey + $key+1 . ' ' . $address->address . "\n";
+                $questionText .= $historyAddressKey+1 + $key+1 . ' ' . $address->address . "\n";
             }
 
         }
