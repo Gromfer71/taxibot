@@ -53,8 +53,8 @@ abstract class BaseAddressConversation extends BaseConversation
 
         if ($addressHistory->isNotEmpty()) {
             $favoritesAddressesCount = FavoriteAddress::where('user_id', $this->getUser()->id)
-                ->take(10)
-                ->get();
+                ->take(10)->count();
+
             foreach ($addressHistory as $key => $address) {
                 $question = $question->addButton(Button::create($address->address)->value($address->address)->additionalParameters(['number' => $favoritesAddressesCount + $key + 1]));
             }
