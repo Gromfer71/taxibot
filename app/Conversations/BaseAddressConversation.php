@@ -39,7 +39,7 @@ abstract class BaseAddressConversation extends BaseConversation
             if(stripos($answer->getText(), '⭐️')) {
                 $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->getUser()->id])->get()->first();
             } else {
-                $this->_sayDebug($answer->getValue());
+                $this->_sayDebug($answer->getText());
                 $address = FavoriteAddress::where(['name' => $answer->getValue(), 'user_id' => $this->getUser()->id])->get()->first();
             }
 
