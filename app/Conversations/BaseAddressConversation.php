@@ -36,7 +36,12 @@ abstract class BaseAddressConversation extends BaseConversation
 
 
         if(!$address) {
-            $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->getUser()->id])->get()->first();
+            if(mb_strpos($answer->getText(), '⭐️')) {
+                $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->getUser()->id])->get()->first();
+            } else {
+                $address = FavoriteAddress::where(['name' => $answer->getText(), 'user_id' => $this->getUser()->id])->get()->first();
+            }
+
         }
         if ($address) $address->touch();
 

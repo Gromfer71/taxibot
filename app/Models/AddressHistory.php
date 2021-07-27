@@ -59,7 +59,7 @@ class AddressHistory extends Model
 
     public static function getAddressFromAnswer(Answer $answer)
     {
-        return self::where('address', $answer->getValue())->orWhere('address', $answer->getText())->first();
+        return self::where('address', $answer->getText())->first();
     }
 
 }
