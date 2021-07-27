@@ -177,4 +177,22 @@ abstract class BaseAddressConversation extends BaseConversation
         $this->_sayDebug('Сохраняем второй адрес - ' . json_encode($data, JSON_UNESCAPED_UNICODE));
         $this->bot->userStorage()->save($data);
     }
+
+    public function addAddressesToMessage($questionText)
+    {
+        if(property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+            $this->_sayDebug('property exists');
+            foreach ($this->getUser()->favoriteAddresses as $key => $address) {
+                $questionText .= $key+1 .' ⭐️ ' .$address->name . ' ' . $address->address . "\n";
+            }
+
+            if(!isset($key)) $key = 0;
+
+            foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
+                $questionText .= $historyAddressKey+1 + $key+1 . ' ' . $address->address . "\n";
+            }
+        }
+
+        return $questionText;
+    }
 }

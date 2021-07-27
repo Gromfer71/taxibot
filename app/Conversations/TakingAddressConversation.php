@@ -30,19 +30,7 @@ class TakingAddressConversation extends BaseAddressConversation
         $this->bot->userStorage()->save(['district' => $district]);
         $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
         $questionText = trans('messages.give me your address') . "\n";
-        if(property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
-            $this->_sayDebug('property exists');
-            foreach ($this->getUser()->favoriteAddresses as $key => $address) {
-                $questionText .= $key+1 .' ⭐️ ' .$address->name . ' ' . $address->address . "\n";
-            }
-
-            if(!isset($key)) $key = 0;
-
-            foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
-                $questionText .= $historyAddressKey+1 + $key+1 . ' ' . $address->address . "\n";
-            }
-
-        }
+        $questionText = $this->addAddressesToMessage($questionText);
 
 
         $question = Question::create($questionText, $this->bot->getUser()->getId())
@@ -276,6 +264,7 @@ class TakingAddressConversation extends BaseAddressConversation
         } else {
             $message = trans('messages.ask for second address if first address incorrect', ['address' => collect($this->bot->userStorage()->get('address'))->first()]);
         }
+        $message = $this->addAddressesToMessage($message);
 
         $question = Question::create($message, $this->bot->getUser()->getId())
             ->addButtons(
