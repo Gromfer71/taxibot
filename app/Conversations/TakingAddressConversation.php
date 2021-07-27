@@ -29,17 +29,17 @@ class TakingAddressConversation extends BaseAddressConversation
         $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
         $this->bot->userStorage()->save(['district' => $district]);
         $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
-        $questionText = trans('messages.give me your address') . '<br />';
+        $questionText = trans('messages.give me your address') . "\n";
         if(property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
             $this->_sayDebug('property exists');
             foreach ($this->getUser()->favoriteAddresses as $key => $address) {
-                $questionText .= $key+1 .' ⭐️ ' . $address->address . '<br />';
+                $questionText .= $key+1 .' ⭐️ ' . $address->address . "\n";
             }
 
             if(!isset($key)) $key = 0;
 
             foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
-                $questionText .= $historyAddressKey + $key+1 . ' ' . $address->address . '<br />';
+                $questionText .= $historyAddressKey + $key+1 . ' ' . $address->address . "\n";
             }
 
         }
