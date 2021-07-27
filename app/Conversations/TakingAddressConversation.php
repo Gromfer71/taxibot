@@ -31,6 +31,7 @@ class TakingAddressConversation extends BaseAddressConversation
         $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
         $questionText = trans('messages.give me your address');
         if(property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+            $this->_sayDebug('property exists');
             foreach ($this->getUser()->favoriteAddresses()->take(10) as $key => $address) {
                 $questionText .= $key .'⭐️ ' . $address . '\n';
             }
