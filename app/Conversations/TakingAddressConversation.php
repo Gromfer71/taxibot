@@ -33,7 +33,7 @@ class TakingAddressConversation extends BaseAddressConversation
         if(property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
             $this->_sayDebug('property exists');
             foreach ($this->getUser()->favoriteAddresses as $key => $address) {
-                $questionText .= $key+1 .' ⭐️ ' . $address->address . "\n";
+                $questionText .= $key+1 .' ⭐️ ' .$address->name . ' ' . $address->address . "\n";
             }
 
             if(!isset($key)) $key = 0;
