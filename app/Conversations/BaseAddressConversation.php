@@ -52,8 +52,8 @@ abstract class BaseAddressConversation extends BaseConversation
             ->get();
 
         if ($addressHistory->isNotEmpty()) {
-            foreach ($addressHistory as $address) {
-                $question = $question->addButton(Button::create($address->address)->value($address->address));
+            foreach ($addressHistory as $key => $address) {
+                $question = $question->addButton(Button::create($address->address)->value($address->address)->additionalParameters(['number' => $key]));
             }
         }
         return $question;
@@ -66,8 +66,8 @@ abstract class BaseAddressConversation extends BaseConversation
             ->get();
 
         if ($favoriteAddresses->isNotEmpty()) {
-            foreach ($favoriteAddresses as $address) {
-                $question = $question->addButton(Button::create('⭐️' . $address->name)->value($address->address));
+            foreach ($favoriteAddresses as $key => $address) {
+                $question = $question->addButton(Button::create('⭐️' . $address->name)->value($address->address)->additionalParameters(['number' => $key]));
             }
         }
         return $question;
