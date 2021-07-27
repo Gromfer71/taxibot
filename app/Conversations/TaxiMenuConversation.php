@@ -130,7 +130,7 @@ class TaxiMenuConversation extends BaseAddressConversation
     {
         $this->_sayDebug('addAdditionalAddress');
         $question = Question::create(trans('messages.add additional address'), $this->bot->getUser()->getId());
-        $question = $question->addButton(Button::create(trans('buttons.back'))->value('back'));
+        $question = $question->addButton(Button::create(trans('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses']));
         $question = $this->_addAddressFavoriteButtons($question);
         $question = $this->_addAddressHistoryButtons($question);
         return $this->ask(

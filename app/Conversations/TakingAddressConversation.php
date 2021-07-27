@@ -280,7 +280,7 @@ class TakingAddressConversation extends BaseAddressConversation
         $question = Question::create($message, $this->bot->getUser()->getId())
             ->addButtons(
                 [
-                    Button::create(trans('buttons.address will say to driver'))->value('address will say to driver'),
+                    Button::create(trans('buttons.address will say to driver'))->value('address will say to driver')->additionalParameters(['location' => 'addresses']),
                     Button::create(trans('buttons.exit'))->value('exit'),
                 ]
             );
