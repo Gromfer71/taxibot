@@ -63,10 +63,9 @@ class TakingAddressConversation extends BaseAddressConversation
                     }
                 } else {
                 $this->_saveFirstAddress($answer->getText());
-
+                $this->_sayDebug(json_encode($this->bot->userStorage()->get('address')));
                 $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
                 if ($addressesList->isEmpty()) {
-                    $this->_sayDebug('Адрес не был найден из истории');
                     $this->streetNotFound();
                 } else {
                     $this->getAddressAgain();
