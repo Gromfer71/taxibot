@@ -191,4 +191,17 @@ abstract class BaseAddressConversation extends BaseConversation
 
         return $questionText;
     }
+
+    public function addAddressesToMessageOnlyFromHistory($questionText)
+    {
+        if(property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+            $questionText .= "\n";
+
+            foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
+                $questionText .= $historyAddressKey+1 . ' ' . $address->address . "\n";
+            }
+        }
+
+        return $questionText;
+    }
 }
