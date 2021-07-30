@@ -214,4 +214,17 @@ abstract class BaseAddressConversation extends BaseConversation
 
         return $questionText;
     }
+
+    public function addAddressesFromApi($questionText, $addresses)
+    {
+        if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+            $questionText .= "\n";
+
+            foreach ($addresses as $key => $address) {
+                $questionText .= $key + 1 . ' ' . Address::toString($address) . "\n";
+            }
+        }
+
+        return $questionText;
+    }
 }

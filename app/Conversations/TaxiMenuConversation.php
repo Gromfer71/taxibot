@@ -173,12 +173,13 @@ class TaxiMenuConversation extends BaseAddressConversation
     public function addAdditionalAddressAgain()
     {
         $this->_sayDebug('addAdditionalAddressAgain');
-        $questionText = $this->addAddressesToMessage(trans('messages.give address again'));
+
+
+        $addressesList = collect(Address::getAddresses(collect($this->bot->userStorage()->get('address'))->last(), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()))->take(25);
+        $questionText = $this->addAddressesFromApi(trans('messages.give address again'), $addressesList);
         $question = Question::create($questionText, $this->bot->getUser()->getId());
-        $addressesList = collect(Address::getAddresses(collect($this->bot->userStorage()->get('address'))->last(), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
         $question->addButton(Button::create(trans('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses']));
         if ($addressesList->isNotEmpty()) {
-            $addressesList = $addressesList->take(25);
             foreach ($addressesList as $key => $address) {
                 $question->addButton(Button::create(Address::toString($address))->value(Address::toString($address))->additionalParameters(['number' => $key + 1]));
             }
