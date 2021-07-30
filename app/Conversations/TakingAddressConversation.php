@@ -113,15 +113,17 @@ class TakingAddressConversation extends BaseAddressConversation
     public function getAddressAgain()
     {
         $this->_sayDebug('getAddressAgain');
-        $question = Question::create(trans('messages.give address again'), $this->bot->getUser()->getId());
-        $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
+
+        $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()))->take(25);
+        $questionText = $this->addAddressesFromApi(trans('messages.give address again'), $addressesList);
+        $question = Question::create($questionText, $this->bot->getUser()->getId());
         $this->_sayDebug('getAddressAgain2');
         $question->addButton(Button::create(trans('buttons.exit'))->value('exit'));
         if ($addressesList->isNotEmpty()) {
             $this->_sayDebug('addressesList->isNotEmpty');
-            $addressesList = $addressesList->take(25);
-            foreach ($addressesList as $address) {
-                $question->addButton(Button::create(Address::toString($address))->value(Address::toString($address)));
+
+            foreach ($addressesList as $key => $address) {
+                $question->addButton(Button::create(Address::toString($address))->value(Address::toString($address))->additionalParameters(['number' => $key + 1]));;
             }
         } else {
             $this->_sayDebug('addressesList->isEmpty');
