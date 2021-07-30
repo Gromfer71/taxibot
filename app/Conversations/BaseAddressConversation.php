@@ -182,7 +182,7 @@ abstract class BaseAddressConversation extends BaseConversation
                 $questionText .= $key+1 .' ⭐️ ' .$address->name . ' ' . $address->address . "\n";
             }
 
-            if(!isset($key)) $key = 0;
+           $key = $this->getUser()->favoriteAddresses->count();
 
             foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
                 $questionText .= $historyAddressKey + $key+1 . ' ' . $address->address . "\n";
