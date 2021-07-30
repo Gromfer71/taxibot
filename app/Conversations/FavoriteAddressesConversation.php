@@ -84,7 +84,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         $questionText = $this->addAddressesToMessageOnlyFromHistory(trans('messages.give me your favorite address'));
         $question = Question::create($questionText, $this->bot->getUser()->getId())
             ->addButton(Button::create(trans('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
-        $question = $this->_addAddressHistoryButtons($question);
+        $question = $this->_addAddressHistoryButtons($question, true);
 
         return $this->ask($question, function (Answer $answer) {
             Log::newLogAnswer($this->bot, $answer);

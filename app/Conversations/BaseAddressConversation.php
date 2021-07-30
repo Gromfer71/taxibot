@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Conversations;
 
 
@@ -20,7 +21,8 @@ use Illuminate\Support\Str;
 abstract class BaseAddressConversation extends BaseConversation
 {
 
-    public function _hasEntrance($address){
+    public function _hasEntrance($address)
+    {
         return Str::contains($address, AddressHistory::ENTRANCE_SIGNATURE);
     }
 
@@ -32,31 +34,36 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function _getAddressFromHistoryByAnswer(Answer $answer)
     {
-        $address =  AddressHistory::getAddressFromAnswer($answer);
+        $address = AddressHistory::getAddressFromAnswer($answer);
 
-            if(!$address) {
-                $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->getUser()->id])->get()->first();
-                if(!$address) {
-                    $address = FavoriteAddress::where(['address' => $answer->getText(), 'user_id' => $this->getUser()->id])->get()->first();
-                }
+        if (!$address) {
+            $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->getUser()->id])->get()->first();
+            if (!$address) {
+                $address = FavoriteAddress::where(['address' => $answer->getText(), 'user_id' => $this->getUser()->id])->get()->first();
             }
+        }
 
         if ($address) $address->touch();
 
         return $address;
     }
 
-    public function _addAddressHistoryButtons($question)
+    public function _addAddressHistoryButtons($question, $numberWithoutFavorite = false)
     {
         $addressHistory = AddressHistory::where('user_id', $this->getUser()->id)
             ->orderBy('updated_at', 'desc')
-
             ->take(10)
             ->get();
 
         if ($addressHistory->isNotEmpty()) {
-            $favoritesAddressesCount = FavoriteAddress::where('user_id', $this->getUser()->id)
-                ->take(10)->count();
+
+            if ($numberWithoutFavorite) {
+                $favoritesAddressesCount = 0;
+            } else {
+                $favoritesAddressesCount = FavoriteAddress::where('user_id', $this->getUser()->id)
+                    ->take(10)->count();
+
+            }
 
             foreach ($addressHistory as $key => $address) {
                 $question = $question->addButton(Button::create($address->address)->value($address->address)->additionalParameters(['number' => $favoritesAddressesCount + $key + 1]));
@@ -79,60 +86,63 @@ abstract class BaseAddressConversation extends BaseConversation
         return $question;
     }
 
-    public function _addToLastAnotherAddress($answer){
+    public function _addToLastAnotherAddress($answer)
+    {
 
-        $data =   collect($this->bot->userStorage()->get('address'));
+        $data = collect($this->bot->userStorage()->get('address'));
         $lastAnotherAddress = $data->pop();
-        $data =  $data->push($lastAnotherAddress.$answer->getText());
+        $data = $data->push($lastAnotherAddress . $answer->getText());
 
 
         $this->_sayDebug('Сохраняем дополнительный адрес - ' . json_encode($data, JSON_UNESCAPED_UNICODE));
-        $this->bot->userStorage()->save( [ 'address' =>$data]);
+        $this->bot->userStorage()->save(['address' => $data]);
     }
 
-    public function _forgetLastAddress(){
-        $data =  [
+    public function _forgetLastAddress()
+    {
+        $data = [
             'address' => collect($this->bot->userStorage()->get('address')),
-            'lat'     => collect($this->bot->userStorage()->get('lat')),
-            'lon'     => collect($this->bot->userStorage()->get('lon'))
+            'lat' => collect($this->bot->userStorage()->get('lat')),
+            'lon' => collect($this->bot->userStorage()->get('lon'))
         ];
-        foreach ($data as $item){
+        foreach ($data as $item) {
             $item->pop();
         }
         $this->_sayDebug('Забываем введенный адрес - ' . json_encode($data, JSON_UNESCAPED_UNICODE));
         $this->bot->userStorage()->save($data);
     }
 
-    public function _saveAnotherAddress($answer,$lat = 0,$lon = 0,$withForgetLast = false){
-        if (!is_string($answer)){
+    public function _saveAnotherAddress($answer, $lat = 0, $lon = 0, $withForgetLast = false)
+    {
+        if (!is_string($answer)) {
             $answer = $answer->getText();
         }
-        if ($withForgetLast){
-            $data =  [
+        if ($withForgetLast) {
+            $data = [
                 'address' => collect($this->bot->userStorage()->get('address')),
-                'lat'     => collect($this->bot->userStorage()->get('lat')),
-                'lon'     => collect($this->bot->userStorage()->get('lon'))
+                'lat' => collect($this->bot->userStorage()->get('lat')),
+                'lon' => collect($this->bot->userStorage()->get('lon'))
             ];
-            foreach ($data as $item){
+            foreach ($data as $item) {
                 $item->pop();
             }
-        } else{
-            $data =  [
+        } else {
+            $data = [
                 'address' => collect($this->bot->userStorage()->get('address')),
-                'lat'     => collect($this->bot->userStorage()->get('lat')),
-                'lon'     => collect($this->bot->userStorage()->get('lon'))
+                'lat' => collect($this->bot->userStorage()->get('lat')),
+                'lon' => collect($this->bot->userStorage()->get('lon'))
             ];
 
         }
-        $data['address'] =  $data['address']->push($answer);
-        $data['lat'] =  $data['lat']->push($lat);
-        $data['lon'] =  $data['lon']->push($lon);
+        $data['address'] = $data['address']->push($answer);
+        $data['lat'] = $data['lat']->push($lat);
+        $data['lon'] = $data['lon']->push($lon);
 
         $this->_sayDebug('Сохраняем дополнительный адрес - ' . json_encode($data, JSON_UNESCAPED_UNICODE));
         $this->bot->userStorage()->save($data);
     }
 
-    public function _saveFirstAddress($address, $crew_group_id = false, $lat = 0, $lon = 0,$city='')
+    public function _saveFirstAddress($address, $crew_group_id = false, $lat = 0, $lon = 0, $city = '')
     {
         if (!$crew_group_id) {
             $user = User::find($this->bot->getUser()->getId());
@@ -175,17 +185,17 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function addAddressesToMessage($questionText)
     {
-        if(property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+        if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
             $questionText .= "\n";
             $this->_sayDebug('property exists');
             foreach ($this->getUser()->favoriteAddresses as $key => $address) {
-                $questionText .= $key+1 .' ⭐️ ' .$address->name . ' ' . $address->address . "\n";
+                $questionText .= $key + 1 . ' ⭐️ ' . $address->name . ' ' . $address->address . "\n";
             }
 
-           $key = $this->getUser()->favoriteAddresses->count();
+            $key = $this->getUser()->favoriteAddresses->count();
 
             foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
-                $questionText .= $historyAddressKey + $key+1 . ' ' . $address->address . "\n";
+                $questionText .= $historyAddressKey + $key + 1 . ' ' . $address->address . "\n";
             }
         }
 
@@ -194,11 +204,11 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function addAddressesToMessageOnlyFromHistory($questionText)
     {
-        if(property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+        if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
             $questionText .= "\n";
 
             foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
-                $questionText .= $historyAddressKey+1 . ' ' . $address->address . "\n";
+                $questionText .= $historyAddressKey + 1 . ' ' . $address->address . "\n";
             }
         }
 
