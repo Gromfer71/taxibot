@@ -179,8 +179,8 @@ class TaxiMenuConversation extends BaseAddressConversation
         $question->addButton(Button::create(trans('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses']));
         if ($addressesList->isNotEmpty()) {
             $addressesList = $addressesList->take(25);
-            foreach ($addressesList as $address) {
-                $question->addButton(Button::create(Address::toString($address))->value(Address::toString($address)));
+            foreach ($addressesList as $key => $address) {
+                $question->addButton(Button::create(Address::toString($address))->value(Address::toString($address))->additionalParameters(['number' => $key + 1]));
             }
         } else {
             $this->streetNotFoundAdditionalAddress();
