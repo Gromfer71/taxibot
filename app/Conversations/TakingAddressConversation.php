@@ -118,7 +118,7 @@ class TakingAddressConversation extends BaseAddressConversation
         $questionText = $this->addAddressesFromApi(trans('messages.give address again'), $addressesList);
         $question = Question::create($questionText, $this->bot->getUser()->getId());
         $this->_sayDebug('getAddressAgain2');
-        $question->addButton(Button::create(trans('buttons.exit'))->value('exit'));
+        $question->addButton(Button::create(trans('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
         if ($addressesList->isNotEmpty()) {
             $this->_sayDebug('addressesList->isNotEmpty');
 
