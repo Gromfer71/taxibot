@@ -126,16 +126,15 @@ class FavoriteAddressesConversation extends BaseAddressConversation
     {
         $this->_sayDebug('getAddressAgain');
 
-        $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()));
+        $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()))->take(25);
         $questionText = $this->addAddressesFromApi(trans('messages.give favorite address again'), $addressesList);
         $question = Question::create($questionText, $this->bot->getUser()->getId());
         $this->_sayDebug('getAddressAgain2');
         $question->addButton(Button::create(trans('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
         if ($addressesList->isNotEmpty()) {
             $this->_sayDebug('addressesList->isNotEmpty');
-            $addressesList = $addressesList->take(25);
             foreach ($addressesList as $key => $address) {
-                $question->addButton(Button::create(Address::toString($address))->additionalParameters(['number' => $key + 1]));
+                $question->addButton(Button::create(Address::toString($address))->value(Address::toString($address))->additionalParameters(['number' => $key + 1]));
             }
         } else {
             $this->_sayDebug('addressesList->isEmpty');
