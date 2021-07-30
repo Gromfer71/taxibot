@@ -14,6 +14,7 @@ use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -219,6 +220,7 @@ abstract class BaseAddressConversation extends BaseConversation
     {
         if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
             $questionText .= "\n";
+            $addresses = $addresses->values();
 
             foreach ($addresses as $key => $address) {
                 $questionText .= $key + 1 . ' ' . Address::toString($address) . "\n";
