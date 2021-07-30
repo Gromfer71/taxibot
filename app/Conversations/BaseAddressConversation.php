@@ -185,7 +185,7 @@ abstract class BaseAddressConversation extends BaseConversation
             if(!isset($key)) $key = 0;
 
             foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
-                $questionText .= $historyAddressKey+1 + $key+1 . ' ' . $address->address . "\n";
+                $questionText .= $historyAddressKey + $key+1 . ' ' . $address->address . "\n";
             }
         }
 
