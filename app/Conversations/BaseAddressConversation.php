@@ -54,7 +54,7 @@ abstract class BaseAddressConversation extends BaseConversation
         $addressHistory = AddressHistory::where('user_id', $this->getUser()->id)
             ->orderBy('updated_at', 'desc')
             ->take(10)
-            ->get();
+            ->get()->values();
 
         if ($addressHistory->isNotEmpty()) {
 
@@ -77,7 +77,7 @@ abstract class BaseAddressConversation extends BaseConversation
     {
         $favoriteAddresses = FavoriteAddress::where('user_id', $this->getUser()->id)
             ->take(10)
-            ->get();
+            ->get()->values();
 
         if ($favoriteAddresses->isNotEmpty()) {
             foreach ($favoriteAddresses as $key => $address) {
