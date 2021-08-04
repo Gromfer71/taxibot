@@ -67,7 +67,7 @@ abstract class BaseAddressConversation extends BaseConversation
             }
 
             foreach ($addressHistory as $key => $address) {
-                $question = $question->addButton(Button::create($address->address)->value($address->address)->additionalParameters(['number' => $favoritesAddressesCount + $key]));
+                $question = $question->addButton(Button::create($address->address)->value($address->address)->additionalParameters(['number' => $favoritesAddressesCount + $key + 1]));
             }
         }
         return $question;
