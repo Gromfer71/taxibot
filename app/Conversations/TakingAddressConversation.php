@@ -42,7 +42,8 @@ class TakingAddressConversation extends BaseAddressConversation
 
 
         return $this->ask($question, function (Answer $answer) {
-
+            $this->_sayDebug($answer->getText());
+            $this->_sayDebug($answer->getValue());
             Log::newLogAnswer($this->bot, $answer);
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() == 'exit') {
