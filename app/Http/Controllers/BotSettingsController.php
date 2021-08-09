@@ -17,7 +17,7 @@ class BotSettingsController extends Controller
 
     public function index()
     {
-        return view('adminPanel.bot_settings', ['admins' => Admin::all()->pluck('phone', 'phone'), 'token' => Config::getToken(), 'config' => Config::getTaxibotConfig()->value]);
+        return view('adminPanel.bot_settings', ['admins' => Admin::all()->pluck('phone', 'phone'), 'token' => Config::getToken(), 'config' => json_encode(Config::getTaxibotConfig(), JSON_UNESCAPED_UNICODE)]);
     }
 
     public function changeToken(Request $request)
@@ -36,9 +36,7 @@ class BotSettingsController extends Controller
     public function changeConfigFile(Request $request)
     {
         if($request->get('config')) {
-            $token = Config::getTaxibotConfig();
-
-            $token->setValue($request->get('config'));
+            Config::setTaxibotConfig($request->get('config'));
 
             return back()->with('ok', 'Успешно');
 

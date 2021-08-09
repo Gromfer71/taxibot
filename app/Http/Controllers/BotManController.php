@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Conversations\ExampleConversation;
 use App\Conversations\StartConversation;
+use App\Models\Config;
 use App\Models\OrderHistory;
 use App\Services\OrderApiService;
 use BotMan\BotMan\BotMan;
@@ -28,8 +29,10 @@ class BotManController extends Controller
      */
     public function tinker()
     {
+
         return view('tinker');
     }
+
 
     /**
      * Loaded through routes/botman.php

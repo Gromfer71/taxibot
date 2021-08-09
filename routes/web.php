@@ -45,10 +45,6 @@ Route::group(['midlleware' => 'auth'], function() {
     Route::get('users/{id}/orders/clear', 'UserController@ordersClear')->name('user_orders_clear');
     Route::get('users/{id}/addresses/clear', 'UserController@addressesClear')->name('user_addresses_clear');
 
-    Route::get('/bot_config', function () {
-        return \App\Models\Config::getTaxibotConfig()->value;
-    });
-
 
     Route::get('test', function () {
         return view('test');

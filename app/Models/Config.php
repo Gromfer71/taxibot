@@ -115,7 +115,12 @@ class Config extends Model
 
     public static function getTaxibotConfig()
     {
-        return json_encode(self::where('name', 'config')->first(), JSON_UNESCAPED_UNICODE);
+        return  json_decode(file_get_contents( '../config/taxi_config.json'));
+    }
+
+    public static function setTaxibotConfig($data)
+    {
+        file_put_contents('../config/taxi_config.json', $data);
     }
 
 

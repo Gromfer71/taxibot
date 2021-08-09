@@ -3,6 +3,7 @@
 
 namespace App\Services;
 
+use App\Models\Config;
 use App\Models\Log;
 use BotMan\BotMan\Storages\Storage;
 
@@ -14,13 +15,12 @@ class Options
 	private $options;
 	public function __construct(Storage $storage)
 	{
-		if(!$storage->get('options')) {
+		if(!json_decode(file_get_contents(route('bot_config')))) {
 			//$this->options = json_decode(file_get_contents(config('app.config_file')));
 			$this->options = json_decode(file_get_contents('https://sk-taxi.ru/tmfront/config.json'));
 			
 		} else {
-			$this->options = json_decode($storage->get('options'));
-			\Illuminate\Support\Facades\Log::critical($storage->get('options'));
+			$this->options = Config::getTaxibotConfig();
 		}
 	}
 

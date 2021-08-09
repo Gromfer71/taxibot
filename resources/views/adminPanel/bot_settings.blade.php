@@ -29,8 +29,8 @@
             <div class="mb-3">
             @csrf
             <label for="config">Файл конфигурации</label>
-            <textarea type="text" name="config" placeholder="Ссылка на файл конфигурации (json)" required
-                   style="height: 500px;" class="form-control">{{ $config }}</textarea>
+            <pre><textarea type="text" name="config" id="settings" required
+                                 style="height: 500px;" class="form-control">{{ $config }}</textarea></pre>
             
             </div>
             <button type="submit" class="btn btn-primary">Сохранить</button>
@@ -54,6 +54,20 @@
 @push('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("setting").value = JSON.stringify(JSON.parse(document.getElementById("settings").value), null ,2)
+             var settings = null;
+
+            try {
+                settings = JSON.parse(field.value);
+            }
+            catch (error) {
+                if (error instanceof SyntaxError) {
+                    alert("There was a syntax error. Please correct it and try again: " + error.message);
+                }
+                else {
+                    throw error;
+                }
+            }
             new FancyGrid({
                 theme: 'bootstrap',
                 renderTo: 'container',
