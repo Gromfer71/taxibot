@@ -48,8 +48,8 @@
   'address history menu' => 'Удаление истории адресов',
   'need map' => 'Посмотреть где моя тачка',
   'delete' => 'Удалить',
-    'favorite addresses menu' => 'Меню избранных адресов',
-    'save as written' => 'Сохранить как написано',
-    'save' => 'Сохранить',
-    'cancel' => 'Отменить',
+  'favorite addresses menu' => 'Меню избранных адресов',
+  'save as written' => 'Сохранить как написано',
+  'save' => 'Сохранить',
+  'cancel' => 'Отменить',
 );
