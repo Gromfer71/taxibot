@@ -329,8 +329,8 @@ class TaxiMenuConversation extends BaseAddressConversation
                     } elseif ($answer->getValue() == 'change price') {
                         $this->changePriceInOrderMenu();
                     } elseif ($answer->getValue() == 'need dispatcher') {
+                        $this->getUser()->setUserNeedDispatcher();
 						$this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-                        $api->connectDispatcher(User::find($this->bot->getUser()->getId())->phone);
                         $this->currentOrderMenu(true,true);
                     } elseif ($answer->getValue() == 'order_confirm') {
                         $order = OrderHistory::getActualOrder($this->bot->getUser()->getId());
@@ -360,8 +360,8 @@ class TaxiMenuConversation extends BaseAddressConversation
                         $this->bot->say(trans('messages.thx for order'),$this->bot->getUser()->getId());
                         $this->bot->startConversation(new \App\Conversations\StartConversation());
                     } elseif ($answer->getValue() == 'need dispatcher') {
+                        $this->getUser()->setUserNeedDispatcher();
                         $this->say(trans('messages.wait for dispatcher'),$this->bot->getUser()->getId());
-                        $api->connectDispatcher(User::find($this->bot->getUser()->getId())->phone);                       
                         $this->bot->startConversation(new \App\Conversations\ClientGoesOutConversation());
                     }  else {
                        $this->_fallback($answer);
@@ -424,10 +424,9 @@ class TaxiMenuConversation extends BaseAddressConversation
                     $this->cancelOrder();
                     return;
                 }  elseif ($answer->getValue() == 'need dispatcher') {
-                    $api = new OrderApiService();
 					  $this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-                    $api->connectDispatcher(User::find($this->bot->getUser()->getId())->phone);
-                    $this->currentOrderMenu(true,true);
+                        $this->getUser()->setUserNeedDispatcher();
+                        $this->currentOrderMenu(true,true);
                     return;
                 } elseif ($answer->getValue() == 'order_confirm') {
                     $order = OrderHistory::getActualOrder($this->bot->getUser()->getId());
@@ -468,7 +467,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                 } elseif ($answer->getValue() == 'need dispatcher') {
                     $api = new OrderApiService();
 					$this->say(trans('messages.wait for dispatcher'),$this->bot->getUser()->getId());
-                    $api->connectDispatcher(User::find($this->bot->getUser()->getId())->phone);
+                    $this->getUser()->setUserNeedDispatcher();
                     $this->bot->startConversation(new \App\Conversations\ClientGoesOutConversation());
                     return;
                 }

@@ -108,4 +108,10 @@ class User extends Model
         }
     }
 
+    public function setUserNeedDispatcher()
+    {
+        $this->need_call =  1;
+        $this->save();
+    }
+
 }

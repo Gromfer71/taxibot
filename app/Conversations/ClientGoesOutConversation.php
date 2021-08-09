@@ -42,9 +42,8 @@ class ClientGoesOutConversation extends BaseAddressConversation
 					if ($order) $order->finishOrder();
 					$this->end();
 				} elseif ($answer->getValue() == 'need dispatcher') {
-					$api = new OrderApiService();
 					$this->say(trans('messages.wait for dispatcher'),$this->bot->getUser()->getId());
-					$api->connectDispatcher(User::find($this->bot->getUser()->getId())->phone);
+                    $this->getUser()->setUserNeedDispatcher();
 					$this->inWay(true);
 				} elseif($answer->getValue() == 'cancel order') {
                     if ($order) $order->cancelOrder();

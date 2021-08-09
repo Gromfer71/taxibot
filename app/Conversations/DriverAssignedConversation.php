@@ -50,9 +50,8 @@ class DriverAssignedConversation extends BaseConversation
                     } elseif($answer->getValue() == 'order_confirm') {
                         $this->confirmOrder(false);
                     } elseif ($answer->getValue() == 'need dispatcher') {
-                        $api = new OrderApiService();
 						$this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-                        $api->connectDispatcher(User::find($this->bot->getUser()->getId())->phone);
+                        $this->getUser()->setUserNeedDispatcher();
                         $this->confirmOrder(true);
                     } elseif($answer->getValue() == 'client_goes_out') {
                         $api = new OrderApiService();
