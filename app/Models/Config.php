@@ -115,7 +115,7 @@ class Config extends Model
 
     public static function getTaxibotConfig()
     {
-        return self::where('name', 'config')->first();
+        return json_encode(self::where('name', 'config')->first(), JSON_UNESCAPED_UNICODE);
     }
 
 
