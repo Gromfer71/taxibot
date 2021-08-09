@@ -41,7 +41,7 @@ class UserController extends Controller
                 $item->wishes = MessageGeneratorService::escape($item->wishes);
                 $item->comment = MessageGeneratorService::escape($item->comment);
             });
-            $config = json_decode(Config::getTaxibotConfig()->value);
+            $config = Config::getTaxibotConfig();
             $prices = array_merge($config->overpriceOptions, $config->overpriceOptionsAfterOrderCreated);
 
             return view('users.user', ['orders' => $orders->toJson(), 'addresses' => json_encode($user->addresses, JSON_UNESCAPED_SLASHES), 'user' => $user, 'prices' => json_encode($prices)]);
