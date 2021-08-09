@@ -1,5 +1,5 @@
 {
-  "production": true,
+  "production": false,
   "serverTimezone": 9,
   "minPrice": 100,
   "cities": [
