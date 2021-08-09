@@ -130,13 +130,15 @@ class MenuConversation extends BaseConversation
 
     public function addressesMenu()
     {
-        $question = Question::create(trans('messages.addresses menu'), $this->bot->getUser()->getId());
-        $question->addButton(Button::create(trans('buttons.back'))->value('back'));
+        $questionText = trans('messages.addresses menu');
+        $questionText = $this->addAddressesToMessageOnlyFromHistory($questionText);
+        $question = Question::create($questionText);
+        $question->addButton(Button::create(trans('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses']));
         $question->addButton(Button::create(trans('buttons.clean addresses history'))->value('clean addresses history'));
 
         $user = User::find($this->bot->getUser()->getId());
-        foreach ($user->addresses ?? [] as $address) {
-            $question->addButton(Button::create($address->address)->value($address->address));
+        foreach ($user->addresses ?? [] as $key => $address) {
+            $question->addButton(Button::create($address->address)->value($address->address)->additionalParameters(['number' => $key + 1]));
         }
 
 

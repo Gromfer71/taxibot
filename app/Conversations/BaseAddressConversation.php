@@ -178,49 +178,5 @@ abstract class BaseAddressConversation extends BaseConversation
         $this->bot->userStorage()->save($data);
     }
 
-    public function addAddressesToMessage($questionText)
-    {
-        if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
-            $questionText .= "\n";
-            $this->_sayDebug('property exists');
-            foreach ($this->getUser()->favoriteAddresses as $key => $address) {
-                $questionText .= $key + 1 . ' ⭐️ ' . $address->name . ' ' . $address->address . "\n";
-            }
 
-            $key = $this->getUser()->favoriteAddresses->count();
-
-            foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
-                $questionText .= $historyAddressKey + $key + 1 . ' ' . $address->address . "\n";
-            }
-        }
-
-        return $questionText;
-    }
-
-    public function addAddressesToMessageOnlyFromHistory($questionText)
-    {
-        if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
-            $questionText .= "\n";
-
-            foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
-                $questionText .= $historyAddressKey + 1 . ' ' . $address->address . "\n";
-            }
-        }
-
-        return $questionText;
-    }
-
-    public function addAddressesFromApi($questionText, $addresses)
-    {
-        if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
-            $questionText .= "\n";
-            $addresses = $addresses->values();
-
-            foreach ($addresses as $key => $address) {
-                $questionText .= $key + 1 . ' ' . Address::toString($address) . "\n";
-            }
-        }
-
-        return $questionText;
-    }
 }
