@@ -54,20 +54,11 @@
 @push('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById("setting").value = JSON.stringify(JSON.parse(document.getElementById("settings").value), null ,2)
-             var settings = null;
 
-            try {
-                settings = JSON.parse(field.value);
-            }
-            catch (error) {
-                if (error instanceof SyntaxError) {
-                    alert("There was a syntax error. Please correct it and try again: " + error.message);
-                }
-                else {
-                    throw error;
-                }
-            }
+            var myJsObj = JSON.parse($('#settings').val())
+            var str = JSON.stringify(myJsObj, undefined, 2);
+            $('#settings').val(str)
+
             new FancyGrid({
                 theme: 'bootstrap',
                 renderTo: 'container',
