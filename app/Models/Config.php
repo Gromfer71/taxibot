@@ -116,14 +116,14 @@ class Config extends Model
 
     public static function getTaxibotConfig()
     {
-        $config = json_decode(File::get(storage_path('taxi_config.json')));
+        $config = json_decode(File::get(storage_path('app/taxi_config.json')));
 
         return $config;
     }
 
     public static function setTaxibotConfig($data)
     {
-        file_put_contents(storage_path('taxi_config.json'), $data);
+        file_put_contents(storage_path('app/taxi_config.json'), $data);
     }
 
 
