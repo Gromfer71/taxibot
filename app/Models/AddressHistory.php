@@ -57,9 +57,9 @@ class AddressHistory extends Model
         }
     }
 
-    public static function getAddressFromAnswer(Answer $answer)
+    public static function getAddressFromAnswer(Answer $answer, $userId)
     {
-        return self::where('address', $answer->getText())->first();
+        return self::where(['address' => $answer->getText(), 'user_id' => $userId])->first();
     }
 
 }

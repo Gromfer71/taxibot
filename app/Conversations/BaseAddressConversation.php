@@ -35,7 +35,7 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function _getAddressFromHistoryByAnswer(Answer $answer)
     {
-        $address = AddressHistory::getAddressFromAnswer($answer);
+        $address = AddressHistory::getAddressFromAnswer($answer, $this->getUser()->id);
 
         if (!$address) {
             $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->getUser()->id])->get()->first();
