@@ -3,6 +3,7 @@
 
 namespace App\Services;
 
+use App\Models\Log;
 use BotMan\BotMan\Storages\Storage;
 
 /**
@@ -19,6 +20,7 @@ class Options
 			
 		} else {
 			$this->options = json_decode($storage->get('options'));
+			\Illuminate\Support\Facades\Log::critical($this->options);
 		}
 	}
 
