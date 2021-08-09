@@ -15,7 +15,7 @@ class Options
 	private $options;
 	public function __construct(Storage $storage)
 	{
-		if(!json_decode(file_get_contents(route('bot_config')))) {
+		if(!Config::getTaxibotConfig()) {
 			//$this->options = json_decode(file_get_contents(config('app.config_file')));
 			$this->options = json_decode(file_get_contents('https://sk-taxi.ru/tmfront/config.json'));
 			
