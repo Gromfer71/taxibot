@@ -20,7 +20,7 @@ class Options
 			
 		} else {
 			$this->options = json_decode($storage->get('options'));
-			\Illuminate\Support\Facades\Log::critical($this->options);
+			\Illuminate\Support\Facades\Log::critical($storage->get('options'));
 		}
 	}
 
