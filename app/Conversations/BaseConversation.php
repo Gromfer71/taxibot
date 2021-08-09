@@ -36,7 +36,7 @@ abstract class BaseConversation extends Conversation
     public function _loadConfig(){
         $this->_sayDebug('Стартуем загрузку конфига');
         //$this->bot->channelStorage()->save(['options' => file_get_contents('https://sk-taxi.ru/tmfront/config.json'),'optionsDate' => time()]);
-        $this->bot->channelStorage()->save(['options' => Config::getTaxibotConfig(),'optionsDate' => time()]);
+        $this->bot->channelStorage()->save(['options' => json_encode(Config::getTaxibotConfig()),'optionsDate' => time()]);
         $this->_sayDebug('Конфиг загружен');
     }
 
