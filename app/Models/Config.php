@@ -115,7 +115,11 @@ class Config extends Model
 
     public static function getTaxibotConfig()
     {
-        return  json_decode(file_get_contents( '../config/taxi_config.json'));
+        $config = json_decode(file_get_contents( '../config/taxi_config.json'));
+        if(!$config) {
+            $config = json_decode(file_get_contents( '/config/taxi_config.json'));
+        }
+        return $config;
     }
 
     public static function setTaxibotConfig($data)
