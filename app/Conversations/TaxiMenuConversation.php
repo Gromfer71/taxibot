@@ -644,13 +644,13 @@ class TaxiMenuConversation extends BaseAddressConversation
 
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
         if ($haveEndAddress) {
-            $question = $question->addButtons([Button::create(trans('buttons.go for cash'))->additionalParameters(['config' => ButtonsFormatterService::WISH_MENU_FORMAT_WITH_BONUSES])->value('go for cash'),
+            $question = $question->addButtons([Button::create(trans('buttons.go for cash'))->additionalParameters(['config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT])->value('go for cash'),
                                                Button::create(trans('buttons.go for bonuses'))->value('go for bonuses'),
                                                Button::create(trans('buttons.back'))->value('back'),
                                                Button::create(trans('buttons.cancel last wish'))->value('cancel last wish')
                 ]);
         } else {
-            $question = $question->addButtons([Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::WISH_MENU_FORMAT])->value('back'),
+            $question = $question->addButtons([Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT])->value('back'),
                 Button::create(trans('buttons.go for cash'))->value('go for cash'),
                 Button::create(trans('buttons.cancel last wish'))->value('cancel last wish')
             ]);
