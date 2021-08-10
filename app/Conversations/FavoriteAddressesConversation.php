@@ -81,9 +81,9 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
         $this->bot->userStorage()->save(['district' => $district]);
         $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
-        $questionText = $this->addAddressesToMessageOnlyFromHistory(trans('messages.give me your favorite address'));
+        $questionText = trans('messages.give me your favorite address');
         $question = Question::create($questionText, $this->bot->getUser()->getId())
-            ->addButton(Button::create(trans('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
+            ->addButton(Button::create(trans('buttons.exit'))->value('exit'));
         $question = $this->_addAddressHistoryButtons($question, true);
 
         return $this->ask($question, function (Answer $answer) {
@@ -127,14 +127,14 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         $this->_sayDebug('getAddressAgain');
 
         $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()))->take(25);
-        $questionText = $this->addAddressesFromApi(trans('messages.give favorite address again'), $addressesList);
+        $questionText = trans('messages.give favorite address again');
         $question = Question::create($questionText, $this->bot->getUser()->getId());
         $this->_sayDebug('getAddressAgain2');
-        $question->addButton(Button::create(trans('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
+        $question->addButton(Button::create(trans('buttons.exit'))->value('exit'));
         if ($addressesList->isNotEmpty()) {
             $this->_sayDebug('addressesList->isNotEmpty');
             foreach ($addressesList as $key => $address) {
-                $question->addButton(Button::create(Address::toString($address))->value(Address::toString($address))->additionalParameters(['number' => $key + 1]));
+                $question->addButton(Button::create(Address::toString($address))->value(Address::toString($address)));
             }
         } else {
             $this->_sayDebug('addressesList->isEmpty');
