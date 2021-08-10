@@ -87,7 +87,8 @@ class MenuConversation extends BaseConversation
                 } elseif ($answer->getValue() == 'change phone number') {
                     $this->confirmPhone();
                 } elseif ($answer->getValue() == 'request call') {
-                    $user->setUserNeedDispatcher();
+                    $user->need_call = 1;
+                    $user->save();
                     $this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
                     $this->menu(true);
                 } elseif ($answer->getValue() == 'price list') {
