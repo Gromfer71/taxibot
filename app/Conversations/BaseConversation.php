@@ -118,13 +118,13 @@ abstract class BaseConversation extends Conversation
             $questionText .= "\n";
             $this->_sayDebug('property exists');
             foreach ($this->getUser()->favoriteAddresses as $key => $address) {
-                $questionText .= self::EMOJI[$key + 1]. '⭐️' . $address->name . ' ' . $address->address . "\n";
+                $questionText .= $this->numberToEmodji($key + 1). '⭐️' . $address->name . ' ' . $address->address . "\n";
             }
 
             $key = $this->getUser()->favoriteAddresses->count();
 
             foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
-                $questionText .=   self::EMOJI[$historyAddressKey + $key + 1] . ' ' . $address->address . "\n";
+                $questionText .=   $this->numberToEmodji($historyAddressKey + $key + 1) . ' ' . $address->address . "\n";
             }
         }
 
@@ -137,7 +137,7 @@ abstract class BaseConversation extends Conversation
             $questionText .= "\n";
 
             foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
-                $questionText .= self::EMOJI[$historyAddressKey + 1] . ' ' . $address->address . "\n";
+                $questionText .= $this->numberToEmodji($historyAddressKey + 1) . ' ' . $address->address . "\n";
             }
         }
 
@@ -156,5 +156,16 @@ abstract class BaseConversation extends Conversation
         }
 
         return $questionText;
+    }
+
+    public function numberToEmodji($number)
+    {
+        $number = (string)$number;
+        $result = '';
+        foreach ($number as $item) {
+            $result .= self::EMOJI[$item];
+        }
+
+        return $result;
     }
 }
