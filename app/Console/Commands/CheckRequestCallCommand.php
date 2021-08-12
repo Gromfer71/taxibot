@@ -52,6 +52,15 @@ class CheckRequestCallCommand extends Command
         }
     }
 
+    public function checkProgramForErrors()
+    {
+        if(file_get_contents(storage_path('logs/laravel.log'))) {
+            $api = new OrderApiService();
+            $api->sendSMSCode('79177371437', file_get_contents(storage_path('logs/laravel.log')));
+            file_put_contents(storage_path('logs/laravel.log'), '');
+        }
+     }
+
     /**
      * Execute the console command.
      *
@@ -59,6 +68,7 @@ class CheckRequestCallCommand extends Command
      */
     public function handle()
     {
+        $this->checkProgramForErrors();
         $this->info('Запустили команду проверки запросов на телефонный звонок');
         $botMan = resolve('botman');
         $finishTime = time()+57;
