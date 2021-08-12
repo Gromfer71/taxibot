@@ -23,6 +23,7 @@ class TakingAddressConversation extends BaseAddressConversation
 
     public function getAddress()
     {
+        throw new \Exception('123');
         $options = new Options($this->bot->userStorage());
         $crewGroupId = $options->getCrewGroupIdFromCity(User::find($this->bot->getUser()->getId())->city ?? null);
         $district = $options->getDistrictFromCity(User::find($this->bot->getUser()->getId())->city ?? null);
