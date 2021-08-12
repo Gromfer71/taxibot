@@ -91,7 +91,7 @@ class OrderApiService
         if (config('app.debug')){
             $client_id = 275190;
         } else {
-            $client_id =$user->server_id;
+            $client_id = $user->server_id;
         }
         $params = [
             'method'  => 'POST',
