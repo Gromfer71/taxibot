@@ -118,7 +118,7 @@ abstract class BaseConversation extends Conversation
             $questionText .= "\n";
             $this->_sayDebug('property exists');
             foreach ($this->getUser()->favoriteAddresses as $key => $address) {
-                $questionText .= self::EMOJI[$key + 1] . $address->name . ' ' . $address->address . "\n";
+                $questionText .= self::EMOJI[$key + 1]. '⭐️' . $address->name . ' ' . $address->address . "\n";
             }
 
             $key = $this->getUser()->favoriteAddresses->count();
