@@ -161,6 +161,7 @@ abstract class BaseConversation extends Conversation
     public function numberToEmodji($number)
     {
         $number = (string)$number;
+        $number = str_split($number);
         $result = '';
         foreach ($number as $item) {
             $result .= self::EMOJI[$item];
