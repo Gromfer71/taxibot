@@ -151,7 +151,7 @@ abstract class BaseConversation extends Conversation
             $addresses = $addresses->values();
 
             foreach ($addresses as $key => $address) {
-                $questionText .= self::EMOJI[$key + 1] . ' ' . Address::toString($address) . "\n";
+                $questionText .= self::numberToEmodji($key + 1) . ' ' . Address::toString($address) . "\n";
             }
         }
 
