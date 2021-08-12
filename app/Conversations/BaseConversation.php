@@ -17,6 +17,18 @@ use Illuminate\Support\Facades\App;
 
 abstract class BaseConversation extends Conversation
 {
+    const EMOJI = [
+      '1' =>  '1&#8419;',
+        '2' => '2&#8419;',
+        '3' => '3&#8419;',
+        '4' => '4&#8419;',
+        '5' => '5&#8419;',
+        '6' => '6&#8419;',
+        '7' => '7&#8419;',
+        '8' => '8&#8419;',
+        '9' => '9&#8419;',
+        '10' => '10&#8419;',
+    ];
     public function checkConfig(){
         if (!$this->bot->channelStorage()->get('options')) {
             $this->_sayDebug('Конфига нет');
@@ -106,13 +118,13 @@ abstract class BaseConversation extends Conversation
             $questionText .= "\n";
             $this->_sayDebug('property exists');
             foreach ($this->getUser()->favoriteAddresses as $key => $address) {
-                $questionText .= $key + 1 . ' ⭐️ ' . $address->name . ' ' . $address->address . "\n";
+                $questionText .= self::EMOJI[$key + 1] . $address->name . ' ' . $address->address . "\n";
             }
 
             $key = $this->getUser()->favoriteAddresses->count();
 
             foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
-                $questionText .= $historyAddressKey + $key + 1 . ' ' . $address->address . "\n";
+                $questionText .=   self::EMOJI[$historyAddressKey + $key + 1] . ' ' . $address->address . "\n";
             }
         }
 
@@ -125,7 +137,7 @@ abstract class BaseConversation extends Conversation
             $questionText .= "\n";
 
             foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
-                $questionText .= $historyAddressKey + 1 . ' ' . $address->address . "\n";
+                $questionText .= self::EMOJI[$historyAddressKey + 1] . ' ' . $address->address . "\n";
             }
         }
 
@@ -139,7 +151,7 @@ abstract class BaseConversation extends Conversation
             $addresses = $addresses->values();
 
             foreach ($addresses as $key => $address) {
-                $questionText .= $key + 1 . ' ' . Address::toString($address) . "\n";
+                $questionText .= self::EMOJI[$key + 1] . ' ' . Address::toString($address) . "\n";
             }
         }
 
