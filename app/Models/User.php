@@ -79,7 +79,7 @@ class User extends Model
 
     public function favoriteAddresses()
     {
-        return $this->hasMany(FavoriteAddress::class, 'user_id', 'id')->orderBy('created_at', 'desc')->take(10);
+        return $this->hasMany(FavoriteAddress::class, 'user_id', 'id')->orderBy('created_at', 'desc')->take(25);
     }
 
     public function block()
