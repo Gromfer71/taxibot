@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\App;
 abstract class BaseConversation extends Conversation
 {
     const EMOJI = [
+        '0' => '0&#8419;',
       '1' =>  '1&#8419;',
         '2' => '2&#8419;',
         '3' => '3&#8419;',
