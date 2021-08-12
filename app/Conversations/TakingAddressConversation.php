@@ -43,7 +43,7 @@ class TakingAddressConversation extends BaseAddressConversation
 
 
         return $this->ask($question, function (Answer $answer) {
-            throw new \Exception('123');
+
             Log::newLogAnswer($this->bot, $answer);
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() == 'exit') {
