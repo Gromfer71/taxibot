@@ -17,7 +17,7 @@ class StartConversation extends BaseConversation
 	public function run()
 	{
 	    if($this->bot->userStorage()->get('error')) {
-	        $this->say('Упс, произошла какая-то ошибка! Вас выбросило в главное меню.');
+	        $this->say(trans('messages.program error message'));
 	        $this->bot->userStorage()->delete('error');
         }
 	    if(!$this->bot->getUser() || !$this->bot->getUser()->getId()) {

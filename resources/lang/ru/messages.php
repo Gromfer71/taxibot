@@ -85,4 +85,5 @@
   'auto info without time' => 'К вам подъедет :auto',
   'auto waits for client' => 'Вас ожидает :auto',
     'invalid message' => 'Непонятное сообщение',
+    'program error message' => 'Упс, произошла какая-то ошибка! Вас выбросило в главное меню.',
 );
