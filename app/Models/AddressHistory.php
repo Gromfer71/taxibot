@@ -40,7 +40,7 @@ class AddressHistory extends Model
     {
        $address = Address::removeEllipsisFromAddressIfExists($address);
        $address = Address::subStrAddress($address);
-        if($address == 'Непонятное сообщение') {
+        if($address == trans('messages.invalid message')) {
             return;
         }
         if(!FavoriteAddress::where(
