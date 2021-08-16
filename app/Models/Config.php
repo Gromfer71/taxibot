@@ -90,6 +90,7 @@ class Config extends Model
         'auto info with time' => 'Информация о назначенной машине',
         'auto info without time' => 'Информация о назначенной машине без указания времени',
         'auto waits for client' => 'Вас ожидает авто',
+        'invalid message' => 'Непонятное сообщение'
 
 
 
