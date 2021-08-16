@@ -23,7 +23,7 @@ class Config extends Model
         'cancel order' => 'Сообщение после отмены заказа',
         'zero bonus balance' => 'Сообщение в случае если бонусный баланс равен 0',
         'pls wait we are searching auto now' => 'Сообщение при запроса информации о заказе',
-        'order info' => 'Информация о заказе',
+        'addres_naznachen_za_bonusi_punkt_21' => 'Информация о заказе',
         'current price' => 'Показывает текущую стоимость поездки',
         'change price up' => 'Увеличить цену на :price рублей',
         'change price down' => 'Уменьшить цену на :price рублей',
@@ -61,7 +61,7 @@ class Config extends Model
         'work as driver' => 'Работа водителем',
         'our site' => 'Наш сайт',
         'our app' => 'Наше приложение',
-        'addres_naznachen_za_bonusi_punkt_21' => 'Адрес назначен за бонусы (пункт 21 ТЗ)',
+
         'addres_naznachen_za_bonusi_punkt_29' => 'Адрес назначен за бонусы (пункт 29 ТЗ)',
         'skazhu_voditelu_punkt_20' => 'Сообщение если адрес скажем водителю',
         'komment_i_pozhelanie_skazhu_voditelu_punkt_6' => 'Инфо о заказе если коммент и пожелание скажем водителю',
