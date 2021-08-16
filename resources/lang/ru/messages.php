@@ -84,4 +84,5 @@
   'auto info with time' => 'К вам подъедет :auto время подачи :time минут(-ы).',
   'auto info without time' => 'К вам подъедет :auto',
   'auto waits for client' => 'Вас ожидает :auto',
+    'invalid message' => 'Непонятное сообщение',
 );
