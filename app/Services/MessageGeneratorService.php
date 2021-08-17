@@ -107,7 +107,7 @@ class MessageGeneratorService
         if($userStorage->get('second_address_will_say_to_driver_flag') && $userStorage->get('second_address_will_say_to_driver_flag')==1) {
             $message = 'Ваш адрес: ' . collect($userStorage->get('address'))->first() . '.';
         } else {
-            $message = 'Ваш маршрут: ' . collect($userStorage->get('address'))->implode(' - ') . '.';
+            $message = 'Ваш маршрут: ' . collect($userStorage->get('address'))->implode(' 👍🏻 ') . '.';
         }
 
 
@@ -122,7 +122,7 @@ class MessageGeneratorService
 		}
 
 		if($userStorage->get('wishes')) {
-			$message = $message . ' Пожелания - ' . collect($userStorage->get('wishes'))->implode(', ') . '. ';
+			$message = $message . ' Пожелания - ' . collect($userStorage->get('wishes'))->implode('👍 ') . '. ';
 		}
 
 		if($userStorage->get('changed_price')) {
