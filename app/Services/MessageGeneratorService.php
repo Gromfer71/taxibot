@@ -61,7 +61,7 @@ class MessageGeneratorService
 
 
         if($userStorage->get('additional_address_is_incorrect_change_text_flag') && $userStorage->get('additional_address_is_incorrect_change_text_flag')==1) {
-            $data = ['route' => collect($userStorage->get('address'))->implode(' - '),'price' =>  $userStorage->get('price')];
+            $data = ['route' => collect($userStorage->get('address'))->implode(' 👍 '),'price' =>  $userStorage->get('price')];
             $userStorage->save(['additional_address_is_incorrect_change_text_flag' => 0]);
             $userStorage->save(['second_address_will_say_to_driver_change_text_flag' => 0]);
             $userStorage->save(['second_address_from_history_incorrect_change_text_flag' => 0]);
@@ -75,7 +75,7 @@ class MessageGeneratorService
             if (collect($userStorage->get('address'))->last() == ''){
                 return trans('messages.menu without end address',$data);
             } else {
-                $data['route'] = collect($userStorage->get('address'))->implode(' - ');
+                $data['route'] = collect($userStorage->get('address'))->implode(' 👍 ');
                 return trans('messages.menu without end address with route',$data);
             }
 
@@ -83,7 +83,7 @@ class MessageGeneratorService
         }
 
         if (   $userStorage->get('second_address_from_history_incorrect_change_text_flag') && $userStorage->get('second_address_from_history_incorrect_change_text_flag')==1){
-            $data = ['route' => collect($userStorage->get('address'))->implode(' - '),'price' =>  $userStorage->get('price')];
+            $data = ['route' => collect($userStorage->get('address'))->implode(' 👍 '),'price' =>  $userStorage->get('price')];
             $userStorage->save(['second_address_from_history_incorrect_change_text_flag' => 0]);
             return trans('messages.menu without end address with route',$data);
         }
@@ -95,7 +95,7 @@ class MessageGeneratorService
 
 
             )) {
-            $data = ['address' => collect($userStorage->get('address'))->implode(' - '),'price' =>  $userStorage->get('price')];
+            $data = ['address' => collect($userStorage->get('address'))->implode(' 👍 '),'price' =>  $userStorage->get('price')];
             $userStorage->save(['first_address_from_history_incorrect' => 0]);
             return trans('messages.menu with first address from history incorrect',$data);
         }
@@ -176,7 +176,7 @@ class MessageGeneratorService
         if($userStorage->get('second_address_will_say_to_driver_flag') && $userStorage->get('second_address_will_say_to_driver_flag')==1) {
             $message .= 'Ваш адрес по-прежнему: ' . collect($userStorage->get('address'))->first() . '.';
         } else {
-            $message .= 'Ваш маршрут по-прежнему: ' . collect($userStorage->get('address'))->implode(' - ') . '.';
+            $message .= 'Ваш маршрут по-прежнему: ' . collect($userStorage->get('address'))->implode(' 👍 ') . '.';
         }
 
 
@@ -188,7 +188,7 @@ class MessageGeneratorService
         }
 
         if($userStorage->get('wishes')) {
-            $message = $message . ' Пожелания - ' . collect($userStorage->get('wishes'))->implode(', ') . '. ';
+            $message = $message . ' Пожелания - ' . collect($userStorage->get('wishes'))->implode('❗️ ') . '. ';
         }
 
         if($userStorage->get('changed_price')) {

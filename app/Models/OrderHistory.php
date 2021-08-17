@@ -74,11 +74,11 @@ class OrderHistory extends Model
 			return self::create([
 				'id' => $response['data']['order_id'],
 				'user_id' => User::find($bot->getUser()->getId())->id,
-				'address' => collect($bot->userStorage()->get('address'))->implode(' - '),
+				'address' => collect($bot->userStorage()->get('address'))->implode(' 👍 '),
 				'price' => $bot->userStorage()->get('price'),
 				'changed_price' => $bot->userStorage()->get('changed_price') ? $bot->userStorage()->get('changed_price')['id']:null ,
 				'comment' => $bot->userStorage()->get('comment'),
-				'wishes' => collect($bot->userStorage()->get('wishes'))->implode(', '),
+				'wishes' => collect($bot->userStorage()->get('wishes'))->implode('❗️ '),
 				'relevance' => 0,
                 'usebonus' => $useBonus,
                 'platform' => $bot->getDriver()->getName()
