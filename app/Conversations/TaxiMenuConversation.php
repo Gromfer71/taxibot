@@ -36,7 +36,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             $this->createOrder(true);
         } else {
             $this->say(trans('messages.zero bonus balance'), $this->bot->getUser()->getId());
-            $this->createOrder(true);
+            $this->createOrder();
         }
         $this->currentOrderMenu(true);
     }
