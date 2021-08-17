@@ -36,7 +36,7 @@ class DriverAssignedConversation extends BaseConversation
                 Button::create(trans('buttons.need map'))->value('need map'),
             ]
         );
-        $order = OrderHistory::getActualOrder($this->bot->getUser()->getId());
+        $order = OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName());
 
         return $this->ask(
             $question,
@@ -69,9 +69,9 @@ class DriverAssignedConversation extends BaseConversation
 					   $this->end();
 				   } elseif($answer->getValue() == 'need map') {
                         $api = new OrderApiService();
-                        $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder($this->bot->getUser()->getId()))->data->crew_id ?? null);
+                        $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName()))->data->crew_id ?? null);
                         if($driverLocation) {
-                            $actualOrder = OrderHistory::getActualOrder($this->bot->getUser()->getId());
+                            $actualOrder = OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName());
                             $auto = $actualOrder->getAutoInfo();
                             $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
                             $this->say(trans('messages.need map message while driver goes', ['time' => $time, 'auto' => $auto]));

@@ -26,7 +26,7 @@ class StartConversation extends BaseConversation
 		$user = User::find($this->bot->getUser()->getId());
 		if (! $user) {
 			$this->start();
-		} elseif (!OrderHistory::getActualOrder($user->id)) {
+		} elseif (!OrderHistory::getActualOrder($user->id, $this->bot->getDriver()->getName())) {
 			$this->bot->startConversation(new MenuConversation());
 		}
 

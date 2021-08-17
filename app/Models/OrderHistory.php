@@ -113,11 +113,11 @@ class OrderHistory extends Model
         $this->save();
     }
 
-	public static function getActualOrder($userId)
+	public static function getActualOrder($userId, $driverName)
 	{
 	    $user = User::find($userId);
 
-		return self::Where(['user_id' =>  $user->id ?? 0, 'relevance' => 0])->get()->first();
+		return self::Where(['user_id' =>  $user->id ?? 0, 'relevance' => 0, 'platform' => $driverName])->get()->first();
 	}
 
 	public static function getAllActualOrders()

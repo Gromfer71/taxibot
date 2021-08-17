@@ -20,7 +20,7 @@ class ClientGoesOutConversation extends BaseAddressConversation
 	public function inWay($withoutMessage = false)
 	{
         $this->_sayDebug('ClientGoesOutConversation - inWay');
-		$order = OrderHistory::getActualOrder($this->bot->getUser()->getId());
+		$order = OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName());
 		$message = 'Приятной поездки';
 		if ($withoutMessage) $message = '';
 		$question = Question::create($message, $this->bot->getUser()->getId())->addButtons([
@@ -56,9 +56,9 @@ class ClientGoesOutConversation extends BaseAddressConversation
                      $this->inWay(true);
                } elseif($answer->getValue() == 'need map') {
                     $api = new OrderApiService();
-                    $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder($this->bot->getUser()->getId()))->data->crew_id ?? null);
+                    $driverLocation = $api->getCrewCoords($api->getOrderState(OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName()))->data->crew_id ?? null);
                     if($driverLocation) {
-                        $actualOrder = OrderHistory::getActualOrder($this->bot->getUser()->getId());
+                        $actualOrder = OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName());
                         $auto = $actualOrder->getAutoInfo();
                         $this->say(trans('messages.need map message when driver at place', ['auto' => $auto]));
                         OrderApiService::sendDriverLocation($this->bot, $driverLocation->lat, $driverLocation->lon);
