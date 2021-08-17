@@ -68,7 +68,7 @@ class CheckRequestCallCommand extends Command
      */
     public function handle()
     {
-        $this->checkProgramForErrors();
+       // $this->checkProgramForErrors();
         $this->info('Запустили команду проверки запросов на телефонный звонок');
         $botMan = resolve('botman');
         $finishTime = time()+57;
