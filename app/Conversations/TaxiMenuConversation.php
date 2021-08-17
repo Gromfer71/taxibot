@@ -595,7 +595,7 @@ class TaxiMenuConversation extends BaseAddressConversation
     public function menuAfterWrittenComment()
     {
         $data = [
-            'route' => collect($this->bot->userStorage()->get('address'))->implode(' 👉 '),
+            'route' => MessageGeneratorService::implodeAddress(collect($this->bot->userStorage()->get('address'))),
             'address' => collect($this->bot->userStorage()->get('address'))->first(),
             'price' => $this->bot->userStorage()->get('price'),
             'comment' => $this->bot->userStorage()->get('comment'),

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\MessageGeneratorService;
 use App\Services\OrderApiService;
 use BotMan\BotMan\BotMan;
 use Illuminate\Database\Eloquent\Model;
@@ -74,11 +75,11 @@ class OrderHistory extends Model
 			return self::create([
 				'id' => $response['data']['order_id'],
 				'user_id' => User::find($bot->getUser()->getId())->id,
-				'address' => collect($bot->userStorage()->get('address'))->implode(' 👉 '),
+				'address' => MessageGeneratorService::implodeAddress(collect($bot->userStorage()->get('address'))),
 				'price' => $bot->userStorage()->get('price'),
 				'changed_price' => $bot->userStorage()->get('changed_price') ? $bot->userStorage()->get('changed_price')['id']:null ,
 				'comment' => $bot->userStorage()->get('comment'),
-				'wishes' => collect($bot->userStorage()->get('wishes'))->implode('❗️ '),
+				'wishes' => MessageGeneratorService::implodeWishes(collect($bot->userStorage()->get('wishes'))),
 				'relevance' => 0,
                 'usebonus' => $useBonus,
                 'platform' => $bot->getDriver()->getName()
