@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Artisan;
 class TaxiMenuConversation extends BaseAddressConversation
 {
     public function _go_for_cash(){
-        OrderHistory::newOrder($this->bot);
+        $this->createOrder();
         $this->currentOrderMenu(true);
     }
 
@@ -33,10 +33,10 @@ class TaxiMenuConversation extends BaseAddressConversation
         if(User::find($this->bot->getUser()->getId())->getBonusBalance() > 0) {
             $this->bot->userStorage()->save(['usebonus' => true]);
             $this->bot->userStorage()->save(['bonusbalance' => User::find($this->bot->getUser()->getId())->getBonusBalance()]);
-            OrderHistory::newOrder($this->bot, true);
+            $this->createOrder(true);
         } else {
             $this->say(trans('messages.zero bonus balance'), $this->bot->getUser()->getId());
-            OrderHistory::newOrder($this->bot, false);
+            $this->createOrder(true);
         }
         $this->currentOrderMenu(true);
     }

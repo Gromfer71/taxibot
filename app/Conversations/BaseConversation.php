@@ -5,6 +5,7 @@ namespace App\Conversations;
 use App\Models\AddressHistory;
 use App\Models\Config;
 use App\Models\Log;
+use App\Models\OrderHistory;
 use App\Models\User;
 use App\Services\Address;
 use App\Services\ButtonsFormatterService;
@@ -169,5 +170,13 @@ abstract class BaseConversation extends Conversation
         }
 
         return $result;
+    }
+
+    public function createOrder($userBonus = false)
+    {
+        if(! OrderHistory::newOrder($this->bot, $userBonus)) {
+            $this->say(trans('create order error'));
+            $this->bot->startConversation(new StartConversation());
+        }
     }
 }

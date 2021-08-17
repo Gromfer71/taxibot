@@ -84,7 +84,7 @@ class OrderHistory extends Model
                 'platform' => $bot->getDriver()->getName()
 			]);
 		} else {
-			return $response;
+			return null;
 		}
 
 	}
