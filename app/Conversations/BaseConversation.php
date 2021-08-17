@@ -175,7 +175,7 @@ abstract class BaseConversation extends Conversation
     public function createOrder($userBonus = false)
     {
         if(! OrderHistory::newOrder($this->bot, $userBonus)) {
-            $this->say(trans('create order error'));
+            $this->say(trans('messages.create order error'));
             $this->bot->startConversation(new StartConversation());
         }
     }
