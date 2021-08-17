@@ -119,7 +119,7 @@ abstract class BaseConversation extends Conversation
             $questionText .= "\n";
             $this->_sayDebug('property exists');
             foreach ($this->getUser()->favoriteAddresses as $key => $address) {
-                $questionText .= $this->numberToEmodji($key + 1). '⭐️' . $address->name . ' ' . $address->address . "\n";
+                $questionText .= $this->numberToEmodji($key + 1). '⭐️' . $address->name . "\n";
             }
 
             $key = $this->getUser()->favoriteAddresses->count();
