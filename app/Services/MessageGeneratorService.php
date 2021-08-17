@@ -26,7 +26,7 @@ class MessageGeneratorService
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($userStorage);
         $countAddresses = count($userStorage->get('address'));
         if ($haveEndAddress && $countAddresses == 2 && !$userStorage->get('comment') && !$userStorage->get('wishes') && !$userStorage->get('changed_price')) {
-            $route =  collect($userStorage->get('address'))->implode(' 👍🏻 ') ;
+            $route =  collect($userStorage->get('address'))->implode(' 👍 ') ;
             return trans('messages.addres_naznachen_za_bonusi_punkt_21',['route' =>$route,'price' => $userStorage->get('price') ]);
         }
         return self::getFullOrderInfoFromStorageFallback($userStorage);
@@ -107,7 +107,7 @@ class MessageGeneratorService
         if($userStorage->get('second_address_will_say_to_driver_flag') && $userStorage->get('second_address_will_say_to_driver_flag')==1) {
             $message = 'Ваш адрес: ' . collect($userStorage->get('address'))->first() . '.';
         } else {
-            $message = 'Ваш маршрут: ' . collect($userStorage->get('address'))->implode(' 👍🏻 ') . '.';
+            $message = 'Ваш маршрут: ' . collect($userStorage->get('address'))->implode(' 👍 ') . '.';
         }
 
 
