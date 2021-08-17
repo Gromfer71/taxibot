@@ -24,19 +24,33 @@ use Illuminate\Support\Facades\Artisan;
 
 class TaxiMenuConversation extends BaseAddressConversation
 {
-    public function _go_for_cash(){
-        $this->createOrder();
-        $this->currentOrderMenu(true);
+    public function _go_for_cash() {
+        if(! OrderHistory::newOrder($this->bot)) {
+            $this->say(trans('messages.create order error'));
+            $this->bot->startConversation(new StartConversation());
+        } else {
+            $this->currentOrderMenu(true);
+        }
+
     }
 
     public function _go_for_bonuses(){
         if(User::find($this->bot->getUser()->getId())->getBonusBalance() > 0) {
             $this->bot->userStorage()->save(['usebonus' => true]);
             $this->bot->userStorage()->save(['bonusbalance' => User::find($this->bot->getUser()->getId())->getBonusBalance()]);
-            $this->createOrder(true);
+
+            if(! OrderHistory::newOrder($this->bot, true)) {
+                $this->say(trans('messages.create order error'));
+                $this->bot->startConversation(new StartConversation());
+                return;
+            }
         } else {
             $this->say(trans('messages.zero bonus balance'), $this->bot->getUser()->getId());
-            $this->createOrder();
+            if(! OrderHistory::newOrder($this->bot, true)) {
+                $this->say(trans('messages.create order error'));
+                $this->bot->startConversation(new StartConversation());
+                return;
+            }
         }
         $this->currentOrderMenu(true);
     }

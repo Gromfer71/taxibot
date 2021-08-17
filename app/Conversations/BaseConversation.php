@@ -172,11 +172,4 @@ abstract class BaseConversation extends Conversation
         return $result;
     }
 
-    public function createOrder($userBonus = false)
-    {
-        if(! OrderHistory::newOrder($this->bot, $userBonus)) {
-            $this->say(trans('messages.create order error'));
-            $this->bot->startConversation(new StartConversation());
-        }
-    }
 }
