@@ -178,7 +178,7 @@ class MessageGeneratorService
         }
 
         if ($userStorage->get('wishes')) {
-            $message = $message . ' Пожелания - ' . MessageGeneratorService::implodeWishes($userStorage->get('wishes')) . '. ';
+            $message = $message . ' Пожелания - ' . MessageGeneratorService::implodeWishes(collect($userStorage->get('wishes'))) . '. ';
         }
 
         if ($userStorage->get('changed_price')) {
