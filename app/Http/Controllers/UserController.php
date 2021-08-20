@@ -100,11 +100,14 @@ class UserController extends Controller
         return back()->with('ok', 'История заказов успешно очищена!');
     }
 
+    /**
+     * @throws \BotMan\BotMan\Exceptions\Base\BotManException
+     */
     public function reset($id)
     {
-        $bot = BotManFactory::create(config('botman.telegram'));
+        $botMan = resolve('botman');
         //$bot->userStorage()->save(['vk_id' => User::where('id', $id)->first()->vk_id]);
-        $bot->say('тест', '1585139223', TelegramDriver::class);
+        $botMan->say('тест', '1585139223', TelegramDriver::class);
        // $bot->startConversation(new StartConversation(), User::where('id', $id)->first()->telegram_id, TelegramDriver::class);
 
         return back();
