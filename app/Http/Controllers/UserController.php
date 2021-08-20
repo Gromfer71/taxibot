@@ -112,7 +112,7 @@ class UserController extends Controller
 
         $botMan->startConversation(new StartConversation(), User::where('id', $id)->first()->telegram_id, TelegramDriver::class);
         $botMan->startConversation(new StartConversation(), User::where('id', $id)->first()->vk_id, VkCommunityCallbackDriver::class);
-        $botMan->listen();
+
 
         return back();
 
