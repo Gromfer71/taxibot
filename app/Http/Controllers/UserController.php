@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Conversations\StartConversation;
 use App\Models\Config;
 use App\Models\OrderHistory;
 use App\Models\User;
 use App\Services\MessageGeneratorService;
+use BotMan\BotMan\BotManFactory;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -96,6 +98,16 @@ class UserController extends Controller
         return back()->with('ok', 'История заказов успешно очищена!');
     }
 
+    public function reset($id)
+    {
+        $bot = BotManFactory::create(config('botman.telegram'));
+
+        $bot->startConversation(new StartConversation(), User::where('id', $id)->first()->telegram_id);
+
+        return back();
+
+    }
+
     public function addressesClear($id)
     {
         $user = User::where('id', $id)->first();
@@ -114,4 +126,6 @@ class UserController extends Controller
 
         return back();
     }
+
+
 }

@@ -39,6 +39,7 @@ Route::group(['midlleware' => 'auth'], function() {
     Route::get('users/{id}/orders', 'UserController@orders')->name('user_orders');
     Route::get('users/{id}/addresses', 'UserController@addresses')->name('user_addresses');
     Route::get('users/{id}/delete', 'UserController@delete')->name('user_delete');
+    Route::get('users/{id}/reset', 'UserController@reset')->name('user_reset');
     Route::get('users/{id}/block', 'UserController@block')->name('user_block');
     Route::get('users/{id}/unblock', 'UserController@unblock')->name('user_unblock');
 
