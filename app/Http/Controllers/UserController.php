@@ -8,6 +8,7 @@ use App\Models\OrderHistory;
 use App\Models\User;
 use App\Services\MessageGeneratorService;
 use BotMan\BotMan\BotManFactory;
+use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Http\Request;
@@ -111,6 +112,7 @@ class UserController extends Controller
 
         $botMan->startConversation(new StartConversation(), User::where('id', $id)->first()->telegram_id, TelegramDriver::class);
         $botMan->startConversation(new StartConversation(), User::where('id', $id)->first()->vk_id, VkCommunityCallbackDriver::class);
+        $botMan->listen();
 
         return back();
 
