@@ -16,11 +16,13 @@ class StartConversation extends BaseConversation
 {
 	public function run()
 	{
-	    $this->bot->userStorage()->delete();
+
 	    if($this->bot->userStorage()->get('error')) {
 	        $this->say(trans('messages.program error message'));
 	        $this->bot->userStorage()->delete('error');
         }
+
+	    $this->bot->userStorage()->delete();
 	    if(!$this->bot->getUser() || !$this->bot->getUser()->getId()) {
 	        return;
         }
