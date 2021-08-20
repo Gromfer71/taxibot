@@ -108,6 +108,7 @@ class UserController extends Controller
         $botMan = resolve('botman');
         //$bot->userStorage()->save(['vk_id' => User::where('id', $id)->first()->vk_id]);
         $botMan->say('тест', '1585139223', TelegramDriver::class);
+        $botMan->removeStoredConversation();
         $botMan->startConversation(new StartConversation(), User::where('id', $id)->first()->telegram_id, TelegramDriver::class);
 
         return back();
