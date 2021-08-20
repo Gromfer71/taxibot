@@ -22,7 +22,6 @@ class StartConversation extends BaseConversation
 	        $this->bot->userStorage()->delete('error');
         }
 
-	    $this->bot->userStorage()->delete();
 	    if(!$this->bot->getUser() || !$this->bot->getUser()->getId()) {
 	        return;
         }
