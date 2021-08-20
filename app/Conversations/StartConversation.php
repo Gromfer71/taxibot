@@ -16,7 +16,7 @@ class StartConversation extends BaseConversation
 {
 	public function run()
 	{
-	    //$this->bot->removeStoredConversation();
+	    $this->bot->userStorage()->delete();
 	    if($this->bot->userStorage()->get('error')) {
 	        $this->say(trans('messages.program error message'));
 	        $this->bot->userStorage()->delete('error');
