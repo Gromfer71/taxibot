@@ -129,6 +129,17 @@
                         index: 'usebonus',
                         title: 'Used bonus',
                     },
+                    {
+                        index: '',
+                        width: 400,
+                        title: 'Action',
+                        render: function (o) {
+                            o.value += '<a href="/orders/' + o.data.id + '/delete"><button class="btn btn-sm btn-danger uk-margin-small-right">Удалить</button></a>&#160;';
+
+                            return o;
+                        }
+
+                    },
 
                 ]
             });
