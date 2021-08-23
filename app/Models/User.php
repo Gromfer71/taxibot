@@ -74,7 +74,7 @@ class User extends Model
 
     public function addresses()
     {
-        return $this->hasMany(AddressHistory::class, 'user_id', 'id')->orderBy('created_at', 'desc')->take(25);
+        return $this->hasMany(AddressHistory::class, 'user_id', 'id')->orderBy('updated_at', 'desc')->take(25);
     }
 
     public function favoriteAddresses()
