@@ -82,6 +82,7 @@
 
                     {
                     index: '',
+                        width: 400,
                     title: 'Action',
                     render: function (o) {
                         o.value = '<a href="/users/' + o.data.id + '/reset"><button class="btn btn-sm btn-danger uk-margin-small-right">Сбросить</button></a>&#160;';
