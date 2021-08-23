@@ -235,7 +235,7 @@ class TaxiMenuConversation extends BaseAddressConversation
     public function streetNotFoundAdditionalAddress()
     {
         $this->_sayDebug('streetNotFoundAdditionalAddress');
-        $question = Question::create(trans('messages.not found address'), $this->bot->getUser()->getId());
+        $question = Question::create(trans('messages.address not found'), $this->bot->getUser()->getId());
         $question->addButtons(
             [
                 Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT])->value('back'),
