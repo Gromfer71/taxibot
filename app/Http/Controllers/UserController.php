@@ -106,15 +106,12 @@ class UserController extends Controller
      */
     public function reset($id)
     {
-        $botMan = resolve('botman');
-        //$bot->userStorage()->save(['vk_id' => User::where('id', $id)->first()->vk_id]);
-        //$botMan->say('тест', '1585139223', TelegramDriver::class);
-
-        $botMan->startConversation(new StartConversation(), User::where('id', $id)->first()->telegram_id, TelegramDriver::class);
-        $botMan->startConversation(new StartConversation(), User::where('id', $id)->first()->vk_id, VkCommunityCallbackDriver::class);
+        $user = User::where('id', $id)->first();
+        $user->should_reset = true;
+        $user->save();
 
 
-        return back();
+        return back()->with('ok', 'Пользователь успешно сброшен!');
 
     }
 
