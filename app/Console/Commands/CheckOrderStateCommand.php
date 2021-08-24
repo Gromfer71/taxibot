@@ -47,6 +47,11 @@ class CheckOrderStateCommand extends Command
 
         $actualOrders = OrderHistory::getAllActualOrders();
         foreach ($actualOrders as $actualOrder) {
+            if($actualOrder->user->should_reset)
+            {
+                $actualOrder->cancelOrder();
+                continue;
+            }
             $oldStateId = $actualOrder->getCurrentOrderState()->state_id ?? OrderHistory::NEW_ORDER;
             $newStateId = $actualOrder->checkOrder();
             $actualOrder->refresh();
