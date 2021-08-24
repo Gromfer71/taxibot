@@ -25,11 +25,11 @@ class MenuConversation extends BaseConversation
     {
 
         $user = User::find($this->bot->getUser()->getId());
-        if($user->orders) {
-            foreach ($user->orders as $order) {
-                $order->cancelOrder();
-            }
-        }
+//        if($user->orders) {
+//            foreach ($user->orders as $order) {
+//                $order->cancelOrder();
+//            }
+//        }
 
         if (!$user) {
             $this->bot->startConversation(new StartConversation());
