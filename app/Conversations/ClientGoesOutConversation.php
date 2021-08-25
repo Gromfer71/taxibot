@@ -63,7 +63,7 @@ class ClientGoesOutConversation extends BaseAddressConversation
                         $this->say(trans('messages.need map message when driver at place', ['auto' => $auto]));
                         OrderApiService::sendDriverLocation($this->bot, $driverLocation->lat, $driverLocation->lon);
                     } else {
-                        $this->say('К сожалению на данный момент мы не можем определить где водитель :( ');
+                        $this->say(trans('messages.error driver location'));
                     }
                     $this->inWay(true);
                 } else {

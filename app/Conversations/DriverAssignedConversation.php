@@ -77,7 +77,7 @@ class DriverAssignedConversation extends BaseConversation
                             $this->say(trans('messages.need map message while driver goes', ['time' => $time, 'auto' => $auto]));
                             OrderApiService::sendDriverLocation($this->bot, $driverLocation->lat, $driverLocation->lon);
                         } else {
-                            $this->say('К сожалению на данный момент мы не можем определить где водитель :( ');
+                            $this->say(trans('messages.error driver location'));
                         }
                         $this->confirmOrder(true);
                     }  else {
