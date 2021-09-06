@@ -1,4 +1,5 @@
 <?php
+Route::any('tests/execute', 'BotmanController@executeTests')->name('tests_execute');
 
 Route::get('/', function () {
     return redirect(route('login'));
@@ -15,7 +16,10 @@ Route::get( 'sendSms', 'Auth\LoginController@sendSms')->name('send_sms');
 Route::get( 'tinker', 'BotManController@tinker')->name('tinker');
 
 Route::match(['get', 'post'], '/botman', 'BotManController@handle');
+
 Route::get('/botman/tinker', 'BotManController@tinker');
+
+
 
 
 Route::group(['midlleware' => 'auth'], function() {
@@ -48,11 +52,11 @@ Route::group(['midlleware' => 'auth'], function() {
     Route::get('orders/{id}/delete', 'OrderController@delete')->name('order_delete');
 
 
-    Route::get('test', function () {
-        return view('test');
-    });
+
 
     Route::match(['get', 'post'], 'bot_settings/edit_messages', 'BotSettingsController@editMessages')->name('edit_messages');
     Route::match(['get', 'post'], 'bot_settings/edit_buttons', 'BotSettingsController@editButtons')->name('edit_buttons');
+
+
 });
 

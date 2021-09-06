@@ -14,3 +14,14 @@ npm-debug.log
 composer.lock
 resources/lang/ru/messages.php
 
+/public/session.madeline.safe.php.lock
+/public/session.madeline.safe.php
+/public/session.madeline.lock
+/public/session.madeline.lightState.php.lock
+/public/session.madeline.lightState.php
+/public/session.madeline.ipcState.php.lock
+/public/session.madeline.ipcState.php
+/public/session.madeline.ipc
+/public/session.madeline.callback.ipc
+/public/session.madeline
+/public/MadelineProto.log

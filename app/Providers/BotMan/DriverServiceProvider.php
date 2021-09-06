@@ -6,7 +6,6 @@ use App\Models\Config;
 use BotMan\BotMan\Drivers\DriverManager;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use BotMan\Studio\Providers\DriverServiceProvider as ServiceProvider;
-use VkBotMan\Drivers\VkDriver;
 
 class DriverServiceProvider extends ServiceProvider
 {
