@@ -49,6 +49,7 @@ class BotManController extends Controller
 
     public function executeTests()
     {
+        require '../app/Madeline/madeline.php';
         $settings = new \danog\MadelineProto\Settings\Database\Memory;
         $MadelineProto = new API('session.madeline', $settings);
         $MadelineProto->updateSettings($settings);

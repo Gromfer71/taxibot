@@ -25,3 +25,14 @@ resources/lang/ru/messages.php
 /public/session.madeline.callback.ipc
 /public/session.madeline
 /public/MadelineProto.log
+/app/Http/Controllers/session.madeline.safe.php.lock
+/app/Http/Controllers/session.madeline.safe.php
+/app/Http/Controllers/session.madeline.lock
+/app/Http/Controllers/session.madeline
+/public/madeline-74.phar.version
+/public/madeline-74.phar
+/app/Http/Controllers/session.madeline.lightState.php.lock
+/app/Http/Controllers/session.madeline.lightState.php
+/app/Http/Controllers/MadelineProto.log
+/app/Http/Controllers/madeline-74.phar.version
+/app/Http/Controllers/madeline-74.phar
