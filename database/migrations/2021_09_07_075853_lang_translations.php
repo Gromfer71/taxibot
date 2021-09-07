@@ -19,8 +19,8 @@ class LangTranslations extends Migration
             $table->integer('key_id');
             $table->text('translate');
 
-            $table->foreign('package_id')->references('id')->on('lang_packages')->onDelete('cascade');
-            $table->foreign('key_id')->references('id')->on('lang_keys')->onDelete('cascade');
+      //      $table->foreign('package_id')->references('id')->on('lang_packages')->onDelete('cascade');
+           // $table->foreign('key_id')->references('id')->on('lang_keys')->onDelete('cascade');
         });
     }
 
