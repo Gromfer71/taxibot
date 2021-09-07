@@ -36,3 +36,4 @@ resources/lang/ru/messages.php
 /app/Http/Controllers/MadelineProto.log
 /app/Http/Controllers/madeline-74.phar.version
 /app/Http/Controllers/madeline-74.phar
+/resources/lang/

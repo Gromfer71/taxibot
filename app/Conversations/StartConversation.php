@@ -18,7 +18,7 @@ class StartConversation extends BaseConversation
 	{
 
 	    if($this->bot->userStorage()->get('error')) {
-	        $this->say(trans('messages.program error message'));
+	        $this->say($this->__('messages.program error message'));
 	        $this->bot->userStorage()->delete('error');
         }
 
@@ -51,10 +51,10 @@ class StartConversation extends BaseConversation
 
 		$this->checkConfig();
 
-		$question = Question::create(trans('messages.welcome message'), $this->bot->getUser()->getId())
+		$question = Question::create($this->__('messages.welcome message'), $this->bot->getUser()->getId())
 			->addButtons(
 				[
-					Button::create(trans('buttons.start menu'))->value('start menu'),
+					Button::create($this->__('buttons.start menu'))->value('start menu'),
 				]
 			);
 
@@ -65,7 +65,7 @@ class StartConversation extends BaseConversation
                         $this->bot->startConversation(new MenuConversation());
 					}
 				} elseif($answer->getText() == '/setabouttext') {
-                    $this->say(trans('messages.about myself'));
+                    $this->say($this->__('messages.about myself'));
 					$this->start();
 				} else {
 				    $this->start();
@@ -76,8 +76,8 @@ class StartConversation extends BaseConversation
 
 	public function aboutMyself()
 	{
-		$question = Question::create(trans('messages.about myself'))
-			->addButton(Button::create(trans('buttons.menu'))->value('menu'));
+		$question = Question::create($this->__('messages.about myself'))
+			->addButton(Button::create($this->__('buttons.menu'))->value('menu'));
 
 		return $this->ask(
 			$question,

@@ -1,5 +1,9 @@
 <?php
-Route::any('tests/execute', 'BotmanController@executeTests')->name('tests_execute');
+
+if(config('app.debug')) {
+    Route::any('tests/execute', 'BotmanController@executeTests')->name('tests_execute');
+}
+
 
 Route::get('/', function () {
     return redirect(route('login'));

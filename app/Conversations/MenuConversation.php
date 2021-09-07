@@ -35,7 +35,7 @@ class MenuConversation extends BaseConversation
             $this->bot->startConversation(new StartConversation());
             return;
         } elseif ($user->isBlocked) {
-            $this->say(trans('messages.you are blocked'));
+            $this->say($this->__('messages.you are blocked'));
             return;
         } elseif (!$user->phone) {
             $this->confirmPhone();
@@ -53,23 +53,23 @@ class MenuConversation extends BaseConversation
         OrderHistory::cancelAllOrders($this->getUser()->id);
 
 
-        $question = Question::create($withoutMessage ? '' : trans('messages.choose menu'), $this->bot->getUser()->getId())
+        $question = Question::create($withoutMessage ? '' : $this->__('messages.choose menu'), $this->bot->getUser()->getId())
             ->addButtons([
-                Button::create(trans('buttons.take taxi'))->value('take taxi')->additionalParameters(['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]),
-                Button::create(trans('buttons.request call'))->value('request call'),
-                Button::create(trans('buttons.change phone number'))->value('change phone number'),
-                Button::create(trans('buttons.change city'))->value('change city'),
-                Button::create(trans('buttons.price list'))->value('price list'),
-                Button::create(trans('buttons.all about bonuses'))->value('all about bonuses'),
-                Button::create(trans('buttons.address history menu'))->value('address history menu'),
-                Button::create(trans('buttons.favorite addresses menu'))->value('favorite addresses menu')
+                Button::create($this->__('buttons.take taxi'))->value('take taxi')->additionalParameters(['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]),
+                Button::create($this->__('buttons.request call'))->value('request call'),
+                Button::create($this->__('buttons.change phone number'))->value('change phone number'),
+                Button::create($this->__('buttons.change city'))->value('change city'),
+                Button::create($this->__('buttons.price list'))->value('price list'),
+                Button::create($this->__('buttons.all about bonuses'))->value('all about bonuses'),
+                Button::create($this->__('buttons.address history menu'))->value('address history menu'),
+                Button::create($this->__('buttons.favorite addresses menu'))->value('favorite addresses menu')
             ]);
 
         return $this->ask($question, function (Answer $answer) use ($user) {
             Log::newLogAnswer($this->bot, $answer);
 
             if ($user->isBlocked) {
-                $this->say(trans('messages.you are blocked'));
+                $this->say($this->__('messages.you are blocked'));
                 return;
             }
 
@@ -95,17 +95,17 @@ class MenuConversation extends BaseConversation
                     $user = $this->getUser();
                     $user->need_call = 1;
                     $user->save();
-                    $this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+                    $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
                     $this->menu(true);
                 } elseif ($answer->getValue() == 'price list') {
-                    $this->say(trans('messages.price list'));
+                    $this->say($this->__('messages.price list'));
                     $this->menu(true);
                 } elseif ($answer->getValue() == 'all about bonuses') {
                     $this->bonuses();
                 } elseif ($answer->getValue() == 'address history menu') {
                     // }  elseif($answer->getValue() == 'taxibot') {
                     $this->addressesMenu();
-//                    $this->say(trans('messages.address history menu'));
+//                    $this->say($this->__('messages.address history menu'));
 //                    AddressHistory::clearByUserId($this->bot->getUser()->getId());
 //                    $this->menu(true);
                 } elseif($answer->getValue() == 'favorite addresses menu') {
@@ -113,7 +113,7 @@ class MenuConversation extends BaseConversation
                 }
             } else {
                 if ($answer->getText() == '/setabouttext') {
-                    $this->say(trans('messages.about myself'));
+                    $this->say($this->__('messages.about myself'));
                 }
                 $this->menu();
             }
@@ -122,11 +122,11 @@ class MenuConversation extends BaseConversation
 
     public function addressesMenu()
     {
-        $questionText = trans('messages.addresses menu');
+        $questionText = $this->__('messages.addresses menu');
         $questionText = $this->addAddressesToMessageOnlyFromHistory($questionText);
         $question = Question::create($questionText);
-        $question->addButton(Button::create(trans('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses']));
-        $question->addButton(Button::create(trans('buttons.clean addresses history'))->value('clean addresses history'));
+        $question->addButton(Button::create($this->__('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses']));
+        $question->addButton(Button::create($this->__('buttons.clean addresses history'))->value('clean addresses history'));
 
         $user = User::find($this->bot->getUser()->getId());
         foreach ($user->addresses ?? [] as $key => $address) {
@@ -140,7 +140,7 @@ class MenuConversation extends BaseConversation
                 $this->bot->startConversation(new MenuConversation());
 
             } elseif ($answer->getValue() == 'clean addresses history') {
-                $this->say(trans('messages.clean addresses history'));
+                $this->say($this->__('messages.clean addresses history'));
                 AddressHistory::clearByUserId($this->getUser()->id);
                 $this->bot->startConversation(new MenuConversation());
 
@@ -152,10 +152,10 @@ class MenuConversation extends BaseConversation
 
     public function addressMenu($address)
     {
-        $question = Question::create(trans('messages.address menu') . ' ' . $address)
+        $question = Question::create($this->__('messages.address menu') . ' ' . $address)
             ->addButtons([
-                Button::create(trans('buttons.delete'))->value('delete'),
-                Button::create(trans('buttons.back'))->value('back'),
+                Button::create($this->__('buttons.delete'))->value('delete'),
+                Button::create($this->__('buttons.back'))->value('back'),
             ]);
 
         return $this->ask($question, function (Answer $answer) use ($address) {
@@ -165,9 +165,9 @@ class MenuConversation extends BaseConversation
                 $addr = User::find($this->bot->getUser()->getId())->addresses->where('address', $address)->first();
                 if ($addr) {
                     $addr->delete();
-                    $this->say(trans('messages.address has been deleted'));
+                    $this->say($this->__('messages.address has been deleted'));
                 } else {
-                    $this->say(trans('messages.problems with delete address') . $address);
+                    $this->say($this->__('messages.problems with delete address') . $address);
                 }
                 $this->addressesMenu();
 
@@ -179,14 +179,14 @@ class MenuConversation extends BaseConversation
     {
         $this->bot->userStorage()->delete('sms_code');
         if ($first) {
-            $message = trans('messages.enter phone first');
+            $message = $this->__('messages.enter phone first');
         } else {
-            $message = trans('messages.enter phone');
+            $message = $this->__('messages.enter phone');
         }
         $question = Question::create($message, $this->bot->getUser()->getId());
         $user = User::find($this->bot->getUser()->getId());
         if ($user && $user->phone) {
-            $question = $question->addButton(Button::create(trans('buttons.back'))->value('back'));
+            $question = $question->addButton(Button::create($this->__('buttons.back'))->value('back'));
         }
 
         return $this->ask(
@@ -202,7 +202,7 @@ class MenuConversation extends BaseConversation
                     $api->sendSMSCode($answer->getText(), $code);
                     $this->confirmSMS();
                 } else {
-                    $this->say(trans('messages.incorrect phone format'));
+                    $this->say($this->__('messages.incorrect phone format'));
                     $this->confirmPhone();
                 }
             }
@@ -211,10 +211,10 @@ class MenuConversation extends BaseConversation
 
     public function confirmSMS($withoutMessage = false)
     {
-        $message = trans('messages.enter sms code');
+        $message = $this->__('messages.enter sms code');
         if ($withoutMessage) $message = '';
         $question = Question::create($message, $this->bot->getUser()->getId())
-            ->addButton(Button::create(trans('buttons.call'))->value('call'));
+            ->addButton(Button::create($this->__('buttons.call'))->value('call'));
 
         return $this->ask(
             $question,
@@ -235,10 +235,10 @@ class MenuConversation extends BaseConversation
                         $this->changePhoneInRegistration();
                     }
 
-                    $this->say(trans('messages.phone changed', ['phone' => $this->bot->userStorage()->get('phone')]));
+                    $this->say($this->__('messages.phone changed', ['phone' => $this->bot->userStorage()->get('phone')]));
                     $this->run();
                 } else {
-                    $this->say(trans('messages.wrong sms code'));
+                    $this->say($this->__('messages.wrong sms code'));
 
                     $this->confirmSMS(true);
                 }
@@ -248,10 +248,10 @@ class MenuConversation extends BaseConversation
 
     public function confirmCall($withoutMessage = false)
     {
-        $message = trans('messages.enter call code');
+        $message = $this->__('messages.enter call code');
         if ($withoutMessage) $message = '';
         $question = Question::create($message, $this->bot->getUser()->getId())
-            ->addButton(Button::create(trans('buttons.call'))->value('call'));
+            ->addButton(Button::create($this->__('buttons.call'))->value('call'));
 
         return $this->ask(
             $question,
@@ -266,10 +266,10 @@ class MenuConversation extends BaseConversation
                     }
                 } elseif ($answer->getText() == $this->bot->userStorage()->get('sms_code')) {
                   $this->changePhoneInRegistration();
-                    $this->say(trans('messages.phone changed', ['phone' => $this->bot->userStorage()->get('phone')]));
+                    $this->say($this->__('messages.phone changed', ['phone' => $this->bot->userStorage()->get('phone')]));
                     $this->run();
                 } else {
-                    $this->say(trans('messages.incorrect phone code'));
+                    $this->say($this->__('messages.incorrect phone code'));
                     $this->confirmCall(true);
                 }
             }
@@ -319,19 +319,19 @@ class MenuConversation extends BaseConversation
     public function changeCity()
     {
         if (User::find($this->bot->getUser()->getId())->isBlocked) {
-            $this->say(trans('messages.you are blocked'));
+            $this->say($this->__('messages.you are blocked'));
             return;
         }
 
         $user = User::find($this->bot->getUser()->getId());
         if ($user->city) {
-            $question = Question::create(trans('messages.choose city', ['city' => $user->city]));
+            $question = Question::create($this->__('messages.choose city', ['city' => $user->city]));
         } else {
-            $question = Question::create(trans('messages.choose city without current city'));
+            $question = Question::create($this->__('messages.choose city without current city'));
         }
 
         $options = new Options($this->bot->channelStorage());
-        $question = $question->addButton(Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::CITY_MENU_FORMAT])->value('back'));
+        $question = $question->addButton(Button::create($this->__('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::CITY_MENU_FORMAT])->value('back'));
         foreach ($options->getCities() as $city) {
             $question = $question->addButton(Button::create($city->name)->value($city->name));
         }
@@ -345,7 +345,7 @@ class MenuConversation extends BaseConversation
             $user = User::find($this->bot->getUser()->getId());
             $user->city = $answer->getText();
             $user->save();
-            $this->say(trans('messages.city has been changed', ['city' => $answer->getText()]));
+            $this->say($this->__('messages.city has been changed', ['city' => $answer->getText()]));
             $this->menu();
 
         });
@@ -356,15 +356,15 @@ class MenuConversation extends BaseConversation
     {
         $user = User::find($this->bot->getUser()->getId());
         if (!$message) {
-            $message = $getBalance ? trans('messages.get bonus balance', ['bonuses' => $user->getBonusBalance() ?? 0]) : trans('messages.bonuses menu');
+            $message = $getBalance ? $this->__('messages.get bonus balance', ['bonuses' => $user->getBonusBalance() ?? 0]) : $this->__('messages.bonuses menu');
         }
         $question = Question::create($message)
             ->addButtons([
-                Button::create(trans('buttons.bonus balance'))->additionalParameters(['config' => ButtonsFormatterService::BONUS_MENU_FORMAT])->value('bonus balance'),
-                Button::create(trans('buttons.work as driver'))->value('work as driver'),
-                Button::create(trans('buttons.our site'))->value('our site'),
-                Button::create(trans('buttons.our app'))->value('our app'),
-                Button::create(trans('buttons.exit to menu'))->value('exit to menu'),
+                Button::create($this->__('buttons.bonus balance'))->additionalParameters(['config' => ButtonsFormatterService::BONUS_MENU_FORMAT])->value('bonus balance'),
+                Button::create($this->__('buttons.work as driver'))->value('work as driver'),
+                Button::create($this->__('buttons.our site'))->value('our site'),
+                Button::create($this->__('buttons.our app'))->value('our app'),
+                Button::create($this->__('buttons.exit to menu'))->value('exit to menu'),
             ]);
         return $this->ask(
             $question,
@@ -374,11 +374,11 @@ class MenuConversation extends BaseConversation
                     if ($answer->getValue() == 'bonus balance') {
                         $this->bonuses(true);
                     } elseif ($answer->getValue() == 'work as driver') {
-                        $this->bonuses(false, trans('messages.work as driver'));
+                        $this->bonuses(false, $this->__('messages.work as driver'));
                     } elseif ($answer->getValue() == 'our site') {
-                        $this->bonuses(false, trans('messages.our site'));
+                        $this->bonuses(false, $this->__('messages.our site'));
                     } elseif ($answer->getValue() == 'our app') {
-                        $this->bonuses(false, trans('messages.our app'));
+                        $this->bonuses(false, $this->__('messages.our app'));
                     } elseif ($answer->getValue() == 'exit to menu') {
                         $this->menu();
                     }

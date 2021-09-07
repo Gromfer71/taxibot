@@ -24,10 +24,10 @@ class ClientGoesOutConversation extends BaseAddressConversation
 		$message = 'Приятной поездки';
 		if ($withoutMessage) $message = '';
 		$question = Question::create($message, $this->bot->getUser()->getId())->addButtons([
-			Button::create(trans('buttons.finish order'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT])->value('finish order'),
-			Button::create(trans('buttons.need dispatcher'))->value('need dispatcher'),
-            Button::create(trans('buttons.need driver'))->value('need driver'),
-            Button::create(trans('buttons.need map'))->value('need map'),
+			Button::create($this->__('buttons.finish order'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT])->value('finish order'),
+			Button::create($this->__('buttons.need dispatcher'))->value('need dispatcher'),
+            Button::create($this->__('buttons.need driver'))->value('need driver'),
+            Button::create($this->__('buttons.need map'))->value('need map'),
 		]);
 
 		return $this->ask($question, function (Answer $answer) use ($order) {
@@ -36,13 +36,13 @@ class ClientGoesOutConversation extends BaseAddressConversation
 				if ($answer->getValue() == 'need driver') {
 					$api = new OrderApiService();
 					$api->connectClientAndDriver($order);
-					$this->say(trans('messages.connect with driver'), $this->bot->getUser()->getId());
+					$this->say($this->__('messages.connect with driver'), $this->bot->getUser()->getId());
 					$this->inWay(true);
 				} elseif ($answer->getValue() == 'finish order') {
 					if ($order) $order->finishOrder();
 					$this->end();
 				} elseif ($answer->getValue() == 'need dispatcher') {
-					$this->say(trans('messages.wait for dispatcher'),$this->bot->getUser()->getId());
+					$this->say($this->__('messages.wait for dispatcher'),$this->bot->getUser()->getId());
                     $this->getUser()->setUserNeedDispatcher();
 					$this->inWay(true);
 				} elseif($answer->getValue() == 'cancel order') {
@@ -60,10 +60,10 @@ class ClientGoesOutConversation extends BaseAddressConversation
                     if($driverLocation) {
                         $actualOrder = OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName());
                         $auto = $actualOrder->getAutoInfo();
-                        $this->say(trans('messages.need map message when driver at place', ['auto' => $auto]));
+                        $this->say($this->__('messages.need map message when driver at place', ['auto' => $auto]));
                         OrderApiService::sendDriverLocation($this->bot, $driverLocation->lat, $driverLocation->lon);
                     } else {
-                        $this->say(trans('messages.error driver location'));
+                        $this->say($this->__('messages.error driver location'));
                     }
                     $this->inWay(true);
                 } else {

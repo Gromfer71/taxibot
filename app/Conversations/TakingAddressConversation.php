@@ -30,12 +30,12 @@ class TakingAddressConversation extends BaseAddressConversation
         $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
         $this->bot->userStorage()->save(['district' => $district]);
         $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
-        $questionText = trans('messages.give me your address');
+        $questionText = $this->__('messages.give me your address');
         $questionText = $this->addAddressesToMessage($questionText);
 
 
         $question = Question::create($questionText, $this->bot->getUser()->getId())
-            ->addButton(Button::create(trans('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
+            ->addButton(Button::create($this->__('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
 
 
         $question = $this->_addAddressFavoriteButtons($question);
@@ -83,12 +83,12 @@ class TakingAddressConversation extends BaseAddressConversation
     public
     function streetNotFound()
     {
-        $question = Question::create(trans('messages.not found address dorabotka bota'), $this->bot->getUser()->getId());
+        $question = Question::create($this->__('messages.not found address dorabotka bota'), $this->bot->getUser()->getId());
         $question->addButtons(
             [
-                Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT])->value('back'),
-                Button::create(trans('buttons.go as indicated'))->value('go as indicated'),
-                Button::create(trans('buttons.exit to menu'))->value('exit to menu'),
+                Button::create($this->__('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT])->value('back'),
+                Button::create($this->__('buttons.go as indicated'))->value('go as indicated'),
+                Button::create($this->__('buttons.exit to menu'))->value('exit to menu'),
             ]
         );
 
@@ -116,10 +116,10 @@ class TakingAddressConversation extends BaseAddressConversation
         $this->_sayDebug('getAddressAgain');
 
         $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()))->take(25);
-        $questionText = $this->addAddressesFromApi(trans('messages.give address again'), $addressesList);
+        $questionText = $this->addAddressesFromApi($this->__('messages.give address again'), $addressesList);
         $question = Question::create($questionText, $this->bot->getUser()->getId());
         $this->_sayDebug('getAddressAgain2');
-        $question->addButton(Button::create(trans('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
+        $question->addButton(Button::create($this->__('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
         if ($addressesList->isNotEmpty()) {
             $this->_sayDebug('addressesList->isNotEmpty');
 
@@ -164,9 +164,9 @@ class TakingAddressConversation extends BaseAddressConversation
     public function forgetWriteHouse()
     {
         $this->_sayDebug('forgetWriteHouse');
-        $question = Question::create(trans('messages.forget write house'), $this->bot->getUser()->getId())
+        $question = Question::create($this->__('messages.forget write house'), $this->bot->getUser()->getId())
             ->addButtons([
-                Button::create(trans('buttons.exit'))->value('exit'),
+                Button::create($this->__('buttons.exit'))->value('exit'),
             ]);;
 
         return $this->ask($question, function (Answer $answer) {
@@ -199,10 +199,10 @@ class TakingAddressConversation extends BaseAddressConversation
 
     public function getEntrance()
     {
-        $question = Question::create(trans('messages.give entrance'), $this->bot->getUser()->getId())
+        $question = Question::create($this->__('messages.give entrance'), $this->bot->getUser()->getId())
             ->addButtons([
-                Button::create(trans('buttons.no entrance'))->value('no entrance'),
-                Button::create(trans('buttons.exit'))->value('exit'),
+                Button::create($this->__('buttons.no entrance'))->value('no entrance'),
+                Button::create($this->__('buttons.exit'))->value('exit'),
             ]);
 
         return $this->ask($question, function (Answer $answer) {
@@ -227,12 +227,12 @@ class TakingAddressConversation extends BaseAddressConversation
     function streetNotFoundAddressTo()
     {
         $this->_sayDebug('streetNotFoundAddressTo');
-        $question = Question::create(trans('messages.not found address dorabotka bota'), $this->bot->getUser()->getId());
+        $question = Question::create($this->__('messages.not found address dorabotka bota'), $this->bot->getUser()->getId());
         $question->addButtons(
             [
-                Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT])->value('back'),
-                Button::create(trans('buttons.go as indicated'))->value('go as indicated'),
-                Button::create(trans('buttons.exit to menu'))->value('exit to menu'),
+                Button::create($this->__('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT])->value('back'),
+                Button::create($this->__('buttons.go as indicated'))->value('go as indicated'),
+                Button::create($this->__('buttons.exit to menu'))->value('exit to menu'),
             ]
         );
 
@@ -263,17 +263,17 @@ class TakingAddressConversation extends BaseAddressConversation
     {
         $this->_sayDebug('getAddressTo');
         if (Address::haveFirstAddressFromStorageAndFirstAdressesIsReal($this->bot->userStorage())) {
-            $message = trans('messages.user address') . collect($this->bot->userStorage()->get('address'))->first() . ' ' . trans('messages.give me end address');
+            $message = $this->__('messages.user address') . collect($this->bot->userStorage()->get('address'))->first() . ' ' . $this->__('messages.give me end address');
         } else {
-            $message = trans('messages.ask for second address if first address incorrect', ['address' => collect($this->bot->userStorage()->get('address'))->first()]);
+            $message = $this->__('messages.ask for second address if first address incorrect', ['address' => collect($this->bot->userStorage()->get('address'))->first()]);
         }
         $message = $this->addAddressesToMessage($message);
 
         $question = Question::create($message, $this->bot->getUser()->getId())
             ->addButtons(
                 [
-                    Button::create(trans('buttons.address will say to driver'))->value('address will say to driver')->additionalParameters(['location' => 'addresses']),
-                    Button::create(trans('buttons.exit'))->value('exit'),
+                    Button::create($this->__('buttons.address will say to driver'))->value('address will say to driver')->additionalParameters(['location' => 'addresses']),
+                    Button::create($this->__('buttons.exit'))->value('exit'),
                 ]
             );
         $question = $this->_addAddressFavoriteButtons($question);
@@ -327,9 +327,9 @@ class TakingAddressConversation extends BaseAddressConversation
 
         $addressesList = collect(Address::getAddresses(collect($this->bot->userStorage()->get('address'))->get(1), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()))->take(25);
 
-        $questionText = $this->addAddressesFromApi(trans('messages.give address again'), $addressesList);
+        $questionText = $this->addAddressesFromApi($this->__('messages.give address again'), $addressesList);
         $question = Question::create($questionText, $this->bot->getUser()->getId());
-        $question->addButton(Button::create(trans('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
+        $question->addButton(Button::create($this->__('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
         if ($addressesList->isNotEmpty()) {
             foreach ($addressesList as $key => $address) {
                 $question->addButton(Button::create(Address::toString($address))->value(Address::toString($address))->additionalParameters(['number' => $key + 1]));

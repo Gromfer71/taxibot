@@ -18,11 +18,11 @@ class RunStartAfterButtonConversation extends BaseConversation
     }
     public function start(){
         $this->_sayDebug('RunStartAfterButtonConversation');
-        $message = trans('messages.cancel order');
+        $message = $this->__('messages.cancel order');
         $question = Question::create($message, $this->bot->getUser()->getId())
             ->addButtons(
                 [
-                    Button::create(trans('buttons.continue'))->value('continue')
+                    Button::create($this->__('buttons.continue'))->value('continue')
                 ]
             );
         $this->_sayDebug('RunStartAfterButtonConversation - end');

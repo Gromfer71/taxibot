@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\BotMan;
 
 use danog\MadelineProto\API;
@@ -6,8 +7,11 @@ use PHPUnit\Framework\Assert;
 
 abstract class BaseTest extends Assert
 {
+    const BOT_NAME = 'sk_taxi_test_bot';
     const SECONDS_FOR_BOT_RESPONSE = 3;
+    static $bot_response_time;
 
+    protected $botResponse;
     protected $proto;
     protected $errors;
 
@@ -21,6 +25,7 @@ abstract class BaseTest extends Assert
     {
         $this->proto = $proto;
         $this->errors = collect();
+        static::$bot_response_time = microtime(true);
     }
 
 
@@ -33,7 +38,7 @@ abstract class BaseTest extends Assert
     {
         return $this->proto->messages->getHistory([
             /* Название канала, без @ */
-            'peer' => 'sk_taxi_test_bot',
+            'peer' => self::BOT_NAME,
             'offset_id' => 0,
             'offset_date' => 0,
             'add_offset' => 0,
@@ -49,25 +54,49 @@ abstract class BaseTest extends Assert
     }
 
 
-    protected function getBotResponse()
+    protected function setAndGetBotResponse()
     {
         $this->waitForResponse();
 
-        return $this->getLastMessageFromHistory($this->getBotMessagesHistory());
+        $this->botResponse = $this->getLastMessageFromHistory($this->getBotMessagesHistory());
+
+        return $this->botResponse;
+    }
+
+    protected function getBotResponse()
+    {
+        return $this->botResponse;
     }
 
     protected function sendMessage($message)
     {
         $this->proto->messages->sendMessage(['peer' => '@sk_taxi_test_bot', 'message' => $message]);
+        BaseTest::$bot_response_time = microtime(true);
+        $this->setAndGetBotResponse();
+
     }
 
     protected function assertEqualsWithLogging($first, $second)
     {
         try {
             $this->assertEquals($first, $second);
+            $error = 'УСПЕШНО';
         } catch (\Exception $exception) {
-            $this->errors->push(['error' => $exception->getMessage(), 'должно быть' => $first, 'было' => $second]);
+            $error = $exception->getLine();
         }
+        $this->addLog(['error' => $error, 'first' => $first, 'second' => $second]);
+    }
+
+    protected function addLog($params)
+    {
+        $this->errors->push(
+            [
+                'error' => $params['error'],
+                'should be' => $params['first'],
+                'was' => $params['second'],
+                'bot_response_time' => microtime(true) - BaseTest::$bot_response_time,
+            ]
+        );
     }
 
     protected function restart()

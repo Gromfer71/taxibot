@@ -21,11 +21,11 @@ class FavoriteAddressesConversation extends BaseAddressConversation
     {
         $this->_sayDebug('запустили меню избранных адресов');
         $this->bot->userStorage()->delete();
-        $question = Question::create(trans('messages.favorite addresses menu'));
+        $question = Question::create($this->__('messages.favorite addresses menu'));
 
         $question->addButtons([
-            Button::create(trans('buttons.back'))->value('back'),
-            Button::create(trans('buttons.add address'))->value('add address')
+            Button::create($this->__('buttons.back'))->value('back'),
+            Button::create($this->__('buttons.add address'))->value('add address')
         ]);
 
         foreach ($this->getUser()->favoriteAddresses as $address) {
@@ -48,10 +48,10 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 
     public function addressMenu()
     {
-        $question = Question::create(trans('messages.favorite address menu'))->addButtons(
+        $question = Question::create($this->__('messages.favorite address menu'))->addButtons(
             [
-                Button::create(trans('buttons.back'))->value('back'),
-                Button::create(trans('buttons.delete'))->value('delete'),
+                Button::create($this->__('buttons.back'))->value('back'),
+                Button::create($this->__('buttons.delete'))->value('delete'),
             ]
         );
 
@@ -81,9 +81,9 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
         $this->bot->userStorage()->save(['district' => $district]);
         $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
-        $questionText = $this->addAddressesToMessageOnlyFromHistory(trans('messages.give me your favorite address'));
+        $questionText = $this->addAddressesToMessageOnlyFromHistory($this->__('messages.give me your favorite address'));
         $question = Question::create($questionText, $this->bot->getUser()->getId())
-            ->addButton(Button::create(trans('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
+            ->addButton(Button::create($this->__('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
         $question = $this->_addAddressHistoryButtons($question, true);
 
         return $this->ask($question, function (Answer $answer) {
@@ -127,10 +127,10 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         $this->_sayDebug('getAddressAgain');
 
         $addressesList = collect(Address::getAddresses($this->bot->userStorage()->get('address'), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()))->take(25);
-        $questionText = $this->addAddressesFromApi(trans('messages.give favorite address again'), $addressesList);
+        $questionText = $this->addAddressesFromApi($this->__('messages.give favorite address again'), $addressesList);
         $question = Question::create($questionText, $this->bot->getUser()->getId());
         $this->_sayDebug('getAddressAgain2');
-        $question->addButton(Button::create(trans('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
+        $question->addButton(Button::create($this->__('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses']));
         if ($addressesList->isNotEmpty()) {
             $this->_sayDebug('addressesList->isNotEmpty');
             foreach ($addressesList as $key => $address) {
@@ -173,11 +173,11 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 
     public function streetNotFound()
     {
-        $question = Question::create(trans('messages.not found favorite address'), $this->bot->getUser()->getId());
+        $question = Question::create($this->__('messages.not found favorite address'), $this->bot->getUser()->getId());
         $question->addButtons(
             [
-                Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT])->value('back'),
-                Button::create(trans('buttons.save as written'))->value('save as written'),
+                Button::create($this->__('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT])->value('back'),
+                Button::create($this->__('buttons.save as written'))->value('save as written'),
             ]
         );
 
@@ -201,9 +201,9 @@ class FavoriteAddressesConversation extends BaseAddressConversation
     public function forgetWriteHouse()
     {
         $this->_sayDebug('forgetWriteHouse');
-        $question = Question::create(trans('messages.forget write house in favorite address'), $this->bot->getUser()->getId())
+        $question = Question::create($this->__('messages.forget write house in favorite address'), $this->bot->getUser()->getId())
             ->addButtons([
-                Button::create(trans('buttons.exit'))->value('exit'),
+                Button::create($this->__('buttons.exit'))->value('exit'),
             ]);;
 
         return $this->ask($question, function (Answer $answer) {
@@ -225,10 +225,10 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 
     public function getEntrance()
     {
-        $question = Question::create(trans('messages.give entrance in favorite address'), $this->bot->getUser()->getId())
+        $question = Question::create($this->__('messages.give entrance in favorite address'), $this->bot->getUser()->getId())
             ->addButtons([
-                Button::create(trans('buttons.no entrance'))->value('no entrance'),
-                Button::create(trans('buttons.exit'))->value('exit'),
+                Button::create($this->__('buttons.no entrance'))->value('no entrance'),
+                Button::create($this->__('buttons.exit'))->value('exit'),
             ]);
 
         return $this->ask($question, function (Answer $answer) {
@@ -248,22 +248,22 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 
     public function getAddressName()
     {
-        $question = Question::create(trans('messages.get address name'))
-            ->addButton(Button::create(trans('buttons.exit'))->value('exit'));
+        $question = Question::create($this->__('messages.get address name'))
+            ->addButton(Button::create($this->__('buttons.exit'))->value('exit'));
 
         return $this->ask($question, function (Answer $answer) {
             if ($answer->getValue() == 'exit') {
                 $this->run();
             } else {
                 if (mb_strlen($answer->getText()) > 32) {
-                    $this->say(trans('messages.address name too long'));
+                    $this->say($this->__('messages.address name too long'));
                     $this->getAddressName();
                 } else {
                     $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
-                    $question = Question::create(trans('messages.favorite address', ['name' => $answer->getText(), 'address' => $this->bot->userStorage()->get('address')]))->addButtons(
+                    $question = Question::create($this->__('messages.favorite address', ['name' => $answer->getText(), 'address' => $this->bot->userStorage()->get('address')]))->addButtons(
                         [
-                            Button::create(trans('buttons.save'))->value('save'),
-                            Button::create(trans('buttons.cancel'))->value('cancel'),
+                            Button::create($this->__('buttons.save'))->value('save'),
+                            Button::create($this->__('buttons.cancel'))->value('cancel'),
                         ]
                     );
 

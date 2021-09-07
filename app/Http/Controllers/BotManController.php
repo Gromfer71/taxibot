@@ -49,6 +49,7 @@ class BotManController extends Controller
 
     public function executeTests()
     {
+
         require '../app/Madeline/madeline.php';
         $settings = new \danog\MadelineProto\Settings\Database\Memory;
         $MadelineProto = new API('session.madeline', $settings);
@@ -57,7 +58,8 @@ class BotManController extends Controller
         $MadelineProto->async(false);
         $test = new MainMenuTest($MadelineProto);
         $test->run();
-        dd($test->getErrors());
+
+        return view('tests.result', ['data' => $test->getErrors()]);
 
     }
 }

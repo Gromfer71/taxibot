@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\Address;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
+use App\Services\Translator;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -88,13 +89,13 @@ abstract class BaseConversation extends Conversation
     }
 
     public function _addChangePriceDefaultButtons($question){
-        $question->addButton(Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::CHANGE_PRICE_MENU_FORMAT])->value('back'));
-        $question->addButton(Button::create(trans('buttons.cancel change price'))->value('cancel change price'));
+        $question->addButton(Button::create($this->__('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::CHANGE_PRICE_MENU_FORMAT])->value('back'));
+        $question->addButton(Button::create($this->__('buttons.cancel change price'))->value('cancel change price'));
         return $question;
     }
     public function end()
     {
-        $question = Question::create(trans('messages.thx for order'), $this->bot->getUser()->getId())->addButtons([
+        $question = Question::create($this->__('messages.thx for order'), $this->bot->getUser()->getId())->addButtons([
             Button::create('Продолжить')->value('Продолжить'),
         ]);
 
@@ -170,6 +171,13 @@ abstract class BaseConversation extends Conversation
         }
 
         return $result;
+    }
+    
+    public function __($key, $replace = [])
+    {
+       $translator = new Translator($this->getUser()->lang);
+
+       return $translator->trans($key, $replace);
     }
 
 }
