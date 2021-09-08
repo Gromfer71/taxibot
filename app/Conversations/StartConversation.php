@@ -5,6 +5,7 @@ namespace App\Conversations;
 use App\Models\Log;
 use App\Models\OrderHistory;
 use App\Models\User;
+use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -43,6 +44,7 @@ class StartConversation extends BaseConversation
 				'firstname' => $this->bot->getUser()->getFirstName(),
 				'lastname' => $this->bot->getUser()->getLastName(),
 				'userinfo' => json_encode($this->bot->getUser()->getInfo()),
+                'lang_id' => LangPackage::getDefaultLangId(),
 			]);
 		    $user->setPlatformId($this->bot);
 

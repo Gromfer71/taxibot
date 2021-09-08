@@ -11,6 +11,7 @@ use App\Services\Address;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
 use App\Services\Translator;
+use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -175,9 +176,11 @@ abstract class BaseConversation extends Conversation
     
     public function __($key, $replace = [])
     {
-       $translator = new Translator($this->getUser()->lang);
+        if(is_null(Translator::$lang)) {
+          Translator::setUp($this->getUser());
+        }
 
-       return $translator->trans($key, $replace);
+       return Translator::trans($key, $replace);
     }
 
 }

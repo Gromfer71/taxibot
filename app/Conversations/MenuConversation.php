@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Services\Options;
 use App\Services\OrderApiService;
 use App\Services\BonusesApi;
+use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -302,6 +303,7 @@ class MenuConversation extends BaseConversation
                     'firstname' => $this->bot->getUser()->getFirstName(),
                     'lastname' => $this->bot->getUser()->getLastName(),
                     'userinfo' => json_encode($this->bot->getUser()->getInfo()),
+                    'lang_id' => LangPackage::getDefaultLangId(),
                 ]);
             }
             $user->setPlatformId($this->bot);
