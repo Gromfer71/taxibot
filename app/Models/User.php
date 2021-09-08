@@ -118,7 +118,7 @@ class User extends Model
 
     public function setDefaultLang()
     {
-        $defaultPackage = LangPackage::where('code', config('app.locale', 'ru'))->find();
+        $defaultPackage = LangPackage::where('code', config('app.locale', 'ru'))->first();
         if(!$defaultPackage) {
             $this->lang_id = LangPackage::all()->first()->id ?? null;
         } else {
