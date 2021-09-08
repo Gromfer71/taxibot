@@ -16,7 +16,7 @@ class Translator
                 $user->setDefaultLang();
             }
 
-            $package = LangPackage::find($user->id);
+            $package = LangPackage::find($user->lang_id);
             if(!$package) {
                 $user->setDefaultLang();
             }
