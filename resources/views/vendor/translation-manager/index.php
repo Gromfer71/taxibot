@@ -135,55 +135,62 @@
     <?php endif; ?>
     <p>
         <?php if(!isset($group)) : ?>
-        <form class="form-import" method="POST" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postImport') ?>" data-remote="true" role="form">
-            <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-sm-3">
-                        <select name="replace" class="form-control">
-                            <option value="0">Append new translations</option>
-                            <option value="1">Replace existing translations</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                    <button type="submit" class="btn btn-success btn-block"  data-disable-with="Loading..">Import groups</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-        <form class="form-find" method="POST" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postFind') ?>" data-remote="true" role="form" data-confirm="Are you sure you want to scan you app folder? All found translation keys will be added to the database.">
-            <div class="form-group">
-                <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
-                <button type="submit" class="btn btn-info" data-disable-with="Searching.." >Find translations in files</button>
-            </div>
-        </form>
-        <?php endif; ?>
-        <?php if(isset($group)) : ?>
-            <form class="form-inline form-publish" method="POST" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postPublish', $group) ?>" data-remote="true" role="form" data-confirm="Are you sure you want to publish the translations group '<?php echo $group ?>? This will overwrite existing language files.">
-                <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
-                <button type="submit" class="btn btn-info" data-disable-with="Publishing.." >Publish translations</button>
-                <a href="<?= action('\Barryvdh\TranslationManager\Controller@getIndex') ?>" class="btn btn-default">Back</a>
-            </form>
-        <?php endif; ?>
-    </p>
-    <form role="form" method="POST" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postAddGroup') ?>">
+    <form class="form-import" method="POST" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postImport') ?>" data-remote="true" role="form">
         <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
         <div class="form-group">
-            <p>Choose a group to display the group translations. If no groups are visisble, make sure you have run the migrations and imported the translations.</p>
-            <select name="group" id="group" class="form-control group-select">
-                <?php foreach($groups as $key => $value): ?>
-                    <option value="<?php echo $key ?>"<?php echo $key == $group ? ' selected':'' ?>><?php echo $value ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Enter a new group name and start edit translations in that group</label>
-            <input type="text" class="form-control" name="new-group" />
-        </div>
-        <div class="form-group">
-            <input type="submit" class="btn btn-default" name="add-group" value="Add and edit keys" />
+            <div class="row">
+                <div class="col-sm-3">
+                    <select name="replace" class="form-control">
+                        <option value="0">Append new translations</option>
+                        <option value="1">Replace existing translations</option>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-success btn-block"  data-disable-with="Loading..">Import groups</button>
+                </div>
+            </div>
         </div>
     </form>
+    <form class="form-find" method="POST" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postFind') ?>" data-remote="true" role="form" data-confirm="Are you sure you want to scan you app folder? All found translation keys will be added to the database.">
+        <div class="form-group">
+            <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
+            <button type="submit" class="btn btn-info" data-disable-with="Searching.." >Find translations in files</button>
+        </div>
+    </form>
+<?php endif; ?>
+    <?php if(isset($group)) : ?>
+        <form class="form-inline form-publish" method="POST" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postPublish', $group) ?>" data-remote="true" role="form" data-confirm="Are you sure you want to publish the translations group '<?php echo $group ?>? This will overwrite existing language files.">
+            <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
+            <button type="submit" class="btn btn-info" data-disable-with="Publishing.." >Publish translations</button>
+            <a href="<?= action('\Barryvdh\TranslationManager\Controller@getIndex') ?>" class="btn btn-default">Back</a>
+        </form>
+    <?php endif; ?>
+    </p>
+
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+
+    </body>
+    </html><?php //echo $value ?><!--</option>--><?php //endforeach; ?>
+    <!--            </select>-->
+    <!--        </div>-->
+    <!--        <div class="form-group">-->
+    <!--            <label>Enter a new group name and start edit translations in that group</label>-->
+    <!--            <input type="text" class="form-control" name="new-group" />-->
+    <!--        </div>-->
+    <!--        <div class="form-group">-->
+    <!--            <input type="submit" class="btn btn-default" name="add-group" value="Add and edit keys" />-->
+    <!--        </div>-->
+    <!--    </form>-->
+
     <?php if($group): ?>
         <form action="<?php echo action('\Barryvdh\TranslationManager\Controller@postAdd', array($group)) ?>" method="POST"  role="form">
             <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
@@ -230,7 +237,7 @@
             </div>
         </form>
         <hr>
-    <h4>Total: <?= $numTranslations ?>, changed: <?= $numChanged ?></h4>
+        <h4>Total: <?= $numTranslations ?>, changed: <?= $numChanged ?></h4>
         <table class="table">
             <thead>
             <tr>
@@ -273,53 +280,73 @@
             </tbody>
         </table>
     <?php else: ?>
-        <fieldset>
-            <legend>Supported locales</legend>
-            <p>
-                Current supported locales:
-            </p>
-            <form  class="form-remove-locale" method="POST" role="form" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postRemoveLocale') ?>" data-confirm="Are you sure to remove this locale and all of data?">
-                <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
-                <ul class="list-locales">
+    <fieldset>
+        <legend>Supported locales</legend>
+        <p>
+            Current supported locales:
+        </p>
+        <form  class="form-remove-locale" method="POST" role="form" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postRemoveLocale') ?>" >
+            <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
+            <ul class="list-locales">
                 <?php foreach($locales as $locale): ?>
                     <li>
                         <div class="form-group">
                             <button type="submit" name="remove-locale[<?php echo $locale ?>]" class="btn btn-danger btn-xs" data-disable-with="...">
                                 &times;
                             </button>
+                            <button type="submit"  name="toggle-locale[<?php echo $locale ?>]" class="btn btn-warning btn-xs" data-disable-with="...">
+                                ^
+                            </button>
                             <?php echo $locale ?>
-                            
+
+                            <?php if(\Barryvdh\TranslationManager\Models\LangPackage::where('code', $locale)->first()->is_enable ?? true): ?>
+                                (включен)
+                            <?php else: ?>
+                                (выключен)
+                            <?php endif; ?>
+
+
                         </div>
                     </li>
                 <?php endforeach; ?>
-                </ul>
-            </form>
-            <form class="form-add-locale" method="POST" role="form" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postAddLocale') ?>">
-                <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
-                <div class="form-group">
-                    <p>
-                        Enter new locale key:
-                    </p>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <input type="text" name="new-locale" class="form-control" />
-                        </div>
-                        <div class="col-sm-2">
-                            <button type="submit" class="btn btn-default btn-block"  data-disable-with="Adding..">Add new locale</button>
-                        </div>
+            </ul>
+        </form>
+        <form class="form-add-locale" method="POST" role="form" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postAddLocale') ?>">
+            <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
+            <div class="form-group">
+                <p>
+                    Введите короткий код, по котором будет идентифицироваться языковой пакет (например ru, en)
+                </p>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <input type="text" name="new-locale" class="form-control" />
                     </div>
                 </div>
-            </form>
-        </fieldset>
-        <fieldset>
-            <legend>Export all translations</legend>
-            <form class="form-inline form-publish-all" method="POST" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postPublish', '*') ?>" data-remote="true" role="form" data-confirm="Are you sure you want to publish all translations group? This will overwrite existing language files.">
-                <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
-                <button type="submit" class="btn btn-primary" data-disable-with="Publishing.." >Publish all</button>
-            </form>
-        </fieldset>
+                <div class="row">
+                    <div class="col-sm-3">
+                        Введите название языкового пакета (это же название будет отображаться в чат-боте)
+                        <input type="text" name="locale_name" class="form-control" />
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <button type="submit" class="btn btn-default btn-block"  data-disable-with="Adding..">Добавить новый язык</button>
+                    </div>
+                </div>
+            </div>
+</div>
+</form>
+</fieldset>
+<fieldset>
+    <legend>Export all translations</legend>
+    <form class="form-inline form-publish-all" method="POST" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postPublish', '*') ?>" data-remote="true" role="form" data-confirm="Are you sure you want to publish all translations group? This will overwrite existing language files.">
+        <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
+        <button type="submit" class="btn btn-primary" data-disable-with="Publishing.." >Publish all</button>
+    </form>
+</fieldset>
 
-    <?php endif; ?>
+<?php endif; ?>
 </div>
 
 </body>

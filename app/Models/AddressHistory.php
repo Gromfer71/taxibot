@@ -34,6 +34,7 @@ class AddressHistory extends Model
 
     public static function clearByUserId($userId){
         self::where('user_id',$userId)->delete();
+
     }
 
     public static function newAddress($userId, $address, $coords, $city)

@@ -18,7 +18,6 @@ class LangTables extends Migration
         Schema::table('lang_packages', function (Blueprint $table) {
             $table->string('code');
             $table->dropColumn('is_default');
-
         });
     }
 
