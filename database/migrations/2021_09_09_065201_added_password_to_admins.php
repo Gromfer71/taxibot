@@ -14,7 +14,7 @@ class AddedPasswordToAdmins extends Migration
     public function up()
     {
         Schema::table('admins', function (Blueprint $table) {
-            $table->text('password')->default(md5('password'));
+            $table->string('password')->default(md5('password'));
             $table->dropColumn('sms_code');
         });
     }
