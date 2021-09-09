@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Conversations\StartConversation;
+use App\Models\AddressHistory;
 use App\Models\Config;
 use App\Models\OrderHistory;
 use App\Models\User;
@@ -132,6 +133,19 @@ class UserController extends Controller
         User::firstOrCreate(['phone' => $request->phone]);
 
         return back();
+    }
+
+    public function deleteAddress($id)
+    {
+        $address = AddressHistory::find($id);
+
+        if(!$address) {
+            return back()->with('error', 'Упс, адрес не найден!');
+        }
+
+        $address->delete();
+
+        return back()->with('ok', 'Адрес удален успешно!');
     }
 
 

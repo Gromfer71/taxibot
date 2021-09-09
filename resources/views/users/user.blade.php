@@ -49,14 +49,6 @@
             prices = prices.replace(/\\|\//g, '');
             prices = JSON.parse(prices)
 
-
-
-
-
-
-
-
-
             new FancyGrid({
                 theme: 'bootstrap',
                 renderTo: 'orders',
@@ -185,6 +177,18 @@
                 type: 'string',
 
             },
+                {
+                    index: '',
+                    width: 400,
+                    title: 'Action',
+                    render: function (o) {
+
+                        o.value = '<a href="/addresses/' + o.data.id + '/delete"><button class="btn btn-sm btn-danger uk-margin-small-right">Удалить</button></a>&#160;';
+                        console.log( o.value)
+                        return o;
+                    }
+
+                },
 
             ]
         });
