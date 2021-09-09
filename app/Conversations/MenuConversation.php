@@ -51,7 +51,7 @@ class MenuConversation extends BaseConversation
         }
         $this->bot->userStorage()->delete();
         $this->checkConfig();
-        OrderHistory::cancelAllOrders($this->getUser()->id);
+        OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
 
 
         $question = Question::create($withoutMessage ? '' : $this->__('messages.choose menu'), $this->bot->getUser()->getId())

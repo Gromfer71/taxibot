@@ -126,9 +126,9 @@ class OrderHistory extends Model
 		return self::where('relevance', 0)->get();
 	}
 
-	public static function cancelAllOrders($userId)
+	public static function cancelAllOrders($userId, $driverName)
 	{
-		self::where(['user_id' =>  $userId, 'relevance' => 0])->update(['relevance' => -1, 'fail_reason' => 'Пользователь перешел в главное меню, отменились все заявки']);
+		self::where(['user_id' =>  $userId, 'relevance' => 0, 'platform' => $driverName])->update(['relevance' => -1, 'fail_reason' => 'Пользователь перешел в главное меню, отменились все заявки']);
 	}
 
 	public function updateOrderState()

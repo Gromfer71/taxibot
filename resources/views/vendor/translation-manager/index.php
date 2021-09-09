@@ -281,6 +281,8 @@
         </table>
     <?php else: ?>
     <fieldset>
+        <a href="translations/view/messages" class="btn btn-success">Редактор сообщений</a>
+        <a href="translations/view/buttons" class="btn btn-success">Редактор кнопок</a>
         <legend>Supported locales</legend>
         <p>
             Current supported locales:
