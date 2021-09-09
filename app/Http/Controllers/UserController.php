@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Conversations\StartConversation;
 use App\Models\AddressHistory;
+use App\Models\Admin;
 use App\Models\Config;
 use App\Models\OrderHistory;
 use App\Models\User;
@@ -146,6 +147,19 @@ class UserController extends Controller
         $address->delete();
 
         return back()->with('ok', 'Адрес удален успешно!');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $admin = Admin::find($request->get('phone'));
+        if(!$admin) {
+            return back();
+        }
+
+        $admin->password = md5($request->get('new_password'));
+        $admin->save();
+
+        return back()->with('ok', 'Пароль успешно изменен');
     }
 
 

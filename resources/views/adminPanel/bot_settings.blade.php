@@ -50,10 +50,33 @@
     </div>
 
     <div id="container"></div>
+    <div id="change_password" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <h2 class="uk-modal-title">Новый пароль</h2>
+            <form action="{{ route('change_password') }}" method="POST">
+                @csrf
+                <input type="hidden" name="phone" id="phone">
+                <input type="text" name="new_password"  class="uk-input" required><br><br>
+                <button class="uk-button uk-button-primary" type="submit">Сохранить</button>
+            </form>
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+        </div>
+    </div>
 @endsection
 @push('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+
+            Fancy.defineControl('change_password_control', {
+                controls: [{
+                    event: 'cellclick',
+                    selector: '.change-password',
+                    handler: 'onClickMyButton'
+                }],
+                onClickMyButton: function(grid, o){
+                    $('#phone').val(o.data.phone)
+                }
+            });
 
             var myJsObj = JSON.parse($('#settings').val())
             var str = JSON.stringify(myJsObj, undefined, 2);
@@ -62,6 +85,8 @@
             new FancyGrid({
                 theme: 'bootstrap',
                 renderTo: 'container',
+                controllers: ['change_password_control'],
+                dirtyEnabled: false,
                 height: 500,
                 paging: {
                     pageSize: 20,
@@ -97,6 +122,7 @@
                         title: 'Действия',
                         render: function (o) {
                             o.value = '<a href="/admins/destroy/' + o.data.phone + '"><button class="btn btn-sm btn-danger">Удалить</button></a>';
+                            o.value += '  <button class="btn btn-sm btn-danger change-password" uk-toggle="target: #change_password"  data-phone=' + o.data.phone + '>Изменить пароль</button></a>';
 
                             return o;
                         }
@@ -104,6 +130,7 @@
                 ]
             });
         });
+
     </script>
 @endpush
 

@@ -14,8 +14,7 @@ Auth::routes([
     'reset' => false, // Password Reset Routes...
     'verify' => false, // Email Verification Routes...
 ]);
-Route::match(['get', 'post'], 'sms_confirm_login', 'Auth\LoginController@confirmLogin')->name('confirm_login');
-Route::get( 'sendSms', 'Auth\LoginController@sendSms')->name('send_sms');
+Route::match(['get', 'post'], 'login', 'Auth\LoginController@login')->name('login');
 
 Route::get( 'tinker', 'BotManController@tinker')->name('tinker');
 
@@ -50,6 +49,7 @@ Route::group(['midlleware' => 'auth'], function() {
     Route::get('users/{id}/reset', 'UserController@reset')->name('user_reset');
     Route::get('users/{id}/block', 'UserController@block')->name('user_block');
     Route::get('users/{id}/unblock', 'UserController@unblock')->name('user_unblock');
+    Route::post('users/change_password', 'UserController@changePassword')->name('change_password');
 
     Route::get('users/{id}/orders/clear', 'UserController@ordersClear')->name('user_orders_clear');
     Route::get('users/{id}/addresses/clear', 'UserController@addressesClear')->name('user_addresses_clear');

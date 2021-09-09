@@ -21,7 +21,7 @@
     <link href="{{ asset('css/auch.css') }}" rel="stylesheet">
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
 
-    <!-- <link href="{{ asset('ulkit/css/uikit.min.css') }}" rel="stylesheet"> -->
+     <link href="{{ asset('ulkit/css/uikit.min.css') }}" rel="stylesheet">
     <script src="{{ asset('ulkit/js/uikit.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.13/dist/js/uikit-icons.min.js"></script>
 
@@ -52,7 +52,7 @@
                     <script>
                         UIkit.notification({message: '{!! $errors->first() !!}', pos: 'top-center', status: 'danger'})
                     </script>
-    @endif
+                @endif
     @yield('content')
 
 @yield('scripts')
