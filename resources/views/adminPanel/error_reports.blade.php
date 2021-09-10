@@ -23,60 +23,66 @@
             <div id="error_reports"></div>
         </div>
 
-@endsection
-@push('scripts')
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            $.ajax({
-                url: '/error_reports/get_reports',
-                method: 'post',
-                dataType: 'json',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                },
-                success: function(data){
-                    var grid = new FancyGrid({
-                        theme: 'material',
-                        title: 'Журнал ошибок',
-                        resizable: true,
-                        textSelection: true,
-                        renderTo: 'error_reports',
-                        height: '750',
-                        width: 'fit',
-                        data: data,
-                        defaults: {
-                            resizable: true,
-                            type: 'string',
-                            flex: 1,
-                            sortable: true,
-                            paging: {
-                                pageSize: 15,
-                            },
+        @endsection
+        @push('scripts')
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    $.ajax({
+                        url: '/error_reports/get_reports',
+                        method: 'post',
+                        dataType: 'json',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
                         },
-                        columns: [
-                            {
-                                index: 'id',
-                                flex: 1,
-                                locked: true,
-                                title: '№',
-                            }, {
-                                index: 'userName',
-                                title: 'Пользователь (его логин, для вк id/логин)',
-                                flex: 1,
-                            }, {
-                                index: 'error_message',
-                                title: 'Сообщение об ошибке',
-                                flex: 1,
-                            }, {
-                                index: 'stack_trace',
-                                title: 'Стек вызовов функций',
+                        success: function (data) {
+                            var grid = new FancyGrid({
+                                theme: 'material',
+                                title: 'Журнал ошибок',
+                                resizable: true,
+                                textSelection: true,
+                                renderTo: 'error_reports',
+                                height: '750',
+                                width: 'fit',
                                 data: data,
-                            },]
-                    })
-                }
-            });
-        });
+                                events: [{
+                                    cellclick: function (grid, o) {
+                                        alert(o.data.stack_trace);
+                                    },
+                                }],
+
+                                defaults: {
+                                    resizable: true,
+                                    type: 'string',
+                                    flex: 1,
+                                    sortable: true,
+                                    paging: {
+                                        pageSize: 15,
+                                    },
+                                },
+                                columns: [
+                                    {
+                                        index: 'id',
+                                        flex: 1,
+                                        locked: true,
+                                        title: '№',
+                                    }, {
+                                        index: 'userName',
+                                        title: 'Пользователь (его логин, для вк id/логин)',
+                                        flex: 1,
+                                    }, {
+                                        index: 'error_message',
+                                        title: 'Сообщение об ошибке',
+                                        flex: 1,
+                                    }, {
+                                        index: 'stack_trace',
+                                        title: 'Стек вызовов функций',
+                                        data: data,
+                                    },]
+                            })
+                        }
+                    });
+                });
 
 
-    </script>
-@endpush
+            </script>
+    @endpush
