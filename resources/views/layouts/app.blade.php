@@ -136,6 +136,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link @if(request()->url() == route('error_reports')) active @endif" href="{{ route('error_reports') }}">
+
+                                Журнал ошибок
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <span data-feather="bar-chart-2"></span>
                                 Статистика

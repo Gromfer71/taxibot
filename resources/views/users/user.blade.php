@@ -33,9 +33,6 @@
 @endsection
 @push('scripts')
     <script>
-
-
-
         document.addEventListener("DOMContentLoaded", function() {
             let x = "{{ $orders }}"
             data1 = x.replace(/&quot;/g, '"')

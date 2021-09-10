@@ -135,6 +135,17 @@ class Config extends Model
         }
     }
 
+    public static function updateErrorReportEmails($emails)
+    {
+        $config = self::where('name', 'errorReportEmails')->first();
+        if(!$config) {
+            return false;
+        }
+        $config->value = $emails;
+        $config->save();
+
+    }
+
     public static function getErrorReportEmails()
     {
         return explode(',', self::find('errorReportEmails')->value);

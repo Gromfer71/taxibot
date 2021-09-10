@@ -56,6 +56,11 @@ Route::group(['midlleware' => 'auth'], function() {
     Route::get('addresses/{id}/delete', 'UserController@deleteAddress')->name('user_delete_address');
     Route::get('orders/{id}/delete', 'OrderController@delete')->name('order_delete');
 
+    Route::get('error_reports', 'ErrorReportController@index')->name('error_reports');
+    Route::get('error_reports/clear', 'ErrorReportController@clear')->name('clear_error_reports');
+    Route::post('error_reports/update_emails', 'ErrorReportController@updateEmails')->name('update_emails');
+    Route::post('error_reports/get_reports', 'ErrorReportController@getReports');
+
 
 
 
