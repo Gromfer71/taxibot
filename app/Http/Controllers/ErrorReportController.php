@@ -22,7 +22,7 @@ class ErrorReportController extends Controller
 
     public function updateEmails(Request $request)
     {
-        Config::updateErrorReportEmails($request->get('emails'));
+        Config::updateErrorReportEmails(str_replace(' ', '', $request->get('emails')));
 
         return back()->with('ok', 'Почтовые адреса успешно обновлены');
     }
