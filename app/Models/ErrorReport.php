@@ -9,7 +9,7 @@ class ErrorReport extends Model
 {
     protected $guarded = ['created_at'];
     public $timestamps = ['created_at'];
-
+    const UPDATED_AT = null;
     public function user()
     {
         $this->hasOne(User::class, 'id', 'user_id');
