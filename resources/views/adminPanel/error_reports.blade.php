@@ -82,7 +82,12 @@
                                         index: 'stack_trace',
                                         title: 'Стек вызовов функций',
                                         data: data,
-                                    },]
+                                    },{
+                                      index: 'created_at',
+                                        title: 'Время',
+                                        type: 'date',
+                                        flex: 0.3
+                                    }]
                             })
                         }
                     });
