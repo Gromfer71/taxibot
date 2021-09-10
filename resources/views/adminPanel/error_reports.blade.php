@@ -14,12 +14,17 @@
 
                 </div>
             </div>
+
             <form action="{{ route('update_emails') }}" method="POST">
                 @csrf
                 <input type="text" value="{{ $emails }}" name="emails" class="uk-input uk-margin">
                 <button type="submit" class="btn btn-success uk-margin-bottom">Сохранить</button>
 
             </form>
+            <div>
+
+            </div>
+            <a href="{{ route('clear_error_reports') }}" class="btn btn-success uk-margin-bottom">Очистить журнал</a>
             <div id="error_reports"></div>
         </div>
 
@@ -62,7 +67,7 @@
                                 columns: [
                                     {
                                         index: 'id',
-                                        flex: 1,
+                                        flex: 0.3,
                                         locked: true,
                                         title: '№',
                                     }, {
