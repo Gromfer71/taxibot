@@ -15,7 +15,7 @@ class ErrorReportController extends Controller
 
     public function getReports(Request $request)
     {
-        return ErrorReport::all()->map(function ($item) {
+        return ErrorReport::all()->each(function ($item) {
             $item->userName = $item->user->username;
         })->toJson();
     }
