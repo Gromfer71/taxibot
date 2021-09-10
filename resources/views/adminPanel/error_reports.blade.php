@@ -73,7 +73,7 @@
                                     }, {
                                         index: 'userName',
                                         title: 'Пользователь (его логин, для вк id/логин)',
-                                        flex: 1,
+                                        flex: 0.7,
                                     }, {
                                         index: 'error_message',
                                         title: 'Сообщение об ошибке',
@@ -85,7 +85,6 @@
                                     },{
                                       index: 'created_at',
                                         title: 'Время',
-                                        type: 'date',
                                         flex: 0.3
                                     }]
                             })
