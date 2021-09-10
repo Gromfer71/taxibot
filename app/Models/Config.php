@@ -125,5 +125,21 @@ class Config extends Model
         file_put_contents(storage_path('app/taxi_config.json'), $data);
     }
 
+    public static function setUpEmailsForErrorReports()
+    {
+        if(self::where('name', 'errorReportEmails')->get()->isEmpty()) {
+            self::create([
+                'name' => 'errorReportEmails',
+                'value' => '',
+            ]);
+        }
+    }
+
+    public static function getErrorReportEmails()
+    {
+        return explode(',', self::find('errorReportEmails')->value);
+    }
+
+
 
 }
