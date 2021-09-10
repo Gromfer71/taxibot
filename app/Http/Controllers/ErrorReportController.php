@@ -15,9 +15,7 @@ class ErrorReportController extends Controller
 
     public function getReports(Request $request)
     {
-        $reports = ErrorReport::all();
-        $reports = $reports->sortByDesc('id');
-        return $reports->each(function ($item) {
+        return ErrorReport::orderByDesc('id')->get()->each(function ($item) {
             $item->userName = $item->user->username;
         })->toJson();
     }
