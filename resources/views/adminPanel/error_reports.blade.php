@@ -54,15 +54,15 @@
                                         alert(o.data.stack_trace);
                                     },
                                 }],
-
+                                paging: {
+                                    pageSize: 15,
+                                },
                                 defaults: {
                                     resizable: true,
                                     type: 'string',
                                     flex: 1,
                                     sortable: true,
-                                    paging: {
-                                        pageSize: 15,
-                                    },
+
                                 },
                                 columns: [
                                     {

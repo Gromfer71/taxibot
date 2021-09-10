@@ -29,16 +29,8 @@ class ErrorReport extends Model
     public function sendReport($emails)
     {
         foreach ($emails as $email) {
-
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                Mail::send(
-                    'adminPanel.email_error_report',
-                    ['report' => $this],
-                    function ($message) use ($email) {
-                        $message->to($email, $email)->subject('Уведомление об отловленной ошибке в чат-боте СК-такси');
-                        $message->from(env('MAIL_USERNAME'), 'Чат-бот СК-такси');
-                    }
-                );
+                \mail($email, 'Уведомление об ошибке в чат-боте', 'Здравствуйте. В журнал ошибок чат-бота добавлена новая запись.');
             }
         }
     }
