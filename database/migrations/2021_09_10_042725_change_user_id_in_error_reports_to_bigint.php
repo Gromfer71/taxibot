@@ -14,7 +14,7 @@ class ChangeUserIdInErrorReportsToBigint extends Migration
     public function up()
     {
         Schema::table('error_reports', function (Blueprint $table) {
-            $table->bigIncrements('id')->change();
+            $table->bigIncrements('user_id')->change();
         });
     }
 
