@@ -28,6 +28,9 @@ class ErrorReport extends Model
 
     public function sendReport($emails)
     {
+        if(!$emails) {
+            return;
+        }
         foreach ($emails as $email) {
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 \mail($email, 'Уведомление об ошибке в чат-боте', 'Здравствуйте. В журнал ошибок чат-бота добавлена новая запись.');
