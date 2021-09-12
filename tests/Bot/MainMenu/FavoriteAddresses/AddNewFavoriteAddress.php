@@ -1,10 +1,8 @@
 <?php
 
-namespace Tests\BotMan\MainMenu\FavoriteAddresses;
+namespace Tests\Bot\MainMenu\FavoriteAddresses;
 
-use App\Models\User;
-use Tests\BotMan\BaseTest;
-use Tests\BotMan\MainMenu\MainMenuTest;
+use Tests\Bot\MainMenu\MainMenuTest;
 
 class AddNewFavoriteAddress extends MainMenuTest
 {

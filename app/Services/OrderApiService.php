@@ -4,6 +4,7 @@
 namespace App\Services;
 
 
+use Amp\Cache\CacheException;
 use App\Models\Config;
 use App\Models\LogApi;
 use App\Models\OrderHistory;
@@ -15,6 +16,7 @@ use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use PHPUnit\Framework\Exception;
 
 class OrderApiService
 {

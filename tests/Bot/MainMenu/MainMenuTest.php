@@ -1,10 +1,12 @@
 <?php
-namespace Tests\BotMan\MainMenu;
 
-use Tests\BotMan\BaseTest;
-use Tests\BotMan\MainMenu\FavoriteAddresses\AddNewFavoriteAddress;
+namespace Tests\Bot\MainMenu;
 
- class MainMenuTest extends BaseTest
+use Tests\Bot\BaseTest;
+use Tests\Bot\MainMenu\FavoriteAddresses\AddNewFavoriteAddress;
+
+
+class MainMenuTest extends BaseTest
 {
     const MAIN_MENU_MESSAGE = 'Моё почтение! Выберите из вариантов ниже, что я могу для Вас сделать';
 
