@@ -35,7 +35,7 @@ class AddNewFavoriteAddress extends MainMenuTest
     private function goToFavoriteAddressesMenu()
     {
         $this->sendMessage(trans('buttons.favorite addresses menu'));
-        $this->assertEquals(trans('messages.favorite addresses menu'), $this->getBotResponse());
+        static::assertEquals(trans('messages.favorite addresses menu'), $this->getBotResponse());
     }
 
     /**
@@ -44,7 +44,7 @@ class AddNewFavoriteAddress extends MainMenuTest
     private function goToAddAddress()
     {
         $this->sendMessage(trans('buttons.add address'));
-        $this->assertEquals(trans('messages.give me your favorite address'), $this->getBotResponse());
+        static::assertEquals(trans('messages.give me your favorite address'), $this->getBotResponse());
     }
 
     /**
@@ -54,7 +54,7 @@ class AddNewFavoriteAddress extends MainMenuTest
     {
         $address = 'лен2';
         $this->sendMessage($address);
-        $this->assertEquals(trans('messages.give favorite address again'), $this->getBotResponse());
+        static::assertEquals(trans('messages.give favorite address again'), $this->getBotResponse());
     }
 
     /**
@@ -64,7 +64,7 @@ class AddNewFavoriteAddress extends MainMenuTest
     {
         $address = 'Ленина пр-т 2 (Якутск)';
         $this->sendMessage($address);
-        $this->assertEquals(trans('messages.give entrance in favorite address'), $this->getBotResponse());
+        static::assertEquals(trans('messages.give entrance in favorite address'), $this->getBotResponse());
     }
 
     /**
@@ -73,7 +73,7 @@ class AddNewFavoriteAddress extends MainMenuTest
     private function enterEntrance()
     {
         $this->sendMessage('2');
-        $this->assertEquals(trans('messages.get address name'), $this->getBotResponse());
+        static::assertEquals(trans('messages.get address name'), $this->getBotResponse());
     }
 
     /**
@@ -84,7 +84,7 @@ class AddNewFavoriteAddress extends MainMenuTest
         $this->sendMessage('домдомдомдомдомдомдомдомдомдомдомдомдомдомдомдом
         домдомдомдомдомдомдомдомдомдомдомдомдомдомдомдомдомдомдомдомдомдомдом
         домдомдомдомдом');
-        $this->assertEquals('А теперь давайте его как-нибудь обзовём. Напишите название и отправьте его мне (не более 32 символов)', $this->getBotResponse());
+        static::assertEquals('А теперь давайте его как-нибудь обзовём. Напишите название и отправьте его мне (не более 32 символов)', $this->getBotResponse());
     }
 
     /**
@@ -93,7 +93,7 @@ class AddNewFavoriteAddress extends MainMenuTest
     private function enterFavoriteAddressName()
     {
         $this->sendMessage('дом');
-        $this->assertEquals('дом Ленина пр-т 2 (Якутск), *п 2', $this->getBotResponse());
+        static::assertEquals('дом Ленина пр-т 2 (Якутск), *п 2', $this->getBotResponse());
     }
 
     /**
@@ -102,7 +102,7 @@ class AddNewFavoriteAddress extends MainMenuTest
     private function save()
     {
         $this->sendMessage(trans('buttons.save'));
-        $this->assertEquals(trans('messages.favorite addresses menu'), $this->getBotResponse());
+        static::assertEquals(trans('messages.favorite addresses menu'), $this->getBotResponse());
     }
 
     /**
@@ -111,7 +111,7 @@ class AddNewFavoriteAddress extends MainMenuTest
     private function selectCreatedAddress()
     {
         $this->sendMessage('дом (Ленская ул. 2 (Якутск), *п 2)');
-        $this->assertEquals(trans('messages.favorite address menu'), $this->getBotResponse());
+        static::assertEquals(trans('messages.favorite address menu'), $this->getBotResponse());
     }
 
     /**
@@ -120,7 +120,7 @@ class AddNewFavoriteAddress extends MainMenuTest
     private function delete()
     {
         $this->sendMessage(trans('buttons.delete'));
-        $this->assertEquals(trans('messages.favorite addresses menu'), $this->getBotResponse());
+        static::assertEquals(trans('messages.favorite addresses menu'), $this->getBotResponse());
 
     }
 

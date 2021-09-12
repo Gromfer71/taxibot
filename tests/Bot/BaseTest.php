@@ -6,14 +6,13 @@ declare(strict_types=1);
 namespace Tests\Bot;
 
 use danog\MadelineProto\API;
-use Exception;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\Assert;
 
 /**
  * Базовый класс для тестирования чат-бота через Madeline Proto.
  */
-abstract class BaseTest
+abstract class BaseTest extends Assert
 {
     private const BOT_NAME = 'sk_taxi_test_bot';
     private const SECONDS_FOR_BOT_RESPONSE = 3;
@@ -78,45 +77,6 @@ abstract class BaseTest
     }
 
     /**
-     * Проверяет два выражения и записывает результат в репорт
-     *
-     * @param $first
-     * @param $second
-     */
-    protected function assertEquals($first, $second): void
-    {
-        try {
-            Assert::assertEquals($first, $second);
-            $error = 'УСПЕШНО';
-        } catch (Exception $exception) {
-            $error = $exception->getLine();
-        }
-        $this->addLog(compact('error', 'first', 'second'));
-    }
-
-    /**
-     * Добавляет результат теста в репорт
-     *
-     * @param array $params
-     * $params = [
-     * 'error' => string,
-     * 'should be' => string,
-     * 'was' => string,
-     * ]
-     *
-     */
-    private function addLog(array $params): void
-    {
-        $this->testResults->push(
-            [
-                'error' => $params['error'],
-                'should be' => $params['first'],
-                'was' => $params['second'],
-            ]
-        );
-    }
-
-    /**
      * Ждет после отправки сообщения ответа от бота
      */
     private function waitForResponse(): void
@@ -163,23 +123,6 @@ abstract class BaseTest
         }
 
         return collect($buttons);
-    }
-
-    /**
-     * Проверка количества кнопок
-     *
-     * @param $count
-     */
-    protected function assertButtonsCount($count)
-    {
-        $buttonsCount = $this->getButtons()->count();
-        try {
-            Assert::assertEquals($count, $buttonsCount);
-            $result = 'УСПЕШНО';
-        } catch (Exception $exception) {
-            $result = $exception->getLine();
-        }
-        $this->addLog(['error' => $result, 'first' => "Должно быть кнопок $count", 'second' => "Было $buttonsCount"]);
     }
 
     /**

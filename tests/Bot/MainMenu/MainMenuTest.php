@@ -33,6 +33,6 @@ class MainMenuTest extends BaseTest
      */
     public function checkUserInMainMenu()
     {
-        $this->assertEquals(self::MAIN_MENU_MESSAGE, $this->createResponse());
+        static::assertEquals(self::MAIN_MENU_MESSAGE, $this->createResponse());
     }
 }
