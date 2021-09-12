@@ -6,7 +6,10 @@ use danog\MadelineProto\API;
 use Exception;
 use PHPUnit\Framework\Assert;
 
-abstract class BaseTest extends Assert
+/**
+ * Базовый класс для тестирования чат-бота через Madeline Proto.
+ */
+abstract class BaseTest
 {
     const BOT_NAME = 'sk_taxi_test_bot';
     const SECONDS_FOR_BOT_RESPONSE = 3;
@@ -24,9 +27,12 @@ abstract class BaseTest extends Assert
         static::$bot_response_time = microtime(true);
     }
 
-    public function getErrors()
+    public function getErrors(): array
     {
-        return $this->errors;
+        return $this->errors->filter(static function ($error) {
+           // return array_get($error, 'error') !== 'УСПЕШНО';
+            return $error;
+        })->toArray();
     }
 
     public function mergeErrors($errors)
@@ -42,7 +48,7 @@ abstract class BaseTest extends Assert
     protected function assertEqualsWithLogging($first, $second)
     {
         try {
-            $this->assertEquals($first, $second);
+            Assert::assertEquals($first, $second);
             $error = 'УСПЕШНО';
         } catch (Exception $exception) {
             $error = $exception->getLine();
@@ -57,7 +63,6 @@ abstract class BaseTest extends Assert
                 'error' => $params['error'],
                 'should be' => $params['first'],
                 'was' => $params['second'],
-                'bot_response_time' => microtime(true) - BaseTest::$bot_response_time,
             ]
         );
     }

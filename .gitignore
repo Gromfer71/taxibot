@@ -14,9 +14,4 @@ npm-debug.log
 composer.lock
 /resources/lang/
 
-app/Madeline
-
-
-
-
-
+!/tests/Bot/Madeline/
