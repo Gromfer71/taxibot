@@ -24,24 +24,14 @@ class RunTestsCommand extends Command
     protected $description = 'Command description';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return void
      */
     public function handle()
     {
-        require "./tests/Bot/Madeline/madeline.php";
-        $settings = new \danog\MadelineProto\Settings\Database\Memory;
+        require './tests/Bot/Madeline/madeline.php';
+        $settings = new \danog\MadelineProto\Settings\Database\Memory();
         $MadelineProto = new API('session.madeline', $settings);
         $MadelineProto->updateSettings($settings);
         $MadelineProto->start();
@@ -49,7 +39,7 @@ class RunTestsCommand extends Command
         $test = new MainMenuTest($MadelineProto);
         $test->run();
 
-        $this->table(['Результат', 'Должно быть', 'Было'], $test->getErrors());
+        $this->table(['Результат', 'Должно быть', 'Было'], $test->getTestResults());
 
     }
 }

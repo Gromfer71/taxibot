@@ -14,4 +14,6 @@ npm-debug.log
 composer.lock
 /resources/lang/
 
-!/tests/Bot/Madeline/
+/tests/Bot/Madeline
+/madeline-74.phar
+/madeline-74.phar.version

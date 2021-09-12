@@ -1,9 +1,13 @@
 <?php
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
+declare(strict_types=1);
 
 namespace Tests\Bot;
 
 use danog\MadelineProto\API;
 use Exception;
+use Illuminate\Support\Collection;
 use PHPUnit\Framework\Assert;
 
 /**
@@ -11,41 +15,75 @@ use PHPUnit\Framework\Assert;
  */
 abstract class BaseTest
 {
-    const BOT_NAME = 'sk_taxi_test_bot';
-    const SECONDS_FOR_BOT_RESPONSE = 3;
+    private const BOT_NAME = 'sk_taxi_test_bot';
+    private const SECONDS_FOR_BOT_RESPONSE = 3;
 
-    static $bot_response_time;
+    protected string $botResponse;
+    protected API $proto;
+    protected Collection $testResults;
 
-    protected $botResponse;
-    protected $proto;
-    protected $errors;
-
+    /**
+     * @param \danog\MadelineProto\API $proto
+     */
     public function __construct(API $proto)
     {
         $this->proto = $proto;
-        $this->errors = collect();
-        static::$bot_response_time = microtime(true);
+        $this->testResults = collect();
     }
 
-    public function getErrors(): array
+    /**
+     * Возвращает массив с результатами теста по фильтру
+     *
+     * @return array
+     */
+    public function getTestResults(): array
     {
-        return $this->errors->filter(static function ($error) {
-           // return array_get($error, 'error') !== 'УСПЕШНО';
-            return $error;
+        return $this->testResults->filter(static function ($error) {
+             return array_get($error, 'error') !== 'УСПЕШНО';
         })->toArray();
     }
 
-    public function mergeErrors($errors)
+    /**
+     * Записывает последний ответ бота в поле
+     *
+     * @return string
+     */
+    public function createResponse(): string
     {
-        $this->errors = $this->errors->merge($errors);
-    }
+        $this->botResponse = $this->getLastMessage();
 
-    protected function getBotResponse()
-    {
         return $this->botResponse;
     }
 
-    protected function assertEqualsWithLogging($first, $second)
+    /**
+     * Отправляет сообщение боту
+     *
+     * @param string $message Текст сообщения
+     */
+    protected function sendMessage(string $message): void
+    {
+        $this->proto->messages->sendMessage(['peer' => '' . self::BOT_NAME, 'message' => $message]);
+        $this->waitForResponse();
+        $this->createResponse();
+    }
+
+    /**
+     * После завершения тестов одним классом, соединяет результаты с предыдущими
+     *
+     * @param $errors
+     */
+    protected function mergeErrors($errors): void
+    {
+        $this->testResults = $this->testResults->merge($errors);
+    }
+
+    /**
+     * Проверяет два выражения и записывает результат в репорт
+     *
+     * @param $first
+     * @param $second
+     */
+    protected function assertEquals($first, $second): void
     {
         try {
             Assert::assertEquals($first, $second);
@@ -53,12 +91,23 @@ abstract class BaseTest
         } catch (Exception $exception) {
             $error = $exception->getLine();
         }
-        $this->addLog(['error' => $error, 'first' => $first, 'second' => $second]);
+        $this->addLog(compact('error', 'first', 'second'));
     }
 
-    protected function addLog($params)
+    /**
+     * Добавляет результат теста в репорт
+     *
+     * @param array $params
+     * $params = [
+     * 'error' => string,
+     * 'should be' => string,
+     * 'was' => string,
+     * ]
+     *
+     */
+    private function addLog(array $params): void
     {
-        $this->errors->push(
+        $this->testResults->push(
             [
                 'error' => $params['error'],
                 'should be' => $params['first'],
@@ -67,43 +116,88 @@ abstract class BaseTest
         );
     }
 
-    protected function restart()
+    /**
+     * Ждет после отправки сообщения ответа от бота
+     */
+    private function waitForResponse(): void
+    {
+        sleep(self::SECONDS_FOR_BOT_RESPONSE);
+    }
+
+    /**
+     * Делает рестарт бота, запуская команду рестарта
+     */
+    protected function restart(): void
     {
         $this->sendMessage('/restart');
         $this->waitForResponse();
     }
 
-    protected function sendMessage($message)
+    /**
+     * Возвращает последнее сообщение, отправленное ботом
+     *
+     * @return mixed
+     */
+    private function getLastMessage()
     {
-        $this->proto->messages->sendMessage(['peer' => '@sk_taxi_test_bot', 'message' => $message]);
-        BaseTest::$bot_response_time = microtime(true);
-        $this->setAndGetBotResponse();
-
+        /** @noinspection PhpParamsInspection */
+        return array_get(
+            array_get(array_get($this->proto->messages->getHistory($this->getHistoryParams()), 'messages'), '0'),
+            'message'
+        );
     }
 
-    protected function setAndGetBotResponse()
+    /**
+     * Возвращает коллекцию кнопок с их текстами
+     *
+     * @return \Illuminate\Support\Collection|\Tightenco\Collect\Support\Collection
+     */
+    private function getButtons()
     {
-        $this->waitForResponse();
+        $reply = $this->proto->messages->getHistory($this->getHistoryParams());
+        $buttons = [];
+        foreach ($reply['messages'][0]['reply_markup']['rows'] as $row) {
+            foreach ($row['buttons'] as $button) {
+                $buttons[] = $button['text'];
+            }
+        }
 
-        $this->botResponse = $this->getLastMessageFromHistory($this->getBotMessagesHistory());
+        return collect($buttons);
+    }
 
+    /**
+     * Проверка количества кнопок
+     *
+     * @param $count
+     */
+    protected function assertButtonsCount($count)
+    {
+        $buttonsCount = $this->getButtons()->count();
+        try {
+            Assert::assertEquals($count, $buttonsCount);
+            $result = 'УСПЕШНО';
+        } catch (Exception $exception) {
+            $result = $exception->getLine();
+        }
+        $this->addLog(['error' => $result, 'first' => "Должно быть кнопок $count", 'second' => "Было $buttonsCount"]);
+    }
+
+    /**
+     * Возвращает последнее (!) сообщение в диалоге
+     *
+     * @return string
+     */
+    protected function getBotResponse(): string
+    {
         return $this->botResponse;
     }
 
-    protected function waitForResponse()
+    /**
+     * Параметры для получения истории сообщений
+     */
+    private function getHistoryParams(): array
     {
-        sleep(self::SECONDS_FOR_BOT_RESPONSE);
-    }
-
-    protected function getLastMessageFromHistory($history)
-    {
-        return json_decode(json_encode($history, JSON_UNESCAPED_UNICODE), true)['messages'][0]['message'] ?? 'error';
-    }
-
-    protected function getBotMessagesHistory()
-    {
-        return $this->proto->messages->getHistory([
-            /* Название канала, без @ */
+        return [
             'peer' => self::BOT_NAME,
             'offset_id' => 0,
             'offset_date' => 0,
@@ -111,6 +205,6 @@ abstract class BaseTest
             'limit' => 1,
             'max_id' => 9999999,
             'min_id' => 0,
-        ]);
+        ];
     }
 }

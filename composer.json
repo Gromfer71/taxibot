@@ -10,7 +10,7 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^7.1.3",
+        "php": "^7.4",
         "ext-json": "*",
         "barryvdh/laravel-ide-helper": "^2.1",
         "barryvdh/laravel-translation-manager": "dev-sk-taxi as 0.5.10",
