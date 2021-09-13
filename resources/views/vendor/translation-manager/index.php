@@ -108,8 +108,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a href="<?php echo action('\Barryvdh\TranslationManager\Controller@getIndex') ?>" class="navbar-brand">
-                Translation Manager
+            <a href="/" class="navbar-brand">
+                Вернуться назад
             </a>
         </div>
     </div>

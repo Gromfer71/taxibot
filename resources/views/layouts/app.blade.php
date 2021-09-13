@@ -62,47 +62,6 @@
                 </li>
             @endauth
         </ul>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <!-- Left Side Of Navbar -->
-            <ul class="navbar-nav mr-auto">
-
-            </ul>
-
-            <!-- Right Side Of Navbar -->
-            {{--                <ul class="navbar-nav ml-auto">--}}
-            {{--                    <!-- Authentication Links -->--}}
-            {{--                    @guest--}}
-            {{--                        <li class="nav-item">--}}
-            {{--                            <a class="nav-link" href="{{ route('login') }}">Авторизация</a>--}}
-            {{--                        </li>--}}
-            {{--                        @if (Route::has('register'))--}}
-            {{--                            <li class="nav-item">--}}
-            {{--                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>--}}
-            {{--                            </li>--}}
-            {{--                        @endif--}}
-            {{--                    @else--}}
-            {{--                        <li class="nav-item dropdown">--}}
-            {{--                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>--}}
-            {{--                                {{ Auth::user()->phone }} <span class="caret"></span>--}}
-            {{--                            </a>--}}
-
-            {{--                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">--}}
-            {{--                                <a class="dropdown-item" href="{{ route('logout') }}"--}}
-            {{--                                   onclick="event.preventDefault();--}}
-            {{--                                                     document.getElementById('logout-form').submit();">--}}
-            {{--                                   Выйти--}}
-            {{--                                </a>--}}
-
-            {{--                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">--}}
-            {{--                                    @csrf--}}
-            {{--                                </form>--}}
-            {{--                            </div>--}}
-            {{--                        </li>--}}
-            {{--                    @endguest--}}
-            {{--                </ul>--}}
-        </div>
-
     </nav>
 
     <div class="container-fluid">
@@ -113,75 +72,30 @@
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link @if(request()->url() == route('bot_settings')) active @endif" href="{{ route('bot_settings') }}">
-
                                 Настройки  <span class="sr-only">(current)</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link @if(request()->url() == route('users')) active @endif" href="{{ route('users') }}">
-
                                 Пользователи
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @if(request()->url() == route('edit_messages')) active @endif" href="{{ route('edit_messages') }}">
-
-                                Сообщения
+                            <a class="nav-link @if(request()->path() == 'translations/messages') active @endif" href="/translations/messages">
+                                Редактор сообщений
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @if(request()->url() == route('edit_buttons')) active @endif" href="{{ route('edit_buttons') }}">
-
-                                Кнопки
+                            <a class="nav-link @if(request()->path() == 'translations/buttons') active @endif" href="/translations/buttons">
+                                Редактор кнопок
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link @if(request()->url() == route('error_reports')) active @endif" href="{{ route('error_reports') }}">
-
                                 Журнал ошибок
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <span data-feather="bar-chart-2"></span>
-                                Статистика
-                            </a>
-                        </li>
-
                     </ul>
-
-{{--                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">--}}
-{{--                        <span>Saved reports</span>--}}
-{{--                        <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">--}}
-{{--                            <span data-feather="plus-circle"></span>--}}
-{{--                        </a>--}}
-{{--                    </h6>--}}
-{{--                    <ul class="nav flex-column mb-2">--}}
-{{--                        <li class="nav-item">--}}
-{{--                            <a class="nav-link" href="#">--}}
-{{--                                <span data-feather="file-text"></span>--}}
-{{--                                Current month--}}
-{{--                            </a>--}}
-{{--                        </li>--}}
-{{--                        <li class="nav-item">--}}
-{{--                            <a class="nav-link" href="#">--}}
-{{--                                <span data-feather="file-text"></span>--}}
-{{--                                Last quarter--}}
-{{--                            </a>--}}
-{{--                        </li>--}}
-{{--                        <li class="nav-item">--}}
-{{--                            <a class="nav-link" href="#">--}}
-{{--                                <span data-feather="file-text"></span>--}}
-{{--                                Social engagement--}}
-{{--                            </a>--}}
-{{--                        </li>--}}
-{{--                        <li class="nav-item">--}}
-{{--                            <a class="nav-link" href="#">--}}
-{{--                                <span data-feather="file-text"></span>--}}
-{{--                                Year-end sale--}}
-{{--                            </a>--}}
-{{--                        </li>--}}
-{{--                    </ul>--}}
                 </div>
             </nav>
             @endauth
