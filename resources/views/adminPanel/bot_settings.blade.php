@@ -32,10 +32,8 @@
         </form>
     </div>
 
-
-
     <div class="layer uk-margin-top" style="overflow-x: scroll; white-space: nowrap;">
-        <table id="table_id" class="display">
+        <table id="admins-table" class="display">
             <thead>
             <tr>
                 <th>Телефон</th>
@@ -49,7 +47,7 @@
                     <td>
                         <a href="{{ route('admins_destroy', $admin->phone) }}" class="btn btn-danger"
                            onclick="return confirm('Вы действительно хотите удалить пользователя?')">Удалить</a>
-                        <button class="btn btn-danger change-password" uk-toggle="target: #change_password"
+                        <button class="btn btn-primary change-password" uk-toggle="target: #change_password"
                                 data-phone="{{ $admin->phone }}">
                             Изменить пароль
                         </button>
@@ -77,9 +75,14 @@
 
 @push('scripts')
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        $(document).ready(function() {
             $.noConflict();
-            $('#table_id').DataTable({
+
+            var myJsObj = JSON.parse($('#settings').val())
+            var str = JSON.stringify(myJsObj, undefined, 2);
+            $('#settings').val(str)
+
+            $('#admins-table').DataTable({
                 "autoWidth": true,
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"

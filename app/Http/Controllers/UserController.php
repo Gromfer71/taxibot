@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Conversations\StartConversation;
 use App\Models\AddressHistory;
 use App\Models\Admin;
 use App\Models\Config;
-use App\Models\OrderHistory;
 use App\Models\User;
-use App\Services\MessageGeneratorService;
 use BotMan\BotMan\BotManFactory;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\Drivers\Telegram\TelegramDriver;
@@ -38,24 +35,14 @@ class UserController extends Controller
 
     public function user($id)
     {
-        if ($user = User::where('id', $id)->first()) {
-            $orders = $user->orders;
-
-            $orders->each(function ($item) use ($user) {
-                $item->phone = $user->phone;
-                $item->state = null;
-                $item->address = MessageGeneratorService::escape($item->address);
-                $item->wishes = MessageGeneratorService::escape($item->wishes);
-                $item->comment = MessageGeneratorService::escape($item->comment);
-            });
+        if ($user = User::where('id', $id)->with(['orders', 'addresses'])->first()) {
             $config = Config::getTaxibotConfig();
-            $prices = array_merge($config->overpriceOptions, $config->overpriceOptionsAfterOrderCreated);
+            $prices = collect(array_merge($config->overpriceOptions, $config->overpriceOptionsAfterOrderCreated));
 
-            return view('users.user', ['orders' => $orders->toJson(), 'addresses' => json_encode($user->addresses, JSON_UNESCAPED_SLASHES), 'user' => $user, 'prices' => json_encode($prices)]);
+            return view('users.user', ['user' => $user, 'prices' => $prices]);
         } else {
             return back()->with('error', 'Пользователь не найден!');
         }
-
     }
 
     public function delete($id)
@@ -94,7 +81,7 @@ class UserController extends Controller
     public function ordersClear($id)
     {
         $user = User::where('id', $id)->first();
-        if(!$user) {
+        if (!$user) {
             return back()->with('error', 'Пользователь не найден!');
         }
 
@@ -112,15 +99,13 @@ class UserController extends Controller
         $user->should_reset = true;
         $user->save();
 
-
         return back()->with('ok', 'Пользователь успешно сброшен!');
-
     }
 
     public function addressesClear($id)
     {
         $user = User::where('id', $id)->first();
-        if(!$user) {
+        if (!$user) {
             return back()->with('error', 'Пользователь не найден!');
         }
 
@@ -140,7 +125,7 @@ class UserController extends Controller
     {
         $address = AddressHistory::find($id);
 
-        if(!$address) {
+        if (!$address) {
             return back()->with('error', 'Упс, адрес не найден!');
         }
 
@@ -152,7 +137,7 @@ class UserController extends Controller
     public function changePassword(Request $request)
     {
         $admin = Admin::find($request->get('phone'));
-        if(!$admin) {
+        if (!$admin) {
             return back();
         }
 
