@@ -24,7 +24,6 @@ class MenuConversation extends BaseConversation
 {
     public function menu($withoutMessage = false)
     {
-
         $user = User::find($this->bot->getUser()->getId());
 //        if($user->orders) {
 //            foreach ($user->orders as $order) {

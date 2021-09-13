@@ -59,7 +59,6 @@ Route::group(['midlleware' => 'auth'], function() {
     Route::get('error_reports', 'ErrorReportController@index')->name('error_reports');
     Route::get('error_reports/clear', 'ErrorReportController@clear')->name('clear_error_reports');
     Route::post('error_reports/update_emails', 'ErrorReportController@updateEmails')->name('update_emails');
-    Route::post('error_reports/get_reports', 'ErrorReportController@getReports');
 
     Route::match(['get', 'post'], 'bot_settings/edit_messages', 'BotSettingsController@editMessages')->name('edit_messages');
     Route::match(['get', 'post'], 'bot_settings/edit_buttons', 'BotSettingsController@editButtons')->name('edit_buttons');

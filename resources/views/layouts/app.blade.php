@@ -48,7 +48,7 @@
                 aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <ul class="navbar-nav px-3">
+        <ul class="navbar-nav px-3" style="margin-top: 0;">
             @auth
                 <li class="nav-item text-nowrap">
                     <a class="nav-link" href="{{ route('logout') }}"
@@ -113,12 +113,6 @@
                         UIkit.notification({message: "{{ session('error') }}", pos: 'top-center', status: 'danger'})
                     </script>
                 @endif
-                @if($errors->any())
-                    <script>
-                        UIkit.notification({message: '{!! $errors->first() !!}', pos: 'top-center', status: 'danger'})
-                    </script>
-                @endif
-
                     @yield('content')
 
             </main>

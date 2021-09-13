@@ -12,7 +12,7 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h2 class="h4">История адресов </h2>
             <div>
-                <a class="btn btn-danger btn-sm" href="{{ route('user_orders_clear', $user->id) }}">Очистить историю
+                <a class="btn btn-danger btn-sm" href="{{ route('user_addresses_clear', $user->id) }}">Очистить историю
                     адресов</a>
             </div>
         </div>
@@ -22,6 +22,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Адрес</th>
+                    <th>Действия</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -29,6 +30,7 @@
                     <tr>
                         <td>{{ $address->id }}</td>
                         <td>{{ $address->address }}</td>
+                        <td><a href="{{ route('user_delete_address', $address->id) }}" class="btn btn-danger">Удалить</a></td>
                     </tr>
                 @endforeach
                 </tbody>
@@ -40,7 +42,7 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h2 class="h4">История Заказов</h2>
             <div>
-                <a class="btn btn-danger btn-sm" href="{{ route('user_addresses_clear', $user->id) }}">Очистить историю
+                <a class="btn btn-danger btn-sm" href="{{ route('user_orders_clear', $user->id) }}">Очистить историю
                     заказов</a>
             </div>
         </div>
@@ -55,6 +57,8 @@
                     <th>Комментарий</th>
                     <th>Пожелания</th>
                     <th>Дата</th>
+                    <th>Использование бонусов</th>
+                    <th>Действия</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -71,6 +75,8 @@
                         <td>{{ $order->comment }}</td>
                         <td>{{ $order->wishes }}</td>
                         <td>{{ $order->created_at }}</td>
+                        <td>{{ $user->used_bonus ? 'Да' : 'Нет' }}</td>
+                        <td><a href="{{ route('order_delete', $order->id) }}" class="btn btn-danger">Удалить</a></td>
                     </tr>
                 @endforeach
                 </tbody>

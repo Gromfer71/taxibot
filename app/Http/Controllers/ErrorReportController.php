@@ -15,15 +15,15 @@ class ErrorReportController extends Controller
 
     public function index()
     {
-        return view('adminPanel.error_reports', ['emails' => Config::find('errorReportEmails')->value]);
+
+        return view('adminPanel.error_reports',
+                    [
+                        'emails' => Config::find('errorReportEmails')->value,
+                        'errors' => ErrorReport::orderByDesc('id')->get()
+                    ]
+        );
     }
 
-    public function getReports(Request $request)
-    {
-        return ErrorReport::orderByDesc('id')->get()->each(function ($item) {
-            $item->userName = $item->user->username;
-        })->toJson();
-    }
 
     public function updateEmails(Request $request)
     {

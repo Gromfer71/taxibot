@@ -25,73 +25,51 @@
 
             </div>
             <a href="{{ route('clear_error_reports') }}" class="btn btn-success uk-margin-bottom">Очистить журнал</a>
-            <div id="error_reports"></div>
+        </div>
+    </div>
+
+        <div class="layer uk-margin-top" style="overflow-x: scroll;">
+            <table id="table" class="display">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Пользователь</th>
+                    <th>Сообщение об ошибке</th>
+                    <th>Стек вызовов функций</th>
+                    <th>Дата</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($errors as $error)
+                    <tr>
+                        <td>{{ $error->id }}</td>
+                        <td>{{ $error->user->username }}</td>
+                        <td>{{ $error->error_message }}</td>
+                        <td class="stack-trace" data-trace="{{ $error->stack_trace }}">{{ substr($error->stack_trace, 0, 80) . '...' }}</td>
+                        <td>{{ $error->created_at }}</td>
+
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
         </div>
 
         @endsection
         @push('scripts')
             <script>
                 document.addEventListener("DOMContentLoaded", function () {
-                    $.ajax({
-                        url: '/error_reports/get_reports',
-                        method: 'post',
-                        dataType: 'json',
-                        data: {
-                            "_token": "{{ csrf_token() }}",
+                    $.noConflict();
+
+                    $('table.display').DataTable({
+                        "autoWidth": true,
+                        "language": {
+                            "url": "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
                         },
-                        success: function (data) {
-                            var grid = new FancyGrid({
-                                theme: 'material',
-                                title: 'Журнал ошибок',
-                                resizable: true,
-                                textSelection: true,
-                                renderTo: 'error_reports',
-                                height: '750',
-                                width: 'fit',
-                                data: data,
-                                events: [{
-                                    cellclick: function (grid, o) {
-                                        alert(o.data.stack_trace);
-                                    },
-                                }],
-                                paging: {
-                                    pageSize: 15,
-                                },
-                                defaults: {
-                                    resizable: true,
-                                    type: 'string',
-                                    flex: 1,
-                                    sortable: true,
-
-                                },
-                                columns: [
-                                    {
-                                        index: 'id',
-                                        flex: 0.3,
-                                        locked: true,
-                                        title: '№',
-                                    }, {
-                                        index: 'userName',
-                                        title: 'Пользователь (его логин, для вк id/логин)',
-                                        flex: 0.7,
-                                    }, {
-                                        index: 'error_message',
-                                        title: 'Сообщение об ошибке',
-                                        flex: 1,
-                                    }, {
-                                        index: 'stack_trace',
-                                        title: 'Стек вызовов функций',
-                                        data: data,
-                                    },{
-                                      index: 'created_at',
-                                        title: 'Время',
-                                        flex: 0.3
-                                    }]
-                            })
-                        }
                     });
+
+                    $('.stack-trace').on('click', function() {
+                       alert($(this).data('trace'))
+                    })
                 });
-
-
             </script>
-    @endpush
+        @endpush
