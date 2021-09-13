@@ -12,8 +12,7 @@ use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
+use Barryvdh\TranslationManager\Models\LangPackage;
 
 class CheckOrderStateCommand extends Command
 {
@@ -45,14 +44,13 @@ class CheckOrderStateCommand extends Command
 
     private function _handle_once($botMan)
     {
-
-
         $actualOrders = OrderHistory::getAllActualOrders();
         foreach ($actualOrders as $actualOrder) {
             if ($actualOrder->user->should_reset) {
                 $actualOrder->cancelOrder();
                 continue;
             }
+
             $oldStateId = $actualOrder->getCurrentOrderState()->state_id ?? OrderHistory::NEW_ORDER;
             $newStateId = $actualOrder->checkOrder();
             $actualOrder->refresh();
@@ -63,7 +61,11 @@ class CheckOrderStateCommand extends Command
                 $user->setDefaultLang();
             }
 
-            Translator::$lang = $user->lang_id;
+            $package = LangPackage::find($user->lang_id);
+            if(is_null($package)) {
+                throw new Exception('Не существует языкового пакета! Языковой пакет по умолчанию установился неправильно');
+            }
+            Translator::$lang = $package->code;
 
             if ($actualOrder->platform == self::TELEGRAM_DRIVER_NAME) {
                 $driverName = TelegramDriver::class;
