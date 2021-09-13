@@ -33,7 +33,7 @@ class UserController extends Controller
             $user->userinfo = null;
         });
 
-        return view('users.users', ['users' => $users->toJson()]);
+        return view('users.users', ['users' => $users]);
     }
 
     public function user($id)
