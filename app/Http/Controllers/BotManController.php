@@ -30,7 +30,7 @@ class BotManController extends Controller
     }
 
     /**
-     * test
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function tinker()
