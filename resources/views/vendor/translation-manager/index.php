@@ -115,7 +115,7 @@
     </div>
 </header>
 <div class="container-fluid">
-    <p>Warning, translations are not visible until they are exported back to the app/lang file, using <code>php artisan translation:export</code> command or publish button.</p>
+    <p></p>
     <div class="alert alert-success success-import" style="display:none;">
         <p>Done importing, processed <strong class="counter">N</strong> items! Reload this page to refresh the groups!</p>
     </div>
@@ -161,8 +161,8 @@
     <?php if(isset($group)) : ?>
         <form class="form-inline form-publish" method="POST" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postPublish', $group) ?>" data-remote="true" role="form" data-confirm="Are you sure you want to publish the translations group '<?php echo $group ?>? This will overwrite existing language files.">
             <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
-            <button type="submit" class="btn btn-info" data-disable-with="Publishing.." >Publish translations</button>
-            <a href="<?= action('\Barryvdh\TranslationManager\Controller@getIndex') ?>" class="btn btn-default">Back</a>
+            <button type="submit" class="btn btn-info" data-disable-with="Publishing.." >Сохранить переводы</button>
+<!--            <a href="--><?//= action('\Barryvdh\TranslationManager\Controller@getIndex') ?><!--" class="btn btn-default">Назад</a>-->
         </form>
     <?php endif; ?>
     </p>
@@ -195,16 +195,16 @@
         <form action="<?php echo action('\Barryvdh\TranslationManager\Controller@postAdd', array($group)) ?>" method="POST"  role="form">
             <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
             <div class="form-group">
-                <label>Add new keys to this group</label>
-                <textarea class="form-control" rows="3" name="keys" placeholder="Add 1 key per line, without the group prefix"></textarea>
+                <label>Добавить новый ключ перевода (для разработки)</label>
+                <textarea class="form-control" rows="3" name="keys" placeholder="Один ключ на строку, без префикса группы"></textarea>
             </div>
             <div class="form-group">
-                <input type="submit" value="Add keys" class="btn btn-primary">
+                <input type="submit" value="Добавить" class="btn btn-primary">
             </div>
         </form>
         <div class="row">
             <div class="col-sm-2">
-                <span class="btn btn-default enable-auto-translate-group">Use Auto Translate</span>
+<!--                <span class="btn btn-default enable-auto-translate-group">Use Auto Translate</span>-->
             </div>
         </div>
         <form class="form-add-locale autotranslate-block-group hidden" method="POST" role="form" action="<?php echo action('\Barryvdh\TranslationManager\Controller@postTranslateMissing') ?>">
@@ -237,11 +237,11 @@
             </div>
         </form>
         <hr>
-        <h4>Total: <?= $numTranslations ?>, changed: <?= $numChanged ?></h4>
+        <h4>Всего: <?= $numTranslations ?>, Изменено: <?= $numChanged ?></h4>
         <table class="table">
             <thead>
             <tr>
-                <th width="15%">Key</th>
+                <th width="15%">Ключ</th>
                 <?php foreach ($locales as $locale): ?>
                     <th><?= $locale ?></th>
                 <?php endforeach; ?>
