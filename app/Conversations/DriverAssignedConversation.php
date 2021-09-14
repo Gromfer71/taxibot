@@ -30,10 +30,10 @@ class DriverAssignedConversation extends BaseConversation
         if ($withoutMessage) $message = '';
         $question = Question::create($message , $this->bot->getUser()->getId())->addButtons(
             [
-                Button::create(trans('buttons.need dispatcher'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]),
-                Button::create(trans('buttons.need driver'))->value('need driver'),
-                Button::create(trans('buttons.cancel order'))->value('cancel order'),
-                Button::create(trans('buttons.need map'))->value('need map'),
+                Button::create($this->__('buttons.need dispatcher'))->additionalParameters(['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]),
+                Button::create($this->__('buttons.need driver'))->value('need driver'),
+                Button::create($this->__('buttons.cancel order'))->value('cancel order'),
+                Button::create($this->__('buttons.need map'))->value('need map'),
             ]
         );
         $order = OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName());
@@ -45,12 +45,12 @@ class DriverAssignedConversation extends BaseConversation
                     if ($answer->getValue() == 'need driver') {
                         $api = new OrderApiService();
                         if ($order) $api->connectClientAndDriver($order);
-                        $this->say(trans('messages.connect with driver'), $this->bot->getUser()->getId());
+                        $this->say($this->__('messages.connect with driver'), $this->bot->getUser()->getId());
                         $this->confirmOrder(true);
                     } elseif($answer->getValue() == 'order_confirm') {
                         $this->confirmOrder(false);
                     } elseif ($answer->getValue() == 'need dispatcher') {
-						$this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+						$this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
                         $this->getUser()->setUserNeedDispatcher();
                         $this->confirmOrder(true);
                     } elseif($answer->getValue() == 'client_goes_out') {
@@ -74,10 +74,10 @@ class DriverAssignedConversation extends BaseConversation
                             $actualOrder = OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName());
                             $auto = $actualOrder->getAutoInfo();
                             $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
-                            $this->say(trans('messages.need map message while driver goes', ['time' => $time, 'auto' => $auto]));
+                            $this->say($this->__('messages.need map message while driver goes', ['time' => $time, 'auto' => $auto]));
                             OrderApiService::sendDriverLocation($this->bot, $driverLocation->lat, $driverLocation->lon);
                         } else {
-                            $this->say(trans('messages.error driver location'));
+                            $this->say($this->__('messages.error driver location'));
                         }
                         $this->confirmOrder(true);
                     }  else {
@@ -94,7 +94,7 @@ class DriverAssignedConversation extends BaseConversation
 
     public function cancelOrder()
     {
-        $question = Question::create(trans('messages.cancel order'), $this->bot->getUser()->getId())->addButtons(
+        $question = Question::create($this->__('messages.cancel order'), $this->bot->getUser()->getId())->addButtons(
             [
                 Button::create('Продолжить')->value('Продолжить'),
             ]

@@ -4,6 +4,7 @@
 namespace App\Services;
 
 
+use Amp\Cache\CacheException;
 use App\Models\Config;
 use App\Models\LogApi;
 use App\Models\OrderHistory;
@@ -15,12 +16,15 @@ use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use PHPUnit\Framework\Exception;
 
 class OrderApiService
 {
 
 	const ORDER_CONFIRMED_BY_USER = 88;
 	const USER_GOES_OUT = 50;
+	const ORDER_FROM_VK_OPTION = 150;
+	const ORDER_FROM_TELEGRAM_OPTION = 149;
 
 	private function file_get_contents_with_logging($url,$params){
         $context = stream_context_create(['http' => $params]);
@@ -33,6 +37,7 @@ class OrderApiService
 
 	public function createOrder(BotMan $bot, $useBonus = false)
 	{
+	    $bot->userStorage()->save(['platform_option' => self::getOptionIdFromDriverName($bot->getDriver()->getName())]);
 		$user = User::find($bot->getUser()->getId());
 		if(!$user) {
 			return null;
@@ -46,7 +51,7 @@ class OrderApiService
             $addresses[$key]->lon = (double)$addresses[$key]->lon;
 		}
 
-		$options = new Options($bot->userStorage());
+		$options = new Options();
         if (config('app.debug')) {
             $phone = '89999999999';
         } else {
@@ -421,6 +426,15 @@ class OrderApiService
             return null;
         } else {
             return collect($response->data->crews_coords)->first();
+        }
+    }
+
+    public static function getOptionIdFromDriverName($driverName)
+    {
+        if($driverName == VkCommunityCallbackDriver::DRIVER_NAME) {
+            return self::ORDER_FROM_VK_OPTION;
+        } elseif($driverName == TelegramDriver::DRIVER_NAME) {
+            return self::ORDER_FROM_TELEGRAM_OPTION;
         }
     }
 }

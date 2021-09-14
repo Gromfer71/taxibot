@@ -13,10 +13,9 @@ use BotMan\BotMan\Storages\Storage;
 class Options
 {
 	private $options;
-	public function __construct(Storage $storage)
+	public function __construct()
 	{
 		if(!Config::getTaxibotConfig()) {
-			//$this->options = json_decode(file_get_contents(config('app.config_file')));
 			$this->options = json_decode(file_get_contents('https://sk-taxi.ru/tmfront/config.json'));
 			
 		} else {
@@ -85,6 +84,8 @@ class Options
             $orderParams->push($storage->get('changed_price_in_order')['id']);
         }
 
+        $orderParams->push($storage->get('platform_option'));
+
 		$options = collect($this->options->wishOptions)->merge(collect($this->options->carOptions))->merge(collect($this->options->changeOptions));
 		foreach ((array)$storage->get('wishes') as $wish) {
 
@@ -124,6 +125,8 @@ class Options
 
         return $result->first()->district ?? '';
     }
+
+
 
 
 }

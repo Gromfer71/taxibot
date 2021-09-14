@@ -17,7 +17,7 @@ class BotSettingsController extends Controller
 
     public function index()
     {
-        return view('adminPanel.bot_settings', ['admins' => Admin::all()->pluck('phone', 'phone'), 'token' => Config::getToken(), 'config' => json_encode(Config::getTaxibotConfig(), JSON_UNESCAPED_UNICODE)]);
+        return view('adminPanel.bot_settings', ['admins' => Admin::all(), 'token' => Config::getToken(), 'config' => json_encode(Config::getTaxibotConfig(), JSON_UNESCAPED_UNICODE)]);
     }
 
     public function changeToken(Request $request)

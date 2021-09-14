@@ -30,7 +30,7 @@ class MessageGeneratorService
         $countAddresses = count($userStorage->get('address'));
         if ($haveEndAddress && $countAddresses == 2 && !$userStorage->get('comment') && !$userStorage->get('wishes') && !$userStorage->get('changed_price')) {
             $route = MessageGeneratorService::implodeAddress(collect($userStorage->get('address')));
-            return trans('messages.addres_naznachen_za_bonusi_punkt_21', ['route' => $route, 'price' => $userStorage->get('price')]);
+            return Translator::trans('messages.addres_naznachen_za_bonusi_punkt_21', ['route' => $route, 'price' => $userStorage->get('price')]);
         }
         return self::getFullOrderInfoFromStorageFallback($userStorage);
     }
@@ -45,11 +45,11 @@ class MessageGeneratorService
         if ($userStorage->get('usebonus') && $haveEndAddress && $countAddresses == 2 && !$userStorage->get('comment') && !$userStorage->get('wishes') && !$userStorage->get('changed_price')) {
             $bonusbalance = $userStorage->get('bonusbalance');
             $payment = self::getPaymentByBonusesMessage($userStorage);
-            return trans('messages.addres_naznachen_za_bonusi_punkt_29', ['bonusbalance' => $bonusbalance, 'payment' => $payment]);
+            return Translator::trans('messages.addres_naznachen_za_bonusi_punkt_29', ['bonusbalance' => $bonusbalance, 'payment' => $payment]);
         }
 
         if (!$haveEndAddress && !$userStorage->get('comment') && !$userStorage->get('wishes') && !$userStorage->get('changed_price')) {
-            return trans('messages.skazhu_voditelu_punkt_20');
+            return Translator::trans('messages.skazhu_voditelu_punkt_20');
         }
         return self::getFullOrderInfoFromStorage2Fallback($userStorage);
     }
@@ -68,17 +68,17 @@ class MessageGeneratorService
             $userStorage->save(['second_address_will_say_to_driver_change_text_flag' => 0]);
             $userStorage->save(['second_address_from_history_incorrect_change_text_flag' => 0]);
             $userStorage->save(['first_address_from_history_incorrect' => 0]);
-            return trans('messages.menu without third address', $data);
+            return Translator::trans('messages.menu without third address', $data);
         }
 
         if ($userStorage->get('second_address_will_say_to_driver_change_text_flag') && $userStorage->get('second_address_will_say_to_driver_change_text_flag') == 1) {
             $data = ['address' => collect($userStorage->get('address'))->first(), 'price' => $userStorage->get('price')];
             $userStorage->save(['second_address_will_say_to_driver_change_text_flag' => 0]);
             if (collect($userStorage->get('address'))->last() == '') {
-                return trans('messages.menu without end address', $data);
+                return Translator::trans('messages.menu without end address', $data);
             } else {
                 $data['route'] = MessageGeneratorService::implodeAddress(collect($userStorage->get('address')));
-                return trans('messages.menu without end address with route', $data);
+                return Translator::trans('messages.menu without end address with route', $data);
             }
 
 
@@ -87,7 +87,7 @@ class MessageGeneratorService
         if ($userStorage->get('second_address_from_history_incorrect_change_text_flag') && $userStorage->get('second_address_from_history_incorrect_change_text_flag') == 1) {
             $data = ['route' => MessageGeneratorService::implodeAddress(collect($userStorage->get('address'))), 'price' => $userStorage->get('price')];
             $userStorage->save(['second_address_from_history_incorrect_change_text_flag' => 0]);
-            return trans('messages.menu without end address with route', $data);
+            return Translator::trans('messages.menu without end address with route', $data);
         }
 
 
@@ -99,7 +99,7 @@ class MessageGeneratorService
             )) {
             $data = ['address' => MessageGeneratorService::implodeAddress(collect($userStorage->get('address'))), 'price' => $userStorage->get('price')];
             $userStorage->save(['first_address_from_history_incorrect' => 0]);
-            return trans('messages.menu with first address from history incorrect', $data);
+            return Translator::trans('messages.menu with first address from history incorrect', $data);
         }
 
 
@@ -162,7 +162,7 @@ class MessageGeneratorService
         } else {
             //Если адресов больше 2х, либо есть доп пожелания, либо коммент - то текст с кнопочной гимнастикой, иначе обычный
             if (count($userStorage->get('address')) > 2 || $userStorage->get('comment') || $userStorage->get('wishes') || $userStorage->get('changed_price')) {
-                $message = trans('messages.komment_i_pozhelanie_skazhu_voditelu_punkt_43');
+                $message = Translator::trans('messages.komment_i_pozhelanie_skazhu_voditelu_punkt_43');
             }
         }
 
@@ -215,7 +215,7 @@ class MessageGeneratorService
     public static function wishesTrans($wishes)
     {
         return $wishes->map(function ($item) {
-            return trans('buttons.' . $item);
+            return Translator::trans('buttons.' . $item);
         });
     }
 

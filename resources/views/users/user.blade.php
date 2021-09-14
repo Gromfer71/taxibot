@@ -1,192 +1,101 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Пользователь {{ $user->username }}</h1>
-    <div>
-        <a href="{{ route('users') }}" class="btn">Назад</a>   
-    </div>   
-</div>
-
-<div class="row">
-    <div class="col-8">
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h2 class="h4">История заказов </h2>
-            <div>  
-                <a class="btn btn-danger btn-sm" href="{{ route('user_orders_clear', $user->id) }}">Очистить историю</a>
-            </div>   
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Пользователь {{ $user->username }}</h1>
+        <div>
+            <a href="{{ route('users') }}" class="btn">Назад</a>
         </div>
-        <div id="orders"></div>    
     </div>
-    <div class="col-4">
+
+    <div class="uk-margin-medium">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h2 class="h4">История адресов </h2>
-            <div>  
-                <a class="btn btn-danger btn-sm" href="{{ route('user_addresses_clear', $user->id) }}">Очистить историю</a>
-            </div>   
-
+            <div>
+                <a class="btn btn-danger btn-sm" href="{{ route('user_addresses_clear', $user->id) }}">Очистить историю
+                    адресов</a>
+            </div>
         </div>
-        <div id="addresses"></div>    
+        <div class="layer uk-margin-top" style="overflow-x: scroll; white-space: nowrap;">
+            <table id="addresses-table" class="display">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Адрес</th>
+                    <th>Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($user->addresses as $address)
+                    <tr>
+                        <td>{{ $address->id }}</td>
+                        <td>{{ $address->address }}</td>
+                        <td><a href="{{ route('user_delete_address', $address->id) }}" class="btn btn-danger">Удалить</a></td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
+    <div class="uk-margin-medium">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h2 class="h4">История Заказов</h2>
+            <div>
+                <a class="btn btn-danger btn-sm" href="{{ route('user_orders_clear', $user->id) }}">Очистить историю
+                    заказов</a>
+            </div>
+        </div>
+        <div class="layer uk-margin-top" style="overflow-x: scroll;">
+            <table id="orders-table" class="display">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Маршрут</th>
+                    <th>Цена</th>
+                    <th>Изменение цены</th>
+                    <th>Комментарий</th>
+                    <th>Пожелания</th>
+                    <th>Дата</th>
+                    <th>Использование бонусов</th>
+                    <th>Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($user->orders as $order)
+                    <tr>
+                        <td>{{ $order->id }}</td>
+                        <td>{{ $order->address }}</td>
+                        <td>{{ $order->price }}</td>
+                        {{--     Имзенение цены берется из конфига, а хранится по id. Фильтруем  --}}
+                        <td>{{ $prices->filter(function ($item) use ($order) {
+                                    return $item->id == $order->changed_price;
+                                })->first()->name ?? ''
+                               }}</td>
+                        <td>{{ $order->comment }}</td>
+                        <td>{{ $order->wishes }}</td>
+                        <td>{{ $order->created_at }}</td>
+                        <td>{{ $user->used_bonus ? 'Да' : 'Нет' }}</td>
+                        <td><a href="{{ route('order_delete', $order->id) }}" class="btn btn-danger">Удалить</a></td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 @endsection
+
 @push('scripts')
     <script>
+        $(document).ready(function () {
+            $.noConflict();
 
-
-
-        document.addEventListener("DOMContentLoaded", function() {
-            let x = "{{ $orders }}"
-            data1 = x.replace(/&quot;/g, '"')
-            data1 = data1.replace(/[\r\n]/g, " ");
-            data1 = data1.replace(/\\/g, '');
-            data1 = JSON.parse(data1)
-
-            let prices = "{{ $prices }}"
-            prices = prices.replace(/&quot;/g, '"')
-            prices = prices.replace(/[\r\n]/g, " ");
-            prices = prices.replace(/\\|\//g, '');
-            prices = JSON.parse(prices)
-
-
-
-
-
-
-
-
-
-            new FancyGrid({
-                theme: 'bootstrap',
-                renderTo: 'orders',
-                height: 800,
-                defaults: {
-                    resizable: true,
-                    autoHeight: true,
-                    sortable: true,
-                    width: 100,
-
+            $('table.display').DataTable({
+                "autoWidth": true,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
                 },
-                paging: {
-                    pageSize: 20,
-                },
-
-                tbar: [{
-                    type: 'search',
-                    width: 350,
-                    emptyText: 'Поиск',
-                    paramsMenu: true,
-                    paramsText: 'Параметры'
-                }],
-                data: data1,
-                columns: [{
-                    index: 'id',
-                    title: 'ID',
-                    type: 'string',
-
-                },{
-                    index: 'created_at',
-                    title: 'Date',
-                    type: 'string',
-
-                },{
-                    index: 'phone',
-                    title: 'Phone',
-                    type: 'string',
-
-                },{
-                    index: 'address',
-                    title: 'Addresses',
-                },
-                    {
-                        index: 'price',
-                        title: 'Price',
-                    },
-                    {
-                        index: 'changed_price',
-                        title: 'Changed price',
-                        render: function (o) {
-                             Array.from(prices).filter(function (item)  {
-                                if(item.id == o.value) {
-                                    o.value = item.value
-                                }
-                            })
-
-                            return o;
-                        }
-                    },
-                    {
-                        index: 'comment',
-                        title: 'Comment',
-                    },
-                    {
-                        index: 'wishes',
-                        title: 'Wishes',
-                        width: 400,
-                    },
-                    {
-                        index: 'usebonus',
-                        title: 'Used bonus',
-                    },
-                    {
-                        index: '',
-                        width: 400,
-                        title: 'Action',
-                        render: function (o) {
-                            o.value = '<a href="/orders/' + o.data.id + '/delete"><button class="btn btn-sm btn-danger uk-margin-small-right">Удалить</button></a>&#160;';
-
-                            return o;
-                        }
-
-                    },
-
-                ]
             });
-        });
-
-        x = "{{ $addresses }}"
-        data1 = x.replace(/&quot;/g, '"')
-        data1 = data1.replace(/[\r\n]/g, " ");
-        data1 = data1.replace(/\\/g, '');
-        data1 = JSON.parse(data1)
-
-        new FancyGrid({
-            theme: 'bootstrap',
-            renderTo: 'addresses',
-            height: 800,
-            defaults: {
-                resizable: true,
-                autoHeight: true,
-                sortable: true,
-                width: 200,
-
-            },
-            paging: {
-                pageSize: 20,
-            },
-
-            tbar: [{
-                type: 'search',
-                width: 350,
-                emptyText: 'Поиск',
-                paramsMenu: true,
-                paramsText: 'Параметры'
-            }],
-            data: data1,
-            columns: [{
-                index: 'id',
-                title: 'ID',
-                type: 'string',
-
-            },{
-                index: 'address',
-                title: 'Addresses',
-                type: 'string',
-
-            },
-
-            ]
         });
     </script>
 @endpush

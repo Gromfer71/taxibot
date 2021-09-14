@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\Address;
+use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,13 +35,14 @@ class AddressHistory extends Model
 
     public static function clearByUserId($userId){
         self::where('user_id',$userId)->delete();
+
     }
 
     public static function newAddress($userId, $address, $coords, $city)
     {
        $address = Address::removeEllipsisFromAddressIfExists($address);
        $address = Address::subStrAddress($address);
-        if($address == trans('messages.invalid message')) {
+        if($address == Translator::trans('messages.invalid message')) {
             return;
         }
         if(!FavoriteAddress::where(

@@ -26,7 +26,7 @@ class TaxiMenuConversation extends BaseAddressConversation
 {
     public function _go_for_cash() {
         if(! OrderHistory::newOrder($this->bot)) {
-            $this->say(trans('messages.create order error'));
+            $this->say($this->__('messages.create order error'));
             $this->bot->startConversation(new StartConversation());
         } else {
             $this->currentOrderMenu(true);
@@ -40,14 +40,14 @@ class TaxiMenuConversation extends BaseAddressConversation
             $this->bot->userStorage()->save(['bonusbalance' => User::find($this->bot->getUser()->getId())->getBonusBalance()]);
 
             if(! OrderHistory::newOrder($this->bot, true)) {
-                $this->say(trans('messages.create order error'));
+                $this->say($this->__('messages.create order error'));
                 $this->bot->startConversation(new StartConversation());
                 return;
             }
         } else {
-            $this->say(trans('messages.zero bonus balance'), $this->bot->getUser()->getId());
+            $this->say($this->__('messages.zero bonus balance'), $this->bot->getUser()->getId());
             if(! OrderHistory::newOrder($this->bot, true)) {
-                $this->say(trans('messages.create order error'));
+                $this->say($this->__('messages.create order error'));
                 $this->bot->startConversation(new StartConversation());
                 return;
             }
@@ -70,23 +70,23 @@ class TaxiMenuConversation extends BaseAddressConversation
         if ($haveEndAddress){
             $question = $question->addButtons(
                 [
-                    Button::create(trans('buttons.exit to menu'))->additionalParameters(['config' => ButtonsFormatterService::TAXI_MENU_FORMAT])->value('exit to menu'),
-                    Button::create(trans('buttons.add address'))->value('add address'),
-                    Button::create(trans('buttons.go for cash'))->value('go for cash'),
-                    Button::create(trans('buttons.write comment'))->value('write comment'),
-                    Button::create(trans('buttons.go for bonuses'))->value('go for bonuses'),
-                    Button::create(trans('buttons.wishes'))->value('wishes'),
-                    Button::create(trans('buttons.change price'))->value('change price')
+                    Button::create($this->__('buttons.exit to menu'))->additionalParameters(['config' => ButtonsFormatterService::TAXI_MENU_FORMAT])->value('exit to menu'),
+                    Button::create($this->__('buttons.add address'))->value('add address'),
+                    Button::create($this->__('buttons.go for cash'))->value('go for cash'),
+                    Button::create($this->__('buttons.write comment'))->value('write comment'),
+                    Button::create($this->__('buttons.go for bonuses'))->value('go for bonuses'),
+                    Button::create($this->__('buttons.wishes'))->value('wishes'),
+                    Button::create($this->__('buttons.change price'))->value('change price')
                 ]
             );
         } else {
             $question = $question->addButtons(
                 [
-                    Button::create(trans('buttons.exit to menu'))->additionalParameters(['config' => ButtonsFormatterService::TAXI_MENU_FORMAT])->value('exit to menu'),
-                    Button::create(trans('buttons.write comment'))->value('write comment'),
-                    Button::create(trans('buttons.go for cash'))->value('go for cash'),
-                    Button::create(trans('buttons.wishes'))->value('wishes'),
-                    Button::create(trans('buttons.change price'))->value('change price')
+                    Button::create($this->__('buttons.exit to menu'))->additionalParameters(['config' => ButtonsFormatterService::TAXI_MENU_FORMAT])->value('exit to menu'),
+                    Button::create($this->__('buttons.write comment'))->value('write comment'),
+                    Button::create($this->__('buttons.go for cash'))->value('go for cash'),
+                    Button::create($this->__('buttons.wishes'))->value('wishes'),
+                    Button::create($this->__('buttons.change price'))->value('change price')
                 ]
             );
         }
@@ -143,10 +143,10 @@ class TaxiMenuConversation extends BaseAddressConversation
     public function addAdditionalAddress()
     {
         $this->_sayDebug('addAdditionalAddress');
-        $message = trans('messages.add additional address');
+        $message = $this->__('messages.add additional address');
         $message = $this->addAddressesToMessage($message);
         $question = Question::create($message, $this->bot->getUser()->getId());
-        $question = $question->addButton(Button::create(trans('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses']));
+        $question = $question->addButton(Button::create($this->__('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses']));
         $question = $this->_addAddressFavoriteButtons($question);
         $question = $this->_addAddressHistoryButtons($question);
         return $this->ask(
@@ -190,9 +190,9 @@ class TaxiMenuConversation extends BaseAddressConversation
 
 
         $addressesList = collect(Address::getAddresses(collect($this->bot->userStorage()->get('address'))->last(), (new Options($this->bot->userStorage()))->getCities(), $this->bot->userStorage()))->take(25)->values();
-        $questionText = $this->addAddressesFromApi(trans('messages.give address again'), $addressesList);
+        $questionText = $this->addAddressesFromApi($this->__('messages.give address again'), $addressesList);
         $question = Question::create($questionText, $this->bot->getUser()->getId());
-        $question->addButton(Button::create(trans('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses']));
+        $question->addButton(Button::create($this->__('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses']));
         if ($addressesList->isNotEmpty()) {
             foreach ($addressesList as $key => $address) {
                 $question->addButton(Button::create(Address::toString($address))->value(Address::toString($address))->additionalParameters(['number' => $key + 1]));
@@ -235,12 +235,12 @@ class TaxiMenuConversation extends BaseAddressConversation
     public function streetNotFoundAdditionalAddress()
     {
         $this->_sayDebug('streetNotFoundAdditionalAddress');
-        $question = Question::create(trans('messages.address not found'), $this->bot->getUser()->getId());
+        $question = Question::create($this->__('messages.address not found'), $this->bot->getUser()->getId());
         $question->addButtons(
             [
-                Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT])->value('back'),
-                Button::create(trans('buttons.go as indicated'))->value('go as indicated'),
-                Button::create(trans('buttons.exit to menu'))->value('exit to menu'),
+                Button::create($this->__('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT])->value('back'),
+                Button::create($this->__('buttons.go as indicated'))->value('go as indicated'),
+                Button::create($this->__('buttons.exit to menu'))->value('exit to menu'),
             ]
         );
 
@@ -270,9 +270,9 @@ class TaxiMenuConversation extends BaseAddressConversation
     public function forgetWriteHouseAdditionalAddress()
     {
         $this->_sayDebug('forgetWriteHouseAdditionalAddress');
-        $question = Question::create(trans('messages.forget write house'), $this->bot->getUser()->getId())
+        $question = Question::create($this->__('messages.forget write house'), $this->bot->getUser()->getId())
             ->addButtons([
-                Button::create(trans('buttons.exit'))->value('exit'),
+                Button::create($this->__('buttons.exit'))->value('exit'),
             ]);;
 
         return $this->ask($question, function (Answer $answer) {
@@ -311,10 +311,10 @@ class TaxiMenuConversation extends BaseAddressConversation
         $question = Question::create($text, $this->bot->getUser()->getId())
             ->addButtons(
                 [
-                    Button::create(trans('buttons.need dispatcher'))->additionalParameters(['config' => ButtonsFormatterService::CURRENT_ORDER_MENU_FORMAT])->value('need dispatcher'),
-                    Button::create(trans('buttons.order info'))->value('order info'),
-                    Button::create(trans('buttons.cancel order'))->value('cancel order'),
-                    Button::create(trans('buttons.change price'))->value('change price'),
+                    Button::create($this->__('buttons.need dispatcher'))->additionalParameters(['config' => ButtonsFormatterService::CURRENT_ORDER_MENU_FORMAT])->value('need dispatcher'),
+                    Button::create($this->__('buttons.order info'))->value('order info'),
+                    Button::create($this->__('buttons.cancel order'))->value('cancel order'),
+                    Button::create($this->__('buttons.change price'))->value('change price'),
                 ]
             );
 
@@ -338,13 +338,13 @@ class TaxiMenuConversation extends BaseAddressConversation
                         $order = OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName());
                         $newStateKind = $order->checkOrder();
                         if (!$newStateKind){
-                            $this->say(trans('messages.pls wait we are searching auto now'), $this->bot->getUser()->getId());
+                            $this->say($this->__('messages.pls wait we are searching auto now'), $this->bot->getUser()->getId());
                             $this->currentOrderMenu(true,true);                        }
                     } elseif ($answer->getValue() == 'change price') {
                         $this->changePriceInOrderMenu();
                     } elseif ($answer->getValue() == 'need dispatcher') {
                         $this->getUser()->setUserNeedDispatcher();
-						$this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+						$this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
                         $this->currentOrderMenu(true,true);
                     } elseif ($answer->getValue() == 'order_confirm') {
                         $order = OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName());
@@ -366,16 +366,16 @@ class TaxiMenuConversation extends BaseAddressConversation
                     } elseif($answer->getValue() == 'need driver') {
                         $order = OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName());
                         if ($order) $api->connectClientAndDriver($order);
-                        $this->say(trans('messages.connect with driver'), $this->bot->getUser()->getId());
+                        $this->say($this->__('messages.connect with driver'), $this->bot->getUser()->getId());
                         $this->currentOrderMenu(true,true);
                     } elseif ($answer->getValue() == 'finish order') {
                         $order = OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName());
                         if ($order) $order->finishOrder();
-                        $this->bot->say(trans('messages.thx for order'),$this->bot->getUser()->getId());
+                        $this->bot->say($this->__('messages.thx for order'),$this->bot->getUser()->getId());
                         $this->bot->startConversation(new \App\Conversations\StartConversation());
                     } elseif ($answer->getValue() == 'need dispatcher') {
                         $this->getUser()->setUserNeedDispatcher();
-                        $this->say(trans('messages.wait for dispatcher'),$this->bot->getUser()->getId());
+                        $this->say($this->__('messages.wait for dispatcher'),$this->bot->getUser()->getId());
                         $this->bot->startConversation(new \App\Conversations\ClientGoesOutConversation());
                     }  else {
                        $this->_fallback($answer);
@@ -391,8 +391,8 @@ class TaxiMenuConversation extends BaseAddressConversation
     public function cancelOrder()
     {
         $this->_sayDebug('TaxiMenuConversation cancelOrder');
-        $question = Question::create(trans('messages.cancel order'), $this->bot->getUser()->getId())
-            ->addButton(Button::create(trans('buttons.continue'))->value('continue'));
+        $question = Question::create($this->__('messages.cancel order'), $this->bot->getUser()->getId())
+            ->addButton(Button::create($this->__('buttons.continue'))->value('continue'));
 
         return $this->ask(
             $question,
@@ -405,7 +405,7 @@ class TaxiMenuConversation extends BaseAddressConversation
 
     public function changePriceInOrderMenu()
     {
-        $question = Question::create(trans('messages.current price', ['price' => $this->bot->userStorage()->get('price')]), $this->bot->getUser()->getId());
+        $question = Question::create($this->__('messages.current price', ['price' => $this->bot->userStorage()->get('price')]), $this->bot->getUser()->getId());
         $prices = (new Options($this->bot->channelStorage()))->getChangePriceOptionsInOrderMenu();
 
         $prices = $this->_filterChangePrice($prices,'changed_price_in_order');
@@ -438,7 +438,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     $this->cancelOrder();
                     return;
                 }  elseif ($answer->getValue() == 'need dispatcher') {
-					  $this->say(trans('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+					  $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
                         $this->getUser()->setUserNeedDispatcher();
                         $this->currentOrderMenu(true,true);
                     return;
@@ -469,18 +469,18 @@ class TaxiMenuConversation extends BaseAddressConversation
                     $order = OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName());
                     $api = new OrderApiService();
                     if ($order) $api->connectClientAndDriver($order);
-                    $this->say(trans('messages.connect with driver'), $this->bot->getUser()->getId());
+                    $this->say($this->__('messages.connect with driver'), $this->bot->getUser()->getId());
                     $this->currentOrderMenu(true,true);
                     return;
                 } elseif ($answer->getValue() == 'finish order') {
                     $order = OrderHistory::getActualOrder($this->bot->getUser()->getId(), $this->bot->getDriver()->getName());
                     if ($order) $order->finishOrder();
-                    $this->bot->say(trans('messages.thx for order'),$this->bot->getUser()->getId());
+                    $this->bot->say($this->__('messages.thx for order'),$this->bot->getUser()->getId());
                     $this->bot->startConversation(new \App\Conversations\StartConversation());
                     return;
                 } elseif ($answer->getValue() == 'need dispatcher') {
                     $api = new OrderApiService();
-					$this->say(trans('messages.wait for dispatcher'),$this->bot->getUser()->getId());
+					$this->say($this->__('messages.wait for dispatcher'),$this->bot->getUser()->getId());
                     $this->getUser()->setUserNeedDispatcher();
                     $this->bot->startConversation(new \App\Conversations\ClientGoesOutConversation());
                     return;
@@ -514,7 +514,7 @@ class TaxiMenuConversation extends BaseAddressConversation
 
     public function changePrice()
     {
-        $question = Question::create(trans('messages.current price', ['price' => $this->bot->userStorage()->get('price')]), $this->bot->getUser()->getId());
+        $question = Question::create($this->__('messages.current price', ['price' => $this->bot->userStorage()->get('price')]), $this->bot->getUser()->getId());
         $options = new Options($this->bot->channelStorage());
         $prices = $options->filterChangePriceOptions(User::find($this->bot->getUser()->getId())->city);
 
@@ -560,15 +560,15 @@ class TaxiMenuConversation extends BaseAddressConversation
 
     public function writeComment()
     {
-        $question = Question::create(trans('messages.write comment or choose'), $this->bot->getUser()->getId());
+        $question = Question::create($this->__('messages.write comment or choose'), $this->bot->getUser()->getId());
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
         if ($haveEndAddress) {
-            $question = $question->addButtons([Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::COMMENT_MENU_FORMAT])->value('back'),
-                                               Button::create(trans('buttons.go for bonuses'))->value('go for bonuses'),
-                                               Button::create(trans('buttons.go for cash'))->value('go for cash')]);
+            $question = $question->addButtons([Button::create($this->__('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::COMMENT_MENU_FORMAT])->value('back'),
+                                               Button::create($this->__('buttons.go for bonuses'))->value('go for bonuses'),
+                                               Button::create($this->__('buttons.go for cash'))->value('go for cash')]);
         } else {
-            $question = $question->addButtons([Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWO_MENU_FORMAT]),
-                                               Button::create(trans('buttons.go for cash'))->value('go for cash')]);
+            $question = $question->addButtons([Button::create($this->__('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWO_MENU_FORMAT]),
+                                               Button::create($this->__('buttons.go for cash'))->value('go for cash')]);
         }
 
 
@@ -606,17 +606,17 @@ class TaxiMenuConversation extends BaseAddressConversation
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
 
         if ($haveEndAddress) {
-            $question = Question::create(trans('messages.order info with comment',$data),$this->bot->getUser()->getId());
-            $question = $question->addButtons([Button::create(trans('buttons.go for bonuses'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWO_MENU_FORMAT])->value('go for bonuses'),
-                Button::create(trans('buttons.go for cash'))->value('go for cash'),
-                Button::create(trans('buttons.back'))->value('back'),
-                Button::create(trans('buttons.wishes'))->value('wishes')]);
+            $question = Question::create($this->__('messages.order info with comment',$data),$this->bot->getUser()->getId());
+            $question = $question->addButtons([Button::create($this->__('buttons.go for bonuses'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWO_MENU_FORMAT])->value('go for bonuses'),
+                Button::create($this->__('buttons.go for cash'))->value('go for cash'),
+                Button::create($this->__('buttons.back'))->value('back'),
+                Button::create($this->__('buttons.wishes'))->value('wishes')]);
 
         } else {
-            $question = Question::create(trans('messages.komment_i_pozhelanie_skazhu_voditelu_punkt_6',$data),$this->bot->getUser()->getId());
-            $question = $question->addButtons([Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT])->value('back'),
-                Button::create(trans('buttons.wishes'))->value('wishes'),
-                Button::create(trans('buttons.go for cash'))->value('go for cash')
+            $question = Question::create($this->__('messages.komment_i_pozhelanie_skazhu_voditelu_punkt_6',$data),$this->bot->getUser()->getId());
+            $question = $question->addButtons([Button::create($this->__('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT])->value('back'),
+                Button::create($this->__('buttons.wishes'))->value('wishes'),
+                Button::create($this->__('buttons.go for cash'))->value('go for cash')
                 ]);
         }
 
@@ -652,21 +652,21 @@ class TaxiMenuConversation extends BaseAddressConversation
         if ($second){
             $question = Question::create(MessageGeneratorService::getFullOrderInfoFromStorage($this->bot->userStorage()), $this->bot->getUser()->getId());
         } else {
-            $question = Question::create(trans('messages.select wishes'), $this->bot->getUser()->getId());
+            $question = Question::create($this->__('messages.select wishes'), $this->bot->getUser()->getId());
         }
 
 
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
         if ($haveEndAddress) {
-            $question = $question->addButtons([Button::create(trans('buttons.go for cash'))->additionalParameters(['config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT])->value('go for cash'),
-                                               Button::create(trans('buttons.go for bonuses'))->value('go for bonuses'),
-                                               Button::create(trans('buttons.back'))->value('back'),
-                                               Button::create(trans('buttons.cancel last wish'))->value('cancel last wish')
+            $question = $question->addButtons([Button::create($this->__('buttons.go for cash'))->additionalParameters(['config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT])->value('go for cash'),
+                                               Button::create($this->__('buttons.go for bonuses'))->value('go for bonuses'),
+                                               Button::create($this->__('buttons.back'))->value('back'),
+                                               Button::create($this->__('buttons.cancel last wish'))->value('cancel last wish')
                 ]);
         } else {
-            $question = $question->addButtons([Button::create(trans('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT])->value('back'),
-                Button::create(trans('buttons.go for cash'))->value('go for cash'),
-                Button::create(trans('buttons.cancel last wish'))->value('cancel last wish')
+            $question = $question->addButtons([Button::create($this->__('buttons.back'))->additionalParameters(['config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT])->value('back'),
+                Button::create($this->__('buttons.go for cash'))->value('go for cash'),
+                Button::create($this->__('buttons.cancel last wish'))->value('cancel last wish')
             ]);
         }
 

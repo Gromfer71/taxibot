@@ -12,5 +12,8 @@ Homestead.yaml
 npm-debug.log
 .env
 composer.lock
-resources/lang/ru/messages.php
+/resources/lang/
 
+/tests/Bot/Madeline
+/madeline-74.phar
+/madeline-74.phar.version

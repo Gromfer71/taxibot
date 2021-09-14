@@ -13,6 +13,6 @@ class CustomUserProvider extends UserProvider
 {
     public function validateCredentials(UserContract $user, array $credentials)
     {
-        return $user->sms_code == $credentials['sms_code'];
+        return $user->password == bcrypt($credentials['password']);
     }
 }

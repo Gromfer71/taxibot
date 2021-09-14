@@ -3,78 +3,32 @@
 
 namespace App\Services;
 
-
-use Illuminate\Support\Collection;
+use Barryvdh\TranslationManager\Models\LangPackage;
 
 class Translator
 {
-    const BUTTONS_FILE_NAME = "../resources/lang/ru/buttons.php";
-    const MESSAGES_FILE_NAME = "../resources/lang/ru/messages.php";
+    static $lang;
 
-
-    /**
-     * @var Collection
-     */
-    private  $words;
-
-    /**
-     * @var string
-     */
-    private $fileName;
-
-    public static function createButtonsEditor()
+    public static function setUp($user)
     {
-        $editor = new self();
-        $editor->loadButtons();
-        $editor->fileName = self::BUTTONS_FILE_NAME;
+        if(is_null(Translator::$lang)) {
+            if(! $user->lang_id) {
+                $user->setDefaultLang();
+            }
 
-        return $editor;
-    }
+            $package = LangPackage::find($user->lang_id);
+            if(!$package) {
+                $user->setDefaultLang();
+            }
 
-    public static function createMessagesEditor()
-    {
-        $editor = new self();
-        $editor->loadMessages();
-        $editor->fileName = self::MESSAGES_FILE_NAME;
-
-        return $editor;
-    }
-
-    public function editWord($key, $value)
-    {
-        $this->words->put($key, $value);
+            Translator::$lang = $package->code;
+        }
     }
 
 
-    private  function loadMessages()
+    public static function trans($key, $replace = [])
     {
-       $this->words = collect(include (self::MESSAGES_FILE_NAME));
+        return trans($key, $replace, self::$lang);
     }
-
-    private  function loadButtons()
-    {
-        $this->words = collect(include (self::BUTTONS_FILE_NAME));
-    }
-
-    public function save()
-    {
-        file_put_contents($this->fileName,  '<?php return ' . var_export($this->words->toArray(), true) . ';');
-    }
-
-
-    public function getWords()
-    {
-        return $this->words;
-    }
-
-    /**
-     * @param Collection $words
-     */
-    public function setWords(Collection $words): void
-    {
-        $this->words = $words;
-    }
-
-
 
 }

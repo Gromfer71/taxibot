@@ -1,5 +1,10 @@
 <?php
 
+if(config('app.debug')) {
+    Route::any('tests/execute', 'BotmanController@executeTests')->name('tests_execute');
+}
+
+
 Route::get('/', function () {
     return redirect(route('login'));
 });
@@ -9,13 +14,15 @@ Auth::routes([
     'reset' => false, // Password Reset Routes...
     'verify' => false, // Email Verification Routes...
 ]);
-Route::match(['get', 'post'], 'sms_confirm_login', 'Auth\LoginController@confirmLogin')->name('confirm_login');
-Route::get( 'sendSms', 'Auth\LoginController@sendSms')->name('send_sms');
+Route::match(['get', 'post'], 'login', 'Auth\LoginController@login')->name('login');
 
 Route::get( 'tinker', 'BotManController@tinker')->name('tinker');
 
 Route::match(['get', 'post'], '/botman', 'BotManController@handle');
+
 Route::get('/botman/tinker', 'BotManController@tinker');
+
+
 
 
 Route::group(['midlleware' => 'auth'], function() {
@@ -31,7 +38,7 @@ Route::group(['midlleware' => 'auth'], function() {
 
     Route::get('admins/read', 'AdminController@read')->name('admins_read');
     Route::post('admins/create', 'AdminController@create')->name('admins_create');
-    Route::get('admins/destroy/{id}', 'AdminController@destroy')->name('admins_destroy');
+    Route::get('admins/destroy/{phone}', 'AdminController@destroy')->name('admins_destroy');
 
     Route::get('users', 'UserController@index')->name('users');
     Route::post('add_user', 'UserController@addUser')->name('add_user');
@@ -42,15 +49,16 @@ Route::group(['midlleware' => 'auth'], function() {
     Route::get('users/{id}/reset', 'UserController@reset')->name('user_reset');
     Route::get('users/{id}/block', 'UserController@block')->name('user_block');
     Route::get('users/{id}/unblock', 'UserController@unblock')->name('user_unblock');
+    Route::post('users/change_password', 'UserController@changePassword')->name('change_password');
 
     Route::get('users/{id}/orders/clear', 'UserController@ordersClear')->name('user_orders_clear');
     Route::get('users/{id}/addresses/clear', 'UserController@addressesClear')->name('user_addresses_clear');
+    Route::get('addresses/{id}/delete', 'UserController@deleteAddress')->name('user_delete_address');
     Route::get('orders/{id}/delete', 'OrderController@delete')->name('order_delete');
 
-
-    Route::get('test', function () {
-        return view('test');
-    });
+    Route::get('error_reports', 'ErrorReportController@index')->name('error_reports');
+    Route::get('error_reports/clear', 'ErrorReportController@clear')->name('clear_error_reports');
+    Route::post('error_reports/update_emails', 'ErrorReportController@updateEmails')->name('update_emails');
 
     Route::match(['get', 'post'], 'bot_settings/edit_messages', 'BotSettingsController@editMessages')->name('edit_messages');
     Route::match(['get', 'post'], 'bot_settings/edit_buttons', 'BotSettingsController@editButtons')->name('edit_buttons');

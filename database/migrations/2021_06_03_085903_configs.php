@@ -18,8 +18,6 @@ class Configs extends Migration
             $table->text('value');
         });
 
-        \App\Models\Config::create(['name' => 'token', 'value' => config('botman.telegram.token', '1524067647:AAFYF0JS-K2-2cHM3Wd28gyqAi2xb0cURcs')]);
-        \App\Models\Config::create(['name' => 'config_file', 'value' => config('app.config_file', 'https://sk-taxi.ru/tmfront/config.json')]);
 
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Services\Translator;
+use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Database\Eloquent\Model;
@@ -111,6 +113,17 @@ class User extends Model
     public function setUserNeedDispatcher()
     {
         $this->need_call =  1;
+        $this->save();
+    }
+
+    public function setDefaultLang()
+    {
+        $defaultPackage = LangPackage::where('code', config('app.locale', 'ru'))->first();
+        if(!$defaultPackage) {
+            $this->lang_id = LangPackage::all()->first()->id ?? null;
+        } else {
+            $this->lang_id = $defaultPackage->id;
+        }
         $this->save();
     }
 
