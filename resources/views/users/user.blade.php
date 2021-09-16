@@ -75,7 +75,7 @@
                         <td>{{ $order->comment }}</td>
                         <td>{{ $order->wishes }}</td>
                         <td>{{ $order->created_at }}</td>
-                        <td>{{ $user->used_bonus ? 'Да' : 'Нет' }}</td>
+                        <td>{{ $order->usebonus ? 'Да' : 'Нет' }}</td>
                         <td><a href="{{ route('order_delete', $order->id) }}" class="btn btn-danger">Удалить</a></td>
                     </tr>
                 @endforeach
