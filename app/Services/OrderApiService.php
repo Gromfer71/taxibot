@@ -267,7 +267,7 @@ class OrderApiService
             'content' => json_encode(
                 [
                     'tariff_id'    => $tariffId,
-                    'order_params' => $orderParams,
+                    'order_params' => array_values($orderParams),
                     'dest_lat' => $addresses->last()->lat,
                     'dest_lon' => $addresses->last()->lon,
                     'src_lat' => $addresses->first()->lat,
