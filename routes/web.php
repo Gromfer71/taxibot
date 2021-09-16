@@ -1,10 +1,5 @@
 <?php
 
-if(config('app.debug')) {
-    Route::any('tests/execute', 'BotmanController@executeTests')->name('tests_execute');
-}
-
-
 Route::get('/', function () {
     return redirect(route('login'));
 });
@@ -16,7 +11,6 @@ Auth::routes([
 ]);
 Route::match(['get', 'post'], 'login', 'Auth\LoginController@login')->name('login');
 
-Route::get( 'tinker', 'BotManController@tinker')->name('tinker');
 
 Route::match(['get', 'post'], '/botman', 'BotManController@handle');
 
@@ -34,9 +28,6 @@ Route::group(['midlleware' => 'auth'], function() {
     Route::post('change_token', 'BotSettingsController@changeToken')->name('change_token');
     Route::post('change_config_file', 'BotSettingsController@changeConfigFile')->name('change_config_file');
 
-
-
-    Route::get('admins/read', 'AdminController@read')->name('admins_read');
     Route::post('admins/create', 'AdminController@create')->name('admins_create');
     Route::get('admins/destroy/{phone}', 'AdminController@destroy')->name('admins_destroy');
 

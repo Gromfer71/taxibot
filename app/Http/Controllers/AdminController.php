@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin;
-use App\Models\User;
+use Google\Cloud\Core\Exception\BadRequestException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Контроллер для управления администраторами чат-бота
+ */
 class AdminController extends Controller
 {
     public function __construct()
@@ -13,22 +17,34 @@ class AdminController extends Controller
         $this->middleware('auth');
     }
 
-    public function read()
+    /**
+     * Создание нового администратора
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function create(Request $request): RedirectResponse
     {
-        return json_encode(Admin::all()->toArray());
+        $admin = Admin::create(['phone' => $request->get('phone')]);
+        $admin->save();
+
+        return back()->with('ok', 'Администратор создан');
     }
 
-    public function create(Request $request)
+    /**
+     * Удаление администратора
+     *
+     * @param $phone
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
+    public function destroy($phone): RedirectResponse
     {
-       $admin = Admin::create(['phone' => $request->get('phone')]);
-       $admin->save();
-
-       return back()->with('ok', 'Администратор создан');
-    }
-
-    public function destroy($phone)
-    {
-        Admin::find($phone)->first()->delete();
+        try {
+            Admin::find($phone)::first()->delete();
+        } catch (BadRequestException $e) {
+            throw new $e();
+        }
 
         return back()->with('ok', 'Администратор удален');
     }
