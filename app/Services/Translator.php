@@ -1,34 +1,45 @@
 <?php
 
-
 namespace App\Services;
 
 use Barryvdh\TranslationManager\Models\LangPackage;
 
+/**
+ * Языковой менеджер для работы с языковыми пакетами с бд и файлами
+ */
 class Translator
 {
-    static $lang;
+    public static $lang = 'ru';
 
+    /**
+     * Инициализация языка выбранного пользователем либо установка языка пользователя по умолчанию
+     *
+     * @param $user
+     */
     public static function setUp($user)
     {
-        if(is_null(Translator::$lang)) {
-            if(! $user->lang_id) {
-                $user->setDefaultLang();
-            }
-
-            $package = LangPackage::find($user->lang_id);
-            if(!$package) {
-                $user->setDefaultLang();
-            }
-
-            Translator::$lang = $package->code;
+        if (!$user->lang_id) {
+            $user->setDefaultLang();
         }
+
+        $package = LangPackage::find($user->lang_id);
+        if (!$package) {
+            $user->setDefaultLang();
+        }
+
+        Translator::$lang = $package->code;
     }
 
 
-    public static function trans($key, $replace = [])
+    /**
+     * Перевод строки
+     *
+     * @param $key
+     * @param array $replace
+     * @return array|\Illuminate\Contracts\Translation\Translator|\Illuminate\Foundation\Application|string|null
+     */
+    public static function trans($key, array $replace = [])
     {
         return trans($key, $replace, self::$lang);
     }
-
 }

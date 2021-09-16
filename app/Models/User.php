@@ -69,26 +69,6 @@ class User extends Model
         $this->phone = $phone;
         $this->server_id = null;
         $this->save();
-        $this->registerServerId();
-    }
-
-    /**
-     * Регистрирует id сервера у пользователя. Регистрирует если он отсутствует
-     *
-     * @return false|void
-     */
-    public function registerServerId()
-    {
-        if ($this->server_id || !$this->phone) {
-            return;
-        }
-        $response = BonusesApi::analyzePhone($this->phone);
-        if ($response->code == BonusesApi::USER_NOT_FOUND) {
-            return false;
-        } else {
-            $this->server_id = $response->data->id;
-            $this->save();
-        }
     }
 
     /**
@@ -98,9 +78,6 @@ class User extends Model
      */
     public function getBonusBalance()
     {
-        if (!$this->server_id) {
-            $this->registerServerId();
-        }
         return BonusesApi::getClientInfo($this->server_id)->data->bonus_balance;
     }
 

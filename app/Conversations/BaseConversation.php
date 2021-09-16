@@ -6,8 +6,10 @@ use App\Models\Config;
 use App\Models\Log;
 use App\Models\User;
 use App\Services\Address;
+use App\Services\BotCommandFactory;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
+use App\Traits\UserManagerTrait;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -19,6 +21,10 @@ use Exception;
  */
 abstract class BaseConversation extends Conversation
 {
+    use UserManagerTrait;
+
+    protected $defaultCallback;
+
     private const EMOJI = [
         '0' => '0&#8419;',
         '1' => '1&#8419;',
@@ -32,7 +38,18 @@ abstract class BaseConversation extends Conversation
         '9' => '9&#8419;',
         '10' => '10&#8419;',
     ];
-    //TODO: выяснить а есть ли смысл вообще сохранять конфиг в кеш если он и так в файле хранится
+
+    public function __construct()
+    {
+        if (is_null(Translator::$lang) && !is_null($this->getUser())) {
+            Translator::setUp($this->getUser());
+        }
+        $this->defaultCallback = function (Answer $answer) {
+            $command = BotCommandFactory::factory($answer, $this);
+            $command->execute();
+        };
+    }
+
     public function checkConfig()
     {
         if (!$this->bot->channelStorage()->get('options')) {
@@ -125,7 +142,7 @@ abstract class BaseConversation extends Conversation
         if ($user) {
             return $user;
         } else {
-            throw new Exception('null user exception');
+            $this->bot->startConversation(new StartConversation());
         }
     }
 
@@ -202,6 +219,14 @@ abstract class BaseConversation extends Conversation
         }
 
         return $questionText;
+    }
+
+    /**
+     * @return \Closure
+     */
+    public function getDefaultCallback(): \Closure
+    {
+        return $this->defaultCallback;
     }
 
 }

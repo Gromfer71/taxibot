@@ -45,9 +45,6 @@ class MenuConversation extends BaseConversation
             return;
         }
 
-        if (!$user->server_id) {
-            $user->registerServerId();
-        }
         $this->bot->userStorage()->delete();
         $this->checkConfig();
         OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
