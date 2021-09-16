@@ -25,6 +25,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|AddressHistory whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AddressHistory whereUserId($value)
  * @mixin \Eloquent
+ * @property string|null $lat
+ * @property string|null $lon
+ * @method static \Illuminate\Database\Eloquent\Builder|AddressHistory whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AddressHistory whereLat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AddressHistory whereLon($value)
  */
 class AddressHistory extends Model
 {

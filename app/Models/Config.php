@@ -5,6 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
 
+/**
+ * App\Models\Config
+ *
+ * @property int $name
+ * @property string $value
+ * @method static \Illuminate\Database\Eloquent\Builder|Config newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Config newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Config query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Config whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Config whereValue($value)
+ * @mixin \Eloquent
+ */
 class Config extends Model
 {
     const MESSAGE_LABELS = [

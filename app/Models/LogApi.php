@@ -14,6 +14,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $updated_at
  * @property string|null $result
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|LogApi newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|LogApi newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|LogApi query()
+ * @method static \Illuminate\Database\Eloquent\Builder|LogApi whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LogApi whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LogApi whereParams($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LogApi whereResult($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LogApi whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LogApi whereUrl($value)
  */
 class LogApi extends Model
 {
