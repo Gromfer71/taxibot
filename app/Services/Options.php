@@ -100,7 +100,7 @@ class Options
 		}
 		$orderParams = $orderParams->filter();
 
-		return $orderParams->toArray();
+		return $orderParams;
 	}
 
 	public function getCrewGroupIdFromCity($city)

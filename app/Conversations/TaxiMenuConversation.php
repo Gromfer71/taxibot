@@ -133,7 +133,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         }
         $api = new OrderApiService();
         $tariff = $api->selectTariffForOrder($crewGroupId, $this->bot->userStorage()->get('lat'), $this->bot->userStorage()->get('lon'));
-        $priceResponse = $api->calcOrderPrice($tariff->data->tariff_id, $options->getOrderParamsArray($this->bot->userStorage()), $this->bot->userStorage());
+        $priceResponse = $api->calcOrderPrice($tariff->data->tariff_id, $options->getOrderParamsArray($this->bot->userStorage())->toArray(), $this->bot->userStorage());
         $this->_sayDebug('Цена поездки  - '.json_encode($priceResponse,JSON_UNESCAPED_UNICODE));
         $this->bot->userStorage()->save(['price' => $priceResponse->data->sum ?? 101]);
         $this->bot->userStorage()->save(['tariff_id' => $tariff->data->tariff_id]);
