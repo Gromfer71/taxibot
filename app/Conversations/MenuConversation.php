@@ -28,7 +28,9 @@ class MenuConversation extends BaseConversation
     public function menu($withoutMessage = false)
     {
        return $this->ask(Question::create('В меню'), function (Answer $answer) {
-           $this->menu();
+          if($answer->getText() == '123') {
+              return $this->menu();
+          }
        });
         ;
 //        $user = User::find($this->bot->getUser()->getId());
