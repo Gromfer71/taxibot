@@ -179,4 +179,15 @@ class User extends Model
         $this->save();
     }
 
+    /**
+     * Обновляет город пользователя
+     *
+     * @param $newCity
+     */
+    public function updateCity($newCity)
+    {
+        $this->city = $newCity;
+        $this->save();
+    }
+
 }

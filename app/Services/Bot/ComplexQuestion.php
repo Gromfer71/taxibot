@@ -13,18 +13,25 @@ use http\Exception\InvalidArgumentException;
 class ComplexQuestion extends Question
 {
     /**
-     * Создание вопроса вместе с кнопками но без переменных
+     * Создание вопроса вместе с кнопками, но без переменных
      *
      * @param $text
      * @param array $buttonTexts
+     * @param array $additionalParameters
      * @return static
      */
-    public static function createWithSimpleButtons($text, array $buttonTexts = []): ComplexQuestion
+    public static function createWithSimpleButtons($text, array $buttonTexts = [], array $additionalParameters = [])
     {
         $question = parent::create($text);
+
+        return self::setButtonsArrayToExistQuestion($question, $buttonTexts, $additionalParameters);
+    }
+
+    public static function setButtonsArrayToExistQuestion($question, array $buttonTexts = [], $additionalParameters = [])
+    {
         foreach ($buttonTexts as $buttonText) {
             $value = array_get(explode('.', $buttonText), 1);
-            $button = Button::create(Translator::trans($buttonText));
+            $button = Button::create(Translator::trans($buttonText))->additionalParameters($additionalParameters);
             if($value) {
                 $button->value($value);
             } else {

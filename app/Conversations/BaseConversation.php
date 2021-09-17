@@ -130,14 +130,12 @@ abstract class BaseConversation extends Conversation
         return Translator::trans($key, $replace);
     }
 
+    /**
+     * @return \App\Models\User|\App\Models\User[]|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|object
+     */
     public function getUser()
     {
-        $user = User::find($this->bot->getUser()->getId());
-        if ($user) {
-            return $user;
-        } else {
-            $this->bot->startConversation(new StartConversation());
-        }
+        return User::find($this->bot->getUser()->getId());
     }
 
     public function end()

@@ -27,104 +27,99 @@ class MenuConversation extends BaseConversation
      */
     public function menu($withoutMessage = false)
     {
-//       return $this->ask(Question::create('В меню2'), function (Answer $answer) {
-//          if($answer->getText() == '123') {
-//              return $this->menu();
-//          }
-//       });
-//        $user = User::find($this->bot->getUser()->getId());
-//
-//        if (!$user) {
-//            $this->bot->startConversation(new StartConversation());
-//            return;
-//        } elseif ($user->isBlocked) {
-//            $this->say($this->__('messages.you are blocked'));
-//            return;
-//        } elseif (!$user->phone) {
-//            $this->confirmPhone();
-//            return;
-//        } elseif (!$user->city) {
-//            $this->changeCity();
-//            return;
-//        }
-//
-//        $this->bot->userStorage()->delete();
-//        $this->checkConfig();
-//        OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
-//
-//
-//        $question = Question::create(
-//            $withoutMessage ? '' : $this->__('messages.choose menu'),
-//            $this->bot->getUser()->getId()
-//        )
-//            ->addButtons([
-//                             Button::create($this->__('buttons.take taxi'))->value('take taxi')->additionalParameters(
-//                                 ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
-//                             ),
-//                             Button::create($this->__('buttons.request call'))->value('request call'),
-//                             Button::create($this->__('buttons.change phone number'))->value('change phone number'),
-//                             Button::create($this->__('buttons.change city'))->value('change city'),
-//                             Button::create($this->__('buttons.price list'))->value('price list'),
-//                             Button::create($this->__('buttons.all about bonuses'))->value('all about bonuses'),
-//                             Button::create($this->__('buttons.address history menu'))->value('address history menu'),
-//                             Button::create($this->__('buttons.favorite addresses menu'))->value(
-//                                 'favorite addresses menu'
-//                             )
-//                         ]);
-//
-//        return $this->ask($question, function (Answer $answer) use ($user) {
-//            Log::newLogAnswer($this->bot, $answer);
-//
-//            if ($user->isBlocked) {
-//                $this->say($this->__('messages.you are blocked'));
-//                return;
-//            }
-//
-//            if ($answer->isInteractiveMessageReply()) {
-//                if ($answer->getValue() == 'take taxi') {
-//                    $user = User::find($this->bot->getUser()->getId());
-//                    if (!$user) {
-//                        $this->bot->startConversation(new StartConversation());
-//                        return;
-//                    } elseif (!$user->phone) {
-//                        $this->confirmPhone();
-//                        return;
-//                    } elseif (!$user->city) {
-//                        $this->changeCity();
-//                        return;
-//                    }
-//                    $this->bot->startConversation(new TakingAddressConversation());
-//                } elseif ($answer->getValue() == 'change city') {
-//                    $this->changeCity();
-//                } elseif ($answer->getValue() == 'change phone number') {
-//                    $this->confirmPhone();
-//                } elseif ($answer->getValue() == 'request call') {
-//                    $user = $this->getUser();
-//                    $user->need_call = 1;
-//                    $user->save();
-//                    $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+        $user = User::find($this->bot->getUser()->getId());
+
+        if (!$user) {
+            $this->bot->startConversation(new StartConversation());
+            return;
+        } elseif ($user->isBlocked) {
+            $this->say($this->__('messages.you are blocked'));
+            return;
+        } elseif (!$user->phone) {
+            $this->confirmPhone();
+            return;
+        } elseif (!$user->city) {
+            $this->changeCity();
+            return;
+        }
+
+        $this->bot->userStorage()->delete();
+        $this->checkConfig();
+        OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
+
+
+        $question = Question::create(
+            $withoutMessage ? '' : $this->__('messages.choose menu'),
+            $this->bot->getUser()->getId()
+        )
+            ->addButtons([
+                             Button::create($this->__('buttons.take taxi'))->value('take taxi')->additionalParameters(
+                                 ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
+                             ),
+                             Button::create($this->__('buttons.request call'))->value('request call'),
+                             Button::create($this->__('buttons.change phone number'))->value('change phone number'),
+                             Button::create($this->__('buttons.change city'))->value('change city'),
+                             Button::create($this->__('buttons.price list'))->value('price list'),
+                             Button::create($this->__('buttons.all about bonuses'))->value('all about bonuses'),
+                             Button::create($this->__('buttons.address history menu'))->value('address history menu'),
+                             Button::create($this->__('buttons.favorite addresses menu'))->value(
+                                 'favorite addresses menu'
+                             )
+                         ]);
+
+        return $this->ask($question, function (Answer $answer) use ($user) {
+            Log::newLogAnswer($this->bot, $answer);
+
+            if ($user->isBlocked) {
+                $this->say($this->__('messages.you are blocked'));
+                return;
+            }
+
+            if ($answer->isInteractiveMessageReply()) {
+                if ($answer->getValue() == 'take taxi') {
+                    $user = User::find($this->bot->getUser()->getId());
+                    if (!$user) {
+                        $this->bot->startConversation(new StartConversation());
+                        return;
+                    } elseif (!$user->phone) {
+                        $this->confirmPhone();
+                        return;
+                    } elseif (!$user->city) {
+                        $this->changeCity();
+                        return;
+                    }
+                    $this->bot->startConversation(new TakingAddressConversation());
+                } elseif ($answer->getValue() == 'change city') {
+                    $this->changeCity();
+                } elseif ($answer->getValue() == 'change phone number') {
+                    $this->confirmPhone();
+                } elseif ($answer->getValue() == 'request call') {
+                    $user = $this->getUser();
+                    $user->need_call = 1;
+                    $user->save();
+                    $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+                    $this->menu(true);
+                } elseif ($answer->getValue() == 'price list') {
+                    $this->say($this->__('messages.price list'));
+                    $this->menu(true);
+                } elseif ($answer->getValue() == 'all about bonuses') {
+                    $this->bonuses();
+                } elseif ($answer->getValue() == 'address history menu') {
+                    // }  elseif($answer->getValue() == 'taxibot') {
+                    $this->addressesMenu();
+//                    $this->say($this->__('messages.address history menu'));
+//                    AddressHistory::clearByUserId($this->bot->getUser()->getId());
 //                    $this->menu(true);
-//                } elseif ($answer->getValue() == 'price list') {
-//                    $this->say($this->__('messages.price list'));
-//                    $this->menu(true);
-//                } elseif ($answer->getValue() == 'all about bonuses') {
-//                    $this->bonuses();
-//                } elseif ($answer->getValue() == 'address history menu') {
-//                    // }  elseif($answer->getValue() == 'taxibot') {
-//                    $this->addressesMenu();
-////                    $this->say($this->__('messages.address history menu'));
-////                    AddressHistory::clearByUserId($this->bot->getUser()->getId());
-////                    $this->menu(true);
-//                } elseif ($answer->getValue() == 'favorite addresses menu') {
-//                    $this->bot->startConversation(new FavoriteAddressesConversation());
-//                }
-//            } else {
-//                if ($answer->getText() == '/setabouttext') {
-//                    $this->say($this->__('messages.about myself'));
-//                }
-//                $this->menu();
-//            }
-//        });
+                } elseif ($answer->getValue() == 'favorite addresses menu') {
+                    $this->bot->startConversation(new FavoriteAddressesConversation());
+                }
+            } else {
+                if ($answer->getText() == '/setabouttext') {
+                    $this->say($this->__('messages.about myself'));
+                }
+                $this->menu();
+            }
+        });
     }
 
     public function addressesMenu()
@@ -418,18 +413,15 @@ class MenuConversation extends BaseConversation
 
     public function run()
     {
-        $this->_sayDebug('hello');
-//        return $this->menu();
-//
-//        $user = User::find($this->bot->getUser()->getId());
-//        if (!$user) {
-//            $this->bot->startConversation(new StartConversation());
-//        } elseif (!$user->phone) {
-//            $this->confirmPhone(true);
-//        } elseif (!$user->city) {
-//            $this->changeCity();
-//        } else {
-//
-//        }
+        $user = User::find($this->bot->getUser()->getId());
+        if (!$user) {
+            $this->bot->startConversation(new StartConversation());
+        } elseif (!$user->phone) {
+            $this->confirmPhone(true);
+        } elseif (!$user->city) {
+            $this->changeCity();
+        } else {
+            $this->menu();
+        }
     }
 }

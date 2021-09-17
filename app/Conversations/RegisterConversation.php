@@ -3,8 +3,10 @@
 namespace App\Conversations;
 
 use App\Services\Bot\ComplexQuestion;
+use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use App\Traits\RegisterTrait;
+use App\Traits\SetupCityTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
 /**
@@ -13,6 +15,7 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 class RegisterConversation extends BaseConversation
 {
     use RegisterTrait;
+    use SetupCityTrait;
 
     /**
      * Начало
@@ -66,7 +69,7 @@ class RegisterConversation extends BaseConversation
                 $this->confirmSms(true);
             } elseif ($this->isSmsCodeCorrect($answer->getText())) {
                 $this->registerUser();
-                $this->bot->startConversation(new MenuConversation());
+                $this->setupCity();
             } else {
                 $this->say(Translator::trans('messages.wrong sms code'));
                 $this->confirmSms(false, true);
@@ -77,10 +80,22 @@ class RegisterConversation extends BaseConversation
     /**
      * Установка города пользователя
      */
-    public function setupCity()
+    public function setupCity(): RegisterConversation
     {
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.choose city without current city'),
+            $this->getCitiesArray(),
+            ['config' => ButtonsFormatterService::CITY_MENU_FORMAT]
+        );
 
+        return $this->ask($question, function (Answer $answer) {
+            if($this->isUserInputIsCity($answer->getText())) {
+                $this->getUser()->updateCity($answer->getText());
+                $this->say(Translator::trans('messages.city has been changed', ['city' => $answer->getText()]));
+                $this->bot->startConversation(new MenuConversation());
+            } else {
+                $this->setupCity();
+            }
+        });
     }
-
-
 }
