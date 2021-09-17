@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use App\Services\Options;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Трейт отвечает за установку и смену города пользователя

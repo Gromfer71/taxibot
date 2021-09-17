@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use App\Models\User;
-use Barryvdh\TranslationManager\Models\LangPackage;
 
 /**
  *

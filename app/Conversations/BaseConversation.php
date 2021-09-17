@@ -243,4 +243,15 @@ abstract class BaseConversation extends Conversation
         return $this->bot->userStorage()->save($data);
     }
 
+    /**
+     * Упрощенное удаление из хранилища. Null потому что delete() не работает во всех драйверах
+     *
+     * @param $key
+     * @return Mixed
+     */
+    public function removeFromStorage($key)
+    {
+        return $this->bot->userStorage()->save([$key => null]);
+    }
+
 }
