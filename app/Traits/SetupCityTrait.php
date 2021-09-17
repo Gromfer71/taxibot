@@ -19,10 +19,10 @@ trait SetupCityTrait
     {
         $options = new Options();
         $cities = collect($options->getCities());
-        $cities->map(function ($city) {
+        $cities = $cities->map(function ($city) {
            return $city->name;
         });
-        Log::info($cities->toJson());
+
         return $cities->toArray();
     }
 

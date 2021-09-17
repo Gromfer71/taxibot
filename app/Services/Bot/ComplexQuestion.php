@@ -30,7 +30,6 @@ class ComplexQuestion extends Question
 
     public static function setButtonsArrayToExistQuestion($question, array $buttonTexts = [], $additionalParameters = [])
     {
-        Log::info(json_encode($buttonTexts, JSON_UNESCAPED_UNICODE));
         foreach ($buttonTexts as $buttonText) {
             $value = array_get(explode('.', $buttonText), 1);
             $button = Button::create(Translator::trans($buttonText))->additionalParameters($additionalParameters);
