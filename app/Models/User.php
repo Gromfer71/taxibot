@@ -153,6 +153,7 @@ class User extends Model
         } elseif (get_class($bot->getDriver()) == TelegramDriver::class) {
             $this->telegram_id = $bot->getUser()->getId();
         }
+        $this->save();
     }
 
     /**

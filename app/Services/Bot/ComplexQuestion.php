@@ -21,10 +21,6 @@ class ComplexQuestion extends Question
      */
     public static function createWithSimpleButtons($text, array $buttonTexts = []): ComplexQuestion
     {
-        if(!$text) {
-            throw new InvalidArgumentException('Попытка создания вопроса с пустым текстом');
-        }
-
         $question = parent::create($text);
         foreach ($buttonTexts as $buttonText) {
             $value = array_get(explode('.', $buttonText), 1);

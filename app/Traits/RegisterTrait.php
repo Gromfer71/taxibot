@@ -58,7 +58,7 @@ trait RegisterTrait
     {
         $api = new OrderApiService();
         $smsCode = $api->getRandomSMSCode();
-        $api->callSMSCode($this->getFromStorage('phone'), $smsCode);
+        $api->callSMSCode('7' . $this->getFromStorage('phone'), $smsCode);
         $this->saveSmsCode($smsCode);
     }
 
@@ -102,7 +102,7 @@ trait RegisterTrait
     private function registerUserFromExist()
     {
         $user = User::wherePhone($this->getFromStorage('phone'))->first();
-        $user->updatePhone($this->getFromStorage('phone'));
+        $this->_sayDebug($user->phone);
         $user->setPlatformId($this->getBot());
     }
 

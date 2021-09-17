@@ -27,12 +27,11 @@ class MenuConversation extends BaseConversation
      */
     public function menu($withoutMessage = false)
     {
-       return $this->ask(Question::create('В меню'), function (Answer $answer) {
-          if($answer->getText() == '123') {
-              return $this->menu();
-          }
-       });
-        ;
+//       return $this->ask(Question::create('В меню2'), function (Answer $answer) {
+//          if($answer->getText() == '123') {
+//              return $this->menu();
+//          }
+//       });
 //        $user = User::find($this->bot->getUser()->getId());
 //
 //        if (!$user) {
@@ -419,17 +418,18 @@ class MenuConversation extends BaseConversation
 
     public function run()
     {
-        return $this->menu();
-
-        $user = User::find($this->bot->getUser()->getId());
-        if (!$user) {
-            $this->bot->startConversation(new StartConversation());
-        } elseif (!$user->phone) {
-            $this->confirmPhone(true);
-        } elseif (!$user->city) {
-            $this->changeCity();
-        } else {
-
-        }
+        $this->_sayDebug('hello');
+//        return $this->menu();
+//
+//        $user = User::find($this->bot->getUser()->getId());
+//        if (!$user) {
+//            $this->bot->startConversation(new StartConversation());
+//        } elseif (!$user->phone) {
+//            $this->confirmPhone(true);
+//        } elseif (!$user->city) {
+//            $this->changeCity();
+//        } else {
+//
+//        }
     }
 }
