@@ -17,7 +17,7 @@ trait RegisterTrait
      */
     protected function isPhoneCorrect($phone)
     {
-        return preg_match('^\+?[78][-\(]?\d{3}\)?-?\d{3}-?\d{2}-?\d{2}$^', $phone);
+        return preg_match('^\+?[78][-(]?\d{3}\)?-?\d{3}-?\d{2}-?\d{2}$^', $phone);
     }
 
     /**
@@ -102,7 +102,6 @@ trait RegisterTrait
     private function registerUserFromExist()
     {
         $user = User::wherePhone($this->getFromStorage('phone'))->first();
-        $this->_sayDebug($user->phone);
         $user->setPlatformId($this->getBot());
     }
 

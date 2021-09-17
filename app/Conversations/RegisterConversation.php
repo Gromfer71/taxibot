@@ -27,6 +27,7 @@ class RegisterConversation extends BaseConversation
     /**
      * Подтверждение телефона пользователя
      *
+     * @param null $noMessage
      * @return \App\Conversations\RegisterConversation
      */
     public function confirmPhone($noMessage = null): RegisterConversation
@@ -71,6 +72,14 @@ class RegisterConversation extends BaseConversation
                 $this->confirmSms(false, true);
             }
         });
+    }
+
+    /**
+     * Установка города пользователя
+     */
+    public function setupCity()
+    {
+
     }
 
 
