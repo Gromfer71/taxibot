@@ -224,15 +224,14 @@ class MenuConversation extends BaseConversation
         return $this->ask(
             $question,
             function (Answer $answer) {
-                if ($answer->isInteractiveMessageReply()) {
-                    if ($answer->getValue() == 'call') {
-                        $api = new OrderApiService();
-                        $code = $api->getRandomSMSCode();
-                        $api->callSMSCode($this->bot->userStorage()->get('phone'), $code);
-                        $this->bot->userStorage()->save(['sms_code' => $code]);
-                        $this->confirmCall();
-                    }
-                } elseif ($answer->getText() == $this->bot->userStorage()->get('sms_code')) {
+                if ($answer->getValue() == 'call') {
+                    $api = new OrderApiService();
+                    $code = $api->getRandomSMSCode();
+                    $api->callSMSCode($this->bot->userStorage()->get('phone'), $code);
+                    $this->bot->userStorage()->save(['sms_code' => $code]);
+                    $this->confirmCall();
+                }
+                if ($answer->getText() == $this->bot->userStorage()->get('sms_code')) {
                     $phone = $this->getUser()->phone ?? null;
                     if ($phone) {
                         $this->getUser()->updatePhone(
@@ -300,7 +299,6 @@ class MenuConversation extends BaseConversation
             OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone'))
         )->first();
 
-        $this->_sayDebug('номер ' . OrderApiService::replacePhoneCountyCode($this->bot->userStorage()->get('phone')));
         if ($oldUser) {
             $this->getUser()->delete();
             if ($oldUser->isBlocked) {

@@ -47,9 +47,26 @@ class RegisterConversation extends BaseConversation
     /**
      * Подтверждение и ввод смс кода
      */
-    public function confirmSms()
+    public function confirmSms(): RegisterConversation
     {
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.enter sms code'),
+            ['buttons.call']
+        );
 
+        return $this->ask($question, function (Answer $answer) {
+            if($answer->getValue() == 'call') {
+                $this->callSmsCode();
+                $this->confirmSms();
+            } elseif($this->isSmsCodeCorrect($answer->getText())) {
+                $this->registerUser();
+
+                $this->say('Вот и всё');
+            } else {
+                $this->say(Translator::trans('messages.wrong sms code'));
+                $this->confirmSms();
+            }
+        });
     }
 
 

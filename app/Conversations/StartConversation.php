@@ -5,7 +5,6 @@ namespace App\Conversations;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
 use App\Traits\BotManagerTrait;
-use BotMan\BotMan\Messages\Incoming\Answer;
 
 /**
  * Первый класс диалога. Запускается в первую очередь для нового пользователя
@@ -37,13 +36,12 @@ class StartConversation extends BaseConversation
      */
     public function register(): StartConversation
     {
-        $this->registerUser();
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans('messages.welcome message'),
-            ['start menu']
+            ['buttons.start menu']
         );
 
-        return $this->ask($question, function (Answer $answer) {
+        return $this->ask($question, function () {
             $this->bot->startConversation(new RegisterConversation());
         });
     }

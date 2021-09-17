@@ -14,6 +14,7 @@ use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
+use BotMan\BotMan\Storages\Storage;
 use Exception;
 
 /**
@@ -227,6 +228,28 @@ abstract class BaseConversation extends Conversation
     public function getDefaultCallback(): \Closure
     {
         return $this->defaultCallback;
+    }
+
+    /**
+     * Упрощенный доступ в пользовательскому хранилищу (кешу)
+     *
+     * @param $key
+     * @return Mixed
+     */
+    public function getFromStorage($key)
+    {
+        return $this->bot->userStorage()->get($key);
+    }
+
+    /**
+     * Упрощенное сохранение в пользовательское хранилище
+     *
+     * @param array $data
+     * @return Mixed
+     */
+    public function saveToStorage(array $data)
+    {
+        return $this->bot->userStorage()->save($data);
     }
 
 }
