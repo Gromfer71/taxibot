@@ -17,9 +17,9 @@ class Options
 	{
 		if(!Config::getTaxibotConfig()) {
 			$this->options = json_decode(file_get_contents('https://sk-taxi.ru/tmfront/config.json'));
-			
+
 		} else {
-			$this->options = Config::getTaxibotConfig();
+			$this->options = json_decode(Config::getTaxibotConfig());
 		}
 	}
 
