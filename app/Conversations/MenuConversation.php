@@ -419,8 +419,8 @@ class MenuConversation extends BaseConversation
 
     public function run()
     {
-        $this->menu();
-        return;
+        return $this->menu();
+
         $user = User::find($this->bot->getUser()->getId());
         if (!$user) {
             $this->bot->startConversation(new StartConversation());
