@@ -24,8 +24,6 @@ abstract class BaseConversation extends Conversation
 {
     use UserManagerTrait;
 
-    protected $defaultCallback;
-
     private const EMOJI = [
         '0' => '0&#8419;',
         '1' => '1&#8419;',
@@ -45,10 +43,6 @@ abstract class BaseConversation extends Conversation
         if (is_null(Translator::$lang) && !is_null($this->getUser())) {
             Translator::setUp($this->getUser());
         }
-        $this->defaultCallback = function (Answer $answer) {
-            $command = BotCommandFactory::factory($answer, $this);
-            $command->execute();
-        };
     }
 
     public function checkConfig()
