@@ -27,8 +27,7 @@ class MenuConversation extends BaseConversation
      */
     public function menu($withoutMessage = false)
     {
-       return $this->ask('В меню', function (Answer $answer) {
-
+       return $this->ask(Question::create('В меню'), function (Answer $answer) {
            $this->menu();
        });
         ;
