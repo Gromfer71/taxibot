@@ -23,4 +23,15 @@ interface BotCommandInterface
      * @return mixed
      */
     public function execute();
+
+    /**
+     * @return mixed
+     */
+    public function getAnswer();
+
+    /**
+     * @param mixed $answer
+     */
+    public function setAnswer($answer): void;
+
 }
