@@ -27,10 +27,11 @@ class MenuConversation extends BaseConversation
      */
     public function menu($withoutMessage = false)
     {
-       return $this->ask('В меню', function () {
+       return $this->ask('В меню', function (Answer $answer) {
+
            $this->menu();
        });
-        return;
+        ;
 //        $user = User::find($this->bot->getUser()->getId());
 //
 //        if (!$user) {
