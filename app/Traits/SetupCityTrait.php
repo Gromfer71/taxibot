@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Services\Options;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Трейт отвечает за установку и смену города пользователя
@@ -21,7 +22,7 @@ trait SetupCityTrait
         $cities->map(function ($city) {
            return $city->name;
         });
-
+        Log::info($cities->toJson());
         return $cities->toArray();
     }
 
