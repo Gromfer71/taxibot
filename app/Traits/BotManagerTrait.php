@@ -15,6 +15,7 @@ trait BotManagerTrait
         if ($this->bot->userStorage()->get('error')) {
             $this->say($this->__('messages.program error message'));
             $this->removeFromStorage('error');
+
         }
     }
 }

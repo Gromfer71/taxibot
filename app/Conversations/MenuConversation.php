@@ -27,6 +27,8 @@ class MenuConversation extends BaseConversation
      */
     public function menu($withoutMessage = false)
     {
+        $this->say('В меню');
+        return;
         $user = User::find($this->bot->getUser()->getId());
 
         if (!$user) {
