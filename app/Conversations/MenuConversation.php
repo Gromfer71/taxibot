@@ -43,6 +43,7 @@ class MenuConversation extends BaseConversation
             return;
         }
 
+
         $this->bot->userStorage()->delete();
         $this->checkConfig();
         OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
