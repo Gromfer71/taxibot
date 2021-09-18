@@ -29,6 +29,7 @@ class MenuConversation extends BaseConversation
     {
         $user = User::find($this->bot->getUser()->getId());
 
+
         if (!$user) {
             $this->bot->startConversation(new StartConversation());
             return;
