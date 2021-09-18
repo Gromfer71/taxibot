@@ -2,7 +2,6 @@
 
 namespace App\Conversations;
 
-use App\Models\Config;
 use App\Models\Log;
 use App\Models\User;
 use App\Services\Address;
@@ -14,8 +13,7 @@ use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
-use BotMan\BotMan\Storages\Storage;
-use Exception;
+use Closure;
 
 /**
  * Базовый класс диалога, от него наследуются все диалоги
@@ -45,16 +43,13 @@ abstract class BaseConversation extends Conversation
         }
     }
 
-
-    public function _sayDebug($message)
+    /**
+     * @return \App\Models\User|\App\Models\User[]|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|object
+     */
+    public function getUser()
     {
-        if (config('app.debug')) {
-            $this->say(
-                '||DEBUG|| ' . $message
-            );
-        }
+        return User::find($this->bot->getUser()->getId());
     }
-
 
     public function _fallback($answer)
     {
@@ -70,6 +65,15 @@ abstract class BaseConversation extends Conversation
         );
         $this->_sayDebug('Возвращаемся к диалогу ' . $className);
         $this->bot->startConversation(new $className());
+    }
+
+    public function _sayDebug($message)
+    {
+        if (config('app.debug')) {
+            $this->say(
+                '||DEBUG|| ' . $message
+            );
+        }
     }
 
     public function _filterChangePrice($prices, $key_price = 'changed_price')
@@ -103,14 +107,6 @@ abstract class BaseConversation extends Conversation
         }
 
         return Translator::trans($key, $replace);
-    }
-
-    /**
-     * @return \App\Models\User|\App\Models\User[]|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|object
-     */
-    public function getUser()
-    {
-        return User::find($this->bot->getUser()->getId());
     }
 
     public function end()
@@ -191,7 +187,7 @@ abstract class BaseConversation extends Conversation
     /**
      * @return \Closure
      */
-    public function getDefaultCallback(): \Closure
+    public function getDefaultCallback(): Closure
     {
         return $this->defaultCallback;
     }
@@ -227,6 +223,11 @@ abstract class BaseConversation extends Conversation
     public function removeFromStorage($key)
     {
         return $this->bot->userStorage()->save([$key => null]);
+    }
+
+    public function navigationMapper()
+    {
+        return [];
     }
 
 }

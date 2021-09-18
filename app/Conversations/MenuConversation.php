@@ -19,6 +19,7 @@ use BotMan\BotMan\Messages\Outgoing\Question;
  */
 class MenuConversation extends BaseConversation
 {
+
     /**
      * Главное меню
      *
@@ -68,6 +69,15 @@ class MenuConversation extends BaseConversation
                          ]);
 
         return $this->ask($question, function (Answer $answer) {
+            if (is_callable(array_get($this->navigationMapper(), $answer->getValue()))) {
+                array_get($this->navigationMapper(), $answer->getValue())();
+            } elseif (is_callable($this->{array_get($this->navigationMapper()[], $answer->getValue())})) {
+                $this->{array_get($this->navigationMapper()[], $answer->getValue())}();
+            } else {
+                $this->menu();
+            }
+
+            return;
             Log::newLogAnswer($this->bot, $answer);
             if ($answer->getValue() == 'take taxi') {
                 $this->bot->startConversation(new TakingAddressConversation());
@@ -91,44 +101,6 @@ class MenuConversation extends BaseConversation
             } elseif ($answer->getValue() == 'favorite addresses menu') {
                 $this->bot->startConversation(new FavoriteAddressesConversation());
             }
-        });
-    }
-
-    public function changeCity()
-    {
-        if (User::find($this->bot->getUser()->getId())->isBlocked) {
-            $this->say($this->__('messages.you are blocked'));
-            return;
-        }
-
-        $user = User::find($this->bot->getUser()->getId());
-        if ($user->city) {
-            $question = Question::create($this->__('messages.choose city', ['city' => $user->city]));
-        } else {
-            $question = Question::create($this->__('messages.choose city without current city'));
-        }
-
-        $options = new Options($this->bot->channelStorage());
-        $question = $question->addButton(
-            Button::create($this->__('buttons.back'))->additionalParameters(
-                ['config' => ButtonsFormatterService::CITY_MENU_FORMAT]
-            )->value('back')
-        );
-        foreach ($options->getCities() as $city) {
-            $question = $question->addButton(Button::create($city->name)->value($city->name));
-        }
-
-        return $this->ask($question, function (Answer $answer) {
-            Log::newLogAnswer($this->bot, $answer);
-            if ($answer->isInteractiveMessageReply()) {
-                $this->menu();
-                return;
-            }
-            $user = User::find($this->bot->getUser()->getId());
-            $user->city = $answer->getText();
-            $user->save();
-            $this->say($this->__('messages.city has been changed', ['city' => $answer->getText()]));
-            $this->menu();
         });
     }
 
@@ -293,6 +265,55 @@ class MenuConversation extends BaseConversation
         }
     }
 
+    public function changeCity()
+    {
+        if (User::find($this->bot->getUser()->getId())->isBlocked) {
+            $this->say($this->__('messages.you are blocked'));
+            return;
+        }
+
+        $user = User::find($this->bot->getUser()->getId());
+        if ($user->city) {
+            $question = Question::create($this->__('messages.choose city', ['city' => $user->city]));
+        } else {
+            $question = Question::create($this->__('messages.choose city without current city'));
+        }
+
+        $options = new Options($this->bot->channelStorage());
+        $question = $question->addButton(
+            Button::create($this->__('buttons.back'))->additionalParameters(
+                ['config' => ButtonsFormatterService::CITY_MENU_FORMAT]
+            )->value('back')
+        );
+        foreach ($options->getCities() as $city) {
+            $question = $question->addButton(Button::create($city->name)->value($city->name));
+        }
+
+        return $this->ask($question, function (Answer $answer) {
+            Log::newLogAnswer($this->bot, $answer);
+            if ($answer->isInteractiveMessageReply()) {
+                $this->menu();
+                return;
+            }
+            $user = User::find($this->bot->getUser()->getId());
+            $user->city = $answer->getText();
+            $user->save();
+            $this->say($this->__('messages.city has been changed', ['city' => $answer->getText()]));
+            $this->menu();
+        });
+    }
+
+    public function navigationMapper()
+    {
+        return [
+            'request call' => function () {
+                $this->say('Заказ звонка');
+            },
+
+            'change phone number' => 'confirmPhone',
+        ];
+    }
+
     public function bonuses($getBalance = false, $message = false)
     {
         $user = User::find($this->bot->getUser()->getId());
@@ -392,6 +413,7 @@ class MenuConversation extends BaseConversation
             }
         });
     }
+
 
     public function changePhone()
     {
