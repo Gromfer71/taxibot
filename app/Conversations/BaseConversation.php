@@ -45,22 +45,6 @@ abstract class BaseConversation extends Conversation
         }
     }
 
-    public function checkConfig()
-    {
-        if (!$this->bot->channelStorage()->get('options')) {
-            $this->_sayDebug('Конфига нет');
-            $this->_loadConfig();
-        }
-        if (!$this->bot->channelStorage()->get('optionsDate')) {
-            $this->_sayDebug('Даты конфига нет');
-            $this->_loadConfig();
-        }
-        $optionsDate = $this->bot->channelStorage()->get('optionsDate');
-        if ($optionsDate < (time() - env('CONFIG_CACHE_TIME_IN_HOUR', 12))) {
-            $this->_sayDebug('Срок действия конфига истек');
-            $this->_loadConfig();
-        }
-    }
 
     public function _sayDebug($message)
     {
@@ -71,15 +55,6 @@ abstract class BaseConversation extends Conversation
         }
     }
 
-    public function _loadConfig()
-    {
-        $this->_sayDebug('Стартуем загрузку конфига');
-        //$this->bot->channelStorage()->save(['options' => file_get_contents('https://sk-taxi.ru/tmfront/config.json'),'optionsDate' => time()]);
-        $this->bot->channelStorage()->save(
-            ['options' => json_encode(Config::getTaxibotConfig()), 'optionsDate' => time()]
-        );
-        $this->_sayDebug('Конфиг загружен');
-    }
 
     public function _fallback($answer)
     {
