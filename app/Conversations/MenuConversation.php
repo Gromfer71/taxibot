@@ -25,14 +25,14 @@ class MenuConversation extends BaseConversation
     public function getActions()
     {
         return [
-            'request call' => function () {
+            ButtonsStructure::REQUEST_CALL => function () {
                 $user = $this->getUser();
                 $user->need_call = 1;
                 $user->save();
                 $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
                 $this->menu(true);
             },
-            'change phone number' => 'confirmPhone',
+            ButtonsStructure::CHANGE_PHONE => 'confirmPhone',
         ];
     }
 

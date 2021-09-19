@@ -25,6 +25,9 @@ class ComplexQuestion extends Question
         array $additionalParameters = []
     ): ComplexQuestion {
         $question = parent::create($text);
+        $buttonTexts = array_map(function ($item) {
+            return 'buttons.' . $item;
+        }, $buttonTexts);
 
         return self::setButtonsArrayToExistQuestion($question, $buttonTexts, $additionalParameters);
     }
