@@ -14,6 +14,7 @@ class ButtonsStructure extends Button
     public const ALL_ABOUT_BONUSES = 'all about bonuses';
     public const ADDRESS_HISTORY_MENU = 'address history menu';
     public const FAVORITE_ADDRESSES_MENU = 'favorite addresses menu';
+    public const BACK = 'back';
 
     public static function getMainMenu()
     {

@@ -9,9 +9,9 @@ use App\Models\User;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
-use App\Services\Options;
 use App\Services\OrderApiService;
 use App\Services\Translator;
+use App\Traits\SetupCityTrait;
 use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -22,9 +22,11 @@ use BotMan\BotMan\Messages\Outgoing\Question;
  */
 class MenuConversation extends BaseConversation
 {
-    public function getActions()
+    use SetupCityTrait;
+
+    public function getActions($replace = [])
     {
-        return [
+        $actions = [
             ButtonsStructure::REQUEST_CALL => function () {
                 $user = $this->getUser();
                 $user->need_call = 1;
@@ -37,27 +39,30 @@ class MenuConversation extends BaseConversation
             ButtonsStructure::CHANGE_CITY => 'changeCity',
             ButtonsStructure::PRICE_LIST => function () {
                 $this->say(Translator::trans('messages.price list'));
-                $this->menu(true);
+                $this->menu('');
             },
             ButtonsStructure::ALL_ABOUT_BONUSES => 'bonuses',
             ButtonsStructure::ADDRESS_HISTORY_MENU => 'addressesMenu',
-            ButtonsStructure::FAVORITE_ADDRESSES_MENU => 'App\Conversations\FavoriteAddressesConversation'
+            ButtonsStructure::FAVORITE_ADDRESSES_MENU => 'App\Conversations\FavoriteAddressesConversation',
+            ButtonsStructure::BACK => 'menu',
         ];
+
+        return array_replace_recursive($actions, $replace);
     }
 
     /**
      * Главное меню
      *
-     * @param false $withoutMessage
-     * @return MenuConversation|void
+     * @param null $message
+     * @return MenuConversation
      */
-    public function menu($withoutMessage = false)
+    public function menu($message = null): MenuConversation
     {
         $this->bot->userStorage()->delete();
         OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
 
         $question = ComplexQuestion::createWithSimpleButtons(
-            $withoutMessage ? '' : Translator::trans('messages.choose menu'),
+            $message ?: Translator::trans('messages.choose menu'),
             ButtonsStructure::getMainMenu(),
             ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
         );
@@ -65,41 +70,24 @@ class MenuConversation extends BaseConversation
         return $this->ask($question, $this->getDefaultCallback());
     }
 
+
     public function changeCity()
     {
-        if (User::find($this->bot->getUser()->getId())->isBlocked) {
-            $this->say($this->__('messages.you are blocked'));
-            return;
-        }
-
-        $user = User::find($this->bot->getUser()->getId());
-        if ($user->city) {
-            $question = Question::create($this->__('messages.choose city', ['city' => $user->city]));
-        } else {
-            $question = Question::create($this->__('messages.choose city without current city'));
-        }
-
-        $options = new Options($this->bot->channelStorage());
-        $question = $question->addButton(
-            Button::create($this->__('buttons.back'))->additionalParameters(
-                ['config' => ButtonsFormatterService::CITY_MENU_FORMAT]
-            )->value('back')
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.choose city', ['city' => $this->getUser()->city]),
+            [ButtonsStructure::BACK]
         );
-        foreach ($options->getCities() as $city) {
-            $question = $question->addButton(Button::create($city->name)->value($city->name));
-        }
+
+        $question = ComplexQuestion::setButtonsArrayToExistQuestion(
+            $question,
+            $this->getCitiesArray(),
+            ['config' => ButtonsFormatterService::CITY_MENU_FORMAT]
+        );
 
         return $this->ask($question, function (Answer $answer) {
-            Log::newLogAnswer($this->bot, $answer);
-            if ($answer->isInteractiveMessageReply()) {
-                $this->menu();
-                return;
-            }
-            $user = User::find($this->bot->getUser()->getId());
-            $user->city = $answer->getText();
-            $user->save();
-            $this->say($this->__('messages.city has been changed', ['city' => $answer->getText()]));
-            $this->menu();
+            $this->handleAction($answer->getValue());
+            $this->getUser()->updateCity($answer->getText());
+            $this->menu(Translator::trans('messages.city has been changed', ['city' => $answer->getText()]));
         });
     }
 
