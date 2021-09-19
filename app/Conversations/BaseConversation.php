@@ -39,9 +39,6 @@ abstract class BaseConversation extends Conversation
         '10' => '10&#8419;',
     ];
 
-    public const REQUEST_CALL = 'buttons.request call';
-
-
     public function __construct()
     {
         if (is_null(Translator::$lang) && !is_null($this->getUser())) {

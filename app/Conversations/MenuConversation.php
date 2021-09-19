@@ -49,7 +49,8 @@ class MenuConversation extends BaseConversation
 
         $question = ComplexQuestion::createWithSimpleButtons(
             $withoutMessage ?: Translator::trans('messages.choose menu'),
-            ButtonsStructure::getMainMenu()
+            ButtonsStructure::getMainMenu(),
+            ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
         );
 
         return $this->ask($question, function (Answer $answer) {
