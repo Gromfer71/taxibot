@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Conversations\StartConversation;
+use App\Conversations\MainMenu\StartConversation;
 use BotMan\BotMan\BotMan;
 
 /**

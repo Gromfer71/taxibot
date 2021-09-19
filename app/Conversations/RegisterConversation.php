@@ -2,12 +2,14 @@
 
 namespace App\Conversations;
 
+use App\Conversations\MainMenu\MenuConversation;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use App\Traits\RegisterTrait;
 use App\Traits\SetupCityTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
+
 
 /**
  * Диалог регистрации пользователя
@@ -89,7 +91,7 @@ class RegisterConversation extends BaseConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            if($this->isUserInputIsCity($answer->getText())) {
+            if ($this->isUserInputIsCity($answer->getText())) {
                 $this->getUser()->updateCity($answer->getText());
                 $this->say(Translator::trans('messages.city has been changed', ['city' => $answer->getText()]));
                 $this->bot->startConversation(new MenuConversation());

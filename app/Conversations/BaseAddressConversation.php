@@ -5,18 +5,10 @@ namespace App\Conversations;
 
 use App\Models\AddressHistory;
 use App\Models\FavoriteAddress;
-use App\Models\Log;
-use App\Models\OrderHistory;
 use App\Models\User;
-use App\Services\Address;
 use App\Services\Options;
-use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
-use BotMan\BotMan\Messages\Outgoing\Question;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 abstract class BaseAddressConversation extends BaseConversation
@@ -38,13 +30,18 @@ abstract class BaseAddressConversation extends BaseConversation
         $address = AddressHistory::getAddressFromAnswer($answer, $this->getUser()->id);
 
         if (!$address) {
-            $address = FavoriteAddress::where(['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->getUser()->id])->get()->first();
+            $address = FavoriteAddress::where(
+                ['name' => explode('⭐️', $answer->getText())[1] ?? null, 'user_id' => $this->getUser()->id]
+            )->get()->first();
             if (!$address) {
-                $address = FavoriteAddress::where(['address' => $answer->getText(), 'user_id' => $this->getUser()->id])->get()->first();
+                $address = FavoriteAddress::where(['address' => $answer->getText(), 'user_id' => $this->getUser()->id]
+                )->get()->first();
             }
         }
 
-        if ($address) $address->touch();
+        if ($address) {
+            $address->touch();
+        }
 
         return $address;
     }
@@ -54,16 +51,18 @@ abstract class BaseAddressConversation extends BaseConversation
         $addressHistory = $this->getUser()->addresses;
 
         if ($addressHistory->isNotEmpty()) {
-
             if ($numberWithoutFavorite) {
                 $favoritesAddressesCount = 0;
             } else {
                 $favoritesAddressesCount = $this->getUser()->favoriteAddresses->count();
-
             }
 
             foreach ($addressHistory as $key => $address) {
-                $question = $question->addButton(Button::create($address->address)->value($address->address)->additionalParameters(['number' => $favoritesAddressesCount + $key + 1]));
+                $question = $question->addButton(
+                    Button::create($address->address)->value($address->address)->additionalParameters(
+                        ['number' => $favoritesAddressesCount + $key + 1]
+                    )
+                );
             }
         }
         return $question;
@@ -75,7 +74,11 @@ abstract class BaseAddressConversation extends BaseConversation
 
         if ($favoriteAddresses->isNotEmpty()) {
             foreach ($favoriteAddresses as $key => $address) {
-                $question = $question->addButton(Button::create('⭐️' . $address->name)->value($address->address)->additionalParameters(['number' => $key + 1]));
+                $question = $question->addButton(
+                    Button::create('⭐️' . $address->name)->value($address->address)->additionalParameters(
+                        ['number' => $key + 1]
+                    )
+                );
             }
         }
         return $question;
@@ -83,7 +86,6 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function _addToLastAnotherAddress($answer)
     {
-
         $data = collect($this->bot->userStorage()->get('address'));
         $lastAnotherAddress = $data->pop();
         $data = $data->push($lastAnotherAddress . $answer->getText());
@@ -127,7 +129,6 @@ abstract class BaseAddressConversation extends BaseConversation
                 'lat' => collect($this->bot->userStorage()->get('lat')),
                 'lon' => collect($this->bot->userStorage()->get('lon'))
             ];
-
         }
         $data['address'] = $data['address']->push($answer);
         $data['lat'] = $data['lat']->push($lat);
@@ -162,7 +163,8 @@ abstract class BaseAddressConversation extends BaseConversation
     public function _saveSecondAddressByText($text, $lat = 0, $lon = 0)
     {
         $data = [
-            'address' => collect($this->bot->userStorage()->get('address'))->put(1,
+            'address' => collect($this->bot->userStorage()->get('address'))->put(
+                1,
                 $text
             )->toArray(),
             'lat' => collect($this->bot->userStorage()->get('lat'))->put(

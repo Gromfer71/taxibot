@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Conversations;
+namespace App\Conversations\MainMenu;
 
+use App\Conversations\BaseConversation;
 use App\Models\AddressHistory;
 use App\Models\Log;
 use App\Models\OrderHistory;
@@ -71,7 +72,7 @@ class MenuConversation extends BaseConversation
 
 
     /**
-     * @return \App\Conversations\MenuConversation
+     * @return \App\Conversations\MainMenu\MenuConversation
      */
     public function changeCity(): MenuConversation
     {

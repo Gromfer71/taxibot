@@ -2,6 +2,7 @@
 
 namespace App\Conversations;
 
+use App\Conversations\MainMenu\MenuConversation;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
 use App\Traits\BotManagerTrait;
