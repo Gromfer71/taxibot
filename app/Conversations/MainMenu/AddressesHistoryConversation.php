@@ -10,16 +10,18 @@ use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
 /**
- *
+ * Меню истории адресов
  */
 class AddressesHistoryConversation extends BaseConversation
 {
 
     /**
+     * Действия
+     *
      * @param array $replaceActions
      * @return array
      */
-    public function getActions($replaceActions = []): array
+    public function getActions(array $replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
@@ -62,6 +64,8 @@ class AddressesHistoryConversation extends BaseConversation
     }
 
     /**
+     * Меню конкретного выбранного адреса
+     *
      * @return \App\Conversations\MainMenu\AddressesHistoryConversation
      */
     public function addressMenu(): AddressesHistoryConversation

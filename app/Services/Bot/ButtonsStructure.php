@@ -4,6 +4,9 @@ namespace App\Services\Bot;
 
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 
+/**
+ * Описание и упрощённый доступ к кнопкам бота
+ */
 class ButtonsStructure extends Button
 {
     public const REQUEST_CALL = 'request call';
@@ -18,7 +21,12 @@ class ButtonsStructure extends Button
     public const CLEAN_ALL_ADDRESS_HISTORY = 'clean addresses history';
     public const DELETE = 'delete';
 
-    public static function getMainMenu()
+    /**
+     * Структура кнопок главного меню
+     *
+     * @return string[]
+     */
+    public static function getMainMenu(): array
     {
         return [
             ButtonsStructure::TAKE_TAXI,

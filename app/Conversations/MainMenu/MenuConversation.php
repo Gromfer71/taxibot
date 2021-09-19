@@ -24,7 +24,15 @@ class MenuConversation extends BaseConversation
 {
     use SetupCityTrait;
 
-    public function getActions($replaceActions = [])
+
+    /**
+     * Массив действий под определенную кнопку. Если значение это анонимная функция, то выполнится она, если имя метода,
+     * то выполнится он в контексте текущего класса, если название класса (с полным путем), то запустится его Conversation.
+     *
+     * @param array $replaceActions
+     * @return array
+     */
+    public function getActions(array $replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::REQUEST_CALL => function () {
@@ -32,13 +40,13 @@ class MenuConversation extends BaseConversation
                 $user->need_call = 1;
                 $user->save();
                 $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-                $this->menu(true);
+                $this->run(true);
             },
             ButtonsStructure::CHANGE_PHONE => 'confirmPhone',
             ButtonsStructure::TAKE_TAXI => 'App\Conversations\TakingAddressConversation',
             ButtonsStructure::CHANGE_CITY => 'changeCity',
             ButtonsStructure::PRICE_LIST => function () {
-                $this->menu(Translator::trans('messages.price list'));
+                $this->run(Translator::trans('messages.price list'));
             },
             ButtonsStructure::ALL_ABOUT_BONUSES => 'bonuses',
             ButtonsStructure::ADDRESS_HISTORY_MENU => 'App\Conversations\MainMenu\AddressesHistoryConversation',
@@ -55,7 +63,7 @@ class MenuConversation extends BaseConversation
      * @param null $message
      * @return MenuConversation
      */
-    public function menu($message = null): MenuConversation
+    public function run($message = null): MenuConversation
     {
         $this->bot->userStorage()->delete();
         OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
@@ -71,6 +79,8 @@ class MenuConversation extends BaseConversation
 
 
     /**
+     * Изменение города (не путать с установлением начального города при регистрации). Отличий мало, но контекст другой
+     *
      * @return \App\Conversations\MainMenu\MenuConversation
      */
     public function changeCity(): MenuConversation
@@ -89,7 +99,7 @@ class MenuConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
             $this->getUser()->updateCity($answer->getText());
-            $this->menu(Translator::trans('messages.city has been changed', ['city' => $answer->getText()]));
+            $this->run(Translator::trans('messages.city has been changed', ['city' => $answer->getText()]));
         });
     }
 
@@ -126,7 +136,7 @@ class MenuConversation extends BaseConversation
                     } elseif ($answer->getValue() == 'our app') {
                         $this->bonuses(false, $this->__('messages.our app'));
                     } elseif ($answer->getValue() == 'exit to menu') {
-                        $this->menu();
+                        $this->run();
                     }
                 } else {
                     $this->bonuses();
@@ -153,7 +163,7 @@ class MenuConversation extends BaseConversation
             $question,
             function (Answer $answer) {
                 if ($answer->isInteractiveMessageReply()) {
-                    $this->menu();
+                    $this->run();
                 } elseif (preg_match('^\+?[78][-(]?\d{3}\)?-?\d{3}-?\d{2}-?\d{2}$^', $answer->getText())) {
                     $api = new OrderApiService();
                     $code = $api->getRandomSMSCode();
@@ -276,19 +286,10 @@ class MenuConversation extends BaseConversation
 
             if ($blocked ?? false) {
                 $user->block();
-                $this->menu(true);
+                $this->run(true);
                 return;
             }
             $user->save();
         }
-    }
-
-    public function run()
-    {
-        $this->menu();
-    }
-
-    public function changePhone()
-    {
     }
 }

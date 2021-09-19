@@ -76,7 +76,15 @@ abstract class BaseConversation extends Conversation
         }
     }
 
-    public function getActions($replaceActions = [])
+
+    /**
+     * Массив действий под определенную кнопку. Если значение это анонимная функция, то выполнится она, если имя метода,
+     * то выполнится он в контексте текущего класса, если название класса (с полным путем), то запустится его Conversation.
+     *
+     * @param array $replaceActions
+     * @return array
+     */
+    public function getActions(array $replaceActions = []): array
     {
         $actions = [];
 

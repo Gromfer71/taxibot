@@ -18,13 +18,13 @@ class ComplexQuestion extends Question
      * @param $text
      * @param array $buttonTexts
      * @param array $additionalParameters
-     * @return static
+     * @return Question
      */
     public static function createWithSimpleButtons(
         $text,
         array $buttonTexts = [],
         array $additionalParameters = []
-    ): ComplexQuestion {
+    ): Question {
         $question = parent::create($text);
         $buttonTexts = array_map(function ($item) {
             return 'buttons.' . $item;
@@ -40,13 +40,13 @@ class ComplexQuestion extends Question
      * @param $question
      * @param array $buttonTexts
      * @param array $additionalParameters
-     * @return mixed
+     * @return Question
      */
     public static function setButtons(
         $question,
         array $buttonTexts = [],
         array $additionalParameters = []
-    ) {
+    ): Question {
         foreach ($buttonTexts as $buttonText) {
             $value = array_get(explode('.', $buttonText), 1);
             $button = Button::create(Translator::trans($buttonText))->additionalParameters($additionalParameters);
@@ -62,11 +62,13 @@ class ComplexQuestion extends Question
     }
 
     /**
+     * Добавление кнопок в качестве адресов
+     *
      * @param $question
      * @param \Illuminate\Support\Collection $addresses
-     * @return mixed
+     * @return \BotMan\BotMan\Messages\Outgoing\Question
      */
-    public static function setAddressButtons($question, Collection $addresses)
+    public static function setAddressButtons($question, Collection $addresses): Question
     {
         foreach ($addresses as $key => $address) {
             $button = Button::create($address->address)
