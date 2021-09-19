@@ -38,8 +38,7 @@ class MenuConversation extends BaseConversation
             ButtonsStructure::TAKE_TAXI => 'App\Conversations\TakingAddressConversation',
             ButtonsStructure::CHANGE_CITY => 'changeCity',
             ButtonsStructure::PRICE_LIST => function () {
-                $this->say(Translator::trans('messages.price list'));
-                $this->menu('');
+                $this->menu(Translator::trans('messages.price list'));
             },
             ButtonsStructure::ALL_ABOUT_BONUSES => 'bonuses',
             ButtonsStructure::ADDRESS_HISTORY_MENU => 'addressesMenu',
@@ -71,7 +70,10 @@ class MenuConversation extends BaseConversation
     }
 
 
-    public function changeCity()
+    /**
+     * @return \App\Conversations\MenuConversation
+     */
+    public function changeCity(): MenuConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans('messages.choose city', ['city' => $this->getUser()->city]),
@@ -209,7 +211,7 @@ class MenuConversation extends BaseConversation
             function (Answer $answer) {
                 if ($answer->isInteractiveMessageReply()) {
                     $this->menu();
-                } elseif (preg_match('^\+?[78][-\(]?\d{3}\)?-?\d{3}-?\d{2}-?\d{2}$^', $answer->getText())) {
+                } elseif (preg_match('^\+?[78][-(]?\d{3}\)?-?\d{3}-?\d{2}-?\d{2}$^', $answer->getText())) {
                     $api = new OrderApiService();
                     $code = $api->getRandomSMSCode();
                     $this->bot->userStorage()->save(['sms_code' => $code, 'phone' => $answer->getText()]);
