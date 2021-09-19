@@ -5,6 +5,7 @@ namespace App\Services\Bot;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
+use Illuminate\Support\Collection;
 
 /**
  * Более удобный класс для генерации вопросов чат-бота
@@ -62,18 +63,19 @@ class ComplexQuestion extends Question
 
     /**
      * @param $question
-     * @param array $buttonTexts
+     * @param \Illuminate\Support\Collection $addresses
      * @return mixed
      */
-    public static function setAddressButtons($question, array $buttonTexts = [])
+    public static function setAddressButtons($question, Collection $addresses)
     {
-        foreach ($buttonTexts as $key => $buttonText) {
-            $value = array_get(explode('.', $buttonText), 1);
-            $button = Button::create(Translator::trans($buttonText))->additionalParameters(['number' => $key + 1]);
+        foreach ($addresses as $key => $address) {
+            $value = array_get(explode('.', $address->address), 1);
+            $button = Button::create(Translator::trans($address->address))->additionalParameters(['number' => $key + 1]
+            );
             if ($value) {
                 $button->value($value);
             } else {
-                $button->value(Translator::trans($buttonText));
+                $button->value(Translator::trans($address->address));
             }
             $question->addButton($button);
         }
