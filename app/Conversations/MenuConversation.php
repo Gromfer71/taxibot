@@ -19,20 +19,22 @@ use BotMan\BotMan\Messages\Outgoing\Question;
  */
 class MenuConversation extends BaseConversation
 {
+    public function getActions()
+    {
+        return [
+            'request call' => function () {
+                $user = $this->getUser();
+                $user->need_call = 1;
+                $user->save();
+                $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+                $this->menu(true);
+            },
+            'change phone number' => 'confirmPhone',
+        ];
+    }
 
     public function run()
     {
-//        $this->actions = [
-//            'request call' => function () {
-//                $user = $this->getUser();
-//                $user->need_call = 1;
-//                $user->save();
-//                $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-//                $this->menu(true);
-//            },
-//            'change phone number' => 'confirmPhone',
-//        ];
-
         $this->menu();
     }
 
@@ -67,7 +69,7 @@ class MenuConversation extends BaseConversation
                          ]);
 
         return $this->ask($question, function (Answer $answer) {
-            //  $this->handleAction($answer);
+            $this->handleAction($answer->getValue());
 
             if ($answer->getValue() == 'take taxi') {
                 $this->bot->startConversation(new TakingAddressConversation());

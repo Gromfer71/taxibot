@@ -34,13 +34,18 @@ abstract class BaseConversation extends Conversation
         '9' => '9&#8419;',
         '10' => '10&#8419;',
     ];
-    protected $actions = [];
+
 
     public function __construct()
     {
         if (is_null(Translator::$lang) && !is_null($this->getUser())) {
             Translator::setUp($this->getUser());
         }
+    }
+
+    public function getActions()
+    {
+        return [];
     }
 
     /**
@@ -51,13 +56,13 @@ abstract class BaseConversation extends Conversation
         return User::find($this->bot->getUser()->getId());
     }
 
-    public function handleAction(Answer $answer)
+    public function handleAction($value)
     {
-        $value = $answer->getValue();
-        if (is_callable($this->actions[$value] ?? '')) {
-            $this->actions[$value]();
-        } elseif (method_exists($this, $this->actions[$value] ?? '')) {
-            $this->{$this->actions[$value]}();
+        $callbackOrMethodName = $this->getActions()[$value] ?? '';
+        if (is_callable($callbackOrMethodName)) {
+            $callbackOrMethodName();
+        } elseif (method_exists($this, $callbackOrMethodName)) {
+            $this->{$callbackOrMethodName}();
         }
     }
 
