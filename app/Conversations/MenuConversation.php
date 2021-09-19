@@ -22,16 +22,16 @@ class MenuConversation extends BaseConversation
 
     public function run()
     {
-        $this->actions = [
-            'request call' => function () {
-                $user = $this->getUser();
-                $user->need_call = 1;
-                $user->save();
-                $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-                $this->menu(true);
-            },
-            'change phone number' => 'confirmPhone',
-        ];
+//        $this->actions = [
+//            'request call' => function () {
+//                $user = $this->getUser();
+//                $user->need_call = 1;
+//                $user->save();
+//                $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+//                $this->menu(true);
+//            },
+//            'change phone number' => 'confirmPhone',
+//        ];
 
         $this->menu();
     }
