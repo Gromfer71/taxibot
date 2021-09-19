@@ -69,14 +69,9 @@ class ComplexQuestion extends Question
     public static function setAddressButtons($question, Collection $addresses)
     {
         foreach ($addresses as $key => $address) {
-            $value = array_get(explode('.', $address->address), 1);
-            $button = Button::create(Translator::trans($address->address))->additionalParameters(['number' => $key + 1]
+            $button = Button::create($address->address)->additionalParameters(['number' => $key + 1]
             );
-            if ($value) {
-                $button->value($value);
-            } else {
-                $button->value(Translator::trans($address->address));
-            }
+            $button->value($address->address);
             $question->addButton($button);
         }
 
