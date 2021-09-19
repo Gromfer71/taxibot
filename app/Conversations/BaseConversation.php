@@ -53,10 +53,11 @@ abstract class BaseConversation extends Conversation
 
     public function handleAction(Answer $answer)
     {
-        if (is_callable($this->actions[$answer->getValue()] ?? '')) {
-            $this->actions[$answer->getValue()]();
-        } elseif (method_exists($this, $this->actions[$answer->getValue()] ?? '')) {
-            $this->{$this->actions[$answer->getValue()]}();
+        $value = $answer->getValue();
+        if (is_callable($this->actions[$value] ?? '')) {
+            $this->actions[$value]();
+        } elseif (method_exists($this, $this->actions[$value] ?? '')) {
+            $this->{$this->actions[$value]}();
         }
     }
 

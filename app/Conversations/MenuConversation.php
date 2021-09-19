@@ -20,6 +20,72 @@ use BotMan\BotMan\Messages\Outgoing\Question;
 class MenuConversation extends BaseConversation
 {
 
+    public function run()
+    {
+        $this->actions = [
+            'request call' => function () {
+                $user = $this->getUser();
+                $user->need_call = 1;
+                $user->save();
+                $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+                $this->menu(true);
+            },
+            'change phone number' => 'confirmPhone',
+        ];
+
+        $this->menu();
+    }
+
+    /**
+     * Главное меню
+     *
+     * @param false $withoutMessage
+     * @return \App\Conversations\MenuConversation|void
+     */
+    public function menu($withoutMessage = false)
+    {
+        $this->bot->userStorage()->delete();
+        OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
+
+        $question = Question::create(
+            $withoutMessage ? '' : $this->__('messages.choose menu'),
+            $this->bot->getUser()->getId()
+        )
+            ->addButtons([
+                             Button::create($this->__('buttons.take taxi'))->value('take taxi')->additionalParameters(
+                                 ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
+                             ),
+                             Button::create($this->__('buttons.request call'))->value('request call'),
+                             Button::create($this->__('buttons.change phone number'))->value('change phone number'),
+                             Button::create($this->__('buttons.change city'))->value('change city'),
+                             Button::create($this->__('buttons.price list'))->value('price list'),
+                             Button::create($this->__('buttons.all about bonuses'))->value('all about bonuses'),
+                             Button::create($this->__('buttons.address history menu'))->value('address history menu'),
+                             Button::create($this->__('buttons.favorite addresses menu'))->value(
+                                 'favorite addresses menu'
+                             )
+                         ]);
+
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer);
+
+            if ($answer->getValue() == 'take taxi') {
+                $this->bot->startConversation(new TakingAddressConversation());
+            } elseif ($answer->getValue() == 'change city') {
+                $this->changeCity();
+            } elseif ($answer->getValue() == 'price list') {
+                $this->say($this->__('messages.price list'));
+                $this->menu(true);
+            } elseif ($answer->getValue() == 'all about bonuses') {
+                $this->bonuses();
+            } elseif ($answer->getValue() == 'address history menu') {
+                $this->addressesMenu();
+            } elseif ($answer->getValue() == 'favorite addresses menu') {
+                $this->bot->startConversation(new FavoriteAddressesConversation());
+            }
+        });
+    }
+
     public function confirmPhone($first = false)
     {
         if ($first) {
@@ -165,72 +231,6 @@ class MenuConversation extends BaseConversation
             }
             $user->save();
         }
-    }
-
-    public function run()
-    {
-        $this->actions = [
-            'request call' => function () {
-                $user = $this->getUser();
-                $user->need_call = 1;
-                $user->save();
-                $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-                $this->menu(true);
-            },
-            'change phone number' => 'confirmPhone',
-        ];
-
-        $this->menu();
-    }
-
-    /**
-     * Главное меню
-     *
-     * @param false $withoutMessage
-     * @return \App\Conversations\MenuConversation|void
-     */
-    public function menu($withoutMessage = false)
-    {
-        $this->bot->userStorage()->delete();
-        OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
-
-        $question = Question::create(
-            $withoutMessage ? '' : $this->__('messages.choose menu'),
-            $this->bot->getUser()->getId()
-        )
-            ->addButtons([
-                             Button::create($this->__('buttons.take taxi'))->value('take taxi')->additionalParameters(
-                                 ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
-                             ),
-                             Button::create($this->__('buttons.request call'))->value('request call'),
-                             Button::create($this->__('buttons.change phone number'))->value('change phone number'),
-                             Button::create($this->__('buttons.change city'))->value('change city'),
-                             Button::create($this->__('buttons.price list'))->value('price list'),
-                             Button::create($this->__('buttons.all about bonuses'))->value('all about bonuses'),
-                             Button::create($this->__('buttons.address history menu'))->value('address history menu'),
-                             Button::create($this->__('buttons.favorite addresses menu'))->value(
-                                 'favorite addresses menu'
-                             )
-                         ]);
-
-        return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
-
-            if ($answer->getValue() == 'take taxi') {
-                $this->bot->startConversation(new TakingAddressConversation());
-            } elseif ($answer->getValue() == 'change city') {
-                $this->changeCity();
-            } elseif ($answer->getValue() == 'price list') {
-                $this->say($this->__('messages.price list'));
-                $this->menu(true);
-            } elseif ($answer->getValue() == 'all about bonuses') {
-                $this->bonuses();
-            } elseif ($answer->getValue() == 'address history menu') {
-                $this->addressesMenu();
-            } elseif ($answer->getValue() == 'favorite addresses menu') {
-                $this->bot->startConversation(new FavoriteAddressesConversation());
-            }
-        });
     }
 
     public function changeCity()
