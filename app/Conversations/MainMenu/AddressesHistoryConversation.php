@@ -56,6 +56,7 @@ class AddressesHistoryConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
             $this->_sayDebug('address ' . $answer->getValue());
+            $this->_sayDebug('addresstext ' . $answer->getText());
             $this->saveToStorage(['address' => $answer->getValue()]);
             $this->addressMenu();
         });
