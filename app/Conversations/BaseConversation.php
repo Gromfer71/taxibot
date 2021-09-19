@@ -60,9 +60,9 @@ abstract class BaseConversation extends Conversation
         return User::find($this->bot->getUser()->getId());
     }
 
-    public function handleAction($value)
+    public function handleAction($value, $replaceActions = [])
     {
-        $callbackOrMethodName = $this->getActions()[$value] ?? '';
+        $callbackOrMethodName = $this->getActions($replaceActions)[$value] ?? '';
         if (is_callable($callbackOrMethodName)) {
             $callbackOrMethodName();
             die();
@@ -75,7 +75,7 @@ abstract class BaseConversation extends Conversation
         }
     }
 
-    public function getActions()
+    public function getActions($replaceActions = [])
     {
         return [];
     }

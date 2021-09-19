@@ -24,7 +24,7 @@ class MenuConversation extends BaseConversation
 {
     use SetupCityTrait;
 
-    public function getActions($replace = [])
+    public function getActions($replaceActions = [])
     {
         $actions = [
             ButtonsStructure::REQUEST_CALL => function () {
@@ -46,7 +46,7 @@ class MenuConversation extends BaseConversation
             ButtonsStructure::BACK => 'menu',
         ];
 
-        return array_replace_recursive($actions, $replace);
+        return array_replace_recursive($actions, $replaceActions);
     }
 
     /**
@@ -178,18 +178,19 @@ class MenuConversation extends BaseConversation
                          ]);
 
         return $this->ask($question, function (Answer $answer) use ($address) {
-            if ($answer->getValue() == 'back') {
-                $this->addressesMenu();
+            $this->handleAction(
+                $answer->getValue(),
+                ['back' => 'addressesMenu']
+            );
+
+            $addr = User::find($this->bot->getUser()->getId())->addresses->where('address', $address)->first();
+            if ($addr) {
+                $addr->delete();
+                $this->say($this->__('messages.address has been deleted'));
             } else {
-                $addr = User::find($this->bot->getUser()->getId())->addresses->where('address', $address)->first();
-                if ($addr) {
-                    $addr->delete();
-                    $this->say($this->__('messages.address has been deleted'));
-                } else {
-                    $this->say($this->__('messages.problems with delete address') . $address);
-                }
-                $this->addressesMenu();
+                $this->say($this->__('messages.problems with delete address') . $address);
             }
+            $this->addressesMenu();
         });
     }
 
