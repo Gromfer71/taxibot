@@ -54,10 +54,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class User extends Model
 {
+    public $timestamps = false;
     protected $table = 'users';
     protected $guarded = [];
 
-    public $timestamps = false;
+    /**
+     * Переопределение базового метода, потому что в боте пользователь идентифицируется по id своих платформ,
+     * и искать нужно по ним
+     *
+     * @param $id
+     * @return \App\Models\User|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public static function find($id)
+    {
+        return self::where('vk_id', $id)->orWhere('telegram_id', $id)->first();
+    }
 
     /**
      * Обновление телефона пользователя с сохранением
@@ -130,18 +141,6 @@ class User extends Model
     }
 
     /**
-     * Переопределение базового метода, потому что в боте пользователь идентифицируется по id своих платформ,
-     * и искать нужно по ним
-     *
-     * @param $id
-     * @return \App\Models\User|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
-     */
-    public static function find($id)
-    {
-        return self::where('vk_id', $id)->orWhere('telegram_id', $id)->first();
-    }
-
-    /**
      * Установка id платформы с которой зашел пользователь. Проверка должна происходить каждый раз
      *
      * @param $bot
@@ -188,6 +187,17 @@ class User extends Model
     {
         $this->city = $newCity;
         $this->save();
+    }
+
+    /**
+     * Поиск адреса пользователя по названию
+     *
+     * @param $address
+     * @return \App\Models\AddressHistory|null
+     */
+    public function getUserAddressByName($address): ?AddressHistory
+    {
+        return $this->addresses->where('address', $address)->first();
     }
 
 }

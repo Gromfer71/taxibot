@@ -15,6 +15,8 @@ class ButtonsStructure extends Button
     public const ADDRESS_HISTORY_MENU = 'address history menu';
     public const FAVORITE_ADDRESSES_MENU = 'favorite addresses menu';
     public const BACK = 'back';
+    public const CLEAN_ALL_ADDRESS_HISTORY = 'clean addresses history';
+    public const DELETE = 'delete';
 
     public static function getMainMenu()
     {

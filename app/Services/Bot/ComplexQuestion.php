@@ -29,7 +29,7 @@ class ComplexQuestion extends Question
             return 'buttons.' . $item;
         }, $buttonTexts);
 
-        return self::setButtonsArrayToExistQuestion($question, $buttonTexts, $additionalParameters);
+        return self::setButtons($question, $buttonTexts, $additionalParameters);
     }
 
     /**
@@ -41,7 +41,7 @@ class ComplexQuestion extends Question
      * @param array $additionalParameters
      * @return mixed
      */
-    public static function setButtonsArrayToExistQuestion(
+    public static function setButtons(
         $question,
         array $buttonTexts = [],
         array $additionalParameters = []
@@ -59,4 +59,27 @@ class ComplexQuestion extends Question
 
         return $question;
     }
+
+    /**
+     * @param $question
+     * @param array $buttonTexts
+     * @return mixed
+     */
+    public static function setAddressButtons($question, array $buttonTexts = [])
+    {
+        foreach ($buttonTexts as $key => $buttonText) {
+            $value = array_get(explode('.', $buttonText), 1);
+            $button = Button::create(Translator::trans($buttonText))->additionalParameters(['number' => $key + 1]);
+            if ($value) {
+                $button->value($value);
+            } else {
+                $button->value(Translator::trans($buttonText));
+            }
+            $question->addButton($button);
+        }
+
+        return $question;
+    }
+
+
 }

@@ -78,7 +78,9 @@ abstract class BaseConversation extends Conversation
 
     public function getActions($replaceActions = [])
     {
-        return [];
+        $actions = [];
+
+        return array_replace_recursive($replaceActions, $actions);
     }
 
     public function _fallback($answer)

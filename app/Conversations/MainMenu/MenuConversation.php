@@ -3,7 +3,6 @@
 namespace App\Conversations\MainMenu;
 
 use App\Conversations\BaseConversation;
-use App\Models\AddressHistory;
 use App\Models\Log;
 use App\Models\OrderHistory;
 use App\Models\User;
@@ -42,12 +41,12 @@ class MenuConversation extends BaseConversation
                 $this->menu(Translator::trans('messages.price list'));
             },
             ButtonsStructure::ALL_ABOUT_BONUSES => 'bonuses',
-            ButtonsStructure::ADDRESS_HISTORY_MENU => 'addressesMenu',
+            ButtonsStructure::ADDRESS_HISTORY_MENU => 'App\Conversations\MainMenu\AddressesHistoryConversation',
             ButtonsStructure::FAVORITE_ADDRESSES_MENU => 'App\Conversations\FavoriteAddressesConversation',
             ButtonsStructure::BACK => 'menu',
         ];
 
-        return array_replace_recursive($actions, $replaceActions);
+        return parent::getActions(array_replace_recursive($replaceActions, $actions));
     }
 
     /**
@@ -82,7 +81,7 @@ class MenuConversation extends BaseConversation
             ['config' => ButtonsFormatterService::CITY_MENU_FORMAT]
         );
 
-        $question = ComplexQuestion::setButtonsArrayToExistQuestion(
+        $question = ComplexQuestion::setButtons(
             $question,
             $this->getCitiesArray()
         );
@@ -138,62 +137,8 @@ class MenuConversation extends BaseConversation
 
     public function addressesMenu()
     {
-        $questionText = $this->__('messages.addresses menu');
-        $questionText = $this->addAddressesToMessageOnlyFromHistory($questionText);
-        $question = Question::create($questionText);
-        $question->addButton(
-            Button::create($this->__('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses'])
-        );
-        $question->addButton(
-            Button::create($this->__('buttons.clean addresses history'))->value('clean addresses history')
-        );
-
-        $user = User::find($this->bot->getUser()->getId());
-        foreach ($user->addresses ?? [] as $key => $address) {
-            $question->addButton(
-                Button::create($address->address)->value($address->address)->additionalParameters(['number' => $key + 1]
-                )
-            );
-        }
-
-
-        return $this->ask($question, function (Answer $answer) {
-            if ($answer->getValue() == 'back') {
-                $this->bot->startConversation(new MenuConversation());
-            } elseif ($answer->getValue() == 'clean addresses history') {
-                $this->say($this->__('messages.clean addresses history'));
-                AddressHistory::clearByUserId($this->getUser()->id);
-                $this->bot->startConversation(new MenuConversation());
-            } else {
-                $this->addressMenu($answer->getText());
-            }
-        });
     }
 
-    public function addressMenu($address)
-    {
-        $question = Question::create($this->__('messages.address menu') . ' ' . $address)
-            ->addButtons([
-                             Button::create($this->__('buttons.delete'))->value('delete'),
-                             Button::create($this->__('buttons.back'))->value('back'),
-                         ]);
-
-        return $this->ask($question, function (Answer $answer) use ($address) {
-            $this->handleAction(
-                $answer->getValue(),
-                ['back' => 'addressesMenu']
-            );
-
-            $addr = User::find($this->bot->getUser()->getId())->addresses->where('address', $address)->first();
-            if ($addr) {
-                $addr->delete();
-                $this->say($this->__('messages.address has been deleted'));
-            } else {
-                $this->say($this->__('messages.problems with delete address') . $address);
-            }
-            $this->addressesMenu();
-        });
-    }
 
     public function confirmPhone($first = false)
     {
