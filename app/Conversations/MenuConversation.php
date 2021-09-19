@@ -34,6 +34,14 @@ class MenuConversation extends BaseConversation
             },
             ButtonsStructure::CHANGE_PHONE => 'confirmPhone',
             ButtonsStructure::TAKE_TAXI => 'App\Conversations\TakingAddressConversation',
+            ButtonsStructure::CHANGE_CITY => 'changeCity',
+            ButtonsStructure::PRICE_LIST => function () {
+                $this->say(Translator::trans('messages.price list'));
+                $this->menu(true);
+            },
+            ButtonsStructure::ALL_ABOUT_BONUSES => 'bonuses',
+            ButtonsStructure::ADDRESS_HISTORY_MENU => 'addressesMenu',
+            ButtonsStructure::FAVORITE_ADDRESSES_MENU => 'App\Conversations\FavoriteAddressesConversation'
         ];
     }
 
@@ -54,22 +62,7 @@ class MenuConversation extends BaseConversation
             ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
         );
 
-        return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
-
-            if ($answer->getValue() == 'change city') {
-                $this->changeCity();
-            } elseif ($answer->getValue() == 'price list') {
-                $this->say($this->__('messages.price list'));
-                $this->menu(true);
-            } elseif ($answer->getValue() == 'all about bonuses') {
-                $this->bonuses();
-            } elseif ($answer->getValue() == 'address history menu') {
-                $this->addressesMenu();
-            } elseif ($answer->getValue() == 'favorite addresses menu') {
-                $this->bot->startConversation(new FavoriteAddressesConversation());
-            }
-        });
+        return $this->ask($question, $this->getDefaultCallback());
     }
 
     public function changeCity()

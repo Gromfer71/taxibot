@@ -46,6 +46,13 @@ abstract class BaseConversation extends Conversation
         }
     }
 
+    public function getDefaultCallback()
+    {
+        return function (Answer $answer) {
+            $this->handleAction($answer->getValue());
+        };
+    }
+
     /**
      * @return User|User[]|Builder|Collection|Model|object
      */
