@@ -32,6 +32,7 @@ class AddressesHistoryConversation extends BaseConversation
                 if ($address = $this->getUser()->getUserAddressByName($this->getFromStorage('address'))) {
                     $address->delete();
                     $this->say(Translator::trans('messages.address has been deleted'));
+                    $this->run();
                 } else {
                     $this->say(Translator::trans('messages.problems with delete address') . ' ' . $address);
                 }
