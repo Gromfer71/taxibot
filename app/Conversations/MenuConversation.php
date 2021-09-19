@@ -33,7 +33,7 @@ class MenuConversation extends BaseConversation
                 $this->menu(true);
             },
             ButtonsStructure::CHANGE_PHONE => 'confirmPhone',
-            ButtonsStructure::TAKE_TAXI => 'TakingAddressConversation'
+            ButtonsStructure::TAKE_TAXI => 'App\Conversations\TakingAddressConversation',
         ];
     }
 
