@@ -46,7 +46,7 @@ class MenuConversation extends BaseConversation
             ButtonsStructure::BACK => 'menu',
         ];
 
-        return parent::getActions(array_replace_recursive($replaceActions, $actions));
+        return parent::getActions(array_replace_recursive($actions, $replaceActions));
     }
 
     /**
@@ -134,7 +134,7 @@ class MenuConversation extends BaseConversation
             }
         );
     }
-    
+
 
     public function confirmPhone($first = false)
     {

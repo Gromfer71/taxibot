@@ -38,7 +38,7 @@ class AddressesHistoryConversation extends BaseConversation
             }
         ];
 
-        return parent::getActions(array_replace_recursive($replaceActions, $actions));
+        return parent::getActions(array_replace_recursive($actions, $replaceActions));
     }
 
     /**
