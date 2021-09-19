@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\Address;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
+use App\Traits\UserManagerTrait;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -38,7 +39,7 @@ abstract class BaseConversation extends Conversation
         '10' => '10&#8419;',
     ];
 
-    const REQUEST_CALL = 'buttons.request call';
+    public const REQUEST_CALL = 'buttons.request call';
 
 
     public function __construct()
@@ -80,7 +81,8 @@ abstract class BaseConversation extends Conversation
 
         $className = get_class($this);
         $this->_sayDebug(
-            'Ошибка - потерянный диалог в диалоге - ' . $className . ' text - ' . $answer->getText() . ' value - ' . $answer->getValue()
+            'Ошибка - потерянный диалог в диалоге - ' . $className . ' text - ' . $answer->getText(
+            ) . ' value - ' . $answer->getValue()
         );
         $this->_sayDebug('Возвращаемся к диалогу ' . $className);
         $this->bot->startConversation(new $className());
@@ -131,12 +133,12 @@ abstract class BaseConversation extends Conversation
     public function end()
     {
         $question = Question::create($this->__('messages.thx for order'), $this->bot->getUser()->getId())->addButtons([
-                Button::create(
-                    'Продолжить'
-                )->value(
-                    'Продолжить'
-                ),
-            ]
+                                                                                                                          Button::create(
+                                                                                                                              'Продолжить'
+                                                                                                                          )->value(
+                                                                                                                              'Продолжить'
+                                                                                                                          ),
+                                                                                                                      ]
         );
 
         return $this->ask($question, function (Answer $answer) {
