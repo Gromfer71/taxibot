@@ -29,7 +29,6 @@ class AddressesHistoryConversation extends BaseConversation
                 $this->bot->startConversation(new MenuConversation());
             },
             ButtonsStructure::DELETE => function () {
-                $this->_sayDebug('address - ' . $this->getFromStorage('address'));
                 if ($address = $this->getUser()->getUserAddressByName($this->getFromStorage('address'))) {
                     $address->delete();
                     $this->say(Translator::trans('messages.address has been deleted'));
@@ -56,6 +55,7 @@ class AddressesHistoryConversation extends BaseConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
+            $this->_sayDebug('address ' . $answer->getValue());
             $this->saveToStorage(['address' => $answer->getValue()]);
             $this->addressMenu();
         });
