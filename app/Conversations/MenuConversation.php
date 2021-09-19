@@ -33,6 +33,7 @@ class MenuConversation extends BaseConversation
                 $this->menu(true);
             },
             ButtonsStructure::CHANGE_PHONE => 'confirmPhone',
+            ButtonsStructure::TAKE_TAXI => 'TakingAddressConversation'
         ];
     }
 
@@ -56,9 +57,7 @@ class MenuConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
 
-            if ($answer->getValue() == 'take taxi') {
-                $this->bot->startConversation(new TakingAddressConversation());
-            } elseif ($answer->getValue() == 'change city') {
+            if ($answer->getValue() == 'change city') {
                 $this->changeCity();
             } elseif ($answer->getValue() == 'price list') {
                 $this->say($this->__('messages.price list'));

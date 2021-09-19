@@ -61,6 +61,8 @@ abstract class BaseConversation extends Conversation
             $callbackOrMethodName();
         } elseif (method_exists($this, $callbackOrMethodName)) {
             $this->{$callbackOrMethodName}();
+        } elseif (class_exists($callbackOrMethodName)) {
+            $this->bot->startConversation(new $callbackOrMethodName());
         }
     }
 
