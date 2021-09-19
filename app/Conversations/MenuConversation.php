@@ -42,13 +42,13 @@ class MenuConversation extends BaseConversation
      * @param false $withoutMessage
      * @return MenuConversation|void
      */
-    public function menu($withoutMessage = null)
+    public function menu($withoutMessage = false)
     {
         $this->bot->userStorage()->delete();
         OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
 
         $question = ComplexQuestion::createWithSimpleButtons(
-            $withoutMessage ?: Translator::trans('messages.choose menu'),
+            $withoutMessage ? '' : Translator::trans('messages.choose menu'),
             ButtonsStructure::getMainMenu(),
             ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
         );
