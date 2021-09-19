@@ -77,13 +77,13 @@ class MenuConversation extends BaseConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans('messages.choose city', ['city' => $this->getUser()->city]),
-            [ButtonsStructure::BACK]
+            [ButtonsStructure::BACK],
+            ['config' => ButtonsFormatterService::CITY_MENU_FORMAT]
         );
 
         $question = ComplexQuestion::setButtonsArrayToExistQuestion(
             $question,
-            $this->getCitiesArray(),
-            ['config' => ButtonsFormatterService::CITY_MENU_FORMAT]
+            $this->getCitiesArray()
         );
 
         return $this->ask($question, function (Answer $answer) {
