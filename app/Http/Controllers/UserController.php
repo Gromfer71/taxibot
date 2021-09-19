@@ -6,10 +6,6 @@ use App\Models\AddressHistory;
 use App\Models\Admin;
 use App\Models\Config;
 use App\Models\User;
-use BotMan\BotMan\BotManFactory;
-use BotMan\BotMan\Messages\Incoming\IncomingMessage;
-use BotMan\Drivers\Telegram\TelegramDriver;
-use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -36,7 +32,7 @@ class UserController extends Controller
     public function user($id)
     {
         if ($user = User::where('id', $id)->with(['orders', 'addresses'])->first()) {
-            $config = Config::getTaxibotConfig();
+            $config = json_decode(Config::getTaxibotConfig());
             $prices = collect(array_merge($config->overpriceOptions, $config->overpriceOptionsAfterOrderCreated));
 
             return view('users.user', ['user' => $user, 'prices' => $prices]);
