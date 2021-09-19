@@ -134,11 +134,7 @@ class MenuConversation extends BaseConversation
             }
         );
     }
-
-    public function addressesMenu()
-    {
-    }
-
+    
 
     public function confirmPhone($first = false)
     {

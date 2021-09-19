@@ -51,7 +51,7 @@ class AddressesHistoryConversation extends BaseConversation
             [ButtonsStructure::BACK, ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY],
             ['location' => 'addresses']
         );
-        $question = ComplexQuestion::setAddressButtons($question, $this->getUser()->addresses);
+        $question = ComplexQuestion::setAddressButtons($question, $this->getUser()->addresses->toArray());
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
