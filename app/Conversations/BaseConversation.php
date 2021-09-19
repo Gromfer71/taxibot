@@ -12,7 +12,6 @@ use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
-use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -211,13 +210,6 @@ abstract class BaseConversation extends Conversation
         return $questionText;
     }
 
-    /**
-     * @return Closure
-     */
-    public function getDefaultCallback(): Closure
-    {
-        return $this->defaultCallback;
-    }
 
     /**
      * Упрощенный доступ в пользовательскому хранилищу (кешу)
