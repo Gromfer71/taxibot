@@ -6,9 +6,12 @@ use App\Models\AddressHistory;
 use App\Models\Log;
 use App\Models\OrderHistory;
 use App\Models\User;
+use App\Services\Bot\ButtonsStructure;
+use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
 use App\Services\OrderApiService;
+use App\Services\Translator;
 use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -33,40 +36,21 @@ class MenuConversation extends BaseConversation
         ];
     }
 
-    public function run()
-    {
-        $this->menu();
-    }
-
     /**
      * Главное меню
      *
      * @param false $withoutMessage
-     * @return \App\Conversations\MenuConversation|void
+     * @return MenuConversation|void
      */
-    public function menu($withoutMessage = false)
+    public function menu($withoutMessage = null)
     {
         $this->bot->userStorage()->delete();
         OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
 
-        $question = Question::create(
-            $withoutMessage ? '' : $this->__('messages.choose menu'),
-            $this->bot->getUser()->getId()
-        )
-            ->addButtons([
-                             Button::create($this->__('buttons.take taxi'))->value('take taxi')->additionalParameters(
-                                 ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
-                             ),
-                             Button::create($this->__('buttons.request call'))->value('request call'),
-                             Button::create($this->__('buttons.change phone number'))->value('change phone number'),
-                             Button::create($this->__('buttons.change city'))->value('change city'),
-                             Button::create($this->__('buttons.price list'))->value('price list'),
-                             Button::create($this->__('buttons.all about bonuses'))->value('all about bonuses'),
-                             Button::create($this->__('buttons.address history menu'))->value('address history menu'),
-                             Button::create($this->__('buttons.favorite addresses menu'))->value(
-                                 'favorite addresses menu'
-                             )
-                         ]);
+        $question = ComplexQuestion::createWithSimpleButtons(
+            $withoutMessage ?: Translator::trans('messages.choose menu'),
+            ButtonsStructure::getMainMenu()
+        );
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
@@ -84,6 +68,144 @@ class MenuConversation extends BaseConversation
                 $this->addressesMenu();
             } elseif ($answer->getValue() == 'favorite addresses menu') {
                 $this->bot->startConversation(new FavoriteAddressesConversation());
+            }
+        });
+    }
+
+    public function changeCity()
+    {
+        if (User::find($this->bot->getUser()->getId())->isBlocked) {
+            $this->say($this->__('messages.you are blocked'));
+            return;
+        }
+
+        $user = User::find($this->bot->getUser()->getId());
+        if ($user->city) {
+            $question = Question::create($this->__('messages.choose city', ['city' => $user->city]));
+        } else {
+            $question = Question::create($this->__('messages.choose city without current city'));
+        }
+
+        $options = new Options($this->bot->channelStorage());
+        $question = $question->addButton(
+            Button::create($this->__('buttons.back'))->additionalParameters(
+                ['config' => ButtonsFormatterService::CITY_MENU_FORMAT]
+            )->value('back')
+        );
+        foreach ($options->getCities() as $city) {
+            $question = $question->addButton(Button::create($city->name)->value($city->name));
+        }
+
+        return $this->ask($question, function (Answer $answer) {
+            Log::newLogAnswer($this->bot, $answer);
+            if ($answer->isInteractiveMessageReply()) {
+                $this->menu();
+                return;
+            }
+            $user = User::find($this->bot->getUser()->getId());
+            $user->city = $answer->getText();
+            $user->save();
+            $this->say($this->__('messages.city has been changed', ['city' => $answer->getText()]));
+            $this->menu();
+        });
+    }
+
+    public function bonuses($getBalance = false, $message = false)
+    {
+        $user = User::find($this->bot->getUser()->getId());
+        if (!$message) {
+            $message = $getBalance ? $this->__(
+                'messages.get bonus balance',
+                ['bonuses' => $user->getBonusBalance() ?? 0]
+            ) : $this->__('messages.bonuses menu');
+        }
+        $question = Question::create($message)
+            ->addButtons([
+                             Button::create($this->__('buttons.bonus balance'))->additionalParameters(
+                                 ['config' => ButtonsFormatterService::BONUS_MENU_FORMAT]
+                             )->value('bonus balance'),
+                             Button::create($this->__('buttons.work as driver'))->value('work as driver'),
+                             Button::create($this->__('buttons.our site'))->value('our site'),
+                             Button::create($this->__('buttons.our app'))->value('our app'),
+                             Button::create($this->__('buttons.exit to menu'))->value('exit to menu'),
+                         ]);
+        return $this->ask(
+            $question,
+            function (Answer $answer) {
+                Log::newLogAnswer($this->bot, $answer);
+                if ($answer->isInteractiveMessageReply()) {
+                    if ($answer->getValue() == 'bonus balance') {
+                        $this->bonuses(true);
+                    } elseif ($answer->getValue() == 'work as driver') {
+                        $this->bonuses(false, $this->__('messages.work as driver'));
+                    } elseif ($answer->getValue() == 'our site') {
+                        $this->bonuses(false, $this->__('messages.our site'));
+                    } elseif ($answer->getValue() == 'our app') {
+                        $this->bonuses(false, $this->__('messages.our app'));
+                    } elseif ($answer->getValue() == 'exit to menu') {
+                        $this->menu();
+                    }
+                } else {
+                    $this->bonuses();
+                }
+            }
+        );
+    }
+
+    public function addressesMenu()
+    {
+        $questionText = $this->__('messages.addresses menu');
+        $questionText = $this->addAddressesToMessageOnlyFromHistory($questionText);
+        $question = Question::create($questionText);
+        $question->addButton(
+            Button::create($this->__('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses'])
+        );
+        $question->addButton(
+            Button::create($this->__('buttons.clean addresses history'))->value('clean addresses history')
+        );
+
+        $user = User::find($this->bot->getUser()->getId());
+        foreach ($user->addresses ?? [] as $key => $address) {
+            $question->addButton(
+                Button::create($address->address)->value($address->address)->additionalParameters(['number' => $key + 1]
+                )
+            );
+        }
+
+
+        return $this->ask($question, function (Answer $answer) {
+            if ($answer->getValue() == 'back') {
+                $this->bot->startConversation(new MenuConversation());
+            } elseif ($answer->getValue() == 'clean addresses history') {
+                $this->say($this->__('messages.clean addresses history'));
+                AddressHistory::clearByUserId($this->getUser()->id);
+                $this->bot->startConversation(new MenuConversation());
+            } else {
+                $this->addressMenu($answer->getText());
+            }
+        });
+    }
+
+    public function addressMenu($address)
+    {
+        $question = Question::create($this->__('messages.address menu') . ' ' . $address)
+            ->addButtons([
+                             Button::create($this->__('buttons.delete'))->value('delete'),
+                             Button::create($this->__('buttons.back'))->value('back'),
+                         ]);
+
+        return $this->ask($question, function (Answer $answer) use ($address) {
+            if ($answer->getValue() == 'back') {
+                $this->addressesMenu();
+            } else {
+                $addr = User::find($this->bot->getUser()->getId())->addresses->where('address', $address)->first();
+                if ($addr) {
+                    $addr->delete();
+                    $this->say($this->__('messages.address has been deleted'));
+                } else {
+                    $this->say($this->__('messages.problems with delete address') . $address);
+                }
+                $this->addressesMenu();
             }
         });
     }
@@ -235,145 +357,10 @@ class MenuConversation extends BaseConversation
         }
     }
 
-    public function changeCity()
+    public function run()
     {
-        if (User::find($this->bot->getUser()->getId())->isBlocked) {
-            $this->say($this->__('messages.you are blocked'));
-            return;
-        }
-
-        $user = User::find($this->bot->getUser()->getId());
-        if ($user->city) {
-            $question = Question::create($this->__('messages.choose city', ['city' => $user->city]));
-        } else {
-            $question = Question::create($this->__('messages.choose city without current city'));
-        }
-
-        $options = new Options($this->bot->channelStorage());
-        $question = $question->addButton(
-            Button::create($this->__('buttons.back'))->additionalParameters(
-                ['config' => ButtonsFormatterService::CITY_MENU_FORMAT]
-            )->value('back')
-        );
-        foreach ($options->getCities() as $city) {
-            $question = $question->addButton(Button::create($city->name)->value($city->name));
-        }
-
-        return $this->ask($question, function (Answer $answer) {
-            Log::newLogAnswer($this->bot, $answer);
-            if ($answer->isInteractiveMessageReply()) {
-                $this->menu();
-                return;
-            }
-            $user = User::find($this->bot->getUser()->getId());
-            $user->city = $answer->getText();
-            $user->save();
-            $this->say($this->__('messages.city has been changed', ['city' => $answer->getText()]));
-            $this->menu();
-        });
+        $this->menu();
     }
-
-
-    public function bonuses($getBalance = false, $message = false)
-    {
-        $user = User::find($this->bot->getUser()->getId());
-        if (!$message) {
-            $message = $getBalance ? $this->__(
-                'messages.get bonus balance',
-                ['bonuses' => $user->getBonusBalance() ?? 0]
-            ) : $this->__('messages.bonuses menu');
-        }
-        $question = Question::create($message)
-            ->addButtons([
-                             Button::create($this->__('buttons.bonus balance'))->additionalParameters(
-                                 ['config' => ButtonsFormatterService::BONUS_MENU_FORMAT]
-                             )->value('bonus balance'),
-                             Button::create($this->__('buttons.work as driver'))->value('work as driver'),
-                             Button::create($this->__('buttons.our site'))->value('our site'),
-                             Button::create($this->__('buttons.our app'))->value('our app'),
-                             Button::create($this->__('buttons.exit to menu'))->value('exit to menu'),
-                         ]);
-        return $this->ask(
-            $question,
-            function (Answer $answer) {
-                Log::newLogAnswer($this->bot, $answer);
-                if ($answer->isInteractiveMessageReply()) {
-                    if ($answer->getValue() == 'bonus balance') {
-                        $this->bonuses(true);
-                    } elseif ($answer->getValue() == 'work as driver') {
-                        $this->bonuses(false, $this->__('messages.work as driver'));
-                    } elseif ($answer->getValue() == 'our site') {
-                        $this->bonuses(false, $this->__('messages.our site'));
-                    } elseif ($answer->getValue() == 'our app') {
-                        $this->bonuses(false, $this->__('messages.our app'));
-                    } elseif ($answer->getValue() == 'exit to menu') {
-                        $this->menu();
-                    }
-                } else {
-                    $this->bonuses();
-                }
-            }
-        );
-    }
-
-    public function addressesMenu()
-    {
-        $questionText = $this->__('messages.addresses menu');
-        $questionText = $this->addAddressesToMessageOnlyFromHistory($questionText);
-        $question = Question::create($questionText);
-        $question->addButton(
-            Button::create($this->__('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses'])
-        );
-        $question->addButton(
-            Button::create($this->__('buttons.clean addresses history'))->value('clean addresses history')
-        );
-
-        $user = User::find($this->bot->getUser()->getId());
-        foreach ($user->addresses ?? [] as $key => $address) {
-            $question->addButton(
-                Button::create($address->address)->value($address->address)->additionalParameters(['number' => $key + 1]
-                )
-            );
-        }
-
-
-        return $this->ask($question, function (Answer $answer) {
-            if ($answer->getValue() == 'back') {
-                $this->bot->startConversation(new MenuConversation());
-            } elseif ($answer->getValue() == 'clean addresses history') {
-                $this->say($this->__('messages.clean addresses history'));
-                AddressHistory::clearByUserId($this->getUser()->id);
-                $this->bot->startConversation(new MenuConversation());
-            } else {
-                $this->addressMenu($answer->getText());
-            }
-        });
-    }
-
-    public function addressMenu($address)
-    {
-        $question = Question::create($this->__('messages.address menu') . ' ' . $address)
-            ->addButtons([
-                             Button::create($this->__('buttons.delete'))->value('delete'),
-                             Button::create($this->__('buttons.back'))->value('back'),
-                         ]);
-
-        return $this->ask($question, function (Answer $answer) use ($address) {
-            if ($answer->getValue() == 'back') {
-                $this->addressesMenu();
-            } else {
-                $addr = User::find($this->bot->getUser()->getId())->addresses->where('address', $address)->first();
-                if ($addr) {
-                    $addr->delete();
-                    $this->say($this->__('messages.address has been deleted'));
-                } else {
-                    $this->say($this->__('messages.problems with delete address') . $address);
-                }
-                $this->addressesMenu();
-            }
-        });
-    }
-
 
     public function changePhone()
     {

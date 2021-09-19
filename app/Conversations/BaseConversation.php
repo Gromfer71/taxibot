@@ -7,12 +7,14 @@ use App\Models\User;
 use App\Services\Address;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
-use App\Traits\UserManagerTrait;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Closure;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Базовый класс диалога, от него наследуются все диалоги
@@ -21,7 +23,8 @@ abstract class BaseConversation extends Conversation
 {
     use UserManagerTrait;
 
-    private const EMOJI = [
+    private
+    const EMOJI = [
         '0' => '0&#8419;',
         '1' => '1&#8419;',
         '2' => '2&#8419;',
@@ -35,6 +38,8 @@ abstract class BaseConversation extends Conversation
         '10' => '10&#8419;',
     ];
 
+    const REQUEST_CALL = 'buttons.request call';
+
 
     public function __construct()
     {
@@ -43,13 +48,8 @@ abstract class BaseConversation extends Conversation
         }
     }
 
-    public function getActions()
-    {
-        return [];
-    }
-
     /**
-     * @return \App\Models\User|\App\Models\User[]|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|object
+     * @return User|User[]|Builder|Collection|Model|object
      */
     public function getUser()
     {
@@ -66,6 +66,11 @@ abstract class BaseConversation extends Conversation
         }
     }
 
+    public function getActions()
+    {
+        return [];
+    }
+
     public function _fallback($answer)
     {
         if ($answer->getValue() == 'aborted order' || $answer->getValue() == 'finished order') {
@@ -75,8 +80,7 @@ abstract class BaseConversation extends Conversation
 
         $className = get_class($this);
         $this->_sayDebug(
-            'Ошибка - потерянный диалог в диалоге - ' . $className . ' text - ' . $answer->getText(
-            ) . ' value - ' . $answer->getValue()
+            'Ошибка - потерянный диалог в диалоге - ' . $className . ' text - ' . $answer->getText() . ' value - ' . $answer->getValue()
         );
         $this->_sayDebug('Возвращаемся к диалогу ' . $className);
         $this->bot->startConversation(new $className());
@@ -127,12 +131,12 @@ abstract class BaseConversation extends Conversation
     public function end()
     {
         $question = Question::create($this->__('messages.thx for order'), $this->bot->getUser()->getId())->addButtons([
-                                                                                                                          Button::create(
-                                                                                                                              'Продолжить'
-                                                                                                                          )->value(
-                                                                                                                              'Продолжить'
-                                                                                                                          ),
-                                                                                                                      ]
+                Button::create(
+                    'Продолжить'
+                )->value(
+                    'Продолжить'
+                ),
+            ]
         );
 
         return $this->ask($question, function (Answer $answer) {
@@ -200,7 +204,7 @@ abstract class BaseConversation extends Conversation
     }
 
     /**
-     * @return \Closure
+     * @return Closure
      */
     public function getDefaultCallback(): Closure
     {
