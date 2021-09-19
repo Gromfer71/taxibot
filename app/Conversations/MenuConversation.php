@@ -20,90 +20,6 @@ use BotMan\BotMan\Messages\Outgoing\Question;
 class MenuConversation extends BaseConversation
 {
 
-    /**
-     * Главное меню
-     *
-     * @param false $withoutMessage
-     * @return \App\Conversations\MenuConversation|void
-     */
-    public function menu($withoutMessage = false)
-    {
-        $user = User::find($this->bot->getUser()->getId());
-
-
-        if (!$user) {
-            $this->bot->startConversation(new StartConversation());
-            return;
-        } elseif ($user->isBlocked) {
-            $this->say($this->__('messages.you are blocked'));
-            return;
-        } elseif (!$user->phone) {
-            $this->confirmPhone();
-            return;
-        } elseif (!$user->city) {
-            $this->changeCity();
-            return;
-        }
-
-
-        $this->bot->userStorage()->delete();
-        OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
-
-        $question = Question::create(
-            $withoutMessage ? '' : $this->__('messages.choose menu'),
-            $this->bot->getUser()->getId()
-        )
-            ->addButtons([
-                             Button::create($this->__('buttons.take taxi'))->value('take taxi')->additionalParameters(
-                                 ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
-                             ),
-                             Button::create($this->__('buttons.request call'))->value('request call'),
-                             Button::create($this->__('buttons.change phone number'))->value('change phone number'),
-                             Button::create($this->__('buttons.change city'))->value('change city'),
-                             Button::create($this->__('buttons.price list'))->value('price list'),
-                             Button::create($this->__('buttons.all about bonuses'))->value('all about bonuses'),
-                             Button::create($this->__('buttons.address history menu'))->value('address history menu'),
-                             Button::create($this->__('buttons.favorite addresses menu'))->value(
-                                 'favorite addresses menu'
-                             )
-                         ]);
-
-        return $this->ask($question, function (Answer $answer) {
-            if (is_callable(array_get($this->navigationMapper(), $answer->getValue()))) {
-                array_get($this->navigationMapper(), $answer->getValue())();
-            } elseif (is_callable($this->{array_get($this->navigationMapper()[], $answer->getValue())})) {
-                $this->{array_get($this->navigationMapper()[], $answer->getValue())}();
-            } else {
-                $this->menu();
-            }
-
-            return;
-            Log::newLogAnswer($this->bot, $answer);
-            if ($answer->getValue() == 'take taxi') {
-                $this->bot->startConversation(new TakingAddressConversation());
-            } elseif ($answer->getValue() == 'change city') {
-                $this->changeCity();
-            } elseif ($answer->getValue() == 'change phone number') {
-                $this->confirmPhone();
-            } elseif ($answer->getValue() == 'request call') {
-                $user = $this->getUser();
-                $user->need_call = 1;
-                $user->save();
-                $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-                $this->menu(true);
-            } elseif ($answer->getValue() == 'price list') {
-                $this->say($this->__('messages.price list'));
-                $this->menu(true);
-            } elseif ($answer->getValue() == 'all about bonuses') {
-                $this->bonuses();
-            } elseif ($answer->getValue() == 'address history menu') {
-                $this->addressesMenu();
-            } elseif ($answer->getValue() == 'favorite addresses menu') {
-                $this->bot->startConversation(new FavoriteAddressesConversation());
-            }
-        });
-    }
-
     public function confirmPhone($first = false)
     {
         if ($first) {
@@ -253,16 +169,68 @@ class MenuConversation extends BaseConversation
 
     public function run()
     {
-        $user = User::find($this->bot->getUser()->getId());
-        if (!$user) {
-            $this->bot->startConversation(new StartConversation());
-        } elseif (!$user->phone) {
-            $this->confirmPhone(true);
-        } elseif (!$user->city) {
-            $this->changeCity();
-        } else {
-            $this->menu();
-        }
+        $this->actions = [
+            'request call' => function () {
+                $user = $this->getUser();
+                $user->need_call = 1;
+                $user->save();
+                $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+                $this->menu(true);
+            },
+            'change phone number' => 'confirmPhone',
+        ];
+
+        $this->menu();
+    }
+
+    /**
+     * Главное меню
+     *
+     * @param false $withoutMessage
+     * @return \App\Conversations\MenuConversation|void
+     */
+    public function menu($withoutMessage = false)
+    {
+        $this->bot->userStorage()->delete();
+        OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
+
+        $question = Question::create(
+            $withoutMessage ? '' : $this->__('messages.choose menu'),
+            $this->bot->getUser()->getId()
+        )
+            ->addButtons([
+                             Button::create($this->__('buttons.take taxi'))->value('take taxi')->additionalParameters(
+                                 ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
+                             ),
+                             Button::create($this->__('buttons.request call'))->value('request call'),
+                             Button::create($this->__('buttons.change phone number'))->value('change phone number'),
+                             Button::create($this->__('buttons.change city'))->value('change city'),
+                             Button::create($this->__('buttons.price list'))->value('price list'),
+                             Button::create($this->__('buttons.all about bonuses'))->value('all about bonuses'),
+                             Button::create($this->__('buttons.address history menu'))->value('address history menu'),
+                             Button::create($this->__('buttons.favorite addresses menu'))->value(
+                                 'favorite addresses menu'
+                             )
+                         ]);
+
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer);
+
+            if ($answer->getValue() == 'take taxi') {
+                $this->bot->startConversation(new TakingAddressConversation());
+            } elseif ($answer->getValue() == 'change city') {
+                $this->changeCity();
+            } elseif ($answer->getValue() == 'price list') {
+                $this->say($this->__('messages.price list'));
+                $this->menu(true);
+            } elseif ($answer->getValue() == 'all about bonuses') {
+                $this->bonuses();
+            } elseif ($answer->getValue() == 'address history menu') {
+                $this->addressesMenu();
+            } elseif ($answer->getValue() == 'favorite addresses menu') {
+                $this->bot->startConversation(new FavoriteAddressesConversation());
+            }
+        });
     }
 
     public function changeCity()
@@ -303,16 +271,6 @@ class MenuConversation extends BaseConversation
         });
     }
 
-    public function navigationMapper()
-    {
-        return [
-            'request call' => function () {
-                $this->say('Заказ звонка');
-            },
-
-            'change phone number' => 'confirmPhone',
-        ];
-    }
 
     public function bonuses($getBalance = false, $message = false)
     {

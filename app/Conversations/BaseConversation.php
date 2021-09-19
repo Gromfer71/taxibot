@@ -5,7 +5,6 @@ namespace App\Conversations;
 use App\Models\Log;
 use App\Models\User;
 use App\Services\Address;
-use App\Services\BotCommandFactory;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use App\Traits\UserManagerTrait;
@@ -35,6 +34,7 @@ abstract class BaseConversation extends Conversation
         '9' => '9&#8419;',
         '10' => '10&#8419;',
     ];
+    protected $actions = [];
 
     public function __construct()
     {
@@ -49,6 +49,15 @@ abstract class BaseConversation extends Conversation
     public function getUser()
     {
         return User::find($this->bot->getUser()->getId());
+    }
+
+    public function handleAction(Answer $answer)
+    {
+        if (is_callable($this->actions[$answer->getValue()] ?? '')) {
+            $this->actions[$answer->getValue()]();
+        } elseif (method_exists($this, $this->actions[$answer->getValue()] ?? '')) {
+            $this->{$this->actions[$answer->getValue()]}();
+        }
     }
 
     public function _fallback($answer)
