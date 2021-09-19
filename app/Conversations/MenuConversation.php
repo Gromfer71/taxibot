@@ -67,7 +67,7 @@ class MenuConversation extends BaseConversation
                          ]);
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
+            //  $this->handleAction($answer);
 
             if ($answer->getValue() == 'take taxi') {
                 $this->bot->startConversation(new TakingAddressConversation());
