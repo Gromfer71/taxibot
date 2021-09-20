@@ -39,7 +39,7 @@ class StartConversation extends BaseConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans('messages.welcome message'),
-            ['buttons.start menu']
+            ['start menu']
         );
 
         return $this->ask($question, function () {

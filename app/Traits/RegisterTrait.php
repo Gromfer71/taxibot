@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\User;
 use App\Services\OrderApiService;
+use App\Services\Translator;
 use Barryvdh\TranslationManager\Models\LangPackage;
 
 /**
@@ -11,6 +12,24 @@ use Barryvdh\TranslationManager\Models\LangPackage;
  */
 trait RegisterTrait
 {
+
+    /**
+     * Проверка ввода и отправка смс пользователю
+     *
+     * @param $userText
+     */
+    public function tryToSendSmsCode($userText)
+    {
+        if ($this->isPhoneCorrect($userText)) {
+            $this->sendSmsCode($userText);
+            $this->saveUserPhone($userText);
+            $this->confirmSms();
+        } else {
+            $this->say(Translator::trans('messages.incorrect phone format'));
+            $this->confirmPhone(true);
+        }
+    }
+
     /**
      * @param $phone
      * @return false|int

@@ -32,54 +32,39 @@ class RegisterConversation extends BaseConversation
     /**
      * Подтверждение телефона пользователя
      *
-     * @param null $noMessage
+     * @param string|null $message
      * @return \App\Conversations\RegisterConversation
      */
-    public function confirmPhone($noMessage = null): RegisterConversation
+    public function confirmPhone(?string $message = ''): RegisterConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            $noMessage ? '' : Translator::trans('messages.enter phone first')
+            $message ?: Translator::trans('messages.enter phone first')
         );
 
         return $this->ask($question, function (Answer $answer) {
-            if ($this->isPhoneCorrect($answer->getText())) {
-                $this->sendSmsCode($answer->getText());
-                $this->saveUserPhone($answer->getText());
-                $this->confirmSms();
-            } else {
-                $this->say(Translator::trans('messages.incorrect phone format'));
-                $this->confirmPhone(true);
-            }
+            $this->tryToSendSmsCode($answer->getText());
         });
     }
 
     /**
      * Подтверждение и ввод смс кода
-     * TODO: заменить аргументы на один, само сообщение. Если без сообщения то отправляем ''
      */
-    public function confirmSms($willCall = false, $noMessage = false): RegisterConversation
+    public function confirmSms($message = ''): RegisterConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            $willCall ? Translator::trans('messages.enter call code') : ($noMessage ? '' : Translator::trans(
-                'messages.enter sms code'
-            )),
-            ['buttons.call']
+            $message ?: Translator::trans('messages.enter sms code'),
+            ['call']
         );
 
         return $this->ask($question, function (Answer $answer) {
             if ($answer->getValue() == 'call') {
                 $this->callSmsCode();
-                $this->confirmSms(true);
+                $this->confirmSms(Translator::trans('messages.enter call code'));
             } elseif ($this->isSmsCodeCorrect($answer->getText())) {
                 $this->registerUser();
-                if ($this->getUser()->city) {
-                    $this->bot->startConversation(new MenuConversation());
-                } else {
-                    $this->setupCity();
-                }
+                $this->setupCity();
             } else {
-                $this->say(Translator::trans('messages.wrong sms code'));
-                $this->confirmSms(false, true);
+                $this->confirmSms(Translator::trans('messages.wrong sms code'));
             }
         });
     }

@@ -79,6 +79,7 @@ class User extends Model
     {
         $this->phone = $phone;
         $this->server_id = null;
+        $this->registerServerId();
         $this->save();
     }
 
