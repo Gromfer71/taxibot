@@ -14,7 +14,7 @@
         <br><br>
     </form>
 
-    <div class="layer" style="overflow-x: scroll; white-space: nowrap;">
+    <div class="layer uk-padding-large" style="overflow-x: scroll; white-space: nowrap;">
         <table id="table_id" class="display">
             <thead>
                 <tr>
@@ -53,7 +53,7 @@
 @push('scripts')
     <script>
         $(document).ready( function () {
-            $.noConflict();
+
             $('#table_id').DataTable({
                 "autoWidth": true,
                 "language": {

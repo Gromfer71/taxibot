@@ -2,93 +2,48 @@
 
 namespace App\Conversations;
 
-use App\Models\Log;
-use App\Models\OrderHistory;
-use App\Models\User;
-use Barryvdh\TranslationManager\Models\LangPackage;
-use BotMan\BotMan\Messages\Conversations\Conversation;
-use BotMan\BotMan\Messages\Incoming\Answer;
-use BotMan\BotMan\Messages\Outgoing\Actions\Button;
-use BotMan\BotMan\Messages\Outgoing\Question;
-use BotMan\Drivers\Telegram\TelegramDriver;
-use BotMan\Drivers\VK\VkCommunityCallbackDriver;
+use App\Conversations\MainMenu\MenuConversation;
+use App\Services\Bot\ComplexQuestion;
+use App\Services\Translator;
+use App\Traits\BotManagerTrait;
 
+/**
+ * Первый класс диалога. Запускается в первую очередь для нового пользователя
+ */
 class StartConversation extends BaseConversation
 {
-	public function run()
-	{
+    use BotManagerTrait;
 
-	    if($this->bot->userStorage()->get('error')) {
-	        $this->say($this->__('messages.program error message'));
-	        $this->bot->userStorage()->delete('error');
+    /**
+     * Начало
+     *
+     * @return void
+     */
+    public function run(): void
+    {
+        $this->checkProgramForBroken();
+
+        if ($this->isUserRegistered()) {
+            $this->bot->startConversation(new MenuConversation());
+        } else {
+            $this->register();
         }
+    }
 
-	    if(!$this->bot->getUser() || !$this->bot->getUser()->getId()) {
-	        return;
-        }
-		$user = User::find($this->bot->getUser()->getId());
-		if (! $user) {
-			$this->start();
-		} elseif (!OrderHistory::getActualOrder($user->id, $this->bot->getDriver()->getName())) {
-			$this->bot->startConversation(new MenuConversation());
-		}
+    /**
+     * Регистрация пользователя в системе
+     *
+     * @return \App\Conversations\StartConversation
+     */
+    public function register(): StartConversation
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.welcome message'),
+            ['start menu']
+        );
 
-	}
-
-
-	public function start()
-	{
-		if(!User::find($this->bot->getUser()->getId())) {
-			$user = User::create([
-				'username' => $this->bot->getUser()->getUsername(),
-				'firstname' => $this->bot->getUser()->getFirstName(),
-				'lastname' => $this->bot->getUser()->getLastName(),
-				'userinfo' => json_encode($this->bot->getUser()->getInfo()),
-                'lang_id' => LangPackage::getDefaultLangId(),
-			]);
-		    $user->setPlatformId($this->bot);
-
-			$user->save();
-		}
-
-		$this->checkConfig();
-
-		$question = Question::create($this->__('messages.welcome message'), $this->bot->getUser()->getId())
-			->addButtons(
-				[
-					Button::create($this->__('buttons.start menu'))->value('start menu'),
-				]
-			);
-
-		return $this->ask($question, function (Answer $answer) {
-				Log::newLogAnswer($this->bot, $answer);
-				if ($answer->isInteractiveMessageReply()) {
-					if ($answer->getValue() == 'start menu') {
-                        $this->bot->startConversation(new MenuConversation());
-					}
-				} elseif($answer->getText() == '/setabouttext') {
-                    $this->say($this->__('messages.about myself'));
-					$this->start();
-				} else {
-				    $this->start();
-                }
-			}
-		);
-	}
-
-	public function aboutMyself()
-	{
-		$question = Question::create($this->__('messages.about myself'))
-			->addButton(Button::create($this->__('buttons.menu'))->value('menu'));
-
-		return $this->ask(
-			$question,
-			function (Answer $answer) {
-				Log::newLogAnswer($this->bot, $answer);
-				if ($answer->getValue() == 'menu') {
-                    $this->bot->startConversation(new MenuConversation());
-				}
-			}
-		);
-	}
+        return $this->ask($question, function () {
+            $this->bot->startConversation(new RegisterConversation());
+        });
+    }
 }

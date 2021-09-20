@@ -5,6 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
 
+/**
+ * App\Models\Config
+ *
+ * @property int $name
+ * @property string $value
+ * @method static \Illuminate\Database\Eloquent\Builder|Config newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Config newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Config query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Config whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Config whereValue($value)
+ * @mixin \Eloquent
+ */
 class Config extends Model
 {
     const MESSAGE_LABELS = [
@@ -115,9 +127,7 @@ class Config extends Model
 
     public static function getTaxibotConfig()
     {
-        $config = json_decode(File::get(storage_path('app/taxi_config.json')));
-
-        return $config;
+        return File::get(storage_path('app/taxi_config.json'));
     }
 
     public static function setTaxibotConfig($data)

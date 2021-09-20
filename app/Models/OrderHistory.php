@@ -40,6 +40,12 @@ use Illuminate\Support\Facades\Auth;
  * @method static \Illuminate\Database\Eloquent\Builder|OrderHistory whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|OrderHistory whereWishes($value)
  * @mixin \Eloquent
+ * @property int $usebonus
+ * @property string $platform
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderHistory wherePlatform($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderHistory whereStateIdChain($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderHistory whereUsebonus($value)
  */
 class OrderHistory extends Model
 {

@@ -5,6 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
 
+/**
+ * App\Models\ErrorReport
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $error_message
+ * @property string $stack_trace
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|ErrorReport newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ErrorReport newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ErrorReport query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ErrorReport whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ErrorReport whereErrorMessage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ErrorReport whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ErrorReport whereStackTrace($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ErrorReport whereUserId($value)
+ * @mixin \Eloquent
+ */
 class ErrorReport extends Model
 {
     protected $guarded = ['created_at'];

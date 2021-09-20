@@ -2,24 +2,31 @@
 
 namespace App\Conversations;
 
-use App\Models\Config;
+use App\Conversations\MainMenu\MenuConversation;
 use App\Models\Log;
 use App\Models\User;
 use App\Services\Address;
 use App\Services\ButtonsFormatterService;
+use App\Services\Options;
 use App\Services\Translator;
+use App\Traits\UserManagerTrait;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
-use Exception;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Базовый класс диалога, от него наследуются все диалоги
  */
 abstract class BaseConversation extends Conversation
 {
-    private const EMOJI = [
+    use UserManagerTrait;
+
+    private
+    const EMOJI = [
         '0' => '0&#8419;',
         '1' => '1&#8419;',
         '2' => '2&#8419;',
@@ -32,42 +39,61 @@ abstract class BaseConversation extends Conversation
         '9' => '9&#8419;',
         '10' => '10&#8419;',
     ];
-    //TODO: выяснить а есть ли смысл вообще сохранять конфиг в кеш если он и так в файле хранится
-    public function checkConfig()
+
+    protected $options;
+    protected $user;
+
+    public function __construct()
     {
-        if (!$this->bot->channelStorage()->get('options')) {
-            $this->_sayDebug('Конфига нет');
-            $this->_loadConfig();
-        }
-        if (!$this->bot->channelStorage()->get('optionsDate')) {
-            $this->_sayDebug('Даты конфига нет');
-            $this->_loadConfig();
-        }
-        $optionsDate = $this->bot->channelStorage()->get('optionsDate');
-        if ($optionsDate < (time() - env('CONFIG_CACHE_TIME_IN_HOUR', 12))) {
-            $this->_sayDebug('Срок действия конфига истек');
-            $this->_loadConfig();
+        $this->options = new Options();
+        if (is_null(Translator::$lang) && !is_null($this->getUser())) {
+            Translator::setUp($this->getUser());
         }
     }
 
-    public function _sayDebug($message)
+    public function getDefaultCallback()
     {
-        if (config('app.debug')) {
-            $this->say(
-                '||DEBUG|| ' . $message,
-                $this->bot->getUser()->getId()
-            );
+        return function (Answer $answer) {
+            $this->handleAction($answer->getValue());
+        };
+    }
+
+    /**
+     * @return User|User[]|Builder|Collection|Model|object
+     */
+    public function getUser()
+    {
+        return User::find($this->bot->getUser()->getId());
+    }
+
+    public function handleAction($value, $replaceActions = [])
+    {
+        $callbackOrMethodName = $this->getActions($replaceActions)[$value] ?? '';
+        if (is_callable($callbackOrMethodName)) {
+            $callbackOrMethodName();
+            die();
+        } elseif (method_exists($this, $callbackOrMethodName)) {
+            $this->{$callbackOrMethodName}();
+            die();
+        } elseif (class_exists($callbackOrMethodName)) {
+            $this->bot->startConversation(new $callbackOrMethodName());
+            die();
         }
     }
 
-    public function _loadConfig()
+
+    /**
+     * Массив действий под определенную кнопку. Если значение это анонимная функция, то выполнится она, если имя метода,
+     * то выполнится он в контексте текущего класса, если название класса (с полным путем), то запустится его Conversation.
+     *
+     * @param array $replaceActions
+     * @return array
+     */
+    public function getActions(array $replaceActions = []): array
     {
-        $this->_sayDebug('Стартуем загрузку конфига');
-        //$this->bot->channelStorage()->save(['options' => file_get_contents('https://sk-taxi.ru/tmfront/config.json'),'optionsDate' => time()]);
-        $this->bot->channelStorage()->save(
-            ['options' => json_encode(Config::getTaxibotConfig()), 'optionsDate' => time()]
-        );
-        $this->_sayDebug('Конфиг загружен');
+        $actions = [];
+
+        return array_replace_recursive($actions, $replaceActions);
     }
 
     public function _fallback($answer)
@@ -84,6 +110,15 @@ abstract class BaseConversation extends Conversation
         );
         $this->_sayDebug('Возвращаемся к диалогу ' . $className);
         $this->bot->startConversation(new $className());
+    }
+
+    public function _sayDebug($message)
+    {
+        if (config('app.debug')) {
+            $this->say(
+                '||DEBUG|| ' . $message
+            );
+        }
     }
 
     public function _filterChangePrice($prices, $key_price = 'changed_price')
@@ -117,16 +152,6 @@ abstract class BaseConversation extends Conversation
         }
 
         return Translator::trans($key, $replace);
-    }
-
-    public function getUser()
-    {
-        $user = User::find($this->bot->getUser()->getId());
-        if ($user) {
-            return $user;
-        } else {
-            throw new Exception('null user exception');
-        }
     }
 
     public function end()
@@ -202,6 +227,45 @@ abstract class BaseConversation extends Conversation
         }
 
         return $questionText;
+    }
+
+
+    /**
+     * Упрощенный доступ в пользовательскому хранилищу (кешу)
+     *
+     * @param $key
+     * @return Mixed
+     */
+    public function getFromStorage($key)
+    {
+        return $this->bot->userStorage()->get($key);
+    }
+
+    /**
+     * Упрощенное сохранение в пользовательское хранилище
+     *
+     * @param array $data
+     * @return Mixed
+     */
+    public function saveToStorage(array $data)
+    {
+        return $this->bot->userStorage()->save($data);
+    }
+
+    /**
+     * Упрощенное удаление из хранилища. Null потому что delete() не работает во всех драйверах
+     *
+     * @param $key
+     * @return Mixed
+     */
+    public function removeFromStorage($key)
+    {
+        return $this->bot->userStorage()->save([$key => null]);
+    }
+
+    public function navigationMapper()
+    {
+        return [];
     }
 
 }
