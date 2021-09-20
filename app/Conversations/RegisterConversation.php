@@ -72,7 +72,11 @@ class RegisterConversation extends BaseConversation
                 $this->confirmSms(true);
             } elseif ($this->isSmsCodeCorrect($answer->getText())) {
                 $this->registerUser();
-                $this->setupCity();
+                if ($this->getUser()->city) {
+                    $this->bot->startConversation(new MenuConversation());
+                } else {
+                    $this->setupCity();
+                }
             } else {
                 $this->say(Translator::trans('messages.wrong sms code'));
                 $this->confirmSms(false, true);

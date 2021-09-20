@@ -41,7 +41,7 @@ class MenuConversation extends BaseConversation
                 $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
                 $this->run(true);
             },
-            ButtonsStructure::CHANGE_PHONE => 'confirmPhone',
+            ButtonsStructure::CHANGE_PHONE => 'App\Conversations\RegisterConversation',
             ButtonsStructure::TAKE_TAXI => 'App\Conversations\TakingAddressConversation',
             ButtonsStructure::CHANGE_CITY => 'changeCity',
             ButtonsStructure::PRICE_LIST => function () {
