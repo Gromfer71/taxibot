@@ -8,7 +8,6 @@ use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
-use App\Traits\SetupCityTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
 /**
@@ -16,8 +15,6 @@ use BotMan\BotMan\Messages\Incoming\Answer;
  */
 class MenuConversation extends BaseConversation
 {
-    use SetupCityTrait;
-
     /**
      * Массив действий под определенную кнопку. Если значение это анонимная функция, то выполнится она, если имя метода,
      * то выполнится он в контексте текущего класса, если название класса (с полным путем), то запустится его Conversation.

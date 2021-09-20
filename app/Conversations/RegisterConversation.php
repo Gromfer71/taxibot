@@ -7,7 +7,6 @@ use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use App\Traits\RegisterTrait;
-use App\Traits\SetupCityTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
 
@@ -17,7 +16,6 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 class RegisterConversation extends BaseConversation
 {
     use RegisterTrait;
-    use SetupCityTrait;
 
     /**
      * Начало
