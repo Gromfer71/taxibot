@@ -29,7 +29,9 @@ class ChangePhoneConversation extends BaseConversation
      */
     public function confirmPhone(string $message = ''): ChangePhoneConversation
     {
-        $question = ComplexQuestion::createWithSimpleButtons($message);
+        $question = ComplexQuestion::createWithSimpleButtons(
+            $message ?: Translator::trans('messages.enter phone first')
+        );
 
         return $this->ask($question, function (Answer $answer) {
             $this->tryToSendSmsCode($answer->getText());

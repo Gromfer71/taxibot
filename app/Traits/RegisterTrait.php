@@ -25,8 +25,7 @@ trait RegisterTrait
             $this->saveUserPhone($userText);
             $this->confirmSms();
         } else {
-            $this->say(Translator::trans('messages.incorrect phone format'));
-            $this->confirmPhone(true);
+            $this->confirmPhone(Translator::trans('messages.incorrect phone format'));
         }
     }
 
