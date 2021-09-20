@@ -3,6 +3,7 @@
 namespace App\Conversations\MainMenu;
 
 use App\Conversations\BaseConversation;
+use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
 use App\Traits\RegisterTrait;
@@ -30,11 +31,16 @@ class ChangePhoneConversation extends BaseConversation
     public function confirmPhone(string $message = ''): ChangePhoneConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            $message ?: Translator::trans('messages.enter phone first')
+            $message ?: Translator::trans('messages.enter phone first'),
+            [ButtonsStructure::BACK]
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->tryToSendSmsCode($answer->getText());
+            if ($answer->getValue() == ButtonsStructure::BACK) {
+                $this->bot->startConversation(new MenuConversation());
+            } else {
+                $this->tryToSendSmsCode($answer->getText());
+            }
         });
     }
 
