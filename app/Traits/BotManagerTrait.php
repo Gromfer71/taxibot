@@ -15,7 +15,7 @@ trait BotManagerTrait
     protected function checkProgramForBroken()
     {
         if ($this->bot->userStorage()->get('error')) {
-            $this->_sayDebug(Translator::trans('messages.program error message'));
+            $this->say(Translator::trans('messages.program error message'));
             $this->removeFromStorage('error');
         }
     }
