@@ -38,12 +38,5 @@ class RunTestsCommand extends Command
         $MadelineProto->async(false);
         $test = new MainMenuTest($MadelineProto);
         $test->run();
-        /*
-         * TODO: Написать тест сноса истории адресов (там проверка на кол-во кнопок после сноса)
-         * TODO: Тест на уточнение ценника
-         * TODO: Протестировать всё меню Бонусы и работа
-         */
-
-
     }
 }

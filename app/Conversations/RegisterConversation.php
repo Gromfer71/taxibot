@@ -55,6 +55,7 @@ class RegisterConversation extends BaseConversation
 
     /**
      * Подтверждение и ввод смс кода
+     * TODO: заменить аргументы на один, само сообщение. Если без сообщения то отправляем ''
      */
     public function confirmSms($willCall = false, $noMessage = false): RegisterConversation
     {
