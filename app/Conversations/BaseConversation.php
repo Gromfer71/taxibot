@@ -41,9 +41,11 @@ abstract class BaseConversation extends Conversation
     ];
 
     protected $options;
+    protected $user;
 
     public function __construct()
     {
+        $this->user = User::find($this->bot->getUser()->getId());
         $this->options = new Options();
         if (is_null(Translator::$lang) && !is_null($this->getUser())) {
             Translator::setUp($this->getUser());
@@ -62,7 +64,7 @@ abstract class BaseConversation extends Conversation
      */
     public function getUser()
     {
-        return User::find($this->bot->getUser()->getId());
+        return $this->user;
     }
 
     public function handleAction($value, $replaceActions = [])
