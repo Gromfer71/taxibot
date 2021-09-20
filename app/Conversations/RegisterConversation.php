@@ -76,12 +76,12 @@ class RegisterConversation extends BaseConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans('messages.choose city without current city'),
-            $this->getCitiesArray(),
+            $this->options->getCitiesArray(),
             ['config' => ButtonsFormatterService::CITY_MENU_FORMAT]
         );
 
         return $this->ask($question, function (Answer $answer) {
-            if ($this->isUserInputIsCity($answer->getText())) {
+            if ($this->options->isUserInputIsCity($answer->getText())) {
                 $this->getUser()->updateCity($answer->getText());
                 $this->say(Translator::trans('messages.city has been changed', ['city' => $answer->getText()]));
                 $this->bot->startConversation(new MenuConversation());

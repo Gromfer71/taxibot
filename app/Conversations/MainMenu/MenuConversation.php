@@ -83,7 +83,7 @@ class MenuConversation extends BaseConversation
 
         $question = ComplexQuestion::setButtons(
             $question,
-            $this->getCitiesArray()
+            $this->options->getCitiesArray()
         );
 
         return $this->ask($question, function (Answer $answer) {

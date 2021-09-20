@@ -7,6 +7,7 @@ use App\Models\Log;
 use App\Models\User;
 use App\Services\Address;
 use App\Services\ButtonsFormatterService;
+use App\Services\Options;
 use App\Services\Translator;
 use App\Traits\UserManagerTrait;
 use BotMan\BotMan\Messages\Conversations\Conversation;
@@ -39,8 +40,11 @@ abstract class BaseConversation extends Conversation
         '10' => '10&#8419;',
     ];
 
+    protected $options;
+
     public function __construct()
     {
+        $this->options = new Options();
         if (is_null(Translator::$lang) && !is_null($this->getUser())) {
             Translator::setUp($this->getUser());
         }

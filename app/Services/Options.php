@@ -131,5 +131,29 @@ class Options
         return $result->first()->district ?? '';
     }
 
+    /**
+     * Проверяет, является ли введенный пользователем текст городом из списка, взятого из конфига
+     *
+     * @param $userInput
+     * @return bool
+     */
+    public function isUserInputIsCity($userInput): bool
+    {
+        return in_array($userInput, $this->getCitiesArray());
+    }
+
+    /**
+     * Возвращает коллекцию имён городов взятых из конфига
+     *
+     * @return array
+     */
+    public function getCitiesArray(): array
+    {
+        $cities = collect($this->getCities());
+        return $cities->map(function ($city) {
+            return $city->name;
+        })->toArray();
+    }
+
 
 }
