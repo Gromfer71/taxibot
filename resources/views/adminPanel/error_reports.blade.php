@@ -28,48 +28,49 @@
         </div>
     </div>
 
-        <div class="layer uk-margin-top" style="overflow-x: scroll;">
-            <table id="table" class="display">
-                <thead>
+    <div class="layer uk-margin-top" style="overflow-x: scroll;">
+        <table id="table" class="display">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Пользователь</th>
+                <th>Сообщение об ошибке</th>
+                <th>Стек вызовов функций</th>
+                <th>Дата</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($errors as $error)
                 <tr>
-                    <th>ID</th>
-                    <th>Пользователь</th>
-                    <th>Сообщение об ошибке</th>
-                    <th>Стек вызовов функций</th>
-                    <th>Дата</th>
+                    <td>{{ $error->id }}</td>
+                    <td>{{ $error->user->username ?? 'Неавторизованный пользователь' }}</td>
+                    <td>{{ $error->error_message }}</td>
+                    <td class="stack-trace"
+                        data-trace="{{ $error->stack_trace }}">{{ substr($error->stack_trace, 0, 80) . '...' }}</td>
+                    <td>{{ $error->created_at }}</td>
+
                 </tr>
-                </thead>
-                <tbody>
-                @foreach($errors as $error)
-                    <tr>
-                        <td>{{ $error->id }}</td>
-                        <td>{{ $error->user->username }}</td>
-                        <td>{{ $error->error_message }}</td>
-                        <td class="stack-trace" data-trace="{{ $error->stack_trace }}">{{ substr($error->stack_trace, 0, 80) . '...' }}</td>
-                        <td>{{ $error->created_at }}</td>
+            @endforeach
+            </tbody>
+        </table>
+    </div>
 
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-        </div>
+@endsection
+@push('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            $.noConflict();
 
-        @endsection
-        @push('scripts')
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    $.noConflict();
+            $('table.display').DataTable({
+                "autoWidth": true,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
+                },
+            });
 
-                    $('table.display').DataTable({
-                        "autoWidth": true,
-                        "language": {
-                            "url": "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
-                        },
-                    });
-
-                    $('.stack-trace').on('click', function() {
-                       alert($(this).data('trace'))
-                    })
-                });
-            </script>
-        @endpush
+            $('.stack-trace').on('click', function () {
+                alert($(this).data('trace'))
+            })
+        });
+    </script>
+@endpush
