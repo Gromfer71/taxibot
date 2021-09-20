@@ -121,6 +121,7 @@ trait RegisterTrait
                                  'lang_id' => LangPackage::getDefaultLangId(),
                              ]);
         $user->setPlatformId($this->bot);
+        $user->registerServerId();
         $user->save();
     }
 

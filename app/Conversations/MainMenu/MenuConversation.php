@@ -3,7 +3,6 @@
 namespace App\Conversations\MainMenu;
 
 use App\Conversations\BaseConversation;
-use App\Models\Log;
 use App\Models\OrderHistory;
 use App\Models\User;
 use App\Services\Bot\ButtonsStructure;
@@ -105,44 +104,6 @@ class MenuConversation extends BaseConversation
 
     public function bonuses($getBalance = false, $message = false)
     {
-        $user = User::find($this->bot->getUser()->getId());
-        if (!$message) {
-            $message = $getBalance ? $this->__(
-                'messages.get bonus balance',
-                ['bonuses' => $user->getBonusBalance() ?? 0]
-            ) : $this->__('messages.bonuses menu');
-        }
-        $question = Question::create($message)
-            ->addButtons([
-                             Button::create($this->__('buttons.bonus balance'))->additionalParameters(
-                                 ['config' => ButtonsFormatterService::BONUS_MENU_FORMAT]
-                             )->value('bonus balance'),
-                             Button::create($this->__('buttons.work as driver'))->value('work as driver'),
-                             Button::create($this->__('buttons.our site'))->value('our site'),
-                             Button::create($this->__('buttons.our app'))->value('our app'),
-                             Button::create($this->__('buttons.exit to menu'))->value('exit to menu'),
-                         ]);
-        return $this->ask(
-            $question,
-            function (Answer $answer) {
-                Log::newLogAnswer($this->bot, $answer);
-                if ($answer->isInteractiveMessageReply()) {
-                    if ($answer->getValue() == 'bonus balance') {
-                        $this->bonuses(true);
-                    } elseif ($answer->getValue() == 'work as driver') {
-                        $this->bonuses(false, $this->__('messages.work as driver'));
-                    } elseif ($answer->getValue() == 'our site') {
-                        $this->bonuses(false, $this->__('messages.our site'));
-                    } elseif ($answer->getValue() == 'our app') {
-                        $this->bonuses(false, $this->__('messages.our app'));
-                    } elseif ($answer->getValue() == 'exit to menu') {
-                        $this->run();
-                    }
-                } else {
-                    $this->bonuses();
-                }
-            }
-        );
     }
 
 

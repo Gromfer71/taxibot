@@ -20,6 +20,11 @@ class ButtonsStructure extends Button
     public const BACK = 'back';
     public const CLEAN_ALL_ADDRESS_HISTORY = 'clean addresses history';
     public const DELETE = 'delete';
+    public const BONUS_BALANCE = 'bonus balance';
+    public const WORK_AS_DRIVER = 'work as driver';
+    public const OUR_SITE = 'our site';
+    public const OUR_APP = 'our app';
+
 
     /**
      * Структура кнопок главного меню
@@ -37,6 +42,22 @@ class ButtonsStructure extends Button
             ButtonsStructure::ALL_ABOUT_BONUSES,
             ButtonsStructure::ADDRESS_HISTORY_MENU,
             ButtonsStructure::FAVORITE_ADDRESSES_MENU
+        ];
+    }
+
+    /**
+     * Структура кнопок меню бонусов
+     *
+     * @return string[]
+     */
+    public static function getBonusesMenu(): array
+    {
+        return [
+            ButtonsStructure::BONUS_BALANCE,
+            ButtonsStructure::WORK_AS_DRIVER,
+            ButtonsStructure::OUR_SITE,
+            ButtonsStructure::OUR_APP,
+            ButtonsStructure::BACK,
         ];
     }
 }

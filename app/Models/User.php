@@ -200,4 +200,19 @@ class User extends Model
         return $this->addresses->where('address', $address)->first();
     }
 
+    /**
+     * Регистрирует server_id. Поле используется для бонусов
+     *
+     * @return void
+     */
+    public function registerServerId()
+    {
+        $response = BonusesApi::analyzePhone($this->phone);
+        if ($response->code !== BonusesApi::USER_NOT_FOUND) {
+            $this->server_id = $response->data->id;
+            $this->save();
+        }
+    }
+
+
 }
