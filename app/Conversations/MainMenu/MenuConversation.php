@@ -85,8 +85,13 @@ class MenuConversation extends BaseConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
-            $this->getUser()->updateCity($answer->getText());
-            $this->run(Translator::trans('messages.city has been changed', ['city' => $answer->getText()]));
+            if (in_array($answer->getText(), $this->options->getCitiesArray())) {
+                $this->getUser()->updateCity($answer->getText());
+                $this->run(Translator::trans('messages.city has been changed', ['city' => $answer->getText()]));
+            } else {
+                // TODO: добавить сообщение об ошибке
+                $this->changeCity();
+            }
         });
     }
 }
