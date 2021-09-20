@@ -90,7 +90,6 @@ class MenuConversation extends BaseConversation
                 $this->run(Translator::trans('messages.city has been changed', ['city' => $answer->getText()]));
             } else {
                 // TODO: добавить сообщение об ошибке
-
                 $this->changeCity();
             }
         });
