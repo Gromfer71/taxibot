@@ -47,7 +47,7 @@ class MenuConversation extends BaseConversation
             ButtonsStructure::PRICE_LIST => function () {
                 $this->run(Translator::trans('messages.price list'));
             },
-            ButtonsStructure::ALL_ABOUT_BONUSES => 'bonuses',
+            ButtonsStructure::ALL_ABOUT_BONUSES => 'App\Conversations\MainMenu\BonusesConversation',
             ButtonsStructure::ADDRESS_HISTORY_MENU => 'App\Conversations\MainMenu\AddressesHistoryConversation',
             ButtonsStructure::FAVORITE_ADDRESSES_MENU => 'App\Conversations\FavoriteAddressesConversation',
             ButtonsStructure::BACK => 'menu',
@@ -101,11 +101,6 @@ class MenuConversation extends BaseConversation
             $this->run(Translator::trans('messages.city has been changed', ['city' => $answer->getText()]));
         });
     }
-
-    public function bonuses($getBalance = false, $message = false)
-    {
-    }
-
 
     public function confirmPhone($first = false)
     {
