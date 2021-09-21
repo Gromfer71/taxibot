@@ -8,7 +8,6 @@ use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
-use Illuminate\Support\Facades\Log;
 
 /**
  *  Меню переключения языка пользователя
@@ -42,7 +41,7 @@ class SwitchLangConversation extends BaseConversation
             $message ?: Translator::trans('messages.choose lang'),
             [ButtonsStructure::BACK]
         );
-        Log::info(json_encode(LangPackage::getPackagesName()));
+
         $question = ComplexQuestion::setButtons(
             $question,
             LangPackage::getPackagesName(),
@@ -52,7 +51,7 @@ class SwitchLangConversation extends BaseConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
-            if ($langPackage = LangPackage::getByName($answer->getValue())) {
+            if ($langPackage = LangPackage::getByName($answer->getText())) {
                 $this->getUser()->switchLang($langPackage->id);
                 $this->bot->startConversation(new MenuConversation());
             } else {
