@@ -39,6 +39,8 @@ class MenuConversation extends BaseConversation
             ButtonsStructure::ADDRESS_HISTORY_MENU => 'App\Conversations\MainMenu\AddressesHistoryConversation',
             ButtonsStructure::FAVORITE_ADDRESSES_MENU => 'App\Conversations\FavoriteAddressesConversation',
             ButtonsStructure::BACK => 'run',
+            ButtonsStructure::LANG_MENU => 'App\Conversations\MainMenu\SwitchLangConversation'
+
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));

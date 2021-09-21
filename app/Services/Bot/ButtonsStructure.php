@@ -24,8 +24,7 @@ class ButtonsStructure extends Button
     public const WORK_AS_DRIVER = 'work as driver';
     public const OUR_SITE = 'our site';
     public const OUR_APP = 'our app';
-    public const CITY_NOT_FOUND = 'city not found';
-
+    public const LANG_MENU = 'lang menu';
 
     /**
      * Структура кнопок главного меню
@@ -39,6 +38,7 @@ class ButtonsStructure extends Button
             ButtonsStructure::REQUEST_CALL,
             ButtonsStructure::CHANGE_PHONE,
             ButtonsStructure::CHANGE_CITY,
+            ButtonsStructure::LANG_MENU,
             ButtonsStructure::PRICE_LIST,
             ButtonsStructure::ALL_ABOUT_BONUSES,
             ButtonsStructure::ADDRESS_HISTORY_MENU,

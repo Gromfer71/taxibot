@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\LtmTranslations;
-use App\Services\Bot\ButtonsStructure;
 use Illuminate\Database\Migrations\Migration;
 
 class AddCityNotFoundMessage extends Migration
@@ -17,7 +16,7 @@ class AddCityNotFoundMessage extends Migration
             [
                 'locale' => 'ru',
                 'group' => 'messages',
-                'key' => ButtonsStructure::CITY_NOT_FOUND,
+                'key' => 'city not found',
                 'value' => 'Город не найден!',
             ]
         );

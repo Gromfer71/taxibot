@@ -215,5 +215,16 @@ class User extends Model
         }
     }
 
+    /**
+     * Переключение языка пользователя
+     *
+     * @param $packageId
+     */
+    public function switchLang($packageId)
+    {
+        $this->lang_id = $packageId;
+        $this->save();
+    }
+
 
 }
