@@ -16,6 +16,6 @@ class LangPackage extends Model
 
     public static function getPackagesName()
     {
-        return self::all('name')->toArray();
+        return self::all('name')->pluck('name')->toArray();
     }
 }
