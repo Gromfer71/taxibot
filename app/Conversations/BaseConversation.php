@@ -65,6 +65,7 @@ abstract class BaseConversation extends Conversation
 
     public function handleAction($value, $replaceActions = [])
     {
+        \Illuminate\Support\Facades\Log::info(($value));
         $callbackOrMethodName = $this->getActions($replaceActions)[$value] ?? '';
         if (is_callable($callbackOrMethodName)) {
             $callbackOrMethodName();
