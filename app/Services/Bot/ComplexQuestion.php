@@ -50,11 +50,13 @@ class ComplexQuestion extends Question
     ): Question {
         foreach ($buttonTexts as $buttonText) {
             $value = array_get(explode('.', $buttonText), 1);
-            $button = Button::create(Translator::trans($buttonText))->additionalParameters($additionalParameters);
+            $button = Button::create(
+                $withoutTrans ? $buttonText : Translator::trans($buttonText)
+            )->additionalParameters($additionalParameters);
             if ($value) {
                 $button->value($value);
             } else {
-                $button->value(Translator::trans($buttonText));
+                $button->value($withoutTrans ? $buttonText : Translator::trans($buttonText));
             }
             $question->addButton($button);
         }
