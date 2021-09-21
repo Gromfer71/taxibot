@@ -226,5 +226,10 @@ class User extends Model
         $this->save();
     }
 
+    public function lang()
+    {
+        return $this->hasOne(\App\Models\LangPackage::class, 'id', 'lang_id');
+    }
+
 
 }
