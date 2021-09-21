@@ -46,9 +46,6 @@ abstract class BaseConversation extends Conversation
     public function __construct()
     {
         $this->options = new Options();
-        if (is_null(Translator::$lang) && !is_null($this->getUser())) {
-            Translator::setUp($this->getUser());
-        }
     }
 
     public function getDefaultCallback()
@@ -147,10 +144,6 @@ abstract class BaseConversation extends Conversation
 
     public function __($key, $replace = [])
     {
-        if (is_null(Translator::$lang)) {
-            Translator::setUp($this->getUser());
-        }
-
         return Translator::trans($key, $replace);
     }
 
