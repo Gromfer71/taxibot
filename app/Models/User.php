@@ -234,7 +234,7 @@ class User extends Model
      */
     public function lang(): HasOne
     {
-        return $this->hasOne(\App\Models\LangPackage::class, 'id', 'lang_id');
+        return $this->hasOne(LangPackage::class, 'id', 'lang_id');
     }
 
 
