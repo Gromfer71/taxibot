@@ -6,6 +6,7 @@ use App\Services\Translator;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Более удобный класс для генерации вопросов чат-бота
@@ -29,7 +30,7 @@ class ComplexQuestion extends Question
         $buttonTexts = array_map(function ($item) {
             return 'buttons.' . $item;
         }, $buttonTexts);
-
+        Log::info(json_encode($buttonTexts));
         return self::setButtons($question, $buttonTexts, $additionalParameters);
     }
 
@@ -49,7 +50,9 @@ class ComplexQuestion extends Question
         $withoutTrans = false
     ): Question {
         foreach ($buttonTexts as $buttonText) {
+            Log::info('2 - ' . $buttonText);
             $value = array_get(explode('.', $buttonText), 1);
+            Log::info('3 - ' . $value);
             $button = Button::create(
                 $withoutTrans ? $buttonText : Translator::trans($buttonText)
             )->additionalParameters($additionalParameters);
