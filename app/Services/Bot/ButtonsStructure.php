@@ -25,6 +25,7 @@ class ButtonsStructure extends Button
     public const OUR_SITE = 'our site';
     public const OUR_APP = 'our app';
     public const LANG_MENU = 'lang menu';
+    public const EXIT = 'exit';
 
     /**
      * Структура кнопок главного меню

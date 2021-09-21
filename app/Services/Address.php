@@ -13,7 +13,8 @@ use Throwable;
 class Address
 {
 
-    const MAX_ADDRESS_LENGTH = 120;
+    public const MAX_ADDRESS_LENGTH = 120;
+    public const MAX_ADDRESSES_COUNT = 25;
 
     /**
      * @param string $query Адрес который ввел пользователь
@@ -25,7 +26,7 @@ class Address
      */
     public static function getAddresses($query, $cities, Storage $storage)
     {
-        $endpoint = "https://sk-taxi.ru/tmapi/api.php?method=%2Fcommon_api%2F1.0%2Fget_addresses_like2";
+        $endpoint = 'https://sk-taxi.ru/tmapi/api.php?method=%2Fcommon_api%2F1.0%2Fget_addresses_like2';
         $client = new Client();
         $promises = collect();
 
@@ -89,26 +90,25 @@ class Address
         return $cities;
     }
 
-    private static function _log($url, $params, $result)
-    {
-        $log = new LogApi();
-        $log->params = $params;
-        $log->url = $url;
-        $log->result = $result;
-        $log->save();
-    }
-
     public static function sortAddresses($addresses, $storage)
     {
         $addresses = collect($addresses)->sort(function ($a, $b) use ($storage) {
             $city = $storage->get('city');
-            if ($a['city'] == $city && $b['city'] != $city) return -1;
-            if ($a['city'] != $city && $b['city'] == $city) return 1;
+            if ($a['city'] == $city && $b['city'] != $city) {
+                return -1;
+            }
+            if ($a['city'] != $city && $b['city'] == $city) {
+                return 1;
+            }
             $kinds = ['house' => 99, 'street' => 50, 'point' => 1];
             $aKind = $kinds[$a['kind']];
             $bKind = $kinds[$b['kind']];
-            if ($aKind > $bKind) return -1;
-            if ($aKind < $bKind) return 1;
+            if ($aKind > $bKind) {
+                return -1;
+            }
+            if ($aKind < $bKind) {
+                return 1;
+            }
             if ($aKind == $bKind && $b['kind'] == 'house') {
                 return strcasecmp($a['house'], $b['house']);
             }
@@ -116,7 +116,6 @@ class Address
             return 0;
         });
         return $addresses;
-
     }
 
     public static function getCitiesWithOneCrewId($cities, $crewId)
@@ -129,7 +128,6 @@ class Address
         });
 
         return $cities;
-
     }
 
     public static function haveEndAddressFromStorageAndAllAdressesIsReal(Storage $userStorage)
@@ -137,7 +135,9 @@ class Address
         if (count((array)$userStorage->get('lat')) > 1) {
             $address = (array)$userStorage->get('lat');
             foreach ($address as $item) {
-                if ($item == 0) return false;
+                if ($item == 0) {
+                    return false;
+                }
             }
             return true;
         } else {
@@ -149,18 +149,22 @@ class Address
     {
         if (count((array)$userStorage->get('lat')) > 0) {
             $address = collect((array)$userStorage->get('lat'))->first();
-            if ($address == 0) return false;
+            if ($address == 0) {
+                return false;
+            }
             return true;
         } else {
             return false;
         }
     }
 
-
     public static function findByAnswer($addressesList, $answer)
     {
         return collect($addressesList)->filter(function ($item) use ($answer) {
-            if (stripos(Address::toString($item), self::removeEllipsisFromAddressIfExists($answer->getText())) !== false) {
+            if (stripos(
+                    Address::toString($item),
+                    self::removeEllipsisFromAddressIfExists($answer->getText())
+                ) !== false) {
                 return $item;
             }
         })->first();
@@ -173,14 +177,17 @@ class Address
         }
         if ($address['kind'] == 'point') {
             $street = '';
-            if (!empty($address['street'])) $street .= ', ' . $address['street'];
-            if (!empty($address['house'])) $street .= ' ' . $address['house'];
+            if (!empty($address['street'])) {
+                $street .= ', ' . $address['street'];
+            }
+            if (!empty($address['house'])) {
+                $street .= ' ' . $address['house'];
+            }
             return self::subStrAddress($address['point'] . ' (' . $address['city'] . $street . ')');
         }
         if ($address['kind'] == 'street') {
             return self::subStrAddress($address['street'] . ' (' . $address['city'] . ')');
         }
-
     }
 
     public static function subStrAddress($address)
@@ -210,6 +217,15 @@ class Address
         } else {
             return false;
         }
+    }
+
+    private static function _log($url, $params, $result)
+    {
+        $log = new LogApi();
+        $log->params = $params;
+        $log->url = $url;
+        $log->result = $result;
+        $log->save();
     }
 
 }

@@ -1,23 +1,141 @@
 <?php
 
-
 namespace App\Conversations;
-
 
 use App\Conversations\MainMenu\MenuConversation;
 use App\Models\AddressHistory;
 use App\Models\Log;
 use App\Services\Address;
+use App\Services\Bot\ButtonsStructure;
+use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
+use App\Services\Translator;
 use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 
+/**
+ *  Диалог для получения маршрута
+ */
 class TakingAddressConversation extends BaseAddressConversation
 {
     use TakingAddressTrait;
+
+    /**
+     * Массив действий под определенную кнопку. Если значение это анонимная функция, то выполнится она, если имя метода,
+     * то выполнится он в контексте текущего класса, если название класса (с полным путем), то запустится его Conversation.
+     *
+     * @param array $replaceActions
+     * @return array
+     */
+    public function getActions(array $replaceActions = []): array
+    {
+        $actions = [
+            ButtonsStructure::EXIT => 'App\Conversations\MainMenu\MenuConversation',
+        ];
+
+        return parent::getActions(array_replace_recursive($actions, $replaceActions));
+    }
+
+    /**
+     * @return void
+     */
+    public function run()
+    {
+        $this->getAddress();
+    }
+
+    public function getAddress()
+    {
+        $this->saveCityInformation();
+
+        $question = ComplexQuestion::createWithSimpleButtons(
+            $this->addAddressesToMessage(Translator::trans('messages.give me your address'))
+            [ButtonsStructure::EXIT],
+            ['location' => 'addresses']
+        );
+        $question = $this->_addAddressFavoriteButtons($question);
+        $question = $this->_addAddressHistoryButtons($question);
+
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer->getValue());
+
+            $address = $this->_getAddressFromHistoryByAnswer($answer);
+            if ($address) {
+                $this->handleFirstAddress($address);
+            } else {
+                $this->_saveFirstAddress($answer->getText());
+                $addressesList = $this->getAddressesList();
+                if ($addressesList->isEmpty()) {
+                    $this->streetNotFound();
+                } else {
+                    $this->getAddressAgain();
+                }
+            }
+        });
+    }
+
+    public function getAddressAgain()
+    {
+        $addressesList = $this->getAddressesList();
+        $question = ComplexQuestion::createWithSimpleButtons(
+            $this->addAddressesFromApi(Translator::trans('messages.give address again'))
+            [ButtonsStructure::EXIT],
+            ['location' => 'addresses']
+        );
+
+        if ($addressesList->isNotEmpty()) {
+            $this->_sayDebug('addressesList->isNotEmpty');
+
+            foreach ($addressesList as $key => $address) {
+                $question->addButton(
+                    Button::create(Address::toString($address))->value(
+                        Address::toString($address)
+                    )->additionalParameters(['number' => $key + 1])
+                );
+            }
+        } else {
+            $this->_sayDebug('addressesList->isEmpty');
+            $this->streetNotFound();
+            return;
+        }
+
+        $this->_sayDebug('getAddressAgain3');
+        return $this->ask(
+            $question,
+            function (Answer $answer) use ($addressesList) {
+                Log::newLogAnswer($this->bot, $answer);
+                if ($answer->getValue() == 'exit' && $answer->isInteractiveMessageReply()) {
+                    $this->bot->startConversation(new MenuConversation());
+                    return;
+                }
+
+                $address = Address::findByAnswer($addressesList, $answer);
+
+                if ($address) {
+                    if ($address['kind'] == 'street') {
+                        $this->bot->userStorage()->save(['address' => $address['street']]);
+                        $this->forgetWriteHouse();
+                        return;
+                    }
+                    $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
+                    $this->_saveFirstAddress(
+                        Address::toString($address),
+                        $crew_group_id,
+                        $address['coords']['lat'],
+                        $address['coords']['lon'],
+                        $address['city']
+                    );
+                    $this->getEntrance();
+                } else {
+                    $this->_saveFirstAddress($answer->getText());
+                    $this->getAddressAgain();
+                }
+            }
+        );
+    }
 
     public
     function streetNotFoundAddressTo()
@@ -254,73 +372,6 @@ class TakingAddressConversation extends BaseAddressConversation
         });
     }
 
-    public function getAddressAgain()
-    {
-        $this->_sayDebug('getAddressAgain');
-
-        $addressesList = collect(
-            Address::getAddresses(
-                $this->bot->userStorage()->get('address'),
-                (new Options($this->bot->userStorage()))->getCities(),
-                $this->bot->userStorage()
-            )
-        )->take(25);
-        $questionText = $this->addAddressesFromApi($this->__('messages.give address again'), $addressesList);
-        $question = Question::create($questionText, $this->bot->getUser()->getId());
-        $this->_sayDebug('getAddressAgain2');
-        $question->addButton(
-            Button::create($this->__('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses'])
-        );
-        if ($addressesList->isNotEmpty()) {
-            $this->_sayDebug('addressesList->isNotEmpty');
-
-            foreach ($addressesList as $key => $address) {
-                $question->addButton(
-                    Button::create(Address::toString($address))->value(
-                        Address::toString($address)
-                    )->additionalParameters(['number' => $key + 1])
-                );
-            }
-        } else {
-            $this->_sayDebug('addressesList->isEmpty');
-            $this->streetNotFound();
-            return;
-        }
-
-        $this->_sayDebug('getAddressAgain3');
-        return $this->ask(
-            $question,
-            function (Answer $answer) use ($addressesList) {
-                Log::newLogAnswer($this->bot, $answer);
-                if ($answer->getValue() == 'exit' && $answer->isInteractiveMessageReply()) {
-                    $this->bot->startConversation(new MenuConversation());
-                    return;
-                }
-
-                $address = Address::findByAnswer($addressesList, $answer);
-
-                if ($address) {
-                    if ($address['kind'] == 'street') {
-                        $this->bot->userStorage()->save(['address' => $address['street']]);
-                        $this->forgetWriteHouse();
-                        return;
-                    }
-                    $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
-                    $this->_saveFirstAddress(
-                        Address::toString($address),
-                        $crew_group_id,
-                        $address['coords']['lat'],
-                        $address['coords']['lon'],
-                        $address['city']
-                    );
-                    $this->getEntrance();
-                } else {
-                    $this->_saveFirstAddress($answer->getText());
-                    $this->getAddressAgain();
-                }
-            }
-        );
-    }
 
     public
     function streetNotFound()
@@ -358,75 +409,6 @@ class TakingAddressConversation extends BaseAddressConversation
         );
     }
 
-    public function getAddress()
-    {
-        $this->saveCityInformation();
-        $questionText = $this->__('messages.give me your address');
-        $questionText = $this->addAddressesToMessage($questionText);
-
-
-        $question = Question::create($questionText, $this->bot->getUser()->getId())
-            ->addButton(
-                Button::create($this->__('buttons.exit'))->value('exit')->additionalParameters(
-                    ['location' => 'addresses']
-                )
-            );
-
-
-        $question = $this->_addAddressFavoriteButtons($question);
-        $question = $this->_addAddressHistoryButtons($question);
-
-
-        return $this->ask($question, function (Answer $answer) {
-            Log::newLogAnswer($this->bot, $answer);
-            if ($answer->isInteractiveMessageReply()) {
-                if ($answer->getValue() == 'exit') {
-                    $this->bot->startConversation(new MenuConversation());
-                    return;
-                }
-            }
-
-            $address = $this->_getAddressFromHistoryByAnswer($answer);
-            if ($address) {
-                if ($address['city'] == '') {
-                    $crew_group_id = false;
-                } else {
-                    $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
-                }
-                if ($address['lat'] == 0) {
-                    $this->bot->userStorage()->save(['first_address_from_history_incorrect' => 1]);
-                }
-
-                $this->_saveFirstAddress(
-                    $address->address,
-                    $crew_group_id,
-                    $address['lat'],
-                    $address['lon'],
-                    $address['city']
-                );
-                if ($this->_hasEntrance($address->address)) {
-                    $this->getAddressTo();
-                } else {
-                    $this->getEntrance();
-                }
-            } else {
-                $this->_saveFirstAddress($answer->getText());
-                $addressesList = collect(
-                    Address::getAddresses(
-                        $this->bot->userStorage()->get('address'),
-                        (new Options($this->bot->userStorage()))->getCities(),
-                        $this->bot->userStorage()
-                    )
-                );
-                if ($addressesList->isEmpty()) {
-                    $this->streetNotFound();
-                } else {
-                    $this->getAddressAgain();
-                }
-            }
-        }
-        );
-    }
 
     public function getEntrance()
     {
@@ -470,9 +452,5 @@ class TakingAddressConversation extends BaseAddressConversation
         });
     }
 
-    public
-    function run()
-    {
-        $this->getAddress();
-    }
+
 }
