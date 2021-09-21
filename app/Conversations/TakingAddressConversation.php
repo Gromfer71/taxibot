@@ -88,7 +88,7 @@ class TakingAddressConversation extends BaseAddressConversation
 
         $question = ComplexQuestion::setAddressButtons(
             $question,
-            $addressesList->each(function ($address) {
+            $addressesList->map(function ($address) {
                 $address->address = Address::toString($address);
             })
         );
