@@ -54,6 +54,9 @@ class MenuConversation extends BaseConversation
      */
     public function run($message = null): MenuConversation
     {
+        // В главном меню обновляем язык вручную т.к. после изменения языка он меняется только после нажатия кнопки
+        Translator::$lang = $this->getUser()->lang->code;
+
         $this->bot->userStorage()->delete();
         OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
 
