@@ -52,7 +52,7 @@ class TakingAddressConversation extends BaseAddressConversation
         $this->saveCityInformation();
 
         $question = ComplexQuestion::createWithSimpleButtons(
-            $this->addAddressesToMessage(Translator::trans('messages.give me your address'))
+            $this->addAddressesToMessage(Translator::trans('messages.give me your address')),
             [ButtonsStructure::EXIT],
             ['location' => 'addresses']
         );
@@ -81,7 +81,7 @@ class TakingAddressConversation extends BaseAddressConversation
     {
         $addressesList = $this->getAddressesList();
         $question = ComplexQuestion::createWithSimpleButtons(
-            $this->addAddressesFromApi(Translator::trans('messages.give address again'))
+            $this->addAddressesFromApi(Translator::trans('messages.give address again'), $addressesList)
             [ButtonsStructure::EXIT],
             ['location' => 'addresses']
         );
