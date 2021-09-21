@@ -20,7 +20,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
 
-     <link href="{{ asset('ulkit/css/uikit.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('ulkit/css/uikit.min.css') }}" rel="stylesheet">
     <script src="{{ asset('ulkit/js/uikit.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.13/dist/js/uikit-icons.min.js"></script>
 
@@ -34,7 +34,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.1/chart.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.1/css/jquery.dataTables.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.js"></script>
 </head>
 <body>
 <div id="app">
@@ -67,37 +68,48 @@
     <div class="container-fluid">
         <div class="row">
             @auth
-            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-                <div class="sidebar-sticky pt-3">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link @if(request()->url() == route('bot_settings')) active @endif" href="{{ route('bot_settings') }}">
-                                Настройки  <span class="sr-only">(current)</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @if(request()->url() == route('users')) active @endif" href="{{ route('users') }}">
-                                Пользователи
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @if(request()->path() == 'translations/messages') active @endif" href="/translations/messages">
-                                Редактор сообщений
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @if(request()->path() == 'translations/buttons') active @endif" href="/translations/buttons">
-                                Редактор кнопок
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @if(request()->url() == route('error_reports')) active @endif" href="{{ route('error_reports') }}">
-                                Журнал ошибок
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+                <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                    <div class="sidebar-sticky pt-3">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link @if(request()->url() == route('bot_settings')) active @endif"
+                                   href="{{ route('bot_settings') }}">
+                                    Настройки <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @if(request()->url() == route('users')) active @endif"
+                                   href="{{ route('users') }}">
+                                    Пользователи
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @if(request()->path() == 'translations') active @endif"
+                                   href="/translations">
+                                    Редактор языковых пакетов
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @if(request()->path() == 'translations/messages') active @endif"
+                                   href="/translations/messages">
+                                    Редактор сообщений
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @if(request()->path() == 'translations/buttons') active @endif"
+                                   href="/translations/buttons">
+                                    Редактор кнопок
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @if(request()->url() == route('error_reports')) active @endif"
+                                   href="{{ route('error_reports') }}">
+                                    Журнал ошибок
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
             @endauth
 
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
@@ -113,7 +125,7 @@
                         UIkit.notification({message: "{{ session('error') }}", pos: 'top-center', status: 'danger'})
                     </script>
                 @endif
-                    @yield('content')
+                @yield('content')
 
             </main>
         </div>

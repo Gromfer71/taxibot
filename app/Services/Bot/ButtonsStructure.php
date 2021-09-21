@@ -24,6 +24,7 @@ class ButtonsStructure extends Button
     public const WORK_AS_DRIVER = 'work as driver';
     public const OUR_SITE = 'our site';
     public const OUR_APP = 'our app';
+    public const CITY_NOT_FOUND = 'city not found';
 
 
     /**

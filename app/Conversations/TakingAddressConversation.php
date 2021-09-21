@@ -7,16 +7,17 @@ namespace App\Conversations;
 use App\Conversations\MainMenu\MenuConversation;
 use App\Models\AddressHistory;
 use App\Models\Log;
-use App\Models\User;
 use App\Services\Address;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
+use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 
 class TakingAddressConversation extends BaseAddressConversation
 {
+    use TakingAddressTrait;
 
     public
     function streetNotFoundAddressTo()
@@ -359,12 +360,7 @@ class TakingAddressConversation extends BaseAddressConversation
 
     public function getAddress()
     {
-        $options = new Options($this->bot->userStorage());
-        $crewGroupId = $options->getCrewGroupIdFromCity(User::find($this->bot->getUser()->getId())->city ?? null);
-        $district = $options->getDistrictFromCity(User::find($this->bot->getUser()->getId())->city ?? null);
-        $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
-        $this->bot->userStorage()->save(['district' => $district]);
-        $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
+        $this->saveCityInformation();
         $questionText = $this->__('messages.give me your address');
         $questionText = $this->addAddressesToMessage($questionText);
 
