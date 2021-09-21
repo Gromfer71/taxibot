@@ -86,23 +86,13 @@ class TakingAddressConversation extends BaseAddressConversation
             ['location' => 'addresses']
         );
 
-        if ($addressesList->isNotEmpty()) {
-            $this->_sayDebug('addressesList->isNotEmpty');
+        $question = ComplexQuestion::setAddressButtons(
+            $question,
+            $addressesList->each(function ($address) {
+                $address->address = Address::toString($address);
+            })
+        );
 
-            foreach ($addressesList as $key => $address) {
-                $question->addButton(
-                    Button::create(Address::toString($address))->value(
-                        Address::toString($address)
-                    )->additionalParameters(['number' => $key + 1])
-                );
-            }
-        } else {
-            $this->_sayDebug('addressesList->isEmpty');
-            $this->streetNotFound();
-            return;
-        }
-
-        $this->_sayDebug('getAddressAgain3');
         return $this->ask(
             $question,
             function (Answer $answer) use ($addressesList) {
