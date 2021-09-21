@@ -40,6 +40,14 @@ class Translator
      */
     public static function trans($key, array $replace = [])
     {
+        if (trans($key, $replace, self::$lang) == $key) {
+            if (trans($key, $replace, 'ru') == $key) {
+                return 'Упс, данное сообщение не переведено ни на один язык!';
+            }
+
+            return trans($key, $replace, 'ru');
+        }
+
         return trans($key, $replace, self::$lang);
     }
 }
