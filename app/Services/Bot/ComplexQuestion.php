@@ -40,13 +40,14 @@ class ComplexQuestion extends Question
      * @param $question
      * @param array $buttonTexts
      * @param array $additionalParameters
+     * @param bool $withoutTrans
      * @return Question
      */
     public static function setButtons(
         $question,
         array $buttonTexts = [],
         array $additionalParameters = [],
-        $withoutTrans = false
+        bool $withoutTrans = false
     ): Question {
         foreach ($buttonTexts as $buttonText) {
             $value = array_get(explode('.', $buttonText), 1);

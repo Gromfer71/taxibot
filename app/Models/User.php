@@ -9,6 +9,7 @@ use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\User
@@ -226,7 +227,12 @@ class User extends Model
         $this->save();
     }
 
-    public function lang()
+    /**
+     * Языковой пакет пользователя
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function lang(): HasOne
     {
         return $this->hasOne(\App\Models\LangPackage::class, 'id', 'lang_id');
     }
