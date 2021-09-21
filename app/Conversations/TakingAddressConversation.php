@@ -115,7 +115,6 @@ class TakingAddressConversation extends BaseAddressConversation
                 $address = Address::findByAnswer($addressesList, $answer);
                 if ($address) {
                     $this->handleFirstChosenAddress($address);
-                    $this->getEntrance();
                 } else {
                     $this->_saveFirstAddress($answer->getText());
                     $this->getAddressAgain();

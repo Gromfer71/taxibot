@@ -83,6 +83,7 @@ trait TakingAddressTrait
             $address['coords']['lon'],
             $address['city']
         );
+        $this->getEntrance();
     }
 
 }
