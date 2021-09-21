@@ -3,10 +3,10 @@
 namespace App\Conversations\MainMenu;
 
 use App\Conversations\BaseConversation;
-use App\Models\LangPackage;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
+use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
 /**
