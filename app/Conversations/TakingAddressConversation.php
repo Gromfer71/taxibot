@@ -81,7 +81,7 @@ class TakingAddressConversation extends BaseAddressConversation
     {
         $addressesList = $this->getAddressesList();
         $question = ComplexQuestion::createWithSimpleButtons(
-            $this->addAddressesFromApi(Translator::trans('messages.give address again'), $addressesList)
+            $this->addAddressesFromApi(Translator::trans('messages.give address again'), $addressesList),
             [ButtonsStructure::EXIT],
             ['location' => 'addresses']
         );
