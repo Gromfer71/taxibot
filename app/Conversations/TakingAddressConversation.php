@@ -47,7 +47,12 @@ class TakingAddressConversation extends BaseAddressConversation
         $this->getAddress();
     }
 
-    public function getAddress()
+    /**
+     * Ввод начального адреса пользователя
+     *
+     * @return \App\Conversations\TakingAddressConversation
+     */
+    public function getAddress(): TakingAddressConversation
     {
         $this->saveCityInformation();
 
@@ -56,16 +61,19 @@ class TakingAddressConversation extends BaseAddressConversation
             [ButtonsStructure::EXIT],
             ['location' => 'addresses']
         );
+        // Добавляем в кнопки избранные адреса и адреса из истории
         $question = $this->_addAddressFavoriteButtons($question);
         $question = $this->_addAddressHistoryButtons($question);
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
-
+            // Определяем ввод пользователя - это выбранный адрес из списка или введенный вручную
             $address = $this->_getAddressFromHistoryByAnswer($answer);
             if ($address) {
+                // если выбранный, то сохраняем его и идем дальше
                 $this->handleFirstAddress($address);
             } else {
+                // если введенный, то сохраняем его и выводим список похожих адресов
                 $this->_saveFirstAddress($answer->getText());
                 $addressesList = $this->getAddressesList();
                 if ($addressesList->isEmpty()) {
@@ -77,7 +85,14 @@ class TakingAddressConversation extends BaseAddressConversation
         });
     }
 
-    public function getAddressAgain()
+    /**
+     * Меню выбора первого адреса маршрута, после ввода адреса пользователем. Пользователь выбирает из предложенного списка.
+     * В зависимости от выбранного адреса бот отправляет в сценарий, если выбрана только улица без номера дома, либо если всё
+     * хорошо, то на ввод подъезда. Либо пользователь просто вводит первый адрес снова, тогда он попадает на этот же диалог.
+     *
+     * @return \App\Conversations\TakingAddressConversation
+     */
+    public function getAddressAgain(): TakingAddressConversation
     {
         $addressesList = $this->getAddressesList();
         $question = ComplexQuestion::createWithSimpleButtons(
@@ -96,28 +111,10 @@ class TakingAddressConversation extends BaseAddressConversation
         return $this->ask(
             $question,
             function (Answer $answer) use ($addressesList) {
-                Log::newLogAnswer($this->bot, $answer);
-                if ($answer->getValue() == 'exit' && $answer->isInteractiveMessageReply()) {
-                    $this->bot->startConversation(new MenuConversation());
-                    return;
-                }
-
+                $this->handleAction($answer->getValue());
                 $address = Address::findByAnswer($addressesList, $answer);
-
                 if ($address) {
-                    if ($address['kind'] == 'street') {
-                        $this->bot->userStorage()->save(['address' => $address['street']]);
-                        $this->forgetWriteHouse();
-                        return;
-                    }
-                    $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
-                    $this->_saveFirstAddress(
-                        Address::toString($address),
-                        $crew_group_id,
-                        $address['coords']['lat'],
-                        $address['coords']['lon'],
-                        $address['city']
-                    );
+                    $this->handleFirstChosenAddress($address);
                     $this->getEntrance();
                 } else {
                     $this->_saveFirstAddress($answer->getText());

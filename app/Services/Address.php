@@ -8,7 +8,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Promise\Utils;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Str;
-use Throwable;
 
 class Address
 {
@@ -17,14 +16,14 @@ class Address
     public const MAX_ADDRESSES_COUNT = 25;
 
     /**
-     * @param string $query Адрес который ввел пользователь
+     * @param string $query Адрес, который ввел пользователь
      * @param          $cities
-     * @param          $storage
+     * @param \BotMan\BotMan\Storages\Storage $storage
      *
-     * @return array|mixed
-     * @throws Throwable
+     * @return array|\Illuminate\Support\Collection|\Tightenco\Collect\Support\Collection
+     * @throws \Throwable
      */
-    public static function getAddresses($query, $cities, Storage $storage)
+    public static function getAddresses(string $query, $cities, Storage $storage)
     {
         $endpoint = 'https://sk-taxi.ru/tmapi/api.php?method=%2Fcommon_api%2F1.0%2Fget_addresses_like2';
         $client = new Client();

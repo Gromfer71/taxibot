@@ -48,6 +48,12 @@ trait TakingAddressTrait
         }
     }
 
+    /**
+     * Возвращает коллекцию адресов из api, похожих на те, что ввел пользователь
+     *
+     * @return \Illuminate\Support\Collection|\Tightenco\Collect\Support\Collection
+     * @throws \Throwable
+     */
     public function getAddressesList()
     {
         return collect(
@@ -57,6 +63,26 @@ trait TakingAddressTrait
                 $this->bot->userStorage()
             )
         )->take(Address::MAX_ADDRESSES_COUNT);
+    }
+
+    /**
+     * Обработка выбранного из списка первого адреса
+     */
+    public function handleFirstChosenAddress(array $address)
+    {
+        if ($address['kind'] == 'street') {
+            $this->bot->userStorage()->save(['address' => $address['street']]);
+            $this->forgetWriteHouse();
+            return;
+        }
+        $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
+        $this->_saveFirstAddress(
+            Address::toString($address),
+            $crew_group_id,
+            $address['coords']['lat'],
+            $address['coords']['lon'],
+            $address['city']
+        );
     }
 
 }
