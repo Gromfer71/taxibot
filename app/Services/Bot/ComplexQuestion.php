@@ -45,7 +45,8 @@ class ComplexQuestion extends Question
     public static function setButtons(
         $question,
         array $buttonTexts = [],
-        array $additionalParameters = []
+        array $additionalParameters = [],
+        $withoutTrans = false
     ): Question {
         foreach ($buttonTexts as $buttonText) {
             $value = array_get(explode('.', $buttonText), 1);
