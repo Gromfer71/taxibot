@@ -8,7 +8,8 @@
     <form action="{{ route('add_user') }}" method="POST">
         @csrf
         <br>
-        <input type="text" required name="phone" class="form-control" pattern="[0-9]{10}" placeholder="Номер телефона (в формате 9ХХХХХХХХХ)">
+        <input type="text" required name="phone" class="form-control" pattern="[0-9]{10}"
+               placeholder="Номер телефона (в формате 9ХХХХХХХХХ)">
         <br>
         <button type="submit" class="btn btn-primary">Добавить пользователя</button>
         <br><br>
@@ -17,14 +18,14 @@
     <div class="layer uk-padding-large" style="overflow-x: scroll; white-space: nowrap;">
         <table id="table_id" class="display">
             <thead>
-                <tr>
-                    <th>Телеграм ID</th>
-                    <th>ВК ID</th>
-                    <th>Логин</th>
-                    <th>Телефон</th>
-                    <th>Заблокирован</th>
-                    <th>Действия</th>
-                </tr>
+            <tr>
+                <th>Телеграм ID</th>
+                <th>ВК ID</th>
+                <th>Логин</th>
+                <th>Телефон</th>
+                <th>Заблокирован</th>
+                <th>Действия</th>
+            </tr>
             </thead>
             <tbody>
             @foreach($users as $user)
@@ -52,14 +53,14 @@
 
 @push('scripts')
     <script>
-        $(document).ready( function () {
-
+        $(document).ready(function () {
+            $.noConflict();
             $('#table_id').DataTable({
                 "autoWidth": true,
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
                 },
             });
-        } );
+        });
     </script>
 @endpush

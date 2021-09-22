@@ -91,6 +91,7 @@ class TakingAddressConversation extends BaseAddressConversation
      * хорошо, то на ввод подъезда. Либо пользователь просто вводит первый адрес снова, тогда он попадает на этот же диалог.
      *
      * @return \App\Conversations\TakingAddressConversation
+     * @throws \Throwable
      */
     public function getAddressAgain(): TakingAddressConversation
     {
