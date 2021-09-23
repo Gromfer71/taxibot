@@ -44,7 +44,7 @@ class SwitchLangConversation extends BaseConversation
 
         $question = ComplexQuestion::setButtons(
             $question,
-            LangPackage::getPackagesName(),
+            LangPackage::getOnlyEnablesPackagesName(),
             [],
             true
         );
