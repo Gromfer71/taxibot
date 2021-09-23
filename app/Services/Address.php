@@ -148,6 +148,7 @@ class Address
     {
         if (count((array)$userStorage->get('lat')) > 0) {
             $address = collect((array)$userStorage->get('lat'))->first();
+
             if ($address == 0) {
                 return false;
             }

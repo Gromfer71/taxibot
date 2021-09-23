@@ -423,7 +423,7 @@
             echo $group ?>'!</p>
     </div>
     <div class="alert alert-success success-publish-all" style="display:none;">
-        <p>Done publishing the translations for all group!</p>
+        <p>Успешно!</p>
     </div>
     <?php
     if (Session::has('successPublish')) : ?>
@@ -434,38 +434,7 @@
     <?php
     endif; ?>
     <p>
-    <?php
-    if (!isset($group)) : ?>
-    <!--    <form class="form-import" method="POST" action="--><?php
-    //echo action('\Barryvdh\TranslationManager\Controller@postImport') ?><!--" data-remote="true" role="form">-->
-        <!--        <input type="hidden" name="_token" value="--><?php
-    //echo csrf_token(); ?><!--">-->
-        <!--        <div class="form-group">-->
-        <!--            <div class="row">-->
-        <!--                <div class="col-sm-3">-->
-        <!--                    <select name="replace" class="form-control">-->
-        <!--                        <option value="0">Append new translations</option>-->
-        <!--                        <option value="1">Replace existing translations</option>-->
-        <!--                    </select>-->
-        <!--                </div>-->
-        <!--                <div class="col-sm-2">-->
-        <!--                    <button type="submit" class="btn btn-success btn-block"  data-disable-with="Loading..">Import groups</button>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <!--    </form>-->
-        <!--    <form class="form-find" method="POST" action="--><?php
-    //    echo action('\Barryvdh\TranslationManager\Controller@postFind') ?><!--" data-remote="true" role="form"-->
-        <!--          data-confirm="Are you sure you want to scan you app folder? All found translation keys will be added to the database.">-->
-        <!--        <div class="form-group">-->
-        <!--            <input type="hidden" name="_token" value="--><?php
-    //            echo csrf_token(); ?><!--">-->
-        <!--            <button type="submit" class="btn btn-info" data-disable-with="Searching..">Find translations in files-->
-        <!--            </button>-->
-        <!--        </div>-->
-        <!--    </form>-->
-    <?php
-    endif; ?>
+
     <?php
     if (isset($group)) : ?>
     <form class="form-inline form-publish" method="POST" action="<?php
@@ -639,34 +608,45 @@
         <a href="translations/view/messages" class="btn btn-success">Редактор сообщений</a>
         <a href="translations/view/buttons" class="btn btn-success">Редактор кнопок</a>
         <legend>Редактор языков</legend>
-        <br>
+        <br><br>
         <form class="form-remove-locale " method="POST" role="form" action="<?php
         echo action('\Barryvdh\TranslationManager\Controller@postRemoveLocale') ?>">
             <input type="hidden" name="_token" value="<?php
             echo csrf_token(); ?>">
             <ul class="list-locales uk-margin">
                 <?php
-                foreach ($locales as $locale): ?>
+                foreach (LangPackage::all() as $locale): ?>
                 <li>
                     <div class="form-group">
                         <button type="submit" name="remove-locale[<?php
-                        echo $locale ?>]" class="btn btn-danger btn-xs" data-disable-with="...">
-                            &times;
+                        echo $locale->code ?>]" class="btn btn-danger btn-xs" data-disable-with="...">
+                            Удалить
                         </button>
                         <button type="submit" name="toggle-locale[<?php
-                        echo $locale ?>]" class="btn btn-warning btn-xs" data-disable-with="...">
+                        echo $locale->code ?>]" class="btn btn-warning btn-xs" data-disable-with="...">
 
-                            @if(\Barryvdh\TranslationManager\Models\LangPackage::getByCode($locale)->is_enable)
+                            @if($locale->is_enable)
                                 Выключить
                             @else
                                 Включить
                             @endif
                         </button>
+                        <input type="text" class="btn-xs" name="rename-locale-text[<?php
+                        echo $locale->code ?>]">
+                        <button type="submit" name="rename-locale[<?php
+                        echo $locale->code ?>]" class="btn btn-primary btn-xs change-name"
+                                data-code="{{ $locale->code }}">
+                            Переименовать
+                        </button>
+                        <b>
+                            <?php
+                            echo $locale->code ?>
+                        </b>
+                        (имя в
+                        боте
+                        <b>{{ $locale->name }}</b>)
                         <?php
-                        echo $locale ?>
-
-                        <?php
-                        if (LangPackage::where('code', $locale)->first()->is_enable ?? true): ?>
+                        if ($locale->is_enable ): ?>
                         (включен)
                         <?php
                         else: ?>
@@ -681,6 +661,8 @@
                 endforeach; ?>
             </ul>
         </form>
+
+
         <form class="form-add-locale" method="POST" role="form" action="<?php
         echo action('\Barryvdh\TranslationManager\Controller@postAddLocale') ?>">
             <input type="hidden" name="_token" value="<?php
@@ -703,24 +685,52 @@
                 <br>
                 <div class="row">
                     <div class="col-sm-2">
-                        <button type="submit" class="btn btn-default btn-block" data-disable-with="Adding..">Добавить
+                        <button type="submit" class="btn btn-default btn-block" data-disable-with="Adding..">
+                            Добавить
                             новый язык
                         </button>
                     </div>
                 </div>
             </div>
+
+        </form>
 </div>
-</form>
+
 </fieldset>
-<fieldset>
-    <legend>Export all translations</legend>
+<fieldset style="margin-left: 20px">
+    <legend>Сохранить все переводы (после нажатия, все переводы в таблицах применятся к боту)</legend>
     <form class="form-inline form-publish-all" method="POST" action="<?php
     echo action('\Barryvdh\TranslationManager\Controller@postPublish', '*') ?>" data-remote="true" role="form"
           data-confirm="Are you sure you want to publish all translations group? This will overwrite existing language files.">
         <input type="hidden" name="_token" value="<?php
         echo csrf_token(); ?>">
-        <button type="submit" class="btn btn-primary" data-disable-with="Publishing..">Publish all</button>
+        <button type="submit" class="btn btn-primary" data-disable-with="Publishing..">Опубликовать</button>
     </form>
+    <?php
+    if (!isset($group)) : ?>
+    <form class="form-import" method="POST" action="<?php
+    echo action('\Barryvdh\TranslationManager\Controller@postImport') ?>" data-remote="true" role="form">
+        <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-3 " style="display: none;">
+                    <select name="replace" class="form-control">
+                        <option value="0">Append new translations</option>
+                        <option value="1">Replace existing translations</option>
+                    </select>
+                </div>
+                <div class="col-sm-2 m-2" style="margin-top: 10px;">
+                    <button type="submit" class="btn btn-primary" data-disable-with="Loading..">
+                        Восстановить все пакеты
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    <?php
+    endif; ?>
 </fieldset>
 
 <?php
@@ -729,3 +739,11 @@ endif; ?>
 
 </body>
 </html>
+<script>
+    $(document).ready(function () {
+        $.noConflict();
+        $('.change-name').on('click', function () {
+            $('#code').val($(this).data('code'))
+        })
+    });
+</script>

@@ -75,12 +75,16 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $.noConflict();
 
             var myJsObj = JSON.parse($('#settings').val())
             var str = JSON.stringify(myJsObj, undefined, 2);
             $('#settings').val(str)
+
+            $('.change-password').on('click', function () {
+                $('#phone').val($(this).data('phone'))
+            })
 
             $('#admins-table').DataTable({
                 "autoWidth": true,

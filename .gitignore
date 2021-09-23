@@ -17,3 +17,5 @@ composer.lock
 /tests/Bot/Madeline
 /madeline-74.phar
 /madeline-74.phar.version
+
+storage/.ignore_locales

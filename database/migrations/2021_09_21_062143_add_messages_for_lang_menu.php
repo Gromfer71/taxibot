@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\LtmTranslations;
+use Barryvdh\TranslationManager\Models\Translation;
 use Illuminate\Database\Migrations\Migration;
 
 class AddMessagesForLangMenu extends Migration
@@ -12,7 +12,7 @@ class AddMessagesForLangMenu extends Migration
      */
     public function up()
     {
-        LtmTranslations::firstOrCreate(
+        Translation::firstOrCreate(
             [
                 'locale' => 'ru',
                 'group' => 'messages',
@@ -21,7 +21,7 @@ class AddMessagesForLangMenu extends Migration
             ]
         );
 
-        LtmTranslations::firstOrCreate(
+        Translation::firstOrCreate(
             [
                 'locale' => 'ru',
                 'group' => 'messages',
