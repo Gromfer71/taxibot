@@ -316,8 +316,7 @@
             $.ajaxSetup({
                 beforeSend: function (xhr, settings) {
                     console.log('beforesend');
-                    settings.data += "&_token=<?php use Barryvdh\TranslationManager\Models\LangPackage;echo csrf_token(
-                    ) ?>";
+                    settings.data += "&_token=<?php echo csrf_token() ?>";
                 }
             });
 
@@ -396,13 +395,6 @@
 <header class="navbar navbar-static-top navbar-inverse" id="top" role="banner">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse"
-                    data-target=".bs-navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
             <a href="/" class="navbar-brand">
                 Вернуться назад
             </a>
@@ -410,18 +402,6 @@
     </div>
 </header>
 <div class="container-fluid">
-    <p></p>
-    <div class="alert alert-success success-import" style="display:none;">
-        <p>Done importing, processed <strong class="counter">N</strong> items! Reload this page to refresh the groups!
-        </p>
-    </div>
-    <div class="alert alert-success success-find" style="display:none;">
-        <p>Done searching for translations, found <strong class="counter">N</strong> items!</p>
-    </div>
-    <div class="alert alert-success success-publish" style="display:none;">
-        <p>Done publishing the translations for group '<?php
-            echo $group ?>'!</p>
-    </div>
     <div class="alert alert-success success-publish-all" style="display:none;">
         <p>Успешно!</p>
     </div>
@@ -444,8 +424,6 @@
         <input type="hidden" name="_token" value="<?php
         echo csrf_token(); ?>">
         <button type="submit" class="btn btn-info" data-disable-with="Publishing..">Сохранить переводы</button>
-        <!--            <a href="--><?
-    //= action('\Barryvdh\TranslationManager\Controller@getIndex') ?><!--" class="btn btn-default">Назад</a>-->
     </form>
     <?php
     endif; ?>
@@ -609,57 +587,51 @@
         <a href="translations/view/buttons" class="btn btn-success">Редактор кнопок</a>
         <legend>Редактор языков</legend>
         <br><br>
-        <form class="form-remove-locale " method="POST" role="form" action="<?php
-        echo action('\Barryvdh\TranslationManager\Controller@postRemoveLocale') ?>">
-            <input type="hidden" name="_token" value="<?php
-            echo csrf_token(); ?>">
+        <form class="form-remove-locale " method="POST" role="form"
+              action="{{ action('\Barryvdh\TranslationManager\Controller@postRemoveLocale') }}">
+            @csrf
             <ul class="list-locales uk-margin">
-                <?php
-                foreach (LangPackage::all() as $locale): ?>
-                <li>
-                    <div class="form-group">
-                        <button type="submit" name="remove-locale[<?php
-                        echo $locale->code ?>]" class="btn btn-danger btn-xs" data-disable-with="...">
-                            Удалить
-                        </button>
-                        <button type="submit" name="toggle-locale[<?php
-                        echo $locale->code ?>]" class="btn btn-warning btn-xs" data-disable-with="...">
 
-                            @if($locale->is_enable)
-                                Выключить
+                @foreach (\Barryvdh\TranslationManager\Models\LangPackage::all() as $locale)
+                    <li>
+                        <div class="form-group">
+                            <button type="submit" name="remove-locale[{{ $locale->code }}]"
+                                    class="btn btn-danger btn-xs" data-disable-with="...">
+                                Удалить
+                            </button>
+                            <button type="submit" name="toggle-locale[{{ $locale->code }}]"
+                                    class="btn btn-warning btn-xs" data-disable-with="...">
+
+                                @if($locale->is_enable)
+                                    Выключить
+                                @else
+                                    Включить
+                                @endif
+                            </button>
+                            <input type="text" class="btn-xs" placeholder="Новое название пакета"
+                                   name="rename-locale-text[{{ $locale->code }}]">
+                            <button type="submit" name="rename-locale[{{ $locale->code }}]"
+                                    class="btn btn-primary btn-xs change-name"
+                                    data-code="{{ $locale->code }}">
+                                Переименовать
+                            </button>
+                            <b>
+                                {{ $locale->code }}
+                            </b>
+                            (имя в боте
+                            <b>{{ $locale->name }}</b>)
+
+                            @if ($locale->is_enable)
+                                (включен)
                             @else
-                                Включить
+                                (выключен)
                             @endif
-                        </button>
-                        <input type="text" class="btn-xs" placeholder="Новое название пакета"
-                               name="rename-locale-text[<?php
-                               echo $locale->code ?>]">
-                        <button type="submit" name="rename-locale[<?php
-                        echo $locale->code ?>]" class="btn btn-primary btn-xs change-name"
-                                data-code="{{ $locale->code }}">
-                            Переименовать
-                        </button>
-                        <b>
-                            <?php
-                            echo $locale->code ?>
-                        </b>
-                        (имя в
-                        боте
-                        <b>{{ $locale->name }}</b>)
-                        <?php
-                        if ($locale->is_enable ): ?>
-                        (включен)
-                        <?php
-                        else: ?>
-                        (выключен)
-                        <?php
-                        endif; ?>
 
 
-                    </div>
-                </li>
-                <?php
-                endforeach; ?>
+                        </div>
+                    </li>
+
+                @endforeach
             </ul>
         </form>
 
@@ -742,7 +714,6 @@ endif; ?>
 </html>
 <script>
     $(document).ready(function () {
-        $.noConflict();
         $('.change-name').on('click', function () {
             $('#code').val($(this).data('code'))
         })
