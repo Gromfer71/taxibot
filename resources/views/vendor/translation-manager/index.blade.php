@@ -631,8 +631,9 @@
                                 Включить
                             @endif
                         </button>
-                        <input type="text" class="btn-xs" name="rename-locale-text[<?php
-                        echo $locale->code ?>]">
+                        <input type="text" class="btn-xs" placeholder="Новое название пакета"
+                               name="rename-locale-text[<?php
+                               echo $locale->code ?>]">
                         <button type="submit" name="rename-locale[<?php
                         echo $locale->code ?>]" class="btn btn-primary btn-xs change-name"
                                 data-code="{{ $locale->code }}">
