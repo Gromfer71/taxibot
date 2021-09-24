@@ -79,36 +79,40 @@ trait TakingAddressTrait
         }
     }
 
+    public function saveSecondAddressIfStreet($address)
+    {
+        $this->bot->userStorage()->save(
+            [
+                'address' => collect($this->bot->userStorage()->get('address'))->put(
+                    1,
+                    $address['street']
+                )->toArray()
+            ]
+        );
+    }
+
     public function handleSecondAddressAgain($addressesList, $answer)
     {
         $address = Address::findByAnswer($addressesList, $answer);
 
         if ($address) {
-            if ($address['kind'] == 'street') {
-                $this->bot->userStorage()->save(
-                    [
-                        'address' => collect($this->bot->userStorage()->get('address'))->put(
-                            1,
-                            $address['street']
-                        )->toArray()
-                    ]
-                );
+            if ($this->isAddressIsStreet($address)) {
+                $this->saveSecondAddressIfStreet($address);
                 $this->forgetWriteHouse();
-                return;
+            } else {
+                AddressHistory::newAddress(
+                    $this->getUser()->id,
+                    Address::toString($address),
+                    $address['coords'],
+                    $address['city']
+                );
+                $this->_saveSecondAddress(
+                    Address::toString($address),
+                    $address['coords']['lat'],
+                    $address['coords']['lon']
+                );
+                $this->bot->startConversation(new TaxiMenuConversation());
             }
-
-            AddressHistory::newAddress(
-                $this->getUser()->id,
-                Address::toString($address),
-                $address['coords'],
-                $address['city']
-            );
-            $this->_saveSecondAddress(
-                Address::toString($address),
-                $address['coords']['lat'],
-                $address['coords']['lon']
-            );
-            $this->bot->startConversation(new TaxiMenuConversation());
         } else {
             $this->_saveSecondAddress($answer->getText());
             $this->getAddressToAgain();
@@ -206,5 +210,9 @@ trait TakingAddressTrait
         );
     }
 
+    public function isAddressIsStreet($address)
+    {
+        return $address['kind'] == 'street';
+    }
 
 }
