@@ -26,6 +26,9 @@ class ButtonsStructure extends Button
     public const OUR_APP = 'our app';
     public const LANG_MENU = 'lang menu';
     public const EXIT = 'exit';
+    public const GO_AS_INDICATED = 'go as indicated';
+    public const EXIT_TO_MENU = 'exit to menu';
+
 
     /**
      * Структура кнопок главного меню

@@ -4,6 +4,8 @@ namespace App\Traits;
 
 use App\Services\Address;
 use App\Services\Options;
+use Throwable;
+use Tightenco\Collect\Support\Collection;
 
 /**
  * Трейт для работы с адресами
@@ -51,14 +53,14 @@ trait TakingAddressTrait
     /**
      * Возвращает коллекцию адресов из api, похожих на те, что ввел пользователь
      *
-     * @return \Illuminate\Support\Collection|\Tightenco\Collect\Support\Collection
-     * @throws \Throwable
+     * @return \Illuminate\Support\Collection|Collection
+     * @throws Throwable
      */
-    public function getAddressesList()
+    public function getAddressesList($fromAddress = 0)
     {
         return collect(
             Address::getAddresses(
-                $this->bot->userStorage()->get('address'),
+                $this->bot->userStorage()->get('address')->get($fromAddress),
                 (new Options())->getCities(),
                 $this->bot->userStorage()
             )
