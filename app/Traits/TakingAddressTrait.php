@@ -2,8 +2,10 @@
 
 namespace App\Traits;
 
+use App\Conversations\TaxiMenuConversation;
 use App\Services\Address;
 use App\Services\Options;
+use App\Services\Translator;
 use Throwable;
 use Tightenco\Collect\Support\Collection;
 
@@ -50,6 +52,37 @@ trait TakingAddressTrait
         }
     }
 
+    public function handleSecondAddress($answer)
+    {
+        $address = $this->_getAddressFromHistoryByAnswer($answer);
+        if ($address) {
+            $this->_saveSecondAddress($address->address, $address['lat'], $address['lon']);
+            if ($address['lat'] == 0) {
+                $this->bot->userStorage()->save(['second_address_from_history_incorrect' => 1]);
+            }
+            if ($address['lat'] == 0) {
+                $this->bot->userStorage()->save(['second_address_from_history_incorrect_change_text_flag' => 1]
+                );
+            }
+            $this->bot->startConversation(new TaxiMenuConversation());
+            return;
+        } else {
+            $this->_saveSecondAddress($answer->getText());
+            $addressesList = collect(
+                Address::getAddresses(
+                    $answer->getText(),
+                    (new Options())->getCities(),
+                    $this->bot->userStorage()
+                )
+            );
+            if ($addressesList->isEmpty()) {
+                $this->streetNotFoundAddressTo();
+            } else {
+                $this->getAddressToAgain();
+            }
+        }
+    }
+
     /**
      * Возвращает коллекцию адресов из api, похожих на те, что ввел пользователь
      *
@@ -86,6 +119,20 @@ trait TakingAddressTrait
             $address['city']
         );
         $this->getEntrance();
+    }
+
+    public function getAddressToMessage()
+    {
+        if (Address::haveFirstAddressFromStorageAndFirstAdressesIsReal($this->bot->userStorage())) {
+            $message = Translator::trans('messages.user address') . collect($this->bot->userStorage()->get('address'))->first() . ' ' . Translator::trans('messages.give me end address');
+        } else {
+            $message = Translator::trans(
+                'messages.ask for second address if first address incorrect',
+                ['address' => collect($this->bot->userStorage()->get('address'))->first()]
+            );
+        }
+
+        return $message;
     }
 
 }

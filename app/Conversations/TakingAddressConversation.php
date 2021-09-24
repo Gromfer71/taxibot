@@ -9,7 +9,6 @@ use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
-use App\Services\Options;
 use App\Services\Translator;
 use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
@@ -43,6 +42,12 @@ class TakingAddressConversation extends BaseAddressConversation
                     ['lat' => 0, 'lon' => 0],
                     $this->bot->userStorage()->get('address_city')
                 );
+                $this->bot->startConversation(new TaxiMenuConversation());
+            },
+            ButtonsStructure::ADDRESS_WILL_SAY_TO_DRIVER => function () {
+                $this->_saveSecondAddressByText('');
+                $this->bot->userStorage()->save(['second_address_will_say_to_driver_change_text_flag' => 1]);
+                $this->bot->userStorage()->save(['second_address_will_say_to_driver_flag' => 1]);
                 $this->bot->startConversation(new TaxiMenuConversation());
             }
         ];
@@ -96,8 +101,7 @@ class TakingAddressConversation extends BaseAddressConversation
         });
     }
 
-    public
-    function streetNotFound()
+    public function streetNotFound()
     {
         $question = Question::create(
             $this->__('messages.not found address dorabotka bota'),
@@ -174,79 +178,58 @@ class TakingAddressConversation extends BaseAddressConversation
         });
     }
 
-    public
-    function getAddressTo()
+    public function getAddressTo()
     {
-        $this->_sayDebug('getAddressTo');
-        if (Address::haveFirstAddressFromStorageAndFirstAdressesIsReal($this->bot->userStorage())) {
-            $message = $this->__('messages.user address') . collect($this->bot->userStorage()->get('address'))->first() . ' ' . $this->__('messages.give me end address');
-        } else {
-            $message = $this->__(
-                'messages.ask for second address if first address incorrect',
-                ['address' => collect($this->bot->userStorage()->get('address'))->first()]
-            );
-        }
-        $message = $this->addAddressesToMessage($message);
-
-        $question = Question::create($message, $this->bot->getUser()->getId())
-            ->addButtons(
-                [
-                    Button::create($this->__('buttons.address will say to driver'))->value(
-                        'address will say to driver'
-                    )->additionalParameters(['location' => 'addresses']),
-                    Button::create($this->__('buttons.exit'))->value('exit'),
-                ]
-            );
+        $question = ComplexQuestion::createWithSimpleButtons($this->addAddressesToMessage($this->getAddressToMessage()),
+            [ButtonsStructure::ADDRESS_WILL_SAY_TO_DRIVER, ButtonsStructure::EXIT],
+            ['location' => 'addresses']
+        );
         $question = $this->_addAddressFavoriteButtons($question);
         $question = $this->_addAddressHistoryButtons($question);
 
         return $this->ask(
             $question,
             function (Answer $answer) {
-                Log::newLogAnswer($this->bot, $answer);
-                if ($answer->isInteractiveMessageReply()) {
-                    if ($answer->getValue() == 'address will say to driver') {
-                        $this->_sayDebug('address will say to driver');
-                        $this->_saveSecondAddressByText('');
-                        $this->bot->userStorage()->save(['second_address_will_say_to_driver_change_text_flag' => 1]);
-                        $this->bot->userStorage()->save(['second_address_will_say_to_driver_flag' => 1]);
-                        $this->bot->startConversation(new TaxiMenuConversation());
-                        return;
-                    } elseif ($answer->getValue() == 'exit') {
-                        $this->bot->startConversation(new MenuConversation());
-                        return;
-                    }
-                }
+                $this->handleAction($answer->getValue());
+                $this->handleSecondAddress($answer);
+            }
+        );
+    }
 
+    /**
+     * Меню выбора первого адреса маршрута, после ввода адреса пользователем. Пользователь выбирает из предложенного списка.
+     * В зависимости от выбранного адреса бот отправляет в сценарий, если выбрана только улица без номера дома, либо если всё
+     * хорошо, то на ввод подъезда. Либо пользователь просто вводит первый адрес снова, тогда он попадает на этот же диалог.
+     *
+     * @return TakingAddressConversation
+     * @throws Throwable
+     */
+    public function getAddressAgain(): TakingAddressConversation
+    {
+        $addressesList = $this->getAddressesList();
+        $question = ComplexQuestion::createWithSimpleButtons(
+            $this->addAddressesFromApi(Translator::trans('messages.give address again'), $addressesList),
+            [ButtonsStructure::EXIT],
+            ['location' => 'addresses']
+        );
 
-                $address = $this->_getAddressFromHistoryByAnswer($answer);
+        $question = ComplexQuestion::setAddressButtons(
+            $question,
+            $addressesList->map(function ($address) {
+                return Address::toString($address);
+            })
+        );
+
+        return $this->ask(
+            $question,
+            function (Answer $answer) use ($addressesList) {
+                $this->handleAction($answer->getValue());
+                $address = Address::findByAnswer($addressesList, $answer);
                 if ($address) {
-                    $this->_saveSecondAddress($address->address, $address['lat'], $address['lon']);
-                    if ($address['lat'] == 0) {
-                        $this->bot->userStorage()->save(['second_address_from_history_incorrect' => 1]);
-                    }
-                    if ($address['lat'] == 0) {
-                        $this->bot->userStorage()->save(['second_address_from_history_incorrect_change_text_flag' => 1]
-                        );
-                    }
-                    $this->bot->startConversation(new TaxiMenuConversation());
-                    return;
+                    $this->handleFirstChosenAddress($address);
                 } else {
-                    $this->_saveSecondAddress($answer->getText());
-                    $addressesList = collect(
-                        Address::getAddresses(
-                            $answer->getText(),
-                            (new Options($this->bot->userStorage()))->getCities(),
-                            $this->bot->userStorage()
-                        )
-                    );
-                    if ($addressesList->isEmpty()) {
-                        $this->streetNotFoundAddressTo();
-                        return;
-                    } else {
-                        $this->getAddressToAgain();
-                        return;
-                    }
+                    $this->_saveFirstAddress($answer->getText());
+                    $this->getAddressAgain();
                 }
             }
         );
@@ -277,16 +260,14 @@ class TakingAddressConversation extends BaseAddressConversation
 
 
         if ($addressesList->isNotEmpty()) {
-            foreach ($addressesList as $key => $address) {
-                $question->addButton(
-                    Button::create(Address::toString($address))->value(
-                        Address::toString($address)
-                    )->additionalParameters(['number' => $key + 1])
-                );
-            }
+            $question = ComplexQuestion::setAddressButtons(
+                $question,
+                $addressesList->map(function ($address) {
+                    return Address::toString($address);
+                })
+            );
         } else {
             $this->streetNotFoundAddressTo();
-            return;
         }
 
         return $this->ask(
@@ -367,45 +348,6 @@ class TakingAddressConversation extends BaseAddressConversation
                 $this->getAddressAgain();
             }
         });
-    }
-
-    /**
-     * Меню выбора первого адреса маршрута, после ввода адреса пользователем. Пользователь выбирает из предложенного списка.
-     * В зависимости от выбранного адреса бот отправляет в сценарий, если выбрана только улица без номера дома, либо если всё
-     * хорошо, то на ввод подъезда. Либо пользователь просто вводит первый адрес снова, тогда он попадает на этот же диалог.
-     *
-     * @return TakingAddressConversation
-     * @throws Throwable
-     */
-    public function getAddressAgain(): TakingAddressConversation
-    {
-        $addressesList = $this->getAddressesList();
-        $question = ComplexQuestion::createWithSimpleButtons(
-            $this->addAddressesFromApi(Translator::trans('messages.give address again'), $addressesList),
-            [ButtonsStructure::EXIT],
-            ['location' => 'addresses']
-        );
-
-        $question = ComplexQuestion::setAddressButtons(
-            $question,
-            $addressesList->map(function ($address) {
-                return Address::toString($address);
-            })
-        );
-
-        return $this->ask(
-            $question,
-            function (Answer $answer) use ($addressesList) {
-                $this->handleAction($answer->getValue());
-                $address = Address::findByAnswer($addressesList, $answer);
-                if ($address) {
-                    $this->handleFirstChosenAddress($address);
-                } else {
-                    $this->_saveFirstAddress($answer->getText());
-                    $this->getAddressAgain();
-                }
-            }
-        );
     }
 
 
