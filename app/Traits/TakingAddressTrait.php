@@ -60,9 +60,9 @@ trait TakingAddressTrait
     public function getAddressesList($fromAddress = 0)
     {
         $addresses = collect($this->bot->userStorage()->get('address'));
-        Log::info(json_encode($addresses));
+        Log::info(json_encode($addresses, JSON_UNESCAPED_UNICODE));
         $addresses = collect($this->bot->userStorage()->get('address'))->get(0);
-        Log::info(json_encode($addresses));
+        Log::info(json_encode($addresses, JSON_UNESCAPED_UNICODE));
         return collect(
             Address::getAddresses(
                 collect($this->bot->userStorage()->get('address')),
