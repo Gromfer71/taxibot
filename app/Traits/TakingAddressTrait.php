@@ -28,7 +28,7 @@ trait TakingAddressTrait
     /**
      * @param  $address
      */
-    public function handleFirstAddress($address)
+    public function saveFirstAddress($address)
     {
         if ($address['city'] == '') {
             $crew_group_id = false;
@@ -46,11 +46,6 @@ trait TakingAddressTrait
             $address['lon'],
             $address['city']
         );
-        if ($this->_hasEntrance($address->address)) {
-            $this->getAddressTo();
-        } else {
-            $this->getEntrance();
-        }
     }
 
     public function handleSecondAddress($answer)
@@ -155,13 +150,14 @@ trait TakingAddressTrait
             $address['coords']['lon'],
             $address['city']
         );
-        $this->getEntrance();
     }
 
     public function getAddressToMessage()
     {
         if (Address::haveFirstAddressFromStorageAndFirstAdressesIsReal($this->bot->userStorage())) {
-            $message = Translator::trans('messages.user address') . collect($this->bot->userStorage()->get('address'))->first() . ' ' . Translator::trans('messages.give me end address');
+            $message = Translator::trans('messages.user address') . collect(
+                    $this->bot->userStorage()->get('address')
+                )->first() . ' ' . Translator::trans('messages.give me end address');
         } else {
             $message = Translator::trans(
                 'messages.ask for second address if first address incorrect',
@@ -181,26 +177,27 @@ trait TakingAddressTrait
         $this->bot->userStorage()->save(['address' => $addresses]);
     }
 
-    public function noEntrance()
+    /**
+     * Добавляет указанный пользователем подъезд к адресу и сохраняет его в кеш
+     *
+     * @param $entrance
+     */
+    public function addEntranceToAddress($entrance)
     {
-        AddressHistory::newAddress(
-            $this->getUser()->id,
-            $this->bot->userStorage()->get('address'),
-            [
-                'lat' => $this->bot->userStorage()->get('lat'),
-                'lon' => $this->bot->userStorage()->get('lon')
-            ],
-            $this->bot->userStorage()->get('address_city')
-        );
+        $address = $this->bot->userStorage()->get('address') . ', *п ' . $entrance;
+        $this->bot->userStorage()->save(['address' => $address]);
     }
 
-    public function saveEntrance($text)
+    /**
+     * Сохраняем адрес в историю
+     *
+     * @param $addressName
+     */
+    public function createAddressHistory($addressName)
     {
-        $address = $this->bot->userStorage()->get('address') . ', *п ' . $text;
-        $this->bot->userStorage()->save(['address' => $address]);
         AddressHistory::newAddress(
             $this->getUser()->id,
-            $address,
+            $addressName,
             [
                 'lat' => $this->bot->userStorage()->get('lat'),
                 'lon' => $this->bot->userStorage()->get('lon')

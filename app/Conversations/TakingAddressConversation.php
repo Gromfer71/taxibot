@@ -20,6 +20,14 @@ class TakingAddressConversation extends BaseAddressConversation
     use TakingAddressTrait;
 
     /**
+     * @return void
+     */
+    public function run()
+    {
+        $this->getAddress();
+    }
+
+    /**
      * Массив действий под определенную кнопку. Если значение это анонимная функция, то выполнится она, если имя метода,
      * то выполнится он в контексте текущего класса, если название класса (с полным путем), то запустится его Conversation.
      *
@@ -42,43 +50,17 @@ class TakingAddressConversation extends BaseAddressConversation
             },
             ButtonsStructure::ADDRESS_WILL_SAY_TO_DRIVER => function () {
                 $this->_saveSecondAddressByText('');
-                $this->bot->userStorage()->save(['second_address_will_say_to_driver_change_text_flag' => 1]);
-                $this->bot->userStorage()->save(['second_address_will_say_to_driver_flag' => 1]);
+                $this->saveToStorage(['second_address_will_say_to_driver_change_text_flag' => 1]);
+                $this->saveToStorage(['second_address_will_say_to_driver_flag' => 1]);
                 $this->bot->startConversation(new TaxiMenuConversation());
             },
             ButtonsStructure::NO_ENTRANCE => function () {
-                $this->noEntrance();
+                $this->createAddressHistory($this->getFromStorage('address'));
                 $this->getAddressTo();
             }
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
-    }
-
-    public function getAddressTo()
-    {
-        $question = ComplexQuestion::createWithSimpleButtons($this->addAddressesToMessage($this->getAddressToMessage()),
-            [ButtonsStructure::ADDRESS_WILL_SAY_TO_DRIVER, ButtonsStructure::EXIT],
-            ['location' => 'addresses']
-        );
-        $question = $this->_addAddressFavoriteButtons($question);
-        $question = $this->_addAddressHistoryButtons($question);
-
-        return $this->ask(
-            $question,
-            function (Answer $answer) {
-                $this->handleAction($answer->getValue());
-                $this->handleSecondAddress($answer);
-            }
-        );
-    }
-
-    /**
-     * @return void
-     */
-    public function run()
-    {
-        $this->getAddress();
     }
 
     /**
@@ -105,7 +87,12 @@ class TakingAddressConversation extends BaseAddressConversation
             $address = $this->_getAddressFromHistoryByAnswer($answer);
             if ($address) {
                 // если выбранный, то сохраняем его и идем дальше
-                $this->handleFirstAddress($address);
+                $this->saveFirstAddress($address);
+                if ($this->_hasEntrance($address->address)) {
+                    $this->getAddressTo();
+                } else {
+                    $this->getEntrance();
+                }
             } else {
                 // если введенный, то сохраняем его и выводим список похожих адресов
                 $this->_saveFirstAddress($answer->getText());
@@ -119,20 +106,23 @@ class TakingAddressConversation extends BaseAddressConversation
         });
     }
 
-    public function streetNotFound()
+    public function getAddressTo()
     {
-        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.not found address dorabotka bota'),
-            [ButtonsStructure::BACK, ButtonsStructure::GO_AS_INDICATED, ButtonsStructure::EXIT_TO_MENU],
-            ['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT]
+        $question = ComplexQuestion::createWithSimpleButtons($this->addAddressesToMessage($this->getAddressToMessage()),
+                                                             [
+                                                                 ButtonsStructure::ADDRESS_WILL_SAY_TO_DRIVER,
+                                                                 ButtonsStructure::EXIT
+                                                             ],
+                                                             ['location' => 'addresses']
         );
+        $question = $this->_addAddressFavoriteButtons($question);
+        $question = $this->_addAddressHistoryButtons($question);
 
         return $this->ask(
             $question,
             function (Answer $answer) {
-                $this->handleAction($answer->getValue(),
-                    [ButtonsStructure::BACK => 'getAddress', ButtonsStructure::GO_AS_INDICATED => 'getEntrance']);
-                $this->_saveFirstAddress($answer->getText());
-                $this->getAddressAgain();
+                $this->handleAction($answer->getValue());
+                $this->handleSecondAddress($answer);
             }
         );
     }
@@ -168,6 +158,7 @@ class TakingAddressConversation extends BaseAddressConversation
                 $address = Address::findByAnswer($addressesList, $answer);
                 if ($address) {
                     $this->handleFirstChosenAddress($address);
+                    $this->getEntrance();
                 } else {
                     $this->_saveFirstAddress($answer->getText());
                     $this->getAddressAgain();
@@ -176,38 +167,11 @@ class TakingAddressConversation extends BaseAddressConversation
         );
     }
 
-    public function getEntrance()
-    {
-        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.give entrance'),
-            [ButtonsStructure::NO_ENTRANCE, ButtonsStructure::EXIT]
-        );
-
-        return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
-            $this->saveEntrance($answer->getText());
-            $this->getAddressTo();
-        });
-    }
-
-    public function streetNotFoundAddressTo()
-    {
-
-        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.not found address dorabotka bota'),
-            [ButtonsStructure::BACK, ButtonsStructure::GO_AS_INDICATED, ButtonsStructure::EXIT_TO_MENU],
-            ['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT]);
-
-        return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
-            $this->_saveSecondAddress($answer->getText());
-            $this->getAddressToAgain();
-        });
-    }
-
     public function getAddressToAgain()
     {
-
         $addressesList = $this->getAddressesList(1);
-        $question = ComplexQuestion::createWithSimpleButtons($this->addAddressesFromApi(Translator::trans('messages.give address again'), $addressesList),
+        $question = ComplexQuestion::createWithSimpleButtons(
+            $this->addAddressesFromApi(Translator::trans('messages.give address again'), $addressesList),
             [ButtonsStructure::EXIT],
             ['location' => 'addresses']
         );
@@ -233,10 +197,60 @@ class TakingAddressConversation extends BaseAddressConversation
         );
     }
 
+    public function getEntrance()
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.give entrance'),
+                                                             [ButtonsStructure::NO_ENTRANCE, ButtonsStructure::EXIT]
+        );
+
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer->getValue());
+            $this->addEntranceToAddress($answer->getText());
+            $this->createAddressHistory($this->getFromStorage('address'));
+            $this->getAddressTo();
+        });
+    }
+
+    public function streetNotFound()
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.not found address dorabotka bota'),
+            [ButtonsStructure::BACK, ButtonsStructure::GO_AS_INDICATED, ButtonsStructure::EXIT_TO_MENU],
+            ['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT]
+        );
+
+        return $this->ask(
+            $question,
+            function (Answer $answer) {
+                $this->handleAction(
+                    $answer->getValue(),
+                    [ButtonsStructure::BACK => 'getAddress', ButtonsStructure::GO_AS_INDICATED => 'getEntrance']
+                );
+                $this->_saveFirstAddress($answer->getText());
+                $this->getAddressAgain();
+            }
+        );
+    }
+
+    public function streetNotFoundAddressTo()
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.not found address dorabotka bota'),
+            [ButtonsStructure::BACK, ButtonsStructure::GO_AS_INDICATED, ButtonsStructure::EXIT_TO_MENU],
+            ['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT]
+        );
+
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer->getValue());
+            $this->_saveSecondAddress($answer->getText());
+            $this->getAddressToAgain();
+        });
+    }
+
     public function forgetWriteHouse()
     {
         $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.forget write house'),
-            [ButtonsStructure::EXIT]
+                                                             [ButtonsStructure::EXIT]
         );
 
         return $this->ask($question, function (Answer $answer) {
@@ -246,7 +260,9 @@ class TakingAddressConversation extends BaseAddressConversation
                 $this->handleForgetWriteHouse($answer->getText());
                 $this->getAddressToAgain();
             } else {
-                $this->bot->userStorage()->save(['address' => $this->bot->userStorage()->get('address') . $answer->getText()]);
+                $this->bot->userStorage()->save(
+                    ['address' => $this->bot->userStorage()->get('address') . $answer->getText()]
+                );
                 $this->getAddressAgain();
             }
         });
