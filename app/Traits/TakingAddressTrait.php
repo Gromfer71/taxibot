@@ -4,7 +4,6 @@ namespace App\Traits;
 
 use App\Services\Address;
 use App\Services\Options;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 use Tightenco\Collect\Support\Collection;
 
@@ -59,13 +58,9 @@ trait TakingAddressTrait
      */
     public function getAddressesList($fromAddress = 0)
     {
-        $addresses = collect($this->bot->userStorage()->get('address'));
-        Log::info(json_encode($addresses, JSON_UNESCAPED_UNICODE));
-        $addresses = collect($this->bot->userStorage()->get('address'))->get(0);
-        Log::info(json_encode($addresses, JSON_UNESCAPED_UNICODE));
         return collect(
             Address::getAddresses(
-                collect($this->bot->userStorage()->get('address')),
+                collect($this->bot->userStorage()->get('address'))->get($fromAddress),
                 (new Options())->getCities(),
                 $this->bot->userStorage()
             )
