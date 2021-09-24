@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Conversations\TaxiMenuConversation;
+use App\Models\AddressHistory;
 use App\Services\Address;
 use App\Services\Options;
 use App\Services\Translator;
@@ -83,6 +84,42 @@ trait TakingAddressTrait
         }
     }
 
+    public function handleSecondAddressAgain($addressesList, $answer)
+    {
+        $address = Address::findByAnswer($addressesList, $answer);
+
+        if ($address) {
+            if ($address['kind'] == 'street') {
+                $this->bot->userStorage()->save(
+                    [
+                        'address' => collect($this->bot->userStorage()->get('address'))->put(
+                            1,
+                            $address['street']
+                        )->toArray()
+                    ]
+                );
+                $this->forgetWriteHouse();
+                return;
+            }
+
+            AddressHistory::newAddress(
+                $this->getUser()->id,
+                Address::toString($address),
+                $address['coords'],
+                $address['city']
+            );
+            $this->_saveSecondAddress(
+                Address::toString($address),
+                $address['coords']['lat'],
+                $address['coords']['lon']
+            );
+            $this->bot->startConversation(new TaxiMenuConversation());
+        } else {
+            $this->_saveSecondAddress($answer->getText());
+            $this->getAddressToAgain();
+        }
+    }
+
     /**
      * Возвращает коллекцию адресов из api, похожих на те, что ввел пользователь
      *
@@ -134,5 +171,43 @@ trait TakingAddressTrait
 
         return $message;
     }
+
+    public function handleForgetWriteHouse($text)
+    {
+        $addresses = collect($this->bot->userStorage()->get('address'));
+        $lastAddress = $addresses->pop();
+        $lastAddressWithEntrance = $lastAddress . $text;
+        $addresses = $addresses->push($lastAddressWithEntrance);
+        $this->bot->userStorage()->save(['address' => $addresses]);
+    }
+
+    public function noEntrance()
+    {
+        AddressHistory::newAddress(
+            $this->getUser()->id,
+            $this->bot->userStorage()->get('address'),
+            [
+                'lat' => $this->bot->userStorage()->get('lat'),
+                'lon' => $this->bot->userStorage()->get('lon')
+            ],
+            $this->bot->userStorage()->get('address_city')
+        );
+    }
+
+    public function saveEntrance($text)
+    {
+        $address = $this->bot->userStorage()->get('address') . ', *п ' . $text;
+        $this->bot->userStorage()->save(['address' => $address]);
+        AddressHistory::newAddress(
+            $this->getUser()->id,
+            $address,
+            [
+                'lat' => $this->bot->userStorage()->get('lat'),
+                'lon' => $this->bot->userStorage()->get('lon')
+            ],
+            $this->bot->userStorage()->get('address_city')
+        );
+    }
+
 
 }

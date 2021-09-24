@@ -2,9 +2,7 @@
 
 namespace App\Conversations;
 
-use App\Conversations\MainMenu\MenuConversation;
 use App\Models\AddressHistory;
-use App\Models\Log;
 use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
@@ -12,8 +10,6 @@ use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
-use BotMan\BotMan\Messages\Outgoing\Actions\Button;
-use BotMan\BotMan\Messages\Outgoing\Question;
 use Throwable;
 
 /**
@@ -49,10 +45,32 @@ class TakingAddressConversation extends BaseAddressConversation
                 $this->bot->userStorage()->save(['second_address_will_say_to_driver_change_text_flag' => 1]);
                 $this->bot->userStorage()->save(['second_address_will_say_to_driver_flag' => 1]);
                 $this->bot->startConversation(new TaxiMenuConversation());
+            },
+            ButtonsStructure::NO_ENTRANCE => function () {
+                $this->noEntrance();
+                $this->getAddressTo();
             }
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
+    }
+
+    public function getAddressTo()
+    {
+        $question = ComplexQuestion::createWithSimpleButtons($this->addAddressesToMessage($this->getAddressToMessage()),
+            [ButtonsStructure::ADDRESS_WILL_SAY_TO_DRIVER, ButtonsStructure::EXIT],
+            ['location' => 'addresses']
+        );
+        $question = $this->_addAddressFavoriteButtons($question);
+        $question = $this->_addAddressHistoryButtons($question);
+
+        return $this->ask(
+            $question,
+            function (Answer $answer) {
+                $this->handleAction($answer->getValue());
+                $this->handleSecondAddress($answer);
+            }
+        );
     }
 
     /**
@@ -103,95 +121,18 @@ class TakingAddressConversation extends BaseAddressConversation
 
     public function streetNotFound()
     {
-        $question = Question::create(
-            $this->__('messages.not found address dorabotka bota'),
-            $this->bot->getUser()->getId()
-        );
-        $question->addButtons(
-            [
-                Button::create($this->__('buttons.back'))->additionalParameters(
-                    ['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT]
-                )->value('back'),
-                Button::create($this->__('buttons.go as indicated'))->value('go as indicated'),
-                Button::create($this->__('buttons.exit to menu'))->value('exit to menu'),
-            ]
+        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.not found address dorabotka bota'),
+            [ButtonsStructure::BACK, ButtonsStructure::GO_AS_INDICATED, ButtonsStructure::EXIT_TO_MENU],
+            ['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT]
         );
 
         return $this->ask(
             $question,
             function (Answer $answer) {
-                if ($answer->isInteractiveMessageReply()) {
-                    if ($answer->getValue() == 'back') {
-                        $this->getAddress();
-                    } elseif ($answer->getValue() == 'exit to menu') {
-                        $this->bot->startConversation(new MenuConversation());
-                    } elseif ($answer->getValue() == 'go as indicated') {
-                        $this->getEntrance();
-                    }
-                } else {
-                    $this->_saveFirstAddress($answer->getText());
-                    $this->getAddressAgain();
-                }
-            }
-        );
-    }
-
-    public function getEntrance()
-    {
-        $question = Question::create($this->__('messages.give entrance'), $this->bot->getUser()->getId())
-            ->addButtons([
-                Button::create($this->__('buttons.no entrance'))->value('no entrance'),
-                Button::create($this->__('buttons.exit'))->value('exit'),
-            ]);
-
-        return $this->ask($question, function (Answer $answer) {
-            Log::newLogAnswer($this->bot, $answer);
-            if ($answer->isInteractiveMessageReply()) {
-                if ($answer->getValue() == 'exit') {
-                    $this->bot->startConversation(new MenuConversation());
-                } elseif ($answer->getValue() == 'no entrance') {
-                    AddressHistory::newAddress(
-                        $this->getUser()->id,
-                        $this->bot->userStorage()->get('address'),
-                        [
-                            'lat' => $this->bot->userStorage()->get('lat'),
-                            'lon' => $this->bot->userStorage()->get('lon')
-                        ],
-                        $this->bot->userStorage()->get('address_city')
-                    );
-                    $this->getAddressTo();
-                }
-            } else {
-                $address = $this->bot->userStorage()->get('address') . ', *п ' . $answer->getText();
-                $this->bot->userStorage()->save(['address' => $address]);
-                AddressHistory::newAddress(
-                    $this->getUser()->id,
-                    $address,
-                    [
-                        'lat' => $this->bot->userStorage()->get('lat'),
-                        'lon' => $this->bot->userStorage()->get('lon')
-                    ],
-                    $this->bot->userStorage()->get('address_city')
-                );
-                $this->getAddressTo();
-            }
-        });
-    }
-
-    public function getAddressTo()
-    {
-        $question = ComplexQuestion::createWithSimpleButtons($this->addAddressesToMessage($this->getAddressToMessage()),
-            [ButtonsStructure::ADDRESS_WILL_SAY_TO_DRIVER, ButtonsStructure::EXIT],
-            ['location' => 'addresses']
-        );
-        $question = $this->_addAddressFavoriteButtons($question);
-        $question = $this->_addAddressHistoryButtons($question);
-
-        return $this->ask(
-            $question,
-            function (Answer $answer) {
-                $this->handleAction($answer->getValue());
-                $this->handleSecondAddress($answer);
+                $this->handleAction($answer->getValue(),
+                    [ButtonsStructure::BACK => 'getAddress', ButtonsStructure::GO_AS_INDICATED => 'getEntrance']);
+                $this->_saveFirstAddress($answer->getText());
+                $this->getAddressAgain();
             }
         );
     }
@@ -235,6 +176,19 @@ class TakingAddressConversation extends BaseAddressConversation
         );
     }
 
+    public function getEntrance()
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.give entrance'),
+            [ButtonsStructure::NO_ENTRANCE, ButtonsStructure::EXIT]
+        );
+
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer->getValue());
+            $this->saveEntrance($answer->getText());
+            $this->getAddressTo();
+        });
+    }
+
     public function streetNotFoundAddressTo()
     {
 
@@ -273,78 +227,26 @@ class TakingAddressConversation extends BaseAddressConversation
         return $this->ask(
             $question,
             function (Answer $answer) use ($addressesList) {
-                Log::newLogAnswer($this->bot, $answer);
-                if ($answer->getValue() == 'exit' && $answer->isInteractiveMessageReply()) {
-                    $this->bot->startConversation(new MenuConversation());
-                    return;
-                }
-                $address = Address::findByAnswer($addressesList, $answer);
-                $this->_sayDebug('getAddressToAgain - address -' . json_encode($address, JSON_UNESCAPED_UNICODE));
-                if ($address) {
-                    if ($address['kind'] == 'street') {
-                        $this->bot->userStorage()->save(
-                            [
-                                'address' => collect($this->bot->userStorage()->get('address'))->put(
-                                    1,
-                                    $address['street']
-                                )->toArray()
-                            ]
-                        );
-                        $this->forgetWriteHouse();
-                        return;
-                    }
-
-                    AddressHistory::newAddress(
-                        $this->getUser()->id,
-                        Address::toString($address),
-                        $address['coords'],
-                        $address['city']
-                    );
-                    $this->_saveSecondAddress(
-                        Address::toString($address),
-                        $address['coords']['lat'],
-                        $address['coords']['lon']
-                    );
-                    $this->bot->startConversation(new TaxiMenuConversation());
-                } else {
-                    $this->_saveSecondAddress($answer->getText());
-                    $this->getAddressToAgain();
-                }
+                $this->handleAction($answer->getValue());
+                $this->handleSecondAddressAgain($addressesList, $answer);
             }
         );
     }
 
     public function forgetWriteHouse()
     {
-        $this->_sayDebug('forgetWriteHouse');
-        $question = Question::create($this->__('messages.forget write house'), $this->bot->getUser()->getId())
-            ->addButtons([
-                Button::create($this->__('buttons.exit'))->value('exit'),
-            ]);
+        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.forget write house'),
+            [ButtonsStructure::EXIT]
+        );
 
         return $this->ask($question, function (Answer $answer) {
-            Log::newLogAnswer($this->bot, $answer);
-            if ($answer->isInteractiveMessageReply()) {
-                if ($answer->getValue() == 'exit') {
-                    $this->bot->startConversation(new MenuConversation());
-                    return;
-                }
-            }
+            $this->handleAction($answer->getValue());
 
             if (count((array)$this->bot->userStorage()->get('address')) > 1) {
-                $this->_sayDebug('forgetWriteHouse - адрес куда');
-                $addresses = collect($this->bot->userStorage()->get('address'));
-                $lastAddress = $addresses->pop();
-                $lastAddressWithEntrance = $lastAddress . $answer->getText();
-                $addresses = $addresses->push($lastAddressWithEntrance);
-                $this->bot->userStorage()->save(['address' => $addresses]);
-                $this->_sayDebug('forgetWriteHouse - адреса ' . $addresses->toJson(JSON_UNESCAPED_UNICODE));
+                $this->handleForgetWriteHouse($answer->getText());
                 $this->getAddressToAgain();
             } else {
-                $this->_sayDebug('forgetWriteHouse - адрес откуда');
-                $this->bot->userStorage()->save(
-                    ['address' => $this->bot->userStorage()->get('address') . $answer->getText()]
-                );
+                $this->bot->userStorage()->save(['address' => $this->bot->userStorage()->get('address') . $answer->getText()]);
                 $this->getAddressAgain();
             }
         });

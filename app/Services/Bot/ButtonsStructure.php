@@ -29,6 +29,7 @@ class ButtonsStructure extends Button
     public const GO_AS_INDICATED = 'go as indicated';
     public const EXIT_TO_MENU = 'exit to menu';
     public const ADDRESS_WILL_SAY_TO_DRIVER = 'address will say to driver';
+    public const NO_ENTRANCE = 'no entrance';
 
 
     /**
