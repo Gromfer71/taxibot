@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Conversations;
-
 
 use App\Conversations\MainMenu\MenuConversation;
 use App\Models\AddressHistory;
@@ -16,54 +14,17 @@ use App\Services\Options;
 use App\Services\OrderApiService;
 use App\Services\Price;
 use App\Services\WishesService;
+use App\Traits\BotManagerTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 
 class TaxiMenuConversation extends BaseAddressConversation
 {
-    public function _go_for_cash()
-    {
-        if (!OrderHistory::newOrder($this->bot)) {
-            $this->say($this->__('messages.create order error'));
-            $this->bot->startConversation(new StartConversation());
-        } else {
-            $this->currentOrderMenu(true);
-        }
-    }
-
-    public function _go_for_bonuses()
-    {
-        if (User::find($this->bot->getUser()->getId())->getBonusBalance() > 0) {
-            $this->bot->userStorage()->save(['usebonus' => true]);
-            $this->bot->userStorage()->save(
-                ['bonusbalance' => User::find($this->bot->getUser()->getId())->getBonusBalance()]
-            );
-
-            if (!OrderHistory::newOrder($this->bot, true)) {
-                $this->say($this->__('messages.create order error'));
-                $this->bot->startConversation(new StartConversation());
-                return;
-            }
-        } else {
-            $this->say($this->__('messages.zero bonus balance'), $this->bot->getUser()->getId());
-            if (!OrderHistory::newOrder($this->bot, true)) {
-                $this->say($this->__('messages.create order error'));
-                $this->bot->startConversation(new StartConversation());
-                return;
-            }
-        }
-        $this->currentOrderMenu(true);
-    }
+    use BotManagerTrait;
 
     public function run()
     {
-        $this->menu();
-    }
-
-    public function menu()
-    {
-        $this->_sayDebug('TaxiMenuConversation - menu');
         $this->calcPrice();
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
 
@@ -122,7 +83,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                         $this->wishes();
                     }
                 } else {
-                    $this->menu();
+                    $this->run();
                 }
             }
         );
@@ -172,7 +133,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             function (Answer $answer) {
                 if ($answer->isInteractiveMessageReply()) {
                     if ($answer->getValue() == 'back') {
-                        $this->menu();
+                        $this->run();
                         return;
                     }
                 }
@@ -186,7 +147,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                         $this->bot->userStorage()->save(['additional_address_is_incorrect_change_text_flag' => 1]);
                     }
                     $this->_saveAnotherAddress($address->address, $address['lat'], $address['lon']);
-                    $this->menu();
+                    $this->run();
                 } else {
                     Log::newLogAnswer($this->bot, $answer);
                     $this->_saveAnotherAddress($answer);
@@ -244,7 +205,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                 Log::newLogAnswer($this->bot, $answer);
                 if ($answer->getValue() == 'back') {
                     $this->_forgetLastAddress();
-                    $this->menu();
+                    $this->run();
                     return;
                 }
                 $address = Address::findByAnswer($addressesList, $answer);
@@ -267,7 +228,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     );
 
                     $this->_saveAnotherAddress($answer, $address['coords']['lat'], $address['coords']['lon'], true);
-                    $this->menu();
+                    $this->run();
                 } else {
                     $this->_saveAnotherAddress($answer, 0, 0, true);
                     $this->addAdditionalAddressAgain();
@@ -658,14 +619,14 @@ class TaxiMenuConversation extends BaseAddressConversation
             function (Answer $answer) use ($options, $prices) {
                 Log::newLogAnswer($this->bot, $answer);
                 if ($answer->getValue() == 'back') {
-                    $this->menu();
+                    $this->run();
                     return;
                 } elseif ($answer->getValue() == 'cancel change price') {
                     $this->bot->userStorage()->save(['changed_price' => null]);
                     $this->_sayDebug(
                         json_encode($this->bot->userStorage()->get('changed_price'), JSON_UNESCAPED_UNICODE)
                     );
-                    $this->menu();
+                    $this->run();
                     return;
                 } else {
                     $this->_sayDebug(json_encode($prices, JSON_UNESCAPED_UNICODE));
@@ -683,7 +644,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     $this->_sayDebug('Выбрано изменение цены' . json_encode($price, JSON_UNESCAPED_UNICODE));
                     $this->bot->userStorage()->save(['changed_price' => $price]);
 
-                    $this->menu();
+                    $this->run();
                 }
             }
         );
@@ -723,7 +684,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     } elseif ($answer->getValue() == 'go for bonuses') {
                         $this->_go_for_bonuses();
                     } elseif ($answer->getValue() == 'back') {
-                        $this->menu();
+                        $this->run();
                     }
                 } else {
                     $this->bot->userStorage()->save(['comment' => $answer->getText()]);
@@ -787,7 +748,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     } elseif ($answer->getValue() == 'go for bonuses') {
                         $this->_go_for_bonuses();
                     } elseif ($answer->getValue() == 'back') {
-                        $this->menu();
+                        $this->run();
                     } elseif ($answer->getValue() == 'wishes') {
                         $this->wishes();
                     }
@@ -873,7 +834,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                         $this->wishes(true);
                         return;
                     } elseif ($answer->getValue() == 'back') {
-                        $this->menu();
+                        $this->run();
                         return;
                     }
                 }
