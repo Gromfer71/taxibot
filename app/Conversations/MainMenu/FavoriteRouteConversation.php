@@ -3,11 +3,11 @@
 namespace App\Conversations\MainMenu;
 
 use App\Conversations\BaseConversation;
+use App\Models\FavoriteRoute;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
-use Illuminate\Support\Facades\Log;
 
 class FavoriteRouteConversation extends BaseConversation
 {
@@ -45,13 +45,24 @@ class FavoriteRouteConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
 
-            $this->setRouteName($answer->getValue());
+            $this->setRouteName($answer->getText());
         });
     }
 
-    public function setRouteName($addressInfo)
+    public function setRouteName($address)
     {
-        Log::info($addressInfo);
-        $this->say($addressInfo);
+        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.write favorite route name'));
+
+        return $this->ask($question, function (Answer $answer) use ($address) {
+            FavoriteRoute::create([
+                                      'user_id' => $this->getUser()->id,
+                                      'name' => $answer->getText(),
+                                      'address' => $this->getUser()->getOrderInfoByImplodedAddress($address)->toJson(
+                                          JSON_UNESCAPED_UNICODE
+                                      )
+                                  ]);
+
+            $this->run();
+        });
     }
 }

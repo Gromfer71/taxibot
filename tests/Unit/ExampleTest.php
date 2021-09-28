@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\FavoriteRoute;
 use App\Models\User;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
@@ -40,7 +41,14 @@ class ExampleTest extends TestCase
     {
         $question = ComplexQuestion::createWithSimpleButtons('text', [ButtonsStructure::BACK]);
         $question = ComplexQuestion::addOrderHistoryButtons($question, User::first()->orders);
-        dd($question);
+
+        FavoriteRoute::create([
+                                  'user_id' => 1,
+                                  'name' => 'name',
+                                  'address' => User::first()->getOrderInfoByImplodedAddress(
+                                      '3Ленина пр-т 2 (Якутск), *п 2 - Киренского пер. 7 (Якутск)'
+                                  )->toJson(JSON_UNESCAPED_UNICODE)
+                              ]);
     }
 
     /**

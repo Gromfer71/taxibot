@@ -237,5 +237,16 @@ class User extends Model
         return $this->hasOne(LangPackage::class, 'id', 'lang_id');
     }
 
+    public function getOrderInfoByImplodedAddress($address)
+    {
+        $addresses = $this->orders->map(function ($item) {
+            return collect(json_decode($item->address));
+        });
+        return $addresses->transform(function ($item) {
+            $item['address'] = implode(' - ', $item['address']);
+            return $item;
+        })->where('address', $address)->first();
+    }
+
 
 }
