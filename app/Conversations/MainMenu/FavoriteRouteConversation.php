@@ -3,9 +3,11 @@
 namespace App\Conversations\MainMenu;
 
 use App\Conversations\BaseConversation;
+use App\Conversations\TaxiMenuConversation;
 use App\Models\FavoriteRoute;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
+use App\Services\Options;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
@@ -35,6 +37,8 @@ class FavoriteRouteConversation extends BaseConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
+
+            $this->createOrder($answer->getText());
         });
     }
 
@@ -71,5 +75,17 @@ class FavoriteRouteConversation extends BaseConversation
 
             $this->run();
         });
+    }
+
+    public function createOrder($routeName)
+    {
+        $route = $this->getUser()->favoriteRoutes->where('name', $routeName)->first();
+        $addressInfo = collect(json_decode($route->address));
+        $this->bot->userStorage()->save($addressInfo->toArray());
+        $this->bot->userStorage()->save(
+            ['crew_group_id' => (new Options())->getCrewGroupIdFromCity($this->getUser()->city)]
+        );
+
+        $this->bot->startConversation(new TaxiMenuConversation());
     }
 }
