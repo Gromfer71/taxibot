@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Conversations\TaxiMenuConversation;
 use App\Models\AddressHistory;
 use App\Services\Address;
 use App\Services\Options;
@@ -60,7 +59,7 @@ trait TakingAddressTrait
                 $this->bot->userStorage()->save(['second_address_from_history_incorrect_change_text_flag' => 1]
                 );
             }
-            $this->bot->startConversation(new TaxiMenuConversation());
+            $this->bot->startConversation(new $this->conversationAfterTakeAddress());
             return;
         } else {
             $this->_saveSecondAddress($answer->getText());
@@ -111,7 +110,7 @@ trait TakingAddressTrait
                     $address['coords']['lat'],
                     $address['coords']['lon']
                 );
-                $this->bot->startConversation(new TaxiMenuConversation());
+                $this->bot->startConversation(new $this->conversationAfterTakeAddress());
             }
         } else {
             $this->_saveSecondAddress($answer->getText());
