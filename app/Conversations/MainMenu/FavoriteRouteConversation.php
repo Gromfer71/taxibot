@@ -82,6 +82,7 @@ class FavoriteRouteConversation extends BaseConversation
         $route = $this->getUser()->favoriteRoutes->where('name', $routeName)->first();
         $addressInfo = collect(json_decode($route->address));
         $addressInfo['address'] = explode('-', $addressInfo['address']);
+        $this->bot->userStorage()->delete();
         $this->bot->userStorage()->save($addressInfo->toArray());
         $this->bot->userStorage()->save(
             ['crew_group_id' => (new Options())->getCrewGroupIdFromCity($this->getUser()->city)]

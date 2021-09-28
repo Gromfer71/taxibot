@@ -56,12 +56,13 @@ class ExampleTest extends TestCase
     {
         $route = $this->getUser()->favoriteRoutes->where('name', 'name')->first();
         $addressInfo = collect(json_decode($route->address));
+        $addressInfo['address'] = explode('-', $addressInfo['address']);
         $storage = new Storage(new FileStorage());
         $storage->delete();
         $storage->save($addressInfo->toArray());
-        $storage->save(['crew_group_id' => (new Options())->getCrewGroupIdFromCity($this->getUser()->city)]);
-        dd($storage->all());
-        dd($addressInfo);
+        $storage->save(
+            ['crew_group_id' => (new Options())->getCrewGroupIdFromCity($this->getUser()->city)]
+        );
     }
 
     /**
