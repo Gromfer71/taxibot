@@ -52,7 +52,6 @@ class FavoriteRouteConversation extends BaseConversation
         $question = ComplexQuestion::addOrderHistoryButtons($question, $this->getUser()->orders);
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
-
             $this->setRouteName($answer->getText());
         });
     }
@@ -81,7 +80,6 @@ class FavoriteRouteConversation extends BaseConversation
     {
         $route = $this->getUser()->favoriteRoutes->where('name', $routeName)->first();
         $addressInfo = collect(json_decode($route->address));
-        $addressInfo['address'] = explode(' - ', $addressInfo['address']);
         $this->bot->userStorage()->delete();
         $this->bot->userStorage()->save($addressInfo->toArray());
         $this->bot->userStorage()->save(
