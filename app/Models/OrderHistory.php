@@ -80,7 +80,11 @@ class OrderHistory extends Model
                                     'id' => $response['data']['order_id'],
                                     'user_id' => User::find($bot->getUser()->getId())->id,
                                     'address' => json_encode(
-                                        $bot->userStorage()->get('address'),
+                                        [
+                                            'address' => $bot->userStorage()->get('address'),
+                                            'lat' => $bot->userStorage()->get('lat'),
+                                            'lon' => $bot->userStorage()->get('lon')
+                                        ],
                                         JSON_UNESCAPED_UNICODE
                                     ),
                                     'price' => $bot->userStorage()->get('price'),
