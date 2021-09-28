@@ -13,6 +13,7 @@ use BotMan\BotMan\Storages\Storage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class OrderApiService
 {
@@ -348,7 +349,7 @@ class OrderApiService
             );
         }
         $addresses = $addresses->toArray();
-
+        Log::info(json_encode($addresses));
 
         $params = [
             'method' => 'POST',
