@@ -45,7 +45,7 @@ class ExampleTest extends TestCase
         dd(
             User::first()->getOrderInfoByImplodedAddress(
                 Address::removeEllipsisFromAddressIfExists(
-                    'Ленина пр-т 2 (Якутск), *п 2 - Ленина пр-т 2 (Якутск), *п 2 - Ленина пр-т 2 (Якутск), *п 2 - Киренского пер. 7 (Якутск) - Рррпап'
+                    'Ленина пр-т 2 (Якутск), *п 2 - Ленина пр-т 2 (Якутск), *п 2 - Ленина пр-т 2 (Якутск), *п 2 - Киренского пер. 7 (Якутск) - Рррпап…'
                 )
             )
         );

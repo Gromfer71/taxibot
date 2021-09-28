@@ -204,8 +204,8 @@ class Address
         // $address = utf8_decode($address);
         if (substr($address, -3) === '...') {
             return substr($address, 0, strlen($address) - 3);
-        } elseif (mb_substr($address, -1) === '…') {
-            return mb_substr($address, 0, strlen($address) - 1, 'utf-8');
+        } elseif (mb_strcut($address, -1, null, 'utf-8') == '…') {
+            return mb_strcut($address, 0, strlen($address) - 1, 'utf-8');
         } else {
             return $address;
         }
