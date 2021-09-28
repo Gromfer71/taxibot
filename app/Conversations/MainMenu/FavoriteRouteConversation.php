@@ -4,6 +4,7 @@ namespace App\Conversations\MainMenu;
 
 use App\Conversations\BaseConversation;
 use App\Models\FavoriteRoute;
+use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
@@ -57,7 +58,9 @@ class FavoriteRouteConversation extends BaseConversation
             FavoriteRoute::create([
                                       'user_id' => $this->getUser()->id,
                                       'name' => $answer->getText(),
-                                      'address' => $this->getUser()->getOrderInfoByImplodedAddress($address)->toJson(
+                                      'address' => $this->getUser()->getOrderInfoByImplodedAddress(
+                                          Address::removeEllipsisFromAddressIfExists($address)
+                                      )->toJson(
                                           JSON_UNESCAPED_UNICODE
                                       )
                                   ]);

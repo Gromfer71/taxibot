@@ -41,7 +41,7 @@ class ExampleTest extends TestCase
     {
         $question = ComplexQuestion::createWithSimpleButtons('text', [ButtonsStructure::BACK]);
         $question = ComplexQuestion::addOrderHistoryButtons($question, User::first()->orders);
-
+        
         FavoriteRoute::create([
                                   'user_id' => 1,
                                   'name' => 'name',

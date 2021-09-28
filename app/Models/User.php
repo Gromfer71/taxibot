@@ -245,7 +245,9 @@ class User extends Model
         return $addresses->transform(function ($item) {
             $item['address'] = implode(' - ', $item['address']);
             return $item;
-        })->where('address', $address)->first();
+        })->filter(function ($item) use ($address) {
+            return false !== stristr($item['address'], $address);
+        })->first();
     }
 
 
