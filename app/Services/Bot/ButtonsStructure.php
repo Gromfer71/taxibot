@@ -51,7 +51,8 @@ class ButtonsStructure extends Button
             ButtonsStructure::PRICE_LIST,
             ButtonsStructure::ALL_ABOUT_BONUSES,
             ButtonsStructure::ADDRESS_HISTORY_MENU,
-            ButtonsStructure::FAVORITE_ADDRESSES_MENU
+            ButtonsStructure::FAVORITE_ADDRESSES_MENU,
+            ButtonsStructure::FAVORITE_ROUTES,
         ];
     }
 
