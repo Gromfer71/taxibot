@@ -7,6 +7,7 @@ use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
+use Illuminate\Support\Facades\Log;
 
 class FavoriteRouteConversation extends BaseConversation
 {
@@ -50,6 +51,7 @@ class FavoriteRouteConversation extends BaseConversation
 
     public function setRouteName($addressInfo)
     {
-        $this->say('123');
+        Log::info($addressInfo);
+        $this->say($addressInfo);
     }
 }
