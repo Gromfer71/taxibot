@@ -58,9 +58,10 @@ class FavoriteRouteConversation extends BaseConversation
             FavoriteRoute::create([
                                       'user_id' => $this->getUser()->id,
                                       'name' => $answer->getText(),
-                                      'address' => $this->getUser()->getOrderInfoByImplodedAddress(
-                                          Address::removeEllipsisFromAddressIfExists($address)
-                                      )->toJson(
+                                      'address' => json_encode(
+                                          $this->getUser()->getOrderInfoByImplodedAddress(
+                                              Address::removeEllipsisFromAddressIfExists($address)
+                                          ),
                                           JSON_UNESCAPED_UNICODE
                                       )
                                   ]);

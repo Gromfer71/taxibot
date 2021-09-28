@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\FavoriteRoute;
 use App\Models\User;
+use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Traits\TakingAddressTrait;
@@ -41,7 +42,13 @@ class ExampleTest extends TestCase
     {
         $question = ComplexQuestion::createWithSimpleButtons('text', [ButtonsStructure::BACK]);
         $question = ComplexQuestion::addOrderHistoryButtons($question, User::first()->orders);
-        
+        dd(
+            User::first()->getOrderInfoByImplodedAddress(
+                Address::removeEllipsisFromAddressIfExists(
+                    'Ленина пр-т 2 (Якутск), *п 2 - Ленина пр-т 2 (Якутск), *п 2 - Ленина пр-т 2 (Якутск), *п 2 - Кирен...'
+                )
+            )
+        );
         FavoriteRoute::create([
                                   'user_id' => 1,
                                   'name' => 'name',
