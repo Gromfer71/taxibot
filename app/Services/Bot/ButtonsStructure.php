@@ -30,6 +30,9 @@ class ButtonsStructure extends Button
     public const EXIT_TO_MENU = 'exit to menu';
     public const ADDRESS_WILL_SAY_TO_DRIVER = 'address will say to driver';
     public const NO_ENTRANCE = 'no entrance';
+    //routes
+    public const ADD_ROUTE = 'add route';
+    public const FAVORITE_ROUTES = 'favorite routes';
 
 
     /**
