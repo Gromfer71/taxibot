@@ -247,9 +247,17 @@ class User extends Model
         $addressInfo = $addresses->transform(function ($item) {
             $item['address'] = implode(' - ', $item['address']);
             return $item;
-        })->filter(function ($item) use ($address) {
-            return false !== stristr($item['address'], $address);
-        })->first();
+        });
+
+
+        if ($addressInfo->where('address', $address)->isEmpty()) {
+            $addressInfo = $addressInfo->filter(function ($item) use ($address) {
+                return false !== stristr($item['address'], $address);
+            })->first();
+        } else {
+            $addressInfo = $addressInfo->where('address', $address)->first();
+        }
+
         $addressInfo['address'] = explode(' - ', $addressInfo['address']);
 
         return $addressInfo;
