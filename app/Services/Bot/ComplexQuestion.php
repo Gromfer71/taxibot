@@ -25,7 +25,7 @@ class ComplexQuestion extends Question
         array $buttonTexts = [],
         array $additionalParameters = []
     ): Question {
-        $question = parent::create($text);
+        $question = new self($text);
         $buttonTexts = array_map(function ($item) {
             return 'buttons.' . $item;
         }, $buttonTexts);
@@ -94,6 +94,15 @@ class ComplexQuestion extends Question
             );
         }
 
+
+        return $question;
+    }
+
+    public static function addFavoriteRoutesButtons($question, $routes)
+    {
+        foreach ($routes as $route) {
+            $question->addButton(Button::create($route->name));
+        }
 
         return $question;
     }

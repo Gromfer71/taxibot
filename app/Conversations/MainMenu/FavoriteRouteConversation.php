@@ -4,7 +4,6 @@ namespace App\Conversations\MainMenu;
 
 use App\Conversations\BaseConversation;
 use App\Models\FavoriteRoute;
-use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
@@ -31,8 +30,12 @@ class FavoriteRouteConversation extends BaseConversation
             Translator::trans('messages.favorite routes menu'),
             [ButtonsStructure::BACK, ButtonsStructure::ADD_ROUTE]
         );
+        ComplexQuestion::addFavoriteRoutesButtons($question, $this->getUser()->favoriteRoutes);
 
-        return $this->ask($question, $this->getDefaultCallback());
+
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer->getValue());
+        });
     }
 
     public function addRoute()
@@ -60,7 +63,7 @@ class FavoriteRouteConversation extends BaseConversation
                                       'name' => $answer->getText(),
                                       'address' => json_encode(
                                           $this->getUser()->getOrderInfoByImplodedAddress(
-                                              Address::removeEllipsisFromAddressIfExists($address)
+                                              $address
                                           ),
                                           JSON_UNESCAPED_UNICODE
                                       )

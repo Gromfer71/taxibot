@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Address;
 use App\Services\BonusesApi;
 use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\Drivers\Telegram\TelegramDriver;
@@ -10,7 +11,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Facades\Log;
 
 /**
  * App\Models\User
@@ -240,16 +240,24 @@ class User extends Model
 
     public function getOrderInfoByImplodedAddress($address)
     {
-        Log::info($address);
+        $address = Address::removeEllipsisFromAddressIfExists($address);
         $addresses = $this->orders->map(function ($item) {
             return collect(json_decode($item->address));
         });
-        return $addresses->transform(function ($item) {
+        $addressInfo = $addresses->transform(function ($item) {
             $item['address'] = implode(' - ', $item['address']);
             return $item;
         })->filter(function ($item) use ($address) {
             return false !== stristr($item['address'], $address);
         })->first();
+        $addressInfo['address'] = explode(' - ', $addressInfo['address']);
+
+        return $addressInfo;
+    }
+
+    public function favoriteRoutes()
+    {
+        return $this->hasMany(FavoriteRoute::class, 'user_id', 'id');
     }
 
 
