@@ -6,6 +6,7 @@ use App\Conversations\BaseConversation;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
+use BotMan\BotMan\Messages\Incoming\Answer;
 
 class FavoriteRouteConversation extends BaseConversation
 {
@@ -13,7 +14,8 @@ class FavoriteRouteConversation extends BaseConversation
     {
         $actions = [
             ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
-            ButtonsStructure::ADD_ROUTE => 'App\Conversations\MainMenu\TakingAddressForFavoriteRouteConversation'
+            ButtonsStructure::CREATE_ROUTE => 'App\Conversations\MainMenu\TakingAddressForFavoriteRouteConversation',
+            ButtonsStructure::ADD_ROUTE => 'addRoute'
         ];
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
     }
@@ -29,5 +31,25 @@ class FavoriteRouteConversation extends BaseConversation
         );
 
         return $this->ask($question, $this->getDefaultCallback());
+    }
+
+    public function addRoute()
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.add route menu'),
+            [ButtonsStructure::BACK, ButtonsStructure::CREATE_ROUTE]
+        );
+
+        $question = ComplexQuestion::addOrderHistoryButtons($question, $this->getUser()->orders);
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer->getValue());
+
+            $this->setRouteName($answer->getValue());
+        });
+    }
+
+    public function setRouteName($addressInfo)
+    {
+        $this->say($addressInfo);
     }
 }

@@ -32,6 +32,7 @@ class ButtonsStructure extends Button
     public const NO_ENTRANCE = 'no entrance';
     //routes
     public const ADD_ROUTE = 'add route';
+    public const CREATE_ROUTE = 'create route';
     public const FAVORITE_ROUTES = 'favorite routes';
 
 

@@ -39,9 +39,8 @@ class ExampleTest extends TestCase
     public function testComplexQuestion()
     {
         $question = ComplexQuestion::createWithSimpleButtons('text', [ButtonsStructure::BACK]);
-        $this->assertSame($question->getText(), 'text');
-        $this->assertCount(1, $question->getActions());
-        $this->assertSame($question->getActions()[0]['value'], 'back');
+        $question = ComplexQuestion::addOrderHistoryButtons($question, User::first()->orders);
+        dd($question);
     }
 
     /**
