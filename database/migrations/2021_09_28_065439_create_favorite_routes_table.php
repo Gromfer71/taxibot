@@ -15,7 +15,7 @@ class CreateFavoriteRoutesTable extends Migration
     {
         Schema::create('favorite_routes', function (Blueprint $table) {
             $table->increments('id');
-            $table->bigInteger('user_id');
+            $table->bigInteger('user_id')->unsigned();
             $table->text('address');
             $table->string('name');
 
