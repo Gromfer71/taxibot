@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Log;
 
 /**
  * App\Models\User
@@ -239,6 +240,7 @@ class User extends Model
 
     public function getOrderInfoByImplodedAddress($address)
     {
+        Log::info($address);
         $addresses = $this->orders->map(function ($item) {
             return collect(json_decode($item->address));
         });
