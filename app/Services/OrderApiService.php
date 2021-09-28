@@ -338,6 +338,9 @@ class OrderApiService
         $lat = collect($storage->get('lat'))->values()->all();
         $lon = collect($storage->get('lon'))->values()->all();
         $oldAddresses = collect($storage->get('address'))->values()->all();
+        Log::info(json_encode($oldAddresses));
+        Log::info(json_encode($lat));
+        Log::info(json_encode($lon));
         $addresses = collect();
         foreach ($oldAddresses as $key => $address) {
             $addresses->push(
@@ -349,7 +352,7 @@ class OrderApiService
             );
         }
         $addresses = $addresses->toArray();
-        Log::info(json_encode($addresses, JSON_UNESCAPED_UNICODE));
+
 
         $params = [
             'method' => 'POST',
@@ -366,7 +369,6 @@ class OrderApiService
             'https://sk-taxi.ru/tmapi/api.php?method=/common_api/1.0/analyze_route2',
             $params
         );
-        Log::info(json_encode($response));
 
 
         return json_decode($response);
