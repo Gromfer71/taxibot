@@ -349,7 +349,7 @@ class OrderApiService
             );
         }
         $addresses = $addresses->toArray();
-        Log::info(json_encode($addresses));
+        Log::info(json_encode($addresses, JSON_UNESCAPED_UNICODE));
 
         $params = [
             'method' => 'POST',
@@ -366,6 +366,7 @@ class OrderApiService
             'https://sk-taxi.ru/tmapi/api.php?method=/common_api/1.0/analyze_route2',
             $params
         );
+        Log::info(json_encode($response));
 
 
         return json_decode($response);
