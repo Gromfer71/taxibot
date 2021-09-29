@@ -3,7 +3,6 @@
 namespace App\Conversations\FavoriteRoutes;
 
 use App\Conversations\BaseAddressConversation;
-use App\Conversations\MainMenu\FavoriteRouteConversation;
 use App\Models\FavoriteRoute;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;

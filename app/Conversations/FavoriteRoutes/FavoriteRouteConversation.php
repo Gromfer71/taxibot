@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Conversations\MainMenu;
+namespace App\Conversations\FavoriteRoutes;
 
 use App\Conversations\BaseConversation;
 use App\Conversations\TaxiMenuConversation;

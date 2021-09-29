@@ -40,7 +40,7 @@ class MenuConversation extends BaseConversation
             ButtonsStructure::FAVORITE_ADDRESSES_MENU => 'App\Conversations\FavoriteAddressesConversation',
             ButtonsStructure::BACK => 'run',
             ButtonsStructure::LANG_MENU => 'App\Conversations\MainMenu\SwitchLangConversation',
-            ButtonsStructure::FAVORITE_ROUTES => 'App\Conversations\MainMenu\FavoriteRouteConversation'
+            ButtonsStructure::FAVORITE_ROUTES => 'App\Conversations\FavoriteRoutes\FavoriteRouteConversation'
 
         ];
 
