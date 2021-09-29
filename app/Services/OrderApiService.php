@@ -338,9 +338,6 @@ class OrderApiService
         $lat = collect($storage->get('lat'))->values()->all();
         $lon = collect($storage->get('lon'))->values()->all();
         $oldAddresses = collect($storage->get('address'))->values()->all();
-        Log::info(json_encode($oldAddresses, JSON_UNESCAPED_UNICODE));
-        Log::info(json_encode($lat));
-        Log::info(json_encode($lon));
         $addresses = collect();
         foreach ($oldAddresses as $key => $address) {
             $addresses->push(

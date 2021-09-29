@@ -17,7 +17,7 @@ class FavoriteRouteConversation extends BaseConversation
     {
         $actions = [
             ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
-            ButtonsStructure::CREATE_ROUTE => 'App\Conversations\MainMenu\TakingAddressForFavoriteRouteConversation',
+            ButtonsStructure::CREATE_ROUTE => 'App\Conversations\FavoriteRoutes\TakingAddressForFavoriteRouteConversation',
             ButtonsStructure::ADD_ROUTE => 'addRoute'
         ];
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
@@ -51,7 +51,10 @@ class FavoriteRouteConversation extends BaseConversation
 
         $question = ComplexQuestion::addOrderHistoryButtons($question, $this->getUser()->orders);
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction(
+                $answer->getValue(),
+                [ButtonsStructure::BACK => 'Имя предыдущего метода к которому хотим вернуться']
+            );
             $this->setRouteName($answer->getText());
         });
     }
