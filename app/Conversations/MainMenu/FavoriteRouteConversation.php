@@ -53,7 +53,7 @@ class FavoriteRouteConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction(
                 $answer->getValue(),
-                [ButtonsStructure::BACK => 'Имя предыдущего метода к которому хотим вернуться']
+                [ButtonsStructure::BACK => 'run']
             );
             $this->setRouteName($answer->getText());
         });
