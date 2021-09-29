@@ -2,7 +2,7 @@
 
 namespace App\Conversations\FavoriteRoutes;
 
-use App\Conversations\BaseConversation;
+use App\Conversations\BaseAddressConversation;
 use App\Conversations\MainMenu\FavoriteRouteConversation;
 use App\Models\FavoriteRoute;
 use App\Services\Bot\ButtonsStructure;
@@ -11,7 +11,7 @@ use App\Services\Translator;
 use App\Traits\TakingAdditionalAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
-class AddedRouteMenuConversation extends BaseConversation
+class AddedRouteMenuConversation extends BaseAddressConversation
 {
     use TakingAdditionalAddressTrait;
 
