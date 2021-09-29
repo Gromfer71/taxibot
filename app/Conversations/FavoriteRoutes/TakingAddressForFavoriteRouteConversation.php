@@ -6,5 +6,5 @@ use App\Conversations\TakingAddressConversation;
 
 class TakingAddressForFavoriteRouteConversation extends TakingAddressConversation
 {
-    public $conversationAfterTakeAddress = 'App\Conversations\FavoriteRoutes\SetRouteNameConversation';
+    public $conversationAfterTakeAddress = 'App\Conversations\FavoriteRoutes\AddedRouteMenuConversation';
 }
