@@ -24,11 +24,17 @@ class SetRouteNameConversation extends BaseConversation
                                       'user_id' => $this->getUser()->id,
                                       'name' => $answer->getText(),
                                       'address' => json_encode(
-                                          ['address' => $this->bot->userStorage()->get('address')],
-                                          ['lat' => $this->bot->userStorage()->get('lat')],
-                                          ['lon' => $this->bot->userStorage()->get('lon')]
+                                          [
+                                              [
+                                                  'address' => $this->bot->userStorage()->get(
+                                                      'address'
+                                                  )
+                                              ],
+                                              ['lat' => $this->bot->userStorage()->get('lat')],
+                                              ['lon' => $this->bot->userStorage()->get('lon')]
+                                          ],
+                                          JSON_UNESCAPED_UNICODE
                                       ),
-                                      JSON_UNESCAPED_UNICODE
                                   ]);
 
             $this->bot->startConversation(new FavoriteRouteConversation());
