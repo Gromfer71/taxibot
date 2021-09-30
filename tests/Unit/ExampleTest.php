@@ -6,7 +6,6 @@ use App\Models\FavoriteRoute;
 use App\Models\User;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
-use App\Services\Options;
 use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Storages\Drivers\FileStorage;
 use BotMan\BotMan\Storages\Storage;
@@ -54,15 +53,19 @@ class ExampleTest extends TestCase
 
     public function testCreateOrderFromFavoriteRoute()
     {
-        $route = $this->getUser()->favoriteRoutes->where('name', 'name')->first();
-        $addressInfo = collect(json_decode($route->address));
-        $addressInfo['address'] = explode('-', $addressInfo['address']);
-        $storage = new Storage(new FileStorage());
-        $storage->delete();
-        $storage->save($addressInfo->toArray());
-        $storage->save(
-            ['crew_group_id' => (new Options())->getCrewGroupIdFromCity($this->getUser()->city)]
-        );
+//        $route = $this->getUser()->favoriteRoutes->where('name', 'name')->first();
+//        $addressInfo = collect(json_decode($route->address));
+//        $addressInfo['address'] = explode('-', $addressInfo['address']);
+//        $storage = new Storage(new FileStorage());
+//        $storage->delete();
+//        $storage->save($addressInfo->toArray());
+//        $storage->save(
+//            ['crew_group_id' => (new Options())->getCrewGroupIdFromCity($this->getUser()->city)]
+//        );
+        $route = FavoriteRoute::where('name', 'name')->where('user_id', '1')->first();
+        if ($route) {
+            $route->delete();
+        }
     }
 
     /**
