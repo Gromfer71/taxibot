@@ -260,7 +260,8 @@ class User extends Model
         }
 
         $addressInfo['address'] = explode(' – ', $addressInfo['address']);
-        if (count($addressInfo['address']) != $addressInfo['lat'] || count($addressInfo['address']) != count(
+      
+        if (count($addressInfo['address']) != count($addressInfo['lat']) || count($addressInfo['address']) != count(
                 $addressInfo['lon']
             )) {
             throw new Exception('Количество адресов маршрута и координат отличается');
