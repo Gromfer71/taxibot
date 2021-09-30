@@ -7,6 +7,7 @@ use App\Services\BonusesApi;
 use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -245,7 +246,7 @@ class User extends Model
             return collect(json_decode($item->address));
         });
         $addressInfo = $addresses->transform(function ($item) {
-            $item['address'] = implode(' - ', $item['address']);
+            $item['address'] = implode(' – ', $item['address']);
             return $item;
         });
 
@@ -258,7 +259,12 @@ class User extends Model
             $addressInfo = $addressInfo->where('address', $address)->first();
         }
 
-        $addressInfo['address'] = explode(' - ', $addressInfo['address']);
+        $addressInfo['address'] = explode(' – ', $addressInfo['address']);
+        if (count($addressInfo['address']) != $addressInfo['lat'] || count($addressInfo['address']) != count(
+                $addressInfo['lon']
+            )) {
+            throw new Exception('Количество адресов маршрута и координат отличается');
+        }
 
         return $addressInfo;
     }

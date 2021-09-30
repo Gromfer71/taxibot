@@ -40,13 +40,14 @@ class ExampleTest extends TestCase
     public function testComplexQuestion()
     {
         $question = ComplexQuestion::createWithSimpleButtons('text', [ButtonsStructure::BACK]);
+        /** @var ComplexQuestion $question */
         $question = ComplexQuestion::addOrderHistoryButtons($question, User::first()->orders);
-
+  
         FavoriteRoute::create([
                                   'user_id' => 1,
                                   'name' => 'name',
                                   'address' => User::first()->getOrderInfoByImplodedAddress(
-                                      '3Ленина пр-т 2 (Якутск), *п 2 - Киренского пер. 7 (Якутск)'
+                                      $question->getButtons()[5]['text']
                                   )->toJson(JSON_UNESCAPED_UNICODE)
                               ]);
     }
