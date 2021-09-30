@@ -10,7 +10,6 @@ use App\Services\Bot\ComplexQuestion;
 use App\Services\Options;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
-use Illuminate\Support\Facades\Log;
 
 class FavoriteRouteConversation extends BaseConversation
 {
@@ -109,22 +108,20 @@ class FavoriteRouteConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
 
-            $this->confirmDeleteRoute();
+            $this->confirmDeleteRoute($answer->getText());
         });
     }
 
-    public function confirmDeleteRoute()
+    public function confirmDeleteRoute($routeName)
     {
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans('messages.confirm delete favorite route'),
             [ButtonsStructure::DELETE, ButtonsStructure::BACK]
         );
 
-        return $this->ask($question, function (Answer $answer) {
+        return $this->ask($question, function (Answer $answer) use ($routeName) {
             $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'deleteRoute']);
-            $route = FavoriteRoute::where('name', $answer->getText())->where('user_id', $this->getUser()->id)->first();
-            Log::info($answer->getText());
-            Log::info(json_encode($route));
+            $route = FavoriteRoute::where('name', $routeName)->where('user_id', $this->getUser()->id)->first();
             if ($route) {
                 $route->delete();
             }
