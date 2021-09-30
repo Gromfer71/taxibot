@@ -35,7 +35,7 @@ class FavoriteRouteConversation extends BaseConversation
         );
 
         if ($this->getUser()->favoriteRoutes->isNotEmpty()) {
-            $question = ComplexQuestion::setButtons($question, [ButtonsStructure::DELETE_ROUTE]);
+            $question = ComplexQuestion::setButtons($question, ['buttons.' . ButtonsStructure::DELETE_ROUTE]);
         }
         ComplexQuestion::addFavoriteRoutesButtons($question, $this->getUser()->favoriteRoutes);
 
