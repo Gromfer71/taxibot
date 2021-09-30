@@ -36,6 +36,7 @@ class ButtonsStructure extends Button
     public const FAVORITE_ROUTES = 'favorite routes';
     public const SAVE = 'save';
     public const ADD_ADDRESS = 'add address';
+    public const DELETE_ROUTE = 'delete route';
 
 
     /**

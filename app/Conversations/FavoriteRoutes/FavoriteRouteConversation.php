@@ -18,7 +18,8 @@ class FavoriteRouteConversation extends BaseConversation
         $actions = [
             ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
             ButtonsStructure::CREATE_ROUTE => 'App\Conversations\FavoriteRoutes\TakingAddressForFavoriteRouteConversation',
-            ButtonsStructure::ADD_ROUTE => 'addRoute'
+            ButtonsStructure::ADD_ROUTE => 'addRoute',
+            ButtonsStructure::DELETE_ROUTE => 'deleteRoute'
         ];
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
     }
@@ -32,6 +33,10 @@ class FavoriteRouteConversation extends BaseConversation
             Translator::trans('messages.favorite routes menu'),
             [ButtonsStructure::BACK, ButtonsStructure::ADD_ROUTE]
         );
+
+        if ($this->getUser()->favoriteRoutes->isNotEmpty()) {
+            $question = ComplexQuestion::setButtons($question, [ButtonsStructure::DELETE_ROUTE]);
+        }
         ComplexQuestion::addFavoriteRoutesButtons($question, $this->getUser()->favoriteRoutes);
 
 
@@ -90,5 +95,37 @@ class FavoriteRouteConversation extends BaseConversation
         );
 
         $this->bot->startConversation(new TaxiMenuConversation());
+    }
+
+    public function deleteRoute()
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.delete route menu'),
+            [ButtonsStructure::BACK]
+        );
+        $question = ComplexQuestion::addFavoriteRoutesButtons($question, $this->getUser()->favoriteRoutes);
+
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
+
+            $this->confirmDeleteRoute();
+        });
+    }
+
+    public function confirmDeleteRoute()
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.confirm delete favorite route'),
+            [ButtonsStructure::DELETE, ButtonsStructure::BACK]
+        );
+
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'deleteRoute']);
+            $route = $this->getUser()->favoriteRoutes->where('name', $answer->getText())->first();
+            if ($route) {
+                $route->delete();
+            }
+            $this->deleteRoute();
+        });
     }
 }
