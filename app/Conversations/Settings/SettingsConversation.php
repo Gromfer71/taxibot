@@ -28,7 +28,7 @@ class SettingsConversation extends BaseConversation
      */
     public function run($message = null)
     {
-        Translator::$lang = $this->getUser()->lang->name ?? 'ru';
+        Translator::$lang = $this->getUser()->lang->code ?? 'ru';
         $question = ComplexQuestion::createWithSimpleButtons(
             $message ?: Translator::trans('messages.settings menu'),
             ButtonsStructure::getSettingsMenu()
