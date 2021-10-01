@@ -101,7 +101,7 @@ abstract class BaseConversation extends Conversation
             die();
         }
 
-        if ($answer->getValue() == 'aborted order' || $answer->getValue() == 'finished order') {
+        if ($answer->getValue() == 'aborted order' || $answer->getValue() == 'exit to menu') {
             $this->bot->startConversation(new StartConversation());
             return;
         }

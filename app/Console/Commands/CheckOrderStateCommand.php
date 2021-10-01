@@ -214,10 +214,10 @@ class CheckOrderStateCommand extends Command
                     $actualOrder->finishOrder();
                     $question = Question::create(Translator::trans('messages.thx for order'), $recipientId)->addButtons(
                         [
-                            Button::create(Translator::trans('buttons.finished order'))->value('finished order'),
                             Button::create(Translator::trans('buttons.add to favorite routes'))->value(
                                 'add to favorite routes'
                             ),
+                            Button::create(Translator::trans('buttons.exit to menu'))->value('exit to menu'),
                         ]
                     );
                     $botMan->say($question, $recipientId, $driverName);
