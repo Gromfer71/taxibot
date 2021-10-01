@@ -96,6 +96,10 @@ abstract class BaseConversation extends Conversation
 
     public function _fallback($answer)
     {
+        if ($answer->getValue() == 'add to favorite routes') {
+            $this->bot->startConversation(new AddedRouteMenuConversation());
+        }
+
         if ($answer->getValue() == 'aborted order' || $answer->getValue() == 'finished order') {
             $this->bot->startConversation(new StartConversation());
             return;

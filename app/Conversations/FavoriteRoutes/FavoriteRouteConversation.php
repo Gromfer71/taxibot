@@ -116,7 +116,7 @@ class FavoriteRouteConversation extends BaseConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans('messages.confirm delete favorite route'),
-            [ButtonsStructure::DELETE, ButtonsStructure::BACK]
+            [ButtonsStructure::BACK, ButtonsStructure::DELETE]
         );
 
         return $this->ask($question, function (Answer $answer) use ($routeName) {
