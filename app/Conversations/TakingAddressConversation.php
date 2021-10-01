@@ -161,6 +161,9 @@ class TakingAddressConversation extends BaseAddressConversation
                 return Address::toString($address);
             })
         );
+        if ($addressesList->isEmpty()) {
+            $this->streetNotFound();
+        }
 
         return $this->ask(
             $question,
