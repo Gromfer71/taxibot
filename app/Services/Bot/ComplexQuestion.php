@@ -89,6 +89,7 @@ class ComplexQuestion extends Question
     {
         foreach ($orders as $key => $order) {
             $addressInfo = collect(json_decode($order->address, true));
+            $addressInfo = $addressInfo->filter();
             if ($addressInfo->count() > 1) {
                 $question->addButton(
                     Button::create(implode(' – ', $addressInfo->get('address')))->value(
