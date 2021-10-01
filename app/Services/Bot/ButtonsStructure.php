@@ -50,14 +50,12 @@ class ButtonsStructure extends Button
         return [
             ButtonsStructure::TAKE_TAXI,
             ButtonsStructure::REQUEST_CALL,
-            ButtonsStructure::CHANGE_PHONE,
-            ButtonsStructure::CHANGE_CITY,
-            ButtonsStructure::LANG_MENU,
             ButtonsStructure::PRICE_LIST,
             ButtonsStructure::ALL_ABOUT_BONUSES,
             ButtonsStructure::ADDRESS_HISTORY_MENU,
             ButtonsStructure::FAVORITE_ADDRESSES_MENU,
             ButtonsStructure::FAVORITE_ROUTES,
+            ButtonsStructure::SETTINGS,
         ];
     }
 
