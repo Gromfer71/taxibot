@@ -163,6 +163,7 @@ class TakingAddressConversation extends BaseAddressConversation
         );
         if ($addressesList->isEmpty()) {
             $this->streetNotFound();
+            die();
         }
 
         return $this->ask(
