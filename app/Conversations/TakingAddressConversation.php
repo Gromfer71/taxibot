@@ -117,13 +117,13 @@ class TakingAddressConversation extends BaseAddressConversation
         if ($this->conversationAfterTakeAddress != TakingAddressForFavoriteRouteConversation::ADDED_ROUTE_CONVERSATION) {
             $question = ComplexQuestion::setButtons(
                 $question,
-                [ButtonsStructure::ADDRESS_WILL_SAY_TO_DRIVER],
+                ['buttons.' . ButtonsStructure::ADDRESS_WILL_SAY_TO_DRIVER],
                 ['location' => 'addresses']
             );
         }
         $question = ComplexQuestion::setButtons(
             $question,
-            [ButtonsStructure::EXIT],
+            ['buttons.' . ButtonsStructure::EXIT],
             ['location' => 'addresses']
         );
         $question = $this->_addAddressFavoriteButtons($question);
