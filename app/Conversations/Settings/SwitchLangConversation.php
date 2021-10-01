@@ -25,7 +25,7 @@ class SwitchLangConversation extends BaseConversation
     public function getActions(array $replaceActions = []): array
     {
         $actions = [
-            ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
+            ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
