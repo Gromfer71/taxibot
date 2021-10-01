@@ -57,7 +57,7 @@ class SettingsConversation extends BaseConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
             if (in_array($answer->getText(), $this->options->getCitiesArray())) {
                 $this->getUser()->updateCity($answer->getText());
                 $this->run(Translator::trans('messages.city has been changed', ['city' => $answer->getText()]));
