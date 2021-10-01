@@ -276,15 +276,17 @@ abstract class BaseConversation extends Conversation
     public function addOrdersRoutesToMessage($message)
     {
         if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+            $num = 0;
             $message .= "\n";
-            foreach ($this->getUser()->orders as $key => $order) {
+            foreach ($this->getUser()->orders as $order) {
                 $addressInfo = collect(json_decode($order->address, true));
                 $addressInfo['address'] = array_filter($addressInfo['address']);
                 if (count($addressInfo['address']) > 1) {
-                    $message .= self::numberToEmodji($key + 1) . ' ' . implode(
+                    $message .= self::numberToEmodji($num + 1) . ' ' . implode(
                             ' – ',
                             $addressInfo->get('address')
                         ) . "\n";
+                    $num++;
                 }
             }
         }
