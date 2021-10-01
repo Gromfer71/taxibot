@@ -14,7 +14,7 @@ class SettingsConversation extends BaseConversation
     public function getActions(array $replaceActions = []): array
     {
         $actions = [
-            ButtonsStructure::CHANGE_PHONE => 'App\Conversations\MainMenu\ChangePhoneConversation',
+            ButtonsStructure::CHANGE_PHONE => 'App\Conversations\Settings\ChangePhoneConversation',
             ButtonsStructure::LANG_MENU => 'App\Conversations\MainMenu\SwitchLangConversation',
             ButtonsStructure::CHANGE_CITY => 'changeCity',
             ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
