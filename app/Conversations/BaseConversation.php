@@ -155,14 +155,15 @@ abstract class BaseConversation extends Conversation
 
     public function end()
     {
-        $question = Question::create($this->__('messages.thx for order'), $this->bot->getUser()->getId())
-            ->addButtons([
-                             Button::create(Translator::trans('buttons.add to favorite routes'))->value(
-                                 'add to favorite routes'
-                             ),
-                             Button::create(Translator::trans('buttons.exit to menu'))->value('exit to menu'),
-                         ]
+        $question = Question::create($this->__('messages.thx for order'));
+        if (!$this->bot->userStorage()->get('second_address_will_say_to_driver_flag')) {
+            $question->addButton(
+                Button::create(Translator::trans('buttons.add to favorite routes'))->value(
+                    'add to favorite routes'
+                )
             );
+        }
+        $question->addButton(Button::create(Translator::trans('buttons.exit to menu'))->value('exit to menu'));
 
         return $this->ask($question, function (Answer $answer) {
             if ($answer->getValue() == 'add to favorite routes') {
@@ -275,7 +276,7 @@ abstract class BaseConversation extends Conversation
     public function addOrdersRoutesToMessage($message)
     {
         if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
-            $message .= ' ';
+            $message .= "\n";
             foreach ($this->getUser()->orders as $key => $order) {
                 $addressInfo = collect(json_decode($order->address, true));
                 $message .= self::numberToEmodji($key + 1) . ' ' . implode(

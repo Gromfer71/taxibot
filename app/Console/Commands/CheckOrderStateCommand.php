@@ -212,14 +212,19 @@ class CheckOrderStateCommand extends Command
                     $botMan->listen();
                 } elseif ($newStateId == OrderHistory::FINISHED_BY_DRIVER) {
                     $actualOrder->finishOrder();
-                    $question = Question::create(Translator::trans('messages.thx for order'), $recipientId)->addButtons(
-                        [
+                    $question = Question::create(Translator::trans('messages.thx for order'));
+
+                    if (!$botMan->userStorage()->get('second_address_will_say_to_driver_flag')) {
+                        $question->addButton(
                             Button::create(Translator::trans('buttons.add to favorite routes'))->value(
                                 'add to favorite routes'
-                            ),
-                            Button::create(Translator::trans('buttons.exit to menu'))->value('exit to menu'),
-                        ]
+                            )
+                        );
+                    }
+                    $question->addButton(
+                        Button::create(Translator::trans('buttons.exit to menu'))->value('exit to menu')
                     );
+
                     $botMan->say($question, $recipientId, $driverName);
                     $botMan->listen();
                 } elseif ($newStateId == OrderHistory::CLIENT_DONT_COME_OUT || $newStateId == OrderHistory::CLIENT_DONT_COME_OUT_2) {
