@@ -98,6 +98,7 @@ abstract class BaseConversation extends Conversation
     {
         if ($answer->getValue() == 'add to favorite routes') {
             $this->bot->startConversation(new AddedRouteMenuConversation());
+            die();
         }
 
         if ($answer->getValue() == 'aborted order' || $answer->getValue() == 'finished order') {
