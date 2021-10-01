@@ -257,7 +257,7 @@ class TakingAddressConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'getAddressTo']);
             $this->_saveSecondAddress($answer->getText());
             $this->getAddressToAgain();
         });
@@ -270,7 +270,7 @@ class TakingAddressConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK]);
 
             if (count((array)$this->bot->userStorage()->get('address')) > 1) {
                 $this->handleForgetWriteHouse($answer->getText());
