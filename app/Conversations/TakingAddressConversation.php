@@ -201,6 +201,7 @@ class TakingAddressConversation extends BaseAddressConversation
             );
         } else {
             $this->streetNotFoundAddressTo();
+            die();
         }
 
         return $this->ask(
