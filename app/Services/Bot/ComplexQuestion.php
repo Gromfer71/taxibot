@@ -87,12 +87,12 @@ class ComplexQuestion extends Question
 
     public static function addOrderHistoryButtons($question, $orders)
     {
-        foreach ($orders as $order) {
+        foreach ($orders as $key => $order) {
             $addressInfo = collect(json_decode($order->address, true));
             $question->addButton(
                 Button::create(implode(' – ', $addressInfo->get('address')))->value(
                     implode(' – ', $addressInfo->get('address'))
-                )
+                )->additionalParameters(['number' => $key + 1])
             );
         }
 

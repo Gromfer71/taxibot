@@ -26,7 +26,7 @@ abstract class BaseConversation extends Conversation
 {
     use UserManagerTrait;
 
-    private
+    public
     const EMOJI = [
         '0' => '0&#8419;',
         '1' => '1&#8419;',
@@ -205,6 +205,7 @@ abstract class BaseConversation extends Conversation
         return $result;
     }
 
+
     public function addAddressesToMessageOnlyFromHistory($questionText)
     {
         if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
@@ -269,6 +270,22 @@ abstract class BaseConversation extends Conversation
     public function navigationMapper()
     {
         return [];
+    }
+
+    public function addOrdersRoutesToMessage($message)
+    {
+        if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+            $message .= ' ';
+            foreach ($this->getUser()->orders as $key => $order) {
+                $addressInfo = collect(json_decode($order->address, true));
+                $message .= self::numberToEmodji($key + 1) . '⭐️' . implode(
+                        ' – ',
+                        $addressInfo->get('address')
+                    ) . "\n";
+            }
+        }
+
+        return $message;
     }
 
 }

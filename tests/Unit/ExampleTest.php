@@ -42,7 +42,7 @@ class ExampleTest extends TestCase
         $question = ComplexQuestion::createWithSimpleButtons('text', [ButtonsStructure::BACK]);
         /** @var ComplexQuestion $question */
         $question = ComplexQuestion::addOrderHistoryButtons($question, User::first()->orders);
-  
+
         FavoriteRoute::create([
                                   'user_id' => 1,
                                   'name' => 'name',
@@ -50,6 +50,10 @@ class ExampleTest extends TestCase
                                       $question->getButtons()[5]['text']
                                   )->toJson(JSON_UNESCAPED_UNICODE)
                               ]);
+    }
+
+    public function testVkRoute()
+    {
     }
 
     public function testCreateOrderFromFavoriteRoute()

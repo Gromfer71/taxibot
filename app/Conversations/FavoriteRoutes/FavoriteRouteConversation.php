@@ -49,10 +49,12 @@ class FavoriteRouteConversation extends BaseConversation
 
     public function addRoute()
     {
+        $message = $this->addOrdersRoutesToMessage(Translator::trans('messages.add route menu'));
         $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.add route menu'),
+            $message,
             [ButtonsStructure::BACK, ButtonsStructure::CREATE_ROUTE]
         );
+
 
         $question = ComplexQuestion::addOrderHistoryButtons($question, $this->getUser()->orders);
         return $this->ask($question, function (Answer $answer) {
@@ -60,7 +62,7 @@ class FavoriteRouteConversation extends BaseConversation
                 $answer->getValue(),
                 [ButtonsStructure::BACK => 'run']
             );
-            $this->setRouteName($answer->getText());
+            $this->setRouteName($answer->getValue() ?: $answer->getText());
         });
     }
 
