@@ -2,6 +2,7 @@
 
 namespace App\Conversations;
 
+use App\Conversations\FavoriteRoutes\TakingAddressForFavoriteRouteConversation;
 use App\Models\AddressHistory;
 use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
@@ -110,12 +111,20 @@ class TakingAddressConversation extends BaseAddressConversation
 
     public function getAddressTo()
     {
-        $question = ComplexQuestion::createWithSimpleButtons($this->addAddressesToMessage($this->getAddressToMessage()),
-                                                             [
-                                                                 ButtonsStructure::ADDRESS_WILL_SAY_TO_DRIVER,
-                                                                 ButtonsStructure::EXIT
-                                                             ],
-                                                             ['location' => 'addresses']
+        $question = ComplexQuestion::createWithSimpleButtons(
+            $this->addAddressesToMessage($this->getAddressToMessage())
+        );
+        if ($this->conversationAfterTakeAddress != TakingAddressForFavoriteRouteConversation::ADDED_ROUTE_CONVERSATION) {
+            $question = ComplexQuestion::setButtons(
+                $question,
+                [ButtonsStructure::ADDRESS_WILL_SAY_TO_DRIVER],
+                ['location' => 'addresses']
+            );
+        }
+        $question = ComplexQuestion::setButtons(
+            $question,
+            [ButtonsStructure::EXIT],
+            ['location' => 'addresses']
         );
         $question = $this->_addAddressFavoriteButtons($question);
         $question = $this->_addAddressHistoryButtons($question);
