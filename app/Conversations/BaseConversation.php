@@ -279,6 +279,7 @@ abstract class BaseConversation extends Conversation
             $message .= "\n";
             foreach ($this->getUser()->orders as $key => $order) {
                 $addressInfo = collect(json_decode($order->address, true));
+                $addressInfo['address'] = array_filter($addressInfo['address']);
                 $message .= self::numberToEmodji($key + 1) . ' ' . implode(
                         ' – ',
                         $addressInfo->get('address')
