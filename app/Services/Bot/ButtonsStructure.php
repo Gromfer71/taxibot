@@ -37,6 +37,7 @@ class ButtonsStructure extends Button
     public const SAVE = 'save';
     public const ADD_ADDRESS = 'add address';
     public const DELETE_ROUTE = 'delete route';
+    public const SETTINGS = 'settings';
 
 
     /**
@@ -73,6 +74,16 @@ class ButtonsStructure extends Button
             ButtonsStructure::OUR_SITE,
             ButtonsStructure::OUR_APP,
             ButtonsStructure::BACK,
+        ];
+    }
+
+    public static function getSettingsMenu(): array
+    {
+        return [
+            ButtonsStructure::BACK,
+            ButtonsStructure::CHANGE_PHONE,
+            ButtonsStructure::CHANGE_CITY,
+            ButtonsStructure::LANG_MENU,
         ];
     }
 }

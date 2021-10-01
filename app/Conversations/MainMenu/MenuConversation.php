@@ -8,7 +8,6 @@ use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
-use BotMan\BotMan\Messages\Incoming\Answer;
 
 /**
  * Главное меню бота
@@ -29,9 +28,7 @@ class MenuConversation extends BaseConversation
                 $this->getUser()->setUserNeedDispatcher();
                 $this->run(Translator::trans('messages.wait for dispatcher'));
             },
-            ButtonsStructure::CHANGE_PHONE => 'App\Conversations\MainMenu\ChangePhoneConversation',
             ButtonsStructure::TAKE_TAXI => 'App\Conversations\TakingAddressConversation',
-            ButtonsStructure::CHANGE_CITY => 'changeCity',
             ButtonsStructure::PRICE_LIST => function () {
                 $this->run(Translator::trans('messages.price list'));
             },
@@ -39,8 +36,8 @@ class MenuConversation extends BaseConversation
             ButtonsStructure::ADDRESS_HISTORY_MENU => 'App\Conversations\MainMenu\AddressesHistoryConversation',
             ButtonsStructure::FAVORITE_ADDRESSES_MENU => 'App\Conversations\FavoriteAddressesConversation',
             ButtonsStructure::BACK => 'run',
-            ButtonsStructure::LANG_MENU => 'App\Conversations\MainMenu\SwitchLangConversation',
-            ButtonsStructure::FAVORITE_ROUTES => 'App\Conversations\FavoriteRoutes\FavoriteRouteConversation'
+            ButtonsStructure::FAVORITE_ROUTES => 'App\Conversations\FavoriteRoutes\FavoriteRouteConversation',
+            ButtonsStructure::SETTINGS => 'App\Conversations\Settings\SettingsConversation'
 
         ];
 
@@ -71,35 +68,4 @@ class MenuConversation extends BaseConversation
     }
 
 
-    /**
-     * Изменение города (не путать с установлением начального города при регистрации). Отличий мало, но контекст другой
-     *
-     * @return \App\Conversations\MainMenu\MenuConversation
-     */
-    public function changeCity(): MenuConversation
-    {
-        $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.choose city', ['city' => $this->getUser()->city]),
-            [ButtonsStructure::BACK],
-            ['config' => ButtonsFormatterService::CITY_MENU_FORMAT]
-        );
-
-        $question = ComplexQuestion::setButtons(
-            $question,
-            $this->options->getCitiesArray(),
-            [],
-            true
-        );
-
-        return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
-            if (in_array($answer->getText(), $this->options->getCitiesArray())) {
-                $this->getUser()->updateCity($answer->getText());
-                $this->run(Translator::trans('messages.city has been changed', ['city' => $answer->getText()]));
-            } else {
-                $this->say(Translator::trans('messages.city not found'));
-                $this->changeCity();
-            }
-        });
-    }
 }
