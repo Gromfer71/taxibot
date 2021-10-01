@@ -157,10 +157,10 @@ abstract class BaseConversation extends Conversation
     {
         $question = Question::create($this->__('messages.thx for order'), $this->bot->getUser()->getId())
             ->addButtons([
-                             Button::create('Продолжить')->value('Продолжить'),
                              Button::create(Translator::trans('buttons.add to favorite routes'))->value(
                                  'add to favorite routes'
                              ),
+                             Button::create(Translator::trans('buttons.exit to menu'))->value('exit to menu'),
                          ]
             );
 
