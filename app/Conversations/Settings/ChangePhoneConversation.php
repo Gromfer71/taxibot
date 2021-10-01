@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Conversations\MainMenu;
+namespace App\Conversations\Settings;
 
 use App\Conversations\BaseConversation;
 use App\Services\Bot\ButtonsStructure;
@@ -26,7 +26,7 @@ class ChangePhoneConversation extends BaseConversation
 
     /**
      * @param string $message
-     * @return \App\Conversations\MainMenu\ChangePhoneConversation
+     * @return ChangePhoneConversation
      */
     public function confirmPhone(string $message = ''): ChangePhoneConversation
     {
@@ -37,7 +37,7 @@ class ChangePhoneConversation extends BaseConversation
 
         return $this->ask($question, function (Answer $answer) {
             if ($answer->getValue() == ButtonsStructure::BACK) {
-                $this->bot->startConversation(new MenuConversation());
+                $this->bot->startConversation(new SettingsConversation());
             } else {
                 $this->tryToSendSmsCode($answer->getText());
             }
@@ -46,7 +46,7 @@ class ChangePhoneConversation extends BaseConversation
 
     /**
      * @param string $message
-     * @return \App\Conversations\MainMenu\ChangePhoneConversation
+     * @return ChangePhoneConversation
      */
     public function confirmSms(string $message = ''): ChangePhoneConversation
     {
@@ -61,7 +61,7 @@ class ChangePhoneConversation extends BaseConversation
             } elseif ($this->isSmsCodeCorrect($answer->getText())) {
                 $this->getUser()->updatePhone($this->getFromStorage('phone'));
                 $this->say(Translator::trans('messages.phone changed', ['phone' => $this->getFromStorage('phone')]));
-                $this->bot->startConversation(new MenuConversation());
+                $this->bot->startConversation(new SettingsConversation());
             } else {
                 $this->confirmSms(Translator::trans('messages.wrong sms code'));
             }
