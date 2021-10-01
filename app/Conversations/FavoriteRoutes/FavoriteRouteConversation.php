@@ -63,7 +63,7 @@ class FavoriteRouteConversation extends BaseConversation
                 $answer->getValue(),
                 [ButtonsStructure::BACK => 'run']
             );
-            $this->setRouteName($answer->getValue() ?: $answer->getText());
+            $this->setRouteName($answer->getText());
         });
     }
 
