@@ -2,6 +2,7 @@
 
 namespace App\Conversations;
 
+use App\Conversations\FavoriteRoutes\AddedRouteMenuConversation;
 use App\Conversations\MainMenu\MenuConversation;
 use App\Models\Log;
 use App\Models\User;
@@ -149,18 +150,22 @@ abstract class BaseConversation extends Conversation
 
     public function end()
     {
-        $question = Question::create($this->__('messages.thx for order'), $this->bot->getUser()->getId())->addButtons([
-                                                                                                                          Button::create(
-                                                                                                                              'Продолжить'
-                                                                                                                          )->value(
-                                                                                                                              'Продолжить'
-                                                                                                                          ),
-                                                                                                                      ]
-        );
+        $question = Question::create($this->__('messages.thx for order'), $this->bot->getUser()->getId())
+            ->addButtons([
+                             Button::create('Продолжить')->value('Продолжить'),
+                             Button::create(Translator::trans('buttons.add to favorite routes'))->value(
+                                 'add to favorite routes'
+                             ),
+                         ]
+            );
 
         return $this->ask($question, function (Answer $answer) {
-            Log::newLogAnswer($this->bot, $answer);
-            $this->bot->startConversation(new MenuConversation());
+            if ($answer->getValue() == 'add to favorite routes') {
+                $this->bot->startConversation(new AddedRouteMenuConversation());
+            } else {
+                Log::newLogAnswer($this->bot, $answer);
+                $this->bot->startConversation(new MenuConversation());
+            }
         });
     }
 

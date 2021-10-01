@@ -4,6 +4,7 @@
 namespace App\Conversations;
 
 
+use App\Conversations\FavoriteRoutes\AddedRouteMenuConversation;
 use App\Conversations\MainMenu\MenuConversation;
 use App\Models\Log;
 use App\Models\OrderHistory;
@@ -105,6 +106,8 @@ class DriverAssignedConversation extends BaseConversation
                         $this->say($this->__('messages.error driver location'));
                     }
                     $this->confirmOrder(true);
+                } elseif ($answer->getValue() == 'add to favorite routes') {
+                    $this->bot->startConversation(new AddedRouteMenuConversation());
                 } else {
                     if (!$answer->isInteractiveMessageReply()) {
                         $this->confirmOrder(true);
