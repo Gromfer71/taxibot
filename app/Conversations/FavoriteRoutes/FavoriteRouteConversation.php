@@ -52,7 +52,8 @@ class FavoriteRouteConversation extends BaseConversation
         $message = $this->addOrdersRoutesToMessage(Translator::trans('messages.add route menu'));
         $question = ComplexQuestion::createWithSimpleButtons(
             $message,
-            [ButtonsStructure::BACK, ButtonsStructure::CREATE_ROUTE]
+            [ButtonsStructure::BACK, ButtonsStructure::CREATE_ROUTE],
+            ['location' => 'addresses']
         );
 
 
