@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Conversations\MainMenu;
+namespace App\Conversations\Settings;
 
 use App\Conversations\BaseConversation;
 use App\Services\Bot\ButtonsStructure;
@@ -33,7 +33,7 @@ class SwitchLangConversation extends BaseConversation
 
     /**
      * @param string $message
-     * @return \App\Conversations\MainMenu\SwitchLangConversation
+     * @return SwitchLangConversation
      */
     public function run(string $message = ''): SwitchLangConversation
     {
@@ -53,7 +53,7 @@ class SwitchLangConversation extends BaseConversation
             $this->handleAction($answer->getValue());
             if ($langPackage = LangPackage::getByName($answer->getText())) {
                 $this->getUser()->switchLang($langPackage->id);
-                $this->bot->startConversation(new MenuConversation());
+                $this->bot->startConversation(new SettingsConversation());
             } else {
                 $this->run(Translator::trans('messages.lang not found'));
             }
