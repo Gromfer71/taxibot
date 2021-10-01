@@ -1,5 +1,6 @@
 <?php
 
+use Barryvdh\TranslationManager\Models\Translation;
 use Illuminate\Database\Migrations\Migration;
 
 class AddFavoriteRouteAddButton extends Migration
