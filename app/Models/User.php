@@ -250,7 +250,8 @@ class User extends Model
             return $item;
         });
 
-
+        \Illuminate\Support\Facades\Log::alert($address);
+        \Illuminate\Support\Facades\Log::alert(json_encode($addressInfo, JSON_UNESCAPED_UNICODE));
         if ($addressInfo->where('address', $address)->isEmpty()) {
             $addressInfo = $addressInfo->filter(function ($item) use ($address) {
                 return false !== stristr($item['address'], $address);
@@ -260,7 +261,7 @@ class User extends Model
         }
 
         $addressInfo['address'] = explode(' – ', $addressInfo['address']);
-      
+
         if (count($addressInfo['address']) != count($addressInfo['lat']) || count($addressInfo['address']) != count(
                 $addressInfo['lon']
             )) {

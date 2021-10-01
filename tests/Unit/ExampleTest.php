@@ -47,7 +47,7 @@ class ExampleTest extends TestCase
                                   'user_id' => 1,
                                   'name' => 'name',
                                   'address' => User::first()->getOrderInfoByImplodedAddress(
-                                      $question->getButtons()[5]['text']
+                                      'фажоэа - алжывл – Ленина пр-т 2 (Якутск), *п 2'
                                   )->toJson(JSON_UNESCAPED_UNICODE)
                               ]);
     }
