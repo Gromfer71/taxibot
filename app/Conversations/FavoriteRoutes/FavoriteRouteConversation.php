@@ -114,8 +114,11 @@ class FavoriteRouteConversation extends BaseConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
-
-            $this->confirmDeleteRoute($answer->getText());
+            if ($answer->getText() != 'back') {
+                $this->confirmDeleteRoute($answer->getText());
+            } else {
+                $this->deleteRoute();
+            }
         });
     }
 
