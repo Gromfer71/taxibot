@@ -96,7 +96,7 @@ class FavoriteRouteConversation extends BaseConversation
 
                 $this->run();
             } else {
-                $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => $this->addRoute()]);
+                $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'addRoute']);
             }
         });
     }
