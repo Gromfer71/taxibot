@@ -19,7 +19,12 @@ class FavoriteRouteConversation extends BaseConversation
             ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
             ButtonsStructure::CREATE_ROUTE => 'App\Conversations\FavoriteRoutes\TakingAddressForFavoriteRouteConversation',
             ButtonsStructure::ADD_ROUTE => 'addRoute',
-            ButtonsStructure::DELETE_ROUTE => 'deleteRoute'
+            ButtonsStructure::DELETE_ROUTE => 'deleteRoute',
+            ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY => function () {
+                $this->getUser()->favoriteRoutes->delete();
+                $this->say(Translator::trans('messages.clean addresses history'));
+                $this->run();
+            }
         ];
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
     }
@@ -69,7 +74,9 @@ class FavoriteRouteConversation extends BaseConversation
 
     public function setRouteName($address)
     {
-        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.write favorite route name'), []
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.write favorite route name'),
+            [ButtonsStructure::BACK]
         );
 
         return $this->ask($question, function (Answer $answer) use ($address) {
@@ -87,7 +94,7 @@ class FavoriteRouteConversation extends BaseConversation
 
                 $this->run();
             } else {
-                $this->setRouteName($address);
+                $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => $this->addRoute()]);
             }
         });
     }
@@ -109,7 +116,7 @@ class FavoriteRouteConversation extends BaseConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans('messages.delete route menu'),
-            [ButtonsStructure::BACK]
+            [ButtonsStructure::BACK, ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY]
         );
         $question = ComplexQuestion::addFavoriteRoutesButtons($question, $this->getUser()->favoriteRoutes);
 
