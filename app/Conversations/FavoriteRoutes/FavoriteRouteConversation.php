@@ -69,25 +69,25 @@ class FavoriteRouteConversation extends BaseConversation
 
     public function setRouteName($address)
     {
-        $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.write favorite route name'),
-            [],
-            ['one_time_keyboard' => true]
-        );
+        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.write favorite route name'));
 
         return $this->ask($question, function (Answer $answer) use ($address) {
-            FavoriteRoute::create([
-                                      'user_id' => $this->getUser()->id,
-                                      'name' => $answer->getText(),
-                                      'address' => json_encode(
-                                          $this->getUser()->getOrderInfoByImplodedAddress(
-                                              $address
-                                          ),
-                                          JSON_UNESCAPED_UNICODE
-                                      )
-                                  ]);
+            if (!$answer->isInteractiveMessageReply()) {
+                FavoriteRoute::create([
+                                          'user_id' => $this->getUser()->id,
+                                          'name' => $answer->getText(),
+                                          'address' => json_encode(
+                                              $this->getUser()->getOrderInfoByImplodedAddress(
+                                                  $address
+                                              ),
+                                              JSON_UNESCAPED_UNICODE
+                                          )
+                                      ]);
 
-            $this->run();
+                $this->run();
+            } else {
+                $this->setRouteName($address);
+            }
         });
     }
 
