@@ -21,7 +21,9 @@ class FavoriteRouteConversation extends BaseConversation
             ButtonsStructure::ADD_ROUTE => 'addRoute',
             ButtonsStructure::DELETE_ROUTE => 'deleteRoute',
             ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY => function () {
-                $this->getUser()->favoriteRoutes->delete();
+                $this->getUser()->favoriteRoutes->each(function ($item) {
+                    $item->delete();
+                });
                 $this->say(Translator::trans('messages.clean addresses history'));
                 $this->run();
             }
