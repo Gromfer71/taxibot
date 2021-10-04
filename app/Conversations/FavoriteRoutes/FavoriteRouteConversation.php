@@ -41,9 +41,8 @@ class FavoriteRouteConversation extends BaseConversation
 
 
         return $this->ask($question, function (Answer $answer) {
-            if ($answer->isInteractiveMessageReply()) {
-                $this->handleAction($answer->getValue());
-            }
+            $this->handleAction($answer->getValue());
+
             $this->createOrder($answer->getText());
         });
     }
