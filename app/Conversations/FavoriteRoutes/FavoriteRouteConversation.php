@@ -69,7 +69,11 @@ class FavoriteRouteConversation extends BaseConversation
 
     public function setRouteName($address)
     {
-        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.write favorite route name'));
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.write favorite route name'),
+            [],
+            ['one_time_keyboard' => true]
+        );
 
         return $this->ask($question, function (Answer $answer) use ($address) {
             FavoriteRoute::create([
