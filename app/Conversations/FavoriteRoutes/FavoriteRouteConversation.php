@@ -69,7 +69,8 @@ class FavoriteRouteConversation extends BaseConversation
 
     public function setRouteName($address)
     {
-        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.write favorite route name'));
+        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.write favorite route name'), []
+        );
 
         return $this->ask($question, function (Answer $answer) use ($address) {
             if (!$answer->isInteractiveMessageReply()) {
@@ -113,11 +114,9 @@ class FavoriteRouteConversation extends BaseConversation
         $question = ComplexQuestion::addFavoriteRoutesButtons($question, $this->getUser()->favoriteRoutes);
 
         return $this->ask($question, function (Answer $answer) {
-            if ($answer->getText() != 'back') {
-                $this->confirmDeleteRoute($answer->getText());
-            } else {
-                $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
-            }
+            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
+
+            $this->confirmDeleteRoute($answer->getText());
         });
     }
 
