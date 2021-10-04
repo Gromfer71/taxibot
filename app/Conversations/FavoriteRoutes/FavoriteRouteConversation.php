@@ -113,11 +113,10 @@ class FavoriteRouteConversation extends BaseConversation
         $question = ComplexQuestion::addFavoriteRoutesButtons($question, $this->getUser()->favoriteRoutes);
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
             if ($answer->getText() != 'back') {
                 $this->confirmDeleteRoute($answer->getText());
             } else {
-                $this->deleteRoute();
+                $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
             }
         });
     }
