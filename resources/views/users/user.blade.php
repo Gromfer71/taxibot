@@ -26,11 +26,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($user->addresses as $address)
+                @foreach($user->addresses()->latest()->get() as $address)
                     <tr>
                         <td>{{ $address->id }}</td>
                         <td>{{ $address->address }}</td>
-                        <td><a href="{{ route('user_delete_address', $address->id) }}" class="btn btn-danger">Удалить</a></td>
+                        <td><a href="{{ route('user_delete_address', $address->id) }}"
+                               class="btn btn-danger">Удалить</a></td>
                     </tr>
                 @endforeach
                 </tbody>
@@ -62,7 +63,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($user->orders as $order)
+                @foreach($user->orders()->latest()->get() as $order)
                     <tr>
                         <td>{{ $order->id }}</td>
                         <td>{{ $order->address }}</td>

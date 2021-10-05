@@ -32,6 +32,18 @@
         </form>
     </div>
 
+    <div class="mb-3">
+        <form action="{{ route('admins_create') }}" method="POST">
+            <div class="mb-3">
+                @csrf
+                <label for="config">Добавить администратора</label>
+                <input type="tel" pattern="[789][0-9]{10}" name="phone" placeholder="Номер телефона" required
+                       class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
+    </div>
+
     <div class="layer uk-margin-top" style="overflow-x: scroll; white-space: nowrap;">
         <table id="admins-table" class="display">
             <thead>
