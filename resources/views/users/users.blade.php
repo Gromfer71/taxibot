@@ -19,6 +19,7 @@
         <table id="table_id" class="display">
             <thead>
             <tr>
+                <th>ID</th>
                 <th>Телеграм ID</th>
                 <th>ВК ID</th>
                 <th>Логин</th>
@@ -30,6 +31,7 @@
             <tbody>
             @foreach($users as $user)
                 <tr>
+                    <td>{{ $user->id ?: '-' }}</td>
                     <td>{{ $user->telegram_id ?: '-' }}</td>
                     <td>{{ $user->vk_id ?: '-' }}</td>
                     <td>{{ $user->username }}</td>
