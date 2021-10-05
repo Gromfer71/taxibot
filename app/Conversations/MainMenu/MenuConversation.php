@@ -35,7 +35,7 @@ class MenuConversation extends BaseConversation
             ButtonsStructure::ALL_ABOUT_BONUSES => 'App\Conversations\MainMenu\BonusesConversation',
 
             ButtonsStructure::BACK => 'run',
-            ButtonsStructure::FAVORITE_ROUTES => 'App\Conversations\FavoriteRoutes\FavoriteRouteSettingsConversation',
+            ButtonsStructure::FAVORITE_ROUTES => 'App\Conversations\FavoriteRoutes\FavoriteRouteConversation',
             ButtonsStructure::SETTINGS => 'App\Conversations\Settings\SettingsConversation'
 
         ];
