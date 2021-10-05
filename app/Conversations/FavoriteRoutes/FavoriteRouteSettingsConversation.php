@@ -14,7 +14,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
     public function getActions(array $replaceActions = []): array
     {
         $actions = [
-            ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
+            ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
             ButtonsStructure::CREATE_ROUTE => 'App\Conversations\FavoriteRoutes\TakingAddressForFavoriteRouteConversation',
             ButtonsStructure::ADD_ROUTE => 'addRoute',
             ButtonsStructure::DELETE_ROUTE => 'deleteRoute',

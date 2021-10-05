@@ -24,7 +24,7 @@ class AddressesHistoryConversation extends BaseConversation
     public function getActions(array $replaceActions = []): array
     {
         $actions = [
-            ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
+            ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
             ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY => function () {
                 $this->say(Translator::trans('messages.clean addresses history'));
                 AddressHistory::clearByUserId($this->getUser()->id);

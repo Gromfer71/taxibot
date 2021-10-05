@@ -3,7 +3,7 @@
 
 namespace App\Conversations;
 
-use App\Conversations\MainMenu\MenuConversation;
+use App\Conversations\Settings\SettingsConversation;
 use App\Models\FavoriteAddress;
 use App\Models\Log;
 use App\Models\User;
@@ -37,7 +37,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             if ($answer->getValue() == 'add address') {
                 $this->addAddress();
             } elseif ($answer->getValue() == 'back') {
-                $this->bot->startConversation(new MenuConversation());
+                $this->bot->startConversation(new SettingsConversation());
             } else {
                 $this->_sayDebug('Выбранный пункт меню - ' . $answer->getText());
                 $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
