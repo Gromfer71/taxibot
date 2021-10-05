@@ -6,7 +6,6 @@ use App\Conversations\BaseConversation;
 use App\Models\FavoriteRoute;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
-use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
@@ -37,8 +36,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans('messages.favorite routes menu'),
-            [ButtonsStructure::BACK, ButtonsStructure::ADD_ROUTE],
-            ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
+            [ButtonsStructure::BACK, ButtonsStructure::ADD_ROUTE]
         );
 
         if ($this->getUser()->favoriteRoutes->isNotEmpty()) {

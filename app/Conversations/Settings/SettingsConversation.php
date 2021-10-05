@@ -34,7 +34,8 @@ class SettingsConversation extends BaseConversation
         Translator::$lang = $this->getUser()->lang->code ?? 'ru';
         $question = ComplexQuestion::createWithSimpleButtons(
             $message ?: Translator::trans('messages.settings menu'),
-            ButtonsStructure::getSettingsMenu()
+            ButtonsStructure::getSettingsMenu(),
+            ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
         );
 
         return $this->ask($question, $this->getDefaultCallback());
