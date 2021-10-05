@@ -21,7 +21,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::whereNotNull('phone')->orderByDesc('id')->get();
+        $users = User::whereNotNull('phone')->orderBy('id', 'DESC')->get();
         $users->each(function ($user) {
             $user->userinfo = null;
         });
