@@ -63,7 +63,7 @@ class AddedRouteMenuConversation extends BaseAddressConversation
                                       ),
                                   ]);
 
-            $this->bot->startConversation(new FavoriteRouteConversation());
+            $this->bot->startConversation(new FavoriteRouteSettingsConversation());
         });
     }
 }

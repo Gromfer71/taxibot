@@ -18,6 +18,9 @@ class SettingsConversation extends BaseConversation
             ButtonsStructure::LANG_MENU => 'App\Conversations\Settings\SwitchLangConversation',
             ButtonsStructure::CHANGE_CITY => 'changeCity',
             ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
+            ButtonsStructure::FAVORITE_ROUTE_SETTINGS => 'App\Conversations\FavoriteRoutes\FavoriteRouteSettingsConversation',
+            ButtonsStructure::ADDRESS_HISTORY_MENU => 'App\Conversations\MainMenu\AddressesHistoryConversation',
+            ButtonsStructure::FAVORITE_ADDRESSES_MENU => 'App\Conversations\FavoriteAddressesConversation',
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));

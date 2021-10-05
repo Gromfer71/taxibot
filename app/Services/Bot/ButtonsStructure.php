@@ -38,6 +38,7 @@ class ButtonsStructure extends Button
     public const ADD_ADDRESS = 'add address';
     public const DELETE_ROUTE = 'delete route';
     public const SETTINGS = 'settings';
+    public const FAVORITE_ROUTE_SETTINGS = 'favorite route settings';
 
 
     /**
@@ -50,11 +51,9 @@ class ButtonsStructure extends Button
         return [
             ButtonsStructure::TAKE_TAXI,
             ButtonsStructure::REQUEST_CALL,
+            ButtonsStructure::FAVORITE_ROUTES,
             ButtonsStructure::PRICE_LIST,
             ButtonsStructure::ALL_ABOUT_BONUSES,
-            ButtonsStructure::ADDRESS_HISTORY_MENU,
-            ButtonsStructure::FAVORITE_ADDRESSES_MENU,
-            ButtonsStructure::FAVORITE_ROUTES,
             ButtonsStructure::SETTINGS,
         ];
     }
@@ -82,6 +81,9 @@ class ButtonsStructure extends Button
             ButtonsStructure::CHANGE_PHONE,
             ButtonsStructure::CHANGE_CITY,
             ButtonsStructure::LANG_MENU,
+            ButtonsStructure::ADDRESS_HISTORY_MENU,
+            ButtonsStructure::FAVORITE_ADDRESSES_MENU,
+            ButtonsStructure::FAVORITE_ROUTE_SETTINGS,
         ];
     }
 }

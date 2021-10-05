@@ -33,10 +33,9 @@ class MenuConversation extends BaseConversation
                 $this->run(Translator::trans('messages.price list'));
             },
             ButtonsStructure::ALL_ABOUT_BONUSES => 'App\Conversations\MainMenu\BonusesConversation',
-            ButtonsStructure::ADDRESS_HISTORY_MENU => 'App\Conversations\MainMenu\AddressesHistoryConversation',
-            ButtonsStructure::FAVORITE_ADDRESSES_MENU => 'App\Conversations\FavoriteAddressesConversation',
+
             ButtonsStructure::BACK => 'run',
-            ButtonsStructure::FAVORITE_ROUTES => 'App\Conversations\FavoriteRoutes\FavoriteRouteConversation',
+            ButtonsStructure::FAVORITE_ROUTES => 'App\Conversations\FavoriteRoutes\FavoriteRouteSettingsConversation',
             ButtonsStructure::SETTINGS => 'App\Conversations\Settings\SettingsConversation'
 
         ];
