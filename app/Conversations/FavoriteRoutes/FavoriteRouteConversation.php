@@ -50,7 +50,7 @@ class FavoriteRouteConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
 
-            $this->createOrder($answer->getText());
+            $this->confirmDeleteRoute($answer->getText());
         });
     }
 
@@ -114,20 +114,20 @@ class FavoriteRouteConversation extends BaseConversation
         $this->bot->startConversation(new TaxiMenuConversation());
     }
 
-    public function deleteRoute()
-    {
-        $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.delete route menu'),
-            [ButtonsStructure::BACK, ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY]
-        );
-        $question = ComplexQuestion::addFavoriteRoutesButtons($question, $this->getUser()->favoriteRoutes);
-
-        return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
-
-            $this->confirmDeleteRoute($answer->getText());
-        });
-    }
+//    public function deleteRoute($address)
+//    {
+//        $question = ComplexQuestion::createWithSimpleButtons(
+//            Translator::trans('messages.delete route menu'),
+//            [ButtonsStructure::BACK, ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY]
+//        );
+//        $question = ComplexQuestion::addFavoriteRoutesButtons($question, $this->getUser()->favoriteRoutes);
+//
+//        return $this->ask($question, function (Answer $answer) {
+//            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
+//
+//            $this->confirmDeleteRoute($answer->getText());
+//        });
+//    }
 
     public function confirmDeleteRoute($routeName)
     {
