@@ -21,7 +21,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::whereNotNull('phone')->orderBy('id')->get();
+        $users = User::whereNotNull('phone')->orderBy('id', 'desc')->get();
 
         return view('users.users', ['users' => $users]);
     }
