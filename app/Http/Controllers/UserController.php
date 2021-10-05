@@ -22,9 +22,6 @@ class UserController extends Controller
     public function index()
     {
         $users = User::whereNotNull('phone')->orderBy('id')->get();
-        $users->each(function ($user) {
-            $user->userinfo = null;
-        });
 
         return view('users.users', ['users' => $users]);
     }
