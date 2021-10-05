@@ -17,7 +17,6 @@ class FavoriteRouteSettingsConversation extends BaseConversation
             ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
             ButtonsStructure::CREATE_ROUTE => 'App\Conversations\FavoriteRoutes\TakingAddressForFavoriteRouteConversation',
             ButtonsStructure::ADD_ROUTE => 'addRoute',
-            ButtonsStructure::DELETE_ROUTE => 'deleteRoute',
             ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY => function () {
                 $this->getUser()->favoriteRoutes->each(function ($item) {
                     $item->delete();
@@ -38,10 +37,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
             Translator::trans('messages.favorite routes menu'),
             [ButtonsStructure::BACK, ButtonsStructure::ADD_ROUTE]
         );
-
-        if ($this->getUser()->favoriteRoutes->isNotEmpty()) {
-            $question = ComplexQuestion::setButtons($question, ['buttons.' . ButtonsStructure::DELETE_ROUTE]);
-        }
+        
         ComplexQuestion::addFavoriteRoutesButtons($question, $this->getUser()->favoriteRoutes);
 
 
