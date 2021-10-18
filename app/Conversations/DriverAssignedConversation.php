@@ -96,6 +96,7 @@ class DriverAssignedConversation extends BaseConversation
                             $this->bot->getUser()->getId(),
                             $this->bot->getDriver()->getName()
                         );
+                        $actualOrder->updateOrderState();
                         $auto = $actualOrder->getAutoInfo();
                         $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
                         $this->say(

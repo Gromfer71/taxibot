@@ -185,7 +185,7 @@ class OrderHistory extends Model
         if ($state) {
             return $state->car_color . ' ' . $state->car_mark . ' ' . $state->car_model . ' ' . $state->car_number;
         } else {
-            return null;
+            return '';
         }
     }
 
