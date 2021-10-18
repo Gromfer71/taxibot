@@ -50,7 +50,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrderHistory extends Model
 {
     public const NEW_ORDER = 100;
-    public const DRIVER_ASSIGNED = 7;
+    public const    DRIVER_ASSIGNED = 7;
     public const CAR_AT_PLACE = 10;
     public const CLIENT_INSIDE = 11;
     public const ABORTED_BY_DRIVER = 93;

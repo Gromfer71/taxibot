@@ -26,6 +26,10 @@ class TaxiMenuConversation extends BaseAddressConversation
 
     public function run()
     {
+        if (OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName())) {
+            $this->currentOrderMenu();
+            return;
+        }
         $this->calcPrice();
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
 
