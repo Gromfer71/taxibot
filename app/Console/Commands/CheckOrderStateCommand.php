@@ -156,6 +156,7 @@ class CheckOrderStateCommand extends Command
                 } elseif ($newStateId == OrderHistory::DRIVER_ABORTED_FROM_ORDER) {
                     $botMan->say(Translator::trans('messages.driver aborted from order'), $recipientId, $driverName);
                     $botMan->startConversation(new TaxiMenuConversation());
+                    $botMan->listen();
 //                    $question = Question::create(
 //                        Translator::trans('messages.driver aborted from order'),
 //                        $recipientId
