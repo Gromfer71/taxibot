@@ -36,13 +36,15 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         );
 
         foreach ($this->getUser()->favoriteAddresses as $address) {
-            $question->addButton(Button::create($address->name . ' (' . $address->address . ')'));
+            $question->addButton(
+                Button::create($address->name . ' (' . $address->address . ')')->value($address->name)
+            );
         }
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
             if ($answer->isInteractiveMessageReply()) {
-                $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
+                $this->bot->userStorage()->save(['address_name' => $answer->getValue()]);
                 $this->addressMenu();
             } else {
                 $this->run();
@@ -63,24 +65,10 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             if ($answer->getValue() == 'back') {
                 $this->run();
             } elseif ($answer->getValue() == 'delete') {
-                $this->_sayDebug(
-                    'Адрес целиком до обрезания до псевдонима - ' . $this->bot->userStorage()->get('address_name')
-                );
                 $address = FavoriteAddress::where([
                                                       'user_id' => $this->getUser()->id,
-                                                      'name' => trim(
-                                                          stristr(
-                                                              $this->bot->userStorage()->get('address_name'),
-                                                              '(',
-                                                              true
-                                                          )
-                                                      )
+                                                      'name' => $this->bot->userStorage()->get('address_name')
                                                   ])->first();
-                $this->_sayDebug(
-                    'Псевдоним адреса после обрезки для бд - ' . trim(
-                        stristr($this->bot->userStorage()->get('address_name'), '(', true)
-                    )
-                );
                 if ($address) {
                     $address->delete();
                 }
