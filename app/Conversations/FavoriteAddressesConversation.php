@@ -42,6 +42,8 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         }
 
         return $this->ask($question, function (Answer $answer) {
+            $this->_sayDebug($answer->getValue());
+            $this->_sayDebug($answer->getText());
             $this->handleAction($answer->getValue());
             if ($answer->getValue()) {
                 $this->bot->userStorage()->save(['address_name' => $answer->getValue()]);
