@@ -40,6 +40,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         }
 
         return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer->getValue());
             if ($answer->isInteractiveMessageReply()) {
                 $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
                 $this->addressMenu();
