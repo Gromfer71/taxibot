@@ -44,7 +44,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
 
-            $this->bot->userStorage()->save(['address_name' => $answer->getValue()]);
+            $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
             $this->addressMenu();
         });
     }
@@ -60,7 +60,13 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
             FavoriteAddress::where([
                                        'user_id' => $this->getUser()->id,
-                                       'name' => $this->bot->userStorage()->get('address_name')
+                                       'name' => trim(
+                                           stristr(
+                                               $this->bot->userStorage()->get('address_name'),
+                                               '(',
+                                               true
+                                           )
+                                       )
                                    ])->delete();
             $this->run();
         });
