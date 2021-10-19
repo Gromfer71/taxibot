@@ -3,45 +3,48 @@
 
 namespace App\Conversations;
 
-use App\Conversations\Settings\SettingsConversation;
 use App\Models\FavoriteAddress;
 use App\Models\Log;
 use App\Models\User;
 use App\Services\Address;
+use App\Services\Bot\ButtonsStructure;
+use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
+use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 
 class FavoriteAddressesConversation extends BaseAddressConversation
 {
+    public function getActions(array $replaceActions = []): array
+    {
+        $actions = [
+            ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
+            ButtonsStructure::ADD_ADDRESS => 'addAddress',
+            ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
+        ];
+
+        return parent::getActions(array_replace_recursive($actions, $replaceActions));
+    }
 
     public function run()
     {
-        $this->_sayDebug('запустили меню избранных адресов');
-        $this->bot->userStorage()->delete();
-        $question = Question::create($this->__('messages.favorite addresses menu'));
-
-        $question->addButtons([
-                                  Button::create($this->__('buttons.back'))->value('back'),
-                                  Button::create($this->__('buttons.add address'))->value('add address')
-                              ]);
+        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.favorite addresses menu'),
+                                                             [ButtonsStructure::BACK, ButtonsStructure::ADD_ADDRESS]
+        );
 
         foreach ($this->getUser()->favoriteAddresses as $address) {
             $question->addButton(Button::create($address->name . ' (' . $address->address . ')'));
         }
 
         return $this->ask($question, function (Answer $answer) {
-            Log::newLogAnswer($this->bot, $answer);
-            if ($answer->getValue() == 'add address') {
-                $this->addAddress();
-            } elseif ($answer->getValue() == 'back') {
-                $this->bot->startConversation(new SettingsConversation());
-            } else {
-                $this->_sayDebug('Выбранный пункт меню - ' . $answer->getText());
+            if ($answer->isInteractiveMessageReply()) {
                 $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
                 $this->addressMenu();
+            } else {
+                $this->run();
             }
         });
     }
