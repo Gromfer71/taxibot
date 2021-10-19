@@ -42,40 +42,27 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         }
 
         return $this->ask($question, function (Answer $answer) {
-            $this->_sayDebug($answer->getValue());
-            $this->_sayDebug($answer->getText());
             $this->handleAction($answer->getValue());
-            if ($answer->getValue()) {
-                $this->bot->userStorage()->save(['address_name' => $answer->getValue()]);
-                $this->addressMenu();
-            } else {
-                $this->run();
-            }
+
+            $this->bot->userStorage()->save(['address_name' => $answer->getValue()]);
+            $this->addressMenu();
         });
     }
 
     public function addressMenu()
     {
-        $question = Question::create($this->__('messages.favorite address menu'))->addButtons(
-            [
-                Button::create($this->__('buttons.back'))->value('back'),
-                Button::create($this->__('buttons.delete'))->value('delete'),
-            ]
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.favorite address menu'),
+            [ButtonsStructure::BACK, ButtonsStructure::DELETE]
         );
 
         return $this->ask($question, function (Answer $answer) {
-            if ($answer->getValue() == 'back') {
-                $this->run();
-            } elseif ($answer->getValue() == 'delete') {
-                $address = FavoriteAddress::where([
-                                                      'user_id' => $this->getUser()->id,
-                                                      'name' => $this->bot->userStorage()->get('address_name')
-                                                  ])->first();
-                if ($address) {
-                    $address->delete();
-                }
-                $this->run();
-            }
+            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
+            FavoriteAddress::where([
+                                       'user_id' => $this->getUser()->id,
+                                       'name' => $this->bot->userStorage()->get('address_name')
+                                   ])->delete();
+            $this->run();
         });
     }
 
