@@ -67,7 +67,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                                                true
                                            )
                                        )
-                                   ])->delete();
+                                   ])->first()->delete();
             $this->run();
         });
     }
