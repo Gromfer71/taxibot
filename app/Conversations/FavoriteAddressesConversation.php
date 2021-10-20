@@ -23,7 +23,6 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         $actions = [
             ButtonsStructure::EXIT => 'run',
             ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
-            ButtonsStructure::ADD_ADDRESS => 'getAddress',
             ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
         ];
 
@@ -46,7 +45,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             $this->handleAction($answer->getValue());
 
             if ($answer->getValue() == ButtonsStructure::ADD_ADDRESS) {
-                $this->getAddress(Translator::trans('messages.give me your address'));
+                $this->getAddress(Translator::trans('messages.give me your favorite address'));
                 return;
             }
 
