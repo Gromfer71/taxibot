@@ -42,9 +42,9 @@ abstract class BaseAddressConversation extends BaseConversation
         }
         $question = $this->_addAddressHistoryButtons($question);
 
-        return $this->ask($question, function (Answer $answer) {
+        return $this->ask($question, function (Answer $answer) use ($withFavoriteAddresses) {
             $this->handleAction($answer->getValue());
-            $this->handleFirstAddress($answer);
+            $this->handleFirstAddress($answer, $withFavoriteAddresses);
         });
     }
 

@@ -48,7 +48,7 @@ trait TakingAddressTrait
         );
     }
 
-    public function handleFirstAddress(Answer $answer)
+    public function handleFirstAddress(Answer $answer, $withFavoriteAddresses = false)
     {
         $address = $this->_getAddressFromHistoryByAnswer($answer);
 
@@ -56,7 +56,7 @@ trait TakingAddressTrait
             // если выбранный, то сохраняем его и идем дальше
             $this->saveFirstAddress($address);
             if ($this->_hasEntrance($address->address)) {
-                $this->getAddressName();
+                $withFavoriteAddresses ? $this->getAddressTo() : $this->getAddressName();
             } else {
                 $this->getEntrance();
             }
