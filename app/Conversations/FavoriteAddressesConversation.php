@@ -23,7 +23,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         $actions = [
             ButtonsStructure::EXIT => 'run',
             ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
-            ButtonsStructure::ADD_ADDRESS => 'addAddress',
+            ButtonsStructure::ADD_ADDRESS => 'getAddress',
             ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
         ];
 
