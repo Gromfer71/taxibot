@@ -26,7 +26,7 @@ class TakingAddressConversation extends BaseAddressConversation
      */
     public function run()
     {
-        $this->getAddress();
+        $this->getAddress(Translator::trans('messages.give me your address'), true);
     }
 
     /**
@@ -63,30 +63,6 @@ class TakingAddressConversation extends BaseAddressConversation
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
-    }
-
-    /**
-     * Ввод начального адреса пользователя
-     *
-     * @return TakingAddressConversation
-     */
-    public function getAddress(): TakingAddressConversation
-    {
-        $this->saveCityInformation();
-
-        $question = ComplexQuestion::createWithSimpleButtons(
-            $this->addAddressesToMessage(Translator::trans('messages.give me your address')),
-            [ButtonsStructure::EXIT],
-            ['location' => 'addresses']
-        );
-        // Добавляем в кнопки избранные адреса и адреса из истории
-        $question = $this->_addAddressFavoriteButtons($question);
-        $question = $this->_addAddressHistoryButtons($question);
-
-        return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
-            $this->handleFirstAddress($answer);
-        });
     }
 
     public function getAddressTo()

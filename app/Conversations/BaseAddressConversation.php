@@ -12,6 +12,7 @@ use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
 use App\Services\Translator;
+use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use Illuminate\Support\Str;
@@ -19,6 +20,35 @@ use Throwable;
 
 abstract class BaseAddressConversation extends BaseConversation
 {
+    use TakingAddressTrait;
+
+    /**
+     * Ввод начального адреса пользователя
+     *
+     * @return \App\Conversations\BaseAddressConversation
+     */
+    public function getAddress($message, $withFavoriteAddresses = false)
+    {
+        $this->saveCityInformation();
+
+        $question = ComplexQuestion::createWithSimpleButtons(
+            $this->addAddressesToMessage($message),
+            [ButtonsStructure::EXIT],
+            ['location' => 'addresses']
+        );
+        // Добавляем в кнопки избранные адреса и адреса из истории
+        if ($withFavoriteAddresses) {
+            $question = $this->_addAddressFavoriteButtons($question);
+        }
+        $question = $this->_addAddressHistoryButtons($question);
+
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer->getValue());
+            $this->handleFirstAddress($answer);
+        });
+    }
+
+
     /**
      * Меню выбора первого адреса маршрута, после ввода адреса пользователем. Пользователь выбирает из предложенного списка.
      * В зависимости от выбранного адреса бот отправляет в сценарий, если выбрана только улица без номера дома, либо если всё

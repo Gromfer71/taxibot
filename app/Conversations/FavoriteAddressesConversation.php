@@ -45,6 +45,11 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
 
+            if ($answer->getValue() == ButtonsStructure::ADD_ADDRESS) {
+                $this->getAddress(Translator::trans('messages.give me your address'));
+                return;
+            }
+
             $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
             $this->addressMenu();
         });
@@ -73,21 +78,6 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         });
     }
 
-    public function getAddress()
-    {
-        $this->saveCityInformation();
-        $question = ComplexQuestion::createWithSimpleButtons(
-            $this->addAddressesToMessageOnlyFromHistory(Translator::trans('messages.give me your favorite address')),
-            [ButtonsStructure::EXIT], ['location' => 'addresses']
-        );
-
-        $question = $this->_addAddressHistoryButtons($question, true);
-
-        return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
-            $this->handleFirstAddress($answer);
-        });
-    }
 
     public function forgetWriteHouse()
     {
