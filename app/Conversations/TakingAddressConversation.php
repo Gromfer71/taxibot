@@ -154,26 +154,5 @@ class TakingAddressConversation extends BaseAddressConversation
         });
     }
 
-    public function forgetWriteHouse()
-    {
-        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.forget write house'),
-                                                             [ButtonsStructure::EXIT]
-        );
-
-        return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK]);
-
-            if (count((array)$this->bot->userStorage()->get('address')) > 1) {
-                $this->handleForgetWriteHouse($answer->getText());
-                $this->getAddressToAgain();
-            } else {
-                $this->bot->userStorage()->save(
-                    ['address' => $this->bot->userStorage()->get('address') . $answer->getText()]
-                );
-                $this->getAddressAgain();
-            }
-        });
-    }
-
 
 }

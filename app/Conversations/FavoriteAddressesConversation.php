@@ -77,35 +77,6 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         });
     }
 
-
-    public function forgetWriteHouse()
-    {
-        $this->_sayDebug('forgetWriteHouse');
-        $question = Question::create(
-            $this->__('messages.forget write house in favorite address'),
-            $this->bot->getUser()->getId()
-        )
-            ->addButtons([
-                             Button::create($this->__('buttons.exit'))->value('exit'),
-                         ]);
-
-        return $this->ask($question, function (Answer $answer) {
-            Log::newLogAnswer($this->bot, $answer);
-            if ($answer->isInteractiveMessageReply()) {
-                if ($answer->getValue() == 'exit') {
-                    $this->run();
-                    return;
-                }
-            }
-
-            $this->_sayDebug('forgetWriteHouse - адрес откуда');
-            $this->bot->userStorage()->save(
-                ['address' => $this->bot->userStorage()->get('address') . $answer->getText()]
-            );
-            $this->getAddressAgain();
-        });
-    }
-
     public function getEntrance()
     {
         $question = Question::create(
