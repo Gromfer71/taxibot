@@ -6,13 +6,83 @@ namespace App\Conversations;
 use App\Models\AddressHistory;
 use App\Models\FavoriteAddress;
 use App\Models\User;
+use App\Services\Address;
+use App\Services\Bot\ButtonsStructure;
+use App\Services\Bot\ComplexQuestion;
+use App\Services\ButtonsFormatterService;
 use App\Services\Options;
+use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use Illuminate\Support\Str;
+use Throwable;
 
 abstract class BaseAddressConversation extends BaseConversation
 {
+    /**
+     * Меню выбора первого адреса маршрута, после ввода адреса пользователем. Пользователь выбирает из предложенного списка.
+     * В зависимости от выбранного адреса бот отправляет в сценарий, если выбрана только улица без номера дома, либо если всё
+     * хорошо, то на ввод подъезда. Либо пользователь просто вводит первый адрес снова, тогда он попадает на этот же диалог.
+     *
+     * @return \App\Conversations\BaseAddressConversation
+     * @throws Throwable
+     */
+    public function getAddressAgain(): BaseAddressConversation
+    {
+        $addressesList = $this->getAddressesList();
+        $question = ComplexQuestion::createWithSimpleButtons(
+            $this->addAddressesFromApi(Translator::trans('messages.give address again'), $addressesList),
+            [ButtonsStructure::EXIT],
+            ['location' => 'addresses']
+        );
+
+        $question = ComplexQuestion::setAddressButtons(
+            $question,
+            $addressesList->map(function ($address) {
+                return Address::toString($address);
+            })
+        );
+        if ($addressesList->isEmpty()) {
+            $this->streetNotFound();
+            die();
+        }
+
+        return $this->ask(
+            $question,
+            function (Answer $answer) use ($addressesList) {
+                $this->handleAction($answer->getValue());
+                $address = Address::findByAnswer($addressesList, $answer);
+                if ($address) {
+                    $this->handleFirstChosenAddress($address);
+                    $this->getEntrance();
+                } else {
+                    $this->_saveFirstAddress($answer->getText());
+                    $this->getAddressAgain();
+                }
+            }
+        );
+    }
+
+    public function streetNotFound()
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.not found address dorabotka bota'),
+            [ButtonsStructure::BACK, ButtonsStructure::GO_AS_INDICATED, ButtonsStructure::EXIT_TO_MENU],
+            ['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT]
+        );
+
+        return $this->ask(
+            $question,
+            function (Answer $answer) {
+                $this->handleAction(
+                    $answer->getValue(),
+                    [ButtonsStructure::BACK => 'getAddress', ButtonsStructure::GO_AS_INDICATED => 'getEntrance']
+                );
+                $this->_saveFirstAddress($answer->getText());
+                $this->getAddressAgain();
+            }
+        );
+    }
 
     public function _hasEntrance($address)
     {

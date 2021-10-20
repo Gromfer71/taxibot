@@ -8,8 +8,6 @@ use App\Models\Log;
 use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
-use App\Services\ButtonsFormatterService;
-use App\Services\Options;
 use App\Services\Translator;
 use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
@@ -23,6 +21,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
     public function getActions(array $replaceActions = []): array
     {
         $actions = [
+            ButtonsStructure::EXIT => 'run',
             ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
             ButtonsStructure::ADD_ADDRESS => 'addAddress',
             ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
@@ -74,12 +73,9 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         });
     }
 
-    public function addAddress()
+    public function getAddress()
     {
         $this->saveCityInformation();
-        $questionText = $this->addAddressesToMessageOnlyFromHistory(
-            Translator::trans('messages.give me your favorite address')
-        );
         $question = ComplexQuestion::createWithSimpleButtons(
             $this->addAddressesToMessageOnlyFromHistory(Translator::trans('messages.give me your favorite address')),
             [ButtonsStructure::EXIT], ['location' => 'addresses']
@@ -88,103 +84,9 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         $question = $this->_addAddressHistoryButtons($question, true);
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue(), [ButtonsStructure::EXIT => 'run']);
+            $this->handleAction($answer->getValue());
             $this->handleFirstAddress($answer);
         });
-    }
-
-    public function getAddressAgain()
-    {
-        $addressesList = collect(
-            Address::getAddresses(
-                $this->bot->userStorage()->get('address'),
-                (new Options($this->bot->userStorage()))->getCities(),
-                $this->bot->userStorage()
-            )
-        )->take(25);
-        $questionText = $this->addAddressesFromApi($this->__('messages.give favorite address again'), $addressesList);
-        $question = Question::create($questionText, $this->bot->getUser()->getId());
-        $this->_sayDebug('getAddressAgain2');
-        $question->addButton(
-            Button::create($this->__('buttons.exit'))->value('exit')->additionalParameters(['location' => 'addresses'])
-        );
-        if ($addressesList->isNotEmpty()) {
-            $this->_sayDebug('addressesList->isNotEmpty');
-            foreach ($addressesList as $key => $address) {
-                $question->addButton(
-                    Button::create(Address::toString($address))->value(
-                        Address::toString($address)
-                    )->additionalParameters(['number' => $key + 1])
-                );
-            }
-        } else {
-            $this->_sayDebug('addressesList->isEmpty');
-            $this->streetNotFound();
-            return;
-        }
-
-        $this->_sayDebug('getAddressAgain3');
-        return $this->ask(
-            $question,
-            function (Answer $answer) use ($addressesList) {
-                Log::newLogAnswer($this->bot, $answer);
-                if ($answer->getValue() == 'exit' && $answer->isInteractiveMessageReply()) {
-                    $this->run();
-                    return;
-                }
-
-                $address = Address::findByAnswer($addressesList, $answer);
-
-                if ($address) {
-                    if ($address['kind'] == 'street') {
-                        $this->bot->userStorage()->save(['address' => $address['street']]);
-                        $this->forgetWriteHouse();
-                        return;
-                    }
-                    $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
-                    $this->_saveFirstAddress(
-                        $answer->getText(),
-                        $crew_group_id,
-                        $address['coords']['lat'],
-                        $address['coords']['lon'],
-                        $address['city']
-                    );
-                    $this->getEntrance();
-                } else {
-                    $this->_saveFirstAddress($answer->getText());
-                    $this->getAddressAgain();
-                }
-            }
-        );
-    }
-
-    public function streetNotFound()
-    {
-        $question = Question::create($this->__('messages.not found favorite address'), $this->bot->getUser()->getId());
-        $question->addButtons(
-            [
-                Button::create($this->__('buttons.back'))->additionalParameters(
-                    ['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT]
-                )->value('back'),
-                Button::create($this->__('buttons.save as written'))->value('save as written'),
-            ]
-        );
-
-        return $this->ask(
-            $question,
-            function (Answer $answer) {
-                if ($answer->isInteractiveMessageReply()) {
-                    if ($answer->getValue() == 'back') {
-                        $this->addAddress();
-                    } elseif ($answer->getValue() == 'save as written') {
-                        $this->getEntrance();
-                    }
-                } else {
-                    $this->_saveFirstAddress($answer->getText());
-                    $this->getAddressAgain();
-                }
-            }
-        );
     }
 
     public function forgetWriteHouse()
