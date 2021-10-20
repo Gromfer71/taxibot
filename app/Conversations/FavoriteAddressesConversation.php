@@ -5,19 +5,21 @@ namespace App\Conversations;
 
 use App\Models\FavoriteAddress;
 use App\Models\Log;
-use App\Models\User;
 use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
 use App\Services\Translator;
+use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 
 class FavoriteAddressesConversation extends BaseAddressConversation
 {
+    use TakingAddressTrait;
+
     public function getActions(array $replaceActions = []): array
     {
         $actions = [
@@ -74,76 +76,25 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 
     public function addAddress()
     {
-        $options = new Options($this->bot->userStorage());
-        $crewGroupId = $options->getCrewGroupIdFromCity(User::find($this->bot->getUser()->getId())->city ?? null);
-        $district = $options->getDistrictFromCity(User::find($this->bot->getUser()->getId())->city ?? null);
-        $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
-        $this->bot->userStorage()->save(['district' => $district]);
-        $this->bot->userStorage()->save(['city' => User::find($this->bot->getUser()->getId())->city]);
+        $this->saveCityInformation();
         $questionText = $this->addAddressesToMessageOnlyFromHistory(
-            $this->__('messages.give me your favorite address')
+            Translator::trans('messages.give me your favorite address')
         );
-        $question = Question::create($questionText, $this->bot->getUser()->getId())
-            ->addButton(
-                Button::create($this->__('buttons.exit'))->value('exit')->additionalParameters(
-                    ['location' => 'addresses']
-                )
-            );
+        $question = ComplexQuestion::createWithSimpleButtons(
+            $this->addAddressesToMessageOnlyFromHistory(Translator::trans('messages.give me your favorite address')),
+            [ButtonsStructure::EXIT], ['location' => 'addresses']
+        );
+
         $question = $this->_addAddressHistoryButtons($question, true);
 
         return $this->ask($question, function (Answer $answer) {
-            Log::newLogAnswer($this->bot, $answer);
-            if ($answer->getValue() == 'exit') {
-                $this->run();
-                return;
-            }
-            $address = $this->_getAddressFromHistoryByAnswer($answer);
-
-            if ($address) {
-                if ($address['city'] == '') {
-                    $crew_group_id = false;
-                } else {
-                    $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
-                }
-                if ($address['lat'] == 0) {
-                    $this->bot->userStorage()->save(['first_address_from_history_incorrect' => 1]);
-                }
-
-                $this->_saveFirstAddress(
-                    $address->address,
-                    $crew_group_id,
-                    $address['lat'],
-                    $address['lon'],
-                    $address['city']
-                );
-                if ($this->_hasEntrance($address->address)) {
-                    $this->getAddressName();
-                } else {
-                    $this->getEntrance();
-                }
-            } else {
-                $this->_saveFirstAddress($answer->getText());
-
-                $addressesList = collect(
-                    Address::getAddresses(
-                        $this->bot->userStorage()->get('address'),
-                        (new Options($this->bot->userStorage()))->getCities(),
-                        $this->bot->userStorage()
-                    )
-                );
-                if ($addressesList->isEmpty()) {
-                    $this->streetNotFound();
-                } else {
-                    $this->getAddressAgain();
-                }
-            }
+            $this->handleAction($answer->getValue(), [ButtonsStructure::EXIT => 'run']);
+            $this->handleFirstAddress($answer);
         });
     }
 
     public function getAddressAgain()
     {
-        $this->_sayDebug('getAddressAgain');
-
         $addressesList = collect(
             Address::getAddresses(
                 $this->bot->userStorage()->get('address'),

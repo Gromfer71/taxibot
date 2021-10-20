@@ -86,26 +86,7 @@ class TakingAddressConversation extends BaseAddressConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
-            // Определяем ввод пользователя - это выбранный адрес из списка или введенный вручную
-            $address = $this->_getAddressFromHistoryByAnswer($answer);
-            if ($address) {
-                // если выбранный, то сохраняем его и идем дальше
-                $this->saveFirstAddress($address);
-                if ($this->_hasEntrance($address->address)) {
-                    $this->getAddressTo();
-                } else {
-                    $this->getEntrance();
-                }
-            } else {
-                // если введенный, то сохраняем его и выводим список похожих адресов
-                $this->_saveFirstAddress($answer->getText());
-                $addressesList = $this->getAddressesList();
-                if ($addressesList->isEmpty()) {
-                    $this->streetNotFound();
-                } else {
-                    $this->getAddressAgain();
-                }
-            }
+            $this->handleFirstAddress($answer);
         });
     }
 

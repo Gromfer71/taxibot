@@ -6,6 +6,7 @@ use App\Models\AddressHistory;
 use App\Services\Address;
 use App\Services\Options;
 use App\Services\Translator;
+use BotMan\BotMan\Messages\Incoming\Answer;
 use Throwable;
 use Tightenco\Collect\Support\Collection;
 
@@ -45,6 +46,29 @@ trait TakingAddressTrait
             $address['lon'],
             $address['city']
         );
+    }
+
+    public function handleFirstAddress(Answer $answer)
+    {
+        $address = $this->_getAddressFromHistoryByAnswer($answer);
+
+        if ($address) {
+            // если выбранный, то сохраняем его и идем дальше
+            $this->saveFirstAddress($address);
+            if ($this->_hasEntrance($address->address)) {
+                $this->getAddressName();
+            } else {
+                $this->getEntrance();
+            }
+        } else {
+            $this->_saveFirstAddress($answer->getText());
+            $addressesList = $this->getAddressesList();
+            if ($addressesList->isEmpty()) {
+                $this->streetNotFound();
+            } else {
+                $this->getAddressAgain();
+            }
+        }
     }
 
     public function handleSecondAddress($answer)
