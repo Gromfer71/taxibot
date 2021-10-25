@@ -20,7 +20,6 @@ class TakingAddressConversation extends BaseAddressConversation
     use TakingAddressTrait;
 
     public $conversationAfterTakeAddress = 'App\Conversations\TaxiMenuConversation';
-    protected $redirectAfterTakeEntrance = 'getAddressTo';
 
     /**
      * @return void
@@ -139,6 +138,11 @@ class TakingAddressConversation extends BaseAddressConversation
             $this->_saveSecondAddress($answer->getText());
             $this->getAddressToAgain();
         });
+    }
+
+    public function redirectAfterGetEntrance()
+    {
+        $this->getAddressTo();
     }
 
 

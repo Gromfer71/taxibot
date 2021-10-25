@@ -17,8 +17,6 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 {
     use TakingAddressTrait;
 
-    protected $redirectAfterTakeEntrance = 'getAddressName';
-
     public function getActions(array $replaceActions = []): array
     {
         $actions = [
@@ -129,5 +127,10 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                 }
             }
         });
+    }
+
+    public function redirectAfterGetEntrance()
+    {
+        $this->getAddressName();
     }
 }

@@ -22,7 +22,6 @@ abstract class BaseAddressConversation extends BaseConversation
 {
     use TakingAddressTrait;
 
-    protected $redirectAfterTakeEntrance = 'getAddressTo';
 
     /**
      * Ввод начального адреса пользователя
@@ -148,8 +147,12 @@ abstract class BaseAddressConversation extends BaseConversation
             $this->addEntranceToAddress($answer->getText());
             $this->createAddressHistory($this->getFromStorage('address'));
 
-            $this->{$this->redirectAfterTakeEntrance}();
+            $this->redirectAfterGetEntrance();
         });
+    }
+
+    public function redirectAfterGetEntrance()
+    {
     }
 
     public function _hasEntrance($address)
