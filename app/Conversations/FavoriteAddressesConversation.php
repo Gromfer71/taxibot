@@ -4,7 +4,6 @@
 namespace App\Conversations;
 
 use App\Models\FavoriteAddress;
-use App\Models\Log;
 use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
@@ -17,6 +16,8 @@ use BotMan\BotMan\Messages\Outgoing\Question;
 class FavoriteAddressesConversation extends BaseAddressConversation
 {
     use TakingAddressTrait;
+
+    protected $redirectAfterTakeEntrance = 'getAddressName';
 
     public function getActions(array $replaceActions = []): array
     {
@@ -74,32 +75,6 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                                        )
                                    ])->first()->delete();
             $this->run();
-        });
-    }
-
-    public function getEntrance()
-    {
-        $question = Question::create(
-            $this->__('messages.give entrance in favorite address'),
-            $this->bot->getUser()->getId()
-        )
-            ->addButtons([
-                             Button::create($this->__('buttons.no entrance'))->value('no entrance'),
-                             Button::create($this->__('buttons.exit'))->value('exit'),
-                         ]);
-
-        return $this->ask($question, function (Answer $answer) {
-            Log::newLogAnswer($this->bot, $answer);
-            if ($answer->getValue() == 'exit') {
-                $this->run();
-            } elseif ($answer->getValue() == 'no entrance') {
-                $this->getAddressName();
-            } else {
-                $address = $this->bot->userStorage()->get('address') . ', *п ' . $answer->getText();
-                $this->bot->userStorage()->save(['address' => $address]);
-                $this->_sayDebug('getAddressName');
-                $this->getAddressName();
-            }
         });
     }
 

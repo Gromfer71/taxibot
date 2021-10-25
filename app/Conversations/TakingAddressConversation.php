@@ -20,6 +20,7 @@ class TakingAddressConversation extends BaseAddressConversation
     use TakingAddressTrait;
 
     public $conversationAfterTakeAddress = 'App\Conversations\TaxiMenuConversation';
+    protected $redirectAfterTakeEntrance = 'getAddressTo';
 
     /**
      * @return void
@@ -123,20 +124,6 @@ class TakingAddressConversation extends BaseAddressConversation
                 $this->handleSecondAddressAgain($addressesList, $answer);
             }
         );
-    }
-
-    public function getEntrance()
-    {
-        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.give entrance'),
-                                                             [ButtonsStructure::NO_ENTRANCE, ButtonsStructure::EXIT]
-        );
-
-        return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
-            $this->addEntranceToAddress($answer->getText());
-            $this->createAddressHistory($this->getFromStorage('address'));
-            $this->getAddressTo();
-        });
     }
 
     public function streetNotFoundAddressTo()

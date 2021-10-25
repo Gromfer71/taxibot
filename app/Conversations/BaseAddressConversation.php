@@ -22,6 +22,8 @@ abstract class BaseAddressConversation extends BaseConversation
 {
     use TakingAddressTrait;
 
+    protected $redirectAfterTakeEntrance = 'getAddressTo';
+
     /**
      * Ввод начального адреса пользователя
      *
@@ -132,6 +134,21 @@ abstract class BaseAddressConversation extends BaseConversation
                 );
                 $this->getAddressAgain();
             }
+        });
+    }
+
+    public function getEntrance()
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.give entrance'),
+                                                             [ButtonsStructure::NO_ENTRANCE, ButtonsStructure::EXIT]
+        );
+
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer->getValue());
+            $this->addEntranceToAddress($answer->getText());
+            $this->createAddressHistory($this->getFromStorage('address'));
+
+            $this->{$this->redirectAfterTakeEntrance}();
         });
     }
 
