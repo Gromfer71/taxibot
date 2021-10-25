@@ -113,10 +113,8 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             Translator::trans(
                 'messages.favorite address',
                 [
-                    [
-                        'name' => $this->bot->userStorage()->get('address_name'),
-                        'address' => $this->bot->userStorage()->get('address')
-                    ]
+                    'name' => $this->bot->userStorage()->get('address_name'),
+                    'address' => $this->bot->userStorage()->get('address')
                 ]
             ),
             [ButtonsStructure::SAVE, ButtonsStructure::CANCEL]
