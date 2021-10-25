@@ -110,7 +110,15 @@ class FavoriteAddressesConversation extends BaseAddressConversation
     public function confirmAddress()
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.favorite address'),
+            Translator::trans(
+                'messages.favorite address',
+                [
+                    [
+                        'name' => $this->bot->userStorage()->get('address_name'),
+                        'address' => $this->bot->userStorage()->get('address')
+                    ]
+                ]
+            ),
             [ButtonsStructure::SAVE, ButtonsStructure::CANCEL]
         );
 
