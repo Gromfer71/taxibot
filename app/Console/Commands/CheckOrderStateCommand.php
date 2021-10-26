@@ -247,6 +247,7 @@ class CheckOrderStateCommand extends Command
                         ]
                     );
                     $botMan->say($question, $recipientId, $driverName);
+                    $botMan->listen();
                 }
             }
         }

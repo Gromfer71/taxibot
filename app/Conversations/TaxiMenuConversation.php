@@ -18,6 +18,7 @@ use App\Traits\TakingAdditionalAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
+use Exception;
 
 class TaxiMenuConversation extends BaseAddressConversation
 {
@@ -26,10 +27,6 @@ class TaxiMenuConversation extends BaseAddressConversation
 
     public function run()
     {
-        if (OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName())) {
-            $this->currentOrderMenu();
-            return;
-        }
         $this->calcPrice();
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
 
@@ -96,13 +93,11 @@ class TaxiMenuConversation extends BaseAddressConversation
 
     public function calcPrice()
     {
-        $options = new Options($this->bot->userStorage());
+        $options = new Options();
         $crewGroupId = collect($this->bot->userStorage()->get('crew_group_id'))->first();
-        $this->_sayDebug('crewGroupId из первого адреса - ' . $crewGroupId);
 
         if (!$crewGroupId) {
             $city = User::find($this->bot->getUser()->getId())->city;
-            $this->_sayDebug('crewGroupId из первого адреса не найдено город  - ' . $city);
             $crewGroupId = $options->getCrewGroupIdFromCity($city ?? null);
         }
         $api = new OrderApiService();
@@ -116,10 +111,13 @@ class TaxiMenuConversation extends BaseAddressConversation
             $options->getOrderParamsArray($this->bot->userStorage()),
             $this->bot->userStorage()
         );
-        $this->_sayDebug('Цена поездки  - ' . json_encode($priceResponse, JSON_UNESCAPED_UNICODE));
-        $this->bot->userStorage()->save(['price' => $priceResponse->data->sum ?? 101]);
-        $this->bot->userStorage()->save(['tariff_id' => $tariff->data->tariff_id]);
-        $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
+        try {
+            $this->bot->userStorage()->save(['price' => $priceResponse->data->sum->sum->sum]);
+            $this->bot->userStorage()->save(['tariff_id' => $tariff->data->tariff_id]);
+            $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
+        } catch (Exception $exception) {
+            $this->_sayDebug('Цена поездки посчиталась некорректно!');
+        }
     }
 
     public function currentOrderMenu($withMessageAboutOrderCreated = null, $exactlyWithoutMessage = false)
