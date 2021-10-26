@@ -58,10 +58,24 @@ class DriverAssignedConversation extends BaseConversation
                         $this->bot->getUser()->getId(),
                         $this->bot->getDriver()->getName()
                     );
+
                     if ($order) {
+                        $this->_sayDebug('Заказ найден в базе, подтверждаем');
                         $order->confirmOrder();
+                    } else {
+                        $this->_sayDebug('Заказ в базе не найден, ошибка');
                     }
                     $this->bot->startConversation(new DriverAssignedConversation());
+                } elseif ($answer->getValue() == 'order_cancel') {
+                    $order = OrderHistory::getActualOrder(
+                        $this->bot->getUser()->getId(),
+                        $this->bot->getDriver()->getName()
+                    );
+                    $this->say('Ваш заказ отменен. Очень хочу надеяться, что Вы ко мне ещё вернётесь.');
+                    if ($order) {
+                        $order->cancelOrder();
+                    }
+                    $this->bot->startConversation(new StartConversation());
                 } elseif ($answer->getValue() == 'need dispatcher') {
                     $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
                     $this->getUser()->setUserNeedDispatcher();

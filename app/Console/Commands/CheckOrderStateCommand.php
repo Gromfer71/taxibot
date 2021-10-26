@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Conversations\TaxiMenuConversation;
 use App\Models\OrderHistory;
 use App\Models\User;
 use App\Services\ButtonsFormatterService;
@@ -154,17 +153,19 @@ class CheckOrderStateCommand extends Command
                     $botMan->say($question, $recipientId, $driverName);
                     $botMan->listen();
                 } elseif ($newStateId == OrderHistory::DRIVER_ABORTED_FROM_ORDER) {
-                    $botMan->say(Translator::trans('messages.driver aborted from order'), $recipientId, $driverName);
-                    $botMan->startConversation(new TaxiMenuConversation());
-                    $botMan->listen();
-//                    $question = Question::create(
-//                        Translator::trans('messages.driver aborted from order'),
-//                        $recipientId
-//                    )->addButtons([
-//                                      Button::create(Translator::trans('buttons.order_cancel'))->value('order_cancel')
-//                                  ]);
-//                    $botMan->say($question, $recipientId, $driverName);
+//                    $botMan->say(Translator::trans('messages.driver aborted from order'), $recipientId, $driverName);
+//                    $botMan->startConversation(new TaxiMenuConversation());
 //                    $botMan->listen();
+//
+
+
+                    $question = Question::create(
+                        Translator::trans('messages.driver aborted from order')
+                    )->addButtons([
+                                      Button::create(Translator::trans('buttons.order_cancel'))->value('order_cancel')
+                                  ]);
+                    $botMan->say($question, $recipientId, $driverName);
+                    $botMan->listen();
                 } elseif ($newStateId == OrderHistory::CAR_AT_PLACE) {
                     if ($oldStateId == OrderHistory::REQUEST_FOR_ABORT_BY_DRIVER) {
                         return;
