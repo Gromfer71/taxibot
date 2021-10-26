@@ -112,7 +112,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             $this->bot->userStorage()
         );
         try {
-            $this->bot->userStorage()->save(['price' => $priceResponse->data->sum->sum->sum]);
+            $this->bot->userStorage()->save(['price' => $priceResponse->data->sum]);
             $this->bot->userStorage()->save(['tariff_id' => $tariff->data->tariff_id]);
             $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
         } catch (Exception $exception) {

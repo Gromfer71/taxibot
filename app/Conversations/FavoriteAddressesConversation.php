@@ -33,7 +33,6 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                         'lat' => $this->bot->userStorage()->get('lat'),
                         'lon' => $this->bot->userStorage()->get('lon'),
                         'city' => $this->bot->userStorage()->get('address_city'),
-
                     ]
                 );
                 $this->run();
