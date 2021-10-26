@@ -14,7 +14,6 @@ use BotMan\BotMan\Messages\Outgoing\Question;
 
 trait TakingAdditionalAddressTrait
 {
-
     public function addAdditionalAddress()
     {
         $this->_sayDebug('addAdditionalAddress');

@@ -7,6 +7,8 @@ use App\Models\Log;
 use App\Models\OrderHistory;
 use App\Models\User;
 use App\Services\Address;
+use App\Services\Bot\ButtonsStructure;
+use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\MessageGeneratorService;
 use App\Services\Options;
@@ -18,77 +20,55 @@ use App\Traits\TakingAdditionalAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
-use Exception;
 
 class TaxiMenuConversation extends BaseAddressConversation
 {
     use BotManagerTrait;
     use TakingAdditionalAddressTrait;
 
+    public function getActions(array $replaceActions = []): array
+    {
+        $actions = [
+            ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
+            ButtonsStructure::ADD_ADDRESS => 'addAdditionalAddress',
+            ButtonsStructure::GO_FOR_BONUSES => '_go_for_bonuses',
+            ButtonsStructure::GO_FOR_CASH => '_go_for_cash',
+            ButtonsStructure::WRITE_COMMENT => 'writeComment',
+            ButtonsStructure::WISHES => 'wishes',
+            ButtonsStructure::CHANGE_PRICE => 'changePrice',
+
+
+        ];
+
+        return parent::getActions(array_replace_recursive($actions, $replaceActions));
+    }
+
     public function run()
     {
         $this->calcPrice();
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
-
-        $question = Question::create(
+        $question = ComplexQuestion::createWithSimpleButtons(
             MessageGeneratorService::getFullOrderInfoFromStorage($this->bot->userStorage()),
-            $this->bot->getUser()->getId()
+            [ButtonsStructure::EXIT_TO_MENU], ['config' => ButtonsFormatterService::TAXI_MENU_FORMAT]
         );
         if ($haveEndAddress) {
-            $question = $question->addButtons(
-                [
-                    Button::create($this->__('buttons.exit to menu'))->additionalParameters(
-                        ['config' => ButtonsFormatterService::TAXI_MENU_FORMAT]
-                    )->value('exit to menu'),
-                    Button::create($this->__('buttons.add address'))->value('add address'),
-                    Button::create($this->__('buttons.go for cash'))->value('go for cash'),
-                    Button::create($this->__('buttons.write comment'))->value('write comment'),
-                    Button::create($this->__('buttons.go for bonuses'))->value('go for bonuses'),
-                    Button::create($this->__('buttons.wishes'))->value('wishes'),
-                    Button::create($this->__('buttons.change price'))->value('change price')
-                ]
-            );
-        } else {
-            $question = $question->addButtons(
-                [
-                    Button::create($this->__('buttons.exit to menu'))->additionalParameters(
-                        ['config' => ButtonsFormatterService::TAXI_MENU_FORMAT]
-                    )->value('exit to menu'),
-                    Button::create($this->__('buttons.write comment'))->value('write comment'),
-                    Button::create($this->__('buttons.go for cash'))->value('go for cash'),
-                    Button::create($this->__('buttons.wishes'))->value('wishes'),
-                    Button::create($this->__('buttons.change price'))->value('change price')
-                ]
+            $question = ComplexQuestion::setButtons(
+                $question,
+                [ButtonsStructure::ADD_ADDRESS, ButtonsStructure::GO_FOR_BONUSES]
             );
         }
 
-        return $this->ask(
+        $question = ComplexQuestion::setButtons(
             $question,
-            function (Answer $answer) {
-                Log::newLogAnswer($this->bot, $answer);
-                if ($answer->isInteractiveMessageReply()) {
-                    if ($answer->getValue() == 'add address') {
-                        $this->addAdditionalAddress();
-                    } elseif ($answer->getValue() == 'go for cash') {
-                        $this->_go_for_cash();
-                    } elseif ($answer->getValue() == 'go for bonuses') {
-                        $this->_go_for_bonuses();
-                    } elseif ($answer->getValue() == 'exit to menu') {
-                        $this->bot->startConversation(new MenuConversation());
-                    } elseif ($answer->getValue() == 'change price') {
-                        $this->changePrice();
-                    } elseif ($answer->getValue() == 'write comment') {
-                        $this->writeComment();
-                    } elseif ($answer->getValue() == 'client_goes_out') {
-                        return;
-                    } elseif ($answer->getValue() == 'wishes') {
-                        $this->wishes();
-                    }
-                } else {
-                    $this->run();
-                }
-            }
+            [
+                ButtonsStructure::GO_FOR_CASH,
+                ButtonsStructure::WRITE_COMMENT,
+                ButtonsStructure::WISHES,
+                ButtonsStructure::CHANGE_PRICE
+            ]
         );
+
+        return $this->ask($question, $this->getDefaultCallback());
     }
 
     public function calcPrice()
@@ -111,145 +91,141 @@ class TaxiMenuConversation extends BaseAddressConversation
             $options->getOrderParamsArray($this->bot->userStorage()),
             $this->bot->userStorage()
         );
-        try {
-            $this->bot->userStorage()->save(['price' => $priceResponse->data->sum]);
-            $this->bot->userStorage()->save(['tariff_id' => $tariff->data->tariff_id]);
-            $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
-        } catch (Exception $exception) {
+        if (!isset($priceResponse->data->sum)) {
             $this->_sayDebug('Цена поездки посчиталась некорректно!');
         }
+
+        $this->bot->userStorage()->save(['price' => $priceResponse->data->sum ?? 100]);
+        $this->bot->userStorage()->save(['tariff_id' => $tariff->data->tariff_id]);
+        $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
     }
 
     public function currentOrderMenu($withMessageAboutOrderCreated = null, $exactlyWithoutMessage = false)
     {
-        $this->_sayDebug('currentOrderMenu');
         if ($withMessageAboutOrderCreated) {
-            $text = MessageGeneratorService::getFullOrderInfoFromStorage2($this->bot->userStorage());
+            $message = MessageGeneratorService::getFullOrderInfoFromStorage2($this->bot->userStorage());
         } else {
-            $text = MessageGeneratorService::getFullOrderInfoFromStorage($this->bot->userStorage());
+            $message = MessageGeneratorService::getFullOrderInfoFromStorage($this->bot->userStorage());
         }
+
         if ($exactlyWithoutMessage) {
-            $text = '';
+            $message = '';
         }
 
-        $question = Question::create($text, $this->bot->getUser()->getId())
-            ->addButtons(
-                [
-                    Button::create($this->__('buttons.need dispatcher'))->additionalParameters(
-                        ['config' => ButtonsFormatterService::CURRENT_ORDER_MENU_FORMAT]
-                    )->value('need dispatcher'),
-                    Button::create($this->__('buttons.order info'))->value('order info'),
-                    Button::create($this->__('buttons.cancel order'))->value('cancel order'),
-                    Button::create($this->__('buttons.change price'))->value('change price'),
-                ]
-            );
+        $question = ComplexQuestion::createWithSimpleButtons(
+            $message,
+            [
+                ButtonsStructure::NEED_DISPATCHER,
+                ButtonsStructure::ORDER_INFO,
+                ButtonsStructure::CANCEL_ORDER,
+                ButtonsStructure::CHANGE_PRICE
+            ],
+            ['config' => ButtonsFormatterService::CURRENT_ORDER_MENU_FORMAT]
+        );
 
-
-        return $this->ask(
-            $question,
-            function (Answer $answer) {
-                $api = new OrderApiService();
-                Log::newLogAnswer($this->bot, $answer);
-                if ($answer->isInteractiveMessageReply()) {
-                    $this->_sayDebug($answer->getValue());
-                    if ($answer->getValue() == 'cancel order') {
-                        $order = OrderHistory::getActualOrder(
-                            $this->bot->getUser()->getId(),
-                            $this->bot->getDriver()->getName()
-                        );
-                        $this->_sayDebug('Сохраняем отмену заказа');
-                        if ($order) {
-                            $order->cancelOrder();
-                        }
-                        $this->cancelOrder();
-                    } elseif ($answer->getValue() == 'order info') {
-                        $this->_sayDebug('order info - execute');
-                        $order = OrderHistory::getActualOrder(
-                            $this->bot->getUser()->getId(),
-                            $this->bot->getDriver()->getName()
-                        );
-                        $newStateKind = $order->checkOrder();
-                        if (!$newStateKind) {
-                            $this->say(
-                                $this->__('messages.pls wait we are searching auto now'),
-                                $this->bot->getUser()->getId()
-                            );
-                            $this->currentOrderMenu(true, true);
-                        }
-                    } elseif ($answer->getValue() == 'change price') {
-                        $this->changePriceInOrderMenu();
-                    } elseif ($answer->getValue() == 'need dispatcher') {
-                        $this->getUser()->setUserNeedDispatcher();
-                        $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-                        $this->currentOrderMenu(true, true);
-                    } elseif ($answer->getValue() == 'order_confirm') {
-                        $order = OrderHistory::getActualOrder(
-                            $this->bot->getUser()->getId(),
-                            $this->bot->getDriver()->getName()
-                        );
-                        if ($order) {
-                            $order->confirmOrder();
-                        }
-                        $this->bot->startConversation(new DriverAssignedConversation());
-                    } elseif ($answer->getValue() == 'client_goes_out') {
-                        $order = OrderHistory::getActualOrder(
-                            $this->bot->getUser()->getId(),
-                            $this->bot->getDriver()->getName()
-                        );
-                        $api->changeOrderState($order, OrderApiService::USER_GOES_OUT);
-                        $this->bot->startConversation(new ClientGoesOutConversation());
-                    } elseif ($answer->getValue() == 'client_goes_out_late') {
-                        $order = OrderHistory::getActualOrder(
-                            $this->bot->getUser()->getId(),
-                            $this->bot->getDriver()->getName()
-                        );
-                        $api->changeOrderState($order, OrderApiService::USER_GOES_OUT);
-                        $this->bot->startConversation(new ClientGoesOutConversation());
-                    } elseif ($answer->getValue() == 'order_cancel') {
-                        $order = OrderHistory::getActualOrder(
-                            $this->bot->getUser()->getId(),
-                            $this->bot->getDriver()->getName()
-                        );
-                        $this->say('Ваш заказ отменен. Очень хочу надеяться, что Вы ко мне ещё вернётесь.');
-                        if ($order) {
-                            $order->cancelOrder();
-                        }
-                        $this->bot->startConversation(new StartConversation());
-                    } elseif ($answer->getValue() == 'need driver') {
-                        $order = OrderHistory::getActualOrder(
-                            $this->bot->getUser()->getId(),
-                            $this->bot->getDriver()->getName()
-                        );
-                        if ($order) {
-                            $api->connectClientAndDriver($order);
-                        }
-                        $this->say($this->__('messages.connect with driver'), $this->bot->getUser()->getId());
-                        $this->currentOrderMenu(true, true);
-                    } elseif ($answer->getValue() == 'finish order') {
-                        $order = OrderHistory::getActualOrder(
-                            $this->bot->getUser()->getId(),
-                            $this->bot->getDriver()->getName()
-                        );
-                        if ($order) {
-                            $order->finishOrder();
-                        }
-                        $this->bot->say($this->__('messages.thx for order'), $this->bot->getUser()->getId());
-                        $this->bot->startConversation(new StartConversation());
-                    } elseif ($answer->getValue() == 'need dispatcher') {
-                        $this->getUser()->setUserNeedDispatcher();
-                        $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
-                        $this->bot->startConversation(new ClientGoesOutConversation());
-                    } else {
-                        $this->_fallback($answer);
+        return $this->ask($question, function (Answer $answer) {
+            $api = new OrderApiService();
+            if ($answer->isInteractiveMessageReply()) {
+                $this->_sayDebug($answer->getValue());
+                if ($answer->getValue() == 'cancel order') {
+                    $order = OrderHistory::getActualOrder(
+                        $this->bot->getUser()->getId(),
+                        $this->bot->getDriver()->getName()
+                    );
+                    $this->_sayDebug('Сохраняем отмену заказа');
+                    if ($order) {
+                        $order->cancelOrder();
                     }
-                } else {
+                    $this->cancelOrder();
+                } elseif ($answer->getValue() == 'order info') {
+                    $this->_sayDebug('order info - execute');
+                    $order = OrderHistory::getActualOrder(
+                        $this->bot->getUser()->getId(),
+                        $this->bot->getDriver()->getName()
+                    );
+                    $newStateKind = $order->checkOrder();
+                    if (!$newStateKind) {
+                        $this->say(
+                            $this->__('messages.pls wait we are searching auto now'),
+                            $this->bot->getUser()->getId()
+                        );
+                        $this->currentOrderMenu(true, true);
+                    }
+                } elseif ($answer->getValue() == 'change price') {
+                    $this->changePriceInOrderMenu();
+                } elseif ($answer->getValue() == 'need dispatcher') {
+                    $this->getUser()->setUserNeedDispatcher();
+                    $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
                     $this->currentOrderMenu(true, true);
+                } elseif ($answer->getValue() == 'order_confirm') {
+                    $order = OrderHistory::getActualOrder(
+                        $this->bot->getUser()->getId(),
+                        $this->bot->getDriver()->getName()
+                    );
+                    if ($order) {
+                        $order->confirmOrder();
+                    }
+                    $this->bot->startConversation(new DriverAssignedConversation());
+                } elseif ($answer->getValue() == 'client_goes_out') {
+                    $order = OrderHistory::getActualOrder(
+                        $this->bot->getUser()->getId(),
+                        $this->bot->getDriver()->getName()
+                    );
+                    $api->changeOrderState($order, OrderApiService::USER_GOES_OUT);
+                    $this->bot->startConversation(new ClientGoesOutConversation());
+                } elseif ($answer->getValue() == 'client_goes_out_late') {
+                    $order = OrderHistory::getActualOrder(
+                        $this->bot->getUser()->getId(),
+                        $this->bot->getDriver()->getName()
+                    );
+                    $api->changeOrderState($order, OrderApiService::USER_GOES_OUT);
+                    $this->bot->startConversation(new ClientGoesOutConversation());
+                } elseif ($answer->getValue() == 'order_cancel') {
+                    $order = OrderHistory::getActualOrder(
+                        $this->bot->getUser()->getId(),
+                        $this->bot->getDriver()->getName()
+                    );
+                    $this->say('Ваш заказ отменен. Очень хочу надеяться, что Вы ко мне ещё вернётесь.');
+                    if ($order) {
+                        $order->cancelOrder();
+                    }
+                    $this->bot->startConversation(new StartConversation());
+                } elseif ($answer->getValue() == 'need driver') {
+                    $order = OrderHistory::getActualOrder(
+                        $this->bot->getUser()->getId(),
+                        $this->bot->getDriver()->getName()
+                    );
+                    if ($order) {
+                        $api->connectClientAndDriver($order);
+                    }
+                    $this->say($this->__('messages.connect with driver'), $this->bot->getUser()->getId());
+                    $this->currentOrderMenu(true, true);
+                } elseif ($answer->getValue() == 'finish order') {
+                    $order = OrderHistory::getActualOrder(
+                        $this->bot->getUser()->getId(),
+                        $this->bot->getDriver()->getName()
+                    );
+                    if ($order) {
+                        $order->finishOrder();
+                    }
+                    $this->bot->say($this->__('messages.thx for order'), $this->bot->getUser()->getId());
+                    $this->bot->startConversation(new StartConversation());
+                } elseif ($answer->getValue() == 'need dispatcher') {
+                    $this->getUser()->setUserNeedDispatcher();
+                    $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
+                    $this->bot->startConversation(new ClientGoesOutConversation());
+                } else {
+                    $this->_fallback($answer);
                 }
+            } else {
+                $this->currentOrderMenu(true, true);
             }
+        }
         );
     }
 
-    public function cancelOrder()
+    public
+    function cancelOrder()
     {
         $this->_sayDebug('TaxiMenuConversation cancelOrder');
         $question = Question::create($this->__('messages.cancel order'), $this->bot->getUser()->getId())
@@ -264,7 +240,8 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
     }
 
-    public function changePriceInOrderMenu()
+    public
+    function changePriceInOrderMenu()
     {
         $question = Question::create(
             $this->__('messages.current price', ['price' => $this->bot->userStorage()->get('price')]),
@@ -417,7 +394,8 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
     }
 
-    public function changePrice()
+    public
+    function changePrice()
     {
         $question = Question::create(
             $this->__('messages.current price', ['price' => $this->bot->userStorage()->get('price')]),
@@ -468,7 +446,8 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
     }
 
-    public function writeComment()
+    public
+    function writeComment()
     {
         $question = Question::create($this->__('messages.write comment or choose'), $this->bot->getUser()->getId());
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
@@ -512,7 +491,8 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
     }
 
-    public function menuAfterWrittenComment()
+    public
+    function menuAfterWrittenComment()
     {
         $data = [
             'route' => MessageGeneratorService::implodeAddress(collect($this->bot->userStorage()->get('address'))),
@@ -578,8 +558,10 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
     }
 
-    public function wishes($second = false)
-    {
+    public
+    function wishes(
+        $second = false
+    ) {
         $this->_sayDebug('wishes - start');
         $this->calcPrice();
         $this->_sayDebug('wishes - after -calc price');

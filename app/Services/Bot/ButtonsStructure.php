@@ -41,6 +41,16 @@ class ButtonsStructure extends Button
     public const SETTINGS = 'settings';
     public const FAVORITE_ROUTE_SETTINGS = 'favorite route settings';
 
+    //taxi menu
+    public const GO_FOR_BONUSES = 'go for bonuses';
+    public const GO_FOR_CASH = 'go for cash';
+    public const WRITE_COMMENT = 'write comment';
+    public const WISHES = 'wishes';
+    public const CHANGE_PRICE = 'change price';
+    public const NEED_DISPATCHER = 'need dispatcher';
+    public const ORDER_INFO = 'order info';
+    public const CANCEL_ORDER = 'cancel order';
+
 
     /**
      * Структура кнопок главного меню
