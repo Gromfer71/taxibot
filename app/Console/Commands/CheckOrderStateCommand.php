@@ -131,7 +131,6 @@ class CheckOrderStateCommand extends Command
                                   ]);
 
                     $botMan->say($question, $recipientId, $driverName);
-                    $botMan->listen();
                 } elseif ($newStateId == OrderHistory::IN_QUEUE) {
                     $auto = $actualOrder->getAutoInfo() ?? '';
                     $question = Question::create(
@@ -142,7 +141,6 @@ class CheckOrderStateCommand extends Command
                                   ]);
 
                     $botMan->say($question, $recipientId, $driverName);
-                    $botMan->listen();
                 } elseif ($actualOrder->asAbortedFromQueue()) {
                     $question = Question::create(
                         Translator::trans('messages.queue aborted by driver'),
@@ -151,11 +149,10 @@ class CheckOrderStateCommand extends Command
                                       Button::create(Translator::trans('buttons.order_cancel'))->value('order_cancel')
                                   ]);
                     $botMan->say($question, $recipientId, $driverName);
-                    $botMan->listen();
                 } elseif ($newStateId == OrderHistory::DRIVER_ABORTED_FROM_ORDER) {
 //                    $botMan->say(Translator::trans('messages.driver aborted from order'), $recipientId, $driverName);
 //                    $botMan->startConversation(new TaxiMenuConversation());
-//                    $botMan->listen();
+//                    
 //
 
 
@@ -165,7 +162,6 @@ class CheckOrderStateCommand extends Command
                                       Button::create(Translator::trans('buttons.order_cancel'))->value('order_cancel')
                                   ]);
                     $botMan->say($question, $recipientId, $driverName);
-                    $botMan->listen();
                 } elseif ($newStateId == OrderHistory::CAR_AT_PLACE) {
                     if ($oldStateId == OrderHistory::REQUEST_FOR_ABORT_BY_DRIVER) {
                         return;
@@ -183,7 +179,6 @@ class CheckOrderStateCommand extends Command
                                   ]);
 
                     $botMan->say($question, $recipientId, $driverName);
-                    $botMan->listen();
                 } elseif ($newStateId == OrderHistory::CLIENT_INSIDE) {
                     $question = Question::create('👍', $recipientId)->addButtons([
                                                                                      Button::create(
@@ -205,7 +200,6 @@ class CheckOrderStateCommand extends Command
                                                                                      )->value('need driver'),
                                                                                  ]);
                     $botMan->say($question, $recipientId, $driverName);
-                    $botMan->listen();
                 } elseif ($newStateId == OrderHistory::ABORTED || $newStateId == OrderHistory::ABORTED_BY_DRIVER) {
                     $actualOrder->setAbortedOrder();
                     $question = Question::create(Translator::trans('messages.aborted order'), $recipientId)->addButtons(
@@ -214,7 +208,6 @@ class CheckOrderStateCommand extends Command
                         ]
                     );
                     $botMan->say($question, $recipientId, $driverName);
-                    $botMan->listen();
                 } elseif ($newStateId == OrderHistory::FINISHED_BY_DRIVER) {
                     $actualOrder->finishOrder();
                     $question = Question::create(Translator::trans('messages.thx for order'));
@@ -231,7 +224,6 @@ class CheckOrderStateCommand extends Command
                     );
 
                     $botMan->say($question, $recipientId, $driverName);
-                    $botMan->listen();
                 } elseif ($newStateId == OrderHistory::CLIENT_DONT_COME_OUT || $newStateId == OrderHistory::CLIENT_DONT_COME_OUT_2) {
                     $question = Question::create(Translator::trans('messages.dont come out'), $recipientId)->addButtons(
                         [
@@ -242,7 +234,6 @@ class CheckOrderStateCommand extends Command
                         ]
                     );
                     $botMan->say($question, $recipientId, $driverName);
-                    $botMan->listen();
                 } elseif ($newStateId == OrderHistory::ORDER_NOT_FOUND) {
                     //Заказ удален
                     $actualOrder->refresh();
@@ -256,7 +247,6 @@ class CheckOrderStateCommand extends Command
                         ]
                     );
                     $botMan->say($question, $recipientId, $driverName);
-                    $botMan->listen();
                 }
             }
         }
