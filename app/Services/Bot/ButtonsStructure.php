@@ -57,6 +57,9 @@ class ButtonsStructure extends Button
     public const FINISH_ORDER = 'finish order';
     public const ADD_TO_FAVORITE_ROUTES = 'add to favorite routes';
     public const ABORTED_ORDER = 'aborted order';
+    public const CONTINUE = 'continue';
+    public const CANCEL_CHANGE_PRICE = 'cancel change price';
+    public const CANCEL_LAST_WISH = 'cancel last wish';
 
 
     /**

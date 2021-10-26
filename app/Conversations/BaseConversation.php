@@ -294,4 +294,13 @@ abstract class BaseConversation extends Conversation
         return $message;
     }
 
+    public function getChangePrice(Question $question, $prices)
+    {
+        foreach ($prices as $price) {
+            $question = $question->addButton(Button::create($price->description));
+        }
+
+        return $question;
+    }
+
 }
