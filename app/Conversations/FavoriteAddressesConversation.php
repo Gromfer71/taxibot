@@ -37,7 +37,8 @@ class FavoriteAddressesConversation extends BaseAddressConversation
                     ]
                 );
                 $this->run();
-            }
+            },
+            ButtonsStructure::NO_ENTRANCE => 'getAddressName',
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
