@@ -82,7 +82,7 @@ class ClientGoesOutConversation extends BaseAddressConversation
                         $this->_sayDebug('Заказ в базе не найден, ошибка');
                     }
                     $this->bot->startConversation(new DriverAssignedConversation());
-                } elseif ($answer->getValue() == 'order_cancel') {
+                } elseif ($answer->getValue() == 'cancel order') {
                     $order = OrderHistory::getActualOrder(
                         $this->bot->getUser()->getId(),
                         $this->bot->getDriver()->getName()

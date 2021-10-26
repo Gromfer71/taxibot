@@ -50,6 +50,13 @@ class ButtonsStructure extends Button
     public const NEED_DISPATCHER = 'need dispatcher';
     public const ORDER_INFO = 'order info';
     public const CANCEL_ORDER = 'cancel order';
+    public const ORDER_CONFIRM = 'order_confirm';
+    public const CLIENT_GOES_OUT = 'client_goes_out';
+    public const CLIENT_GOES_OUT_LATE = 'client_goes_out_late';
+    public const NEED_DRIVER = 'need driver';
+    public const FINISH_ORDER = 'finish order';
+    public const ADD_TO_FAVORITE_ROUTES = 'add to favorite routes';
+    public const ABORTED_ORDER = 'aborted order';
 
 
     /**

@@ -124,9 +124,9 @@ class CheckOrderStateCommand extends Command
                         Translator::trans('messages.auto info with time', ['time' => $time, 'auto' => $auto]),
                         $recipientId
                     )->addButtons([
-                                      Button::create(Translator::trans('buttons.order_cancel'))->additionalParameters(
+                                      Button::create(Translator::trans('buttons.cancel order'))->additionalParameters(
                                           ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
-                                      )->value('order_cancel'),
+                                      )->value('cancel order'),
                                       Button::create(Translator::trans('buttons.order_confirm'))->value('order_confirm')
                                   ]);
 
@@ -137,7 +137,7 @@ class CheckOrderStateCommand extends Command
                         Translator::trans('messages.auto info without time', ['auto' => $auto]),
                         $recipientId
                     )->addButtons([
-                                      Button::create(Translator::trans('buttons.order_cancel'))->value('order_cancel'),
+                                      Button::create(Translator::trans('buttons.cancel order'))->value('cancel order'),
                                   ]);
 
                     $botMan->say($question, $recipientId, $driverName);
@@ -146,7 +146,7 @@ class CheckOrderStateCommand extends Command
                         Translator::trans('messages.queue aborted by driver'),
                         $recipientId
                     )->addButtons([
-                                      Button::create(Translator::trans('buttons.order_cancel'))->value('order_cancel')
+                                      Button::create(Translator::trans('buttons.cancel order'))->value('cancel order')
                                   ]);
                     $botMan->say($question, $recipientId, $driverName);
                 } elseif ($newStateId == OrderHistory::DRIVER_ABORTED_FROM_ORDER) {
@@ -159,7 +159,7 @@ class CheckOrderStateCommand extends Command
                     $question = Question::create(
                         Translator::trans('messages.driver aborted from order')
                     )->addButtons([
-                                      Button::create(Translator::trans('buttons.order_cancel'))->value('order_cancel')
+                                      Button::create(Translator::trans('buttons.cancel order'))->value('cancel order')
                                   ]);
                     $botMan->say($question, $recipientId, $driverName);
                 } elseif ($newStateId == OrderHistory::CAR_AT_PLACE) {
