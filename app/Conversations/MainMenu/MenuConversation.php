@@ -8,6 +8,7 @@ use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
+use BotMan\BotMan\Messages\Incoming\Answer;
 
 /**
  * Главное меню бота
@@ -63,7 +64,9 @@ class MenuConversation extends BaseConversation
             ['config' => ButtonsFormatterService::MAIN_MENU_FORMAT]
         );
 
-        return $this->ask($question, $this->getDefaultCallback());
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer->getValue());
+        });
     }
 
 
