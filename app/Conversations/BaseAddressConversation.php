@@ -162,7 +162,7 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function _getCrewGroupIdByCity($city)
     {
-        $options = new Options($this->bot->userStorage());
+        $options = new Options();
         return $options->getCrewGroupIdFromCity($city);
     }
 

@@ -54,7 +54,14 @@ class DriverAssignedConversation extends BaseConversation
                     $this->say($this->__('messages.connect with driver'), $this->bot->getUser()->getId());
                     $this->confirmOrder(true);
                 } elseif ($answer->getValue() == 'order_confirm') {
-                    $this->confirmOrder(false);
+                    $order = OrderHistory::getActualOrder(
+                        $this->bot->getUser()->getId(),
+                        $this->bot->getDriver()->getName()
+                    );
+                    if ($order) {
+                        $order->confirmOrder();
+                    }
+                    $this->bot->startConversation(new DriverAssignedConversation());
                 } elseif ($answer->getValue() == 'need dispatcher') {
                     $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
                     $this->getUser()->setUserNeedDispatcher();
