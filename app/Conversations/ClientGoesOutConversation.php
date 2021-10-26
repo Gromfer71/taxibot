@@ -69,6 +69,19 @@ class ClientGoesOutConversation extends BaseAddressConversation
                     $this->say($this->__('messages.wait for dispatcher'), $this->bot->getUser()->getId());
                     $this->getUser()->setUserNeedDispatcher();
                     $this->inWay(true);
+                } elseif ($answer->getValue() == 'order_confirm') {
+                    $order = OrderHistory::getActualOrder(
+                        $this->bot->getUser()->getId(),
+                        $this->bot->getDriver()->getName()
+                    );
+
+                    if ($order) {
+                        $this->_sayDebug('Заказ найден в базе, подтверждаем');
+                        $order->confirmOrder();
+                    } else {
+                        $this->_sayDebug('Заказ в базе не найден, ошибка');
+                    }
+                    $this->bot->startConversation(new DriverAssignedConversation());
                 } elseif ($answer->getValue() == 'cancel order') {
                     if ($order) {
                         $order->cancelOrder();
