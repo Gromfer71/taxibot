@@ -26,9 +26,6 @@ class ComplexQuestion extends Question
         array $additionalParameters = []
     ): Question {
         $question = new self($text);
-        $buttonTexts = array_map(function ($item) {
-            return 'buttons.' . $item;
-        }, $buttonTexts);
 
         return self::setButtons($question, $buttonTexts, $additionalParameters);
     }
