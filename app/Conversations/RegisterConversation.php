@@ -79,7 +79,8 @@ class RegisterConversation extends BaseConversation
         $question = ComplexQuestion::setButtons(
             $question,
             $this->options->getCitiesArray(),
-            ['config' => ButtonsFormatterService::CITY_MENU_FORMAT]
+            ['config' => ButtonsFormatterService::CITY_MENU_FORMAT],
+            true
         );
 
         return $this->ask($question, function (Answer $answer) {

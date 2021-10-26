@@ -52,7 +52,7 @@ class ComplexQuestion extends Question
         foreach ($buttonTexts as $buttonText) {
             $value = array_get(explode('.', $buttonText), 1);
             $button = Button::create(
-                $withoutTrans ? $buttonText : Translator::trans($buttonText)
+                $withoutTrans ? $buttonText : Translator::trans('buttons.' . $buttonText)
             )->additionalParameters($additionalParameters);
             if ($value) {
                 $button->value($value);
