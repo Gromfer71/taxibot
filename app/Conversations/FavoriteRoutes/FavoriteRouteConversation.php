@@ -51,7 +51,10 @@ class FavoriteRouteConversation extends BaseConversation
         $this->bot->userStorage()->delete();
         $this->bot->userStorage()->save($addressInfo->toArray());
         $this->bot->userStorage()->save(
-            ['crew_group_id' => (new Options())->getCrewGroupIdFromCity($this->getUser()->city)]
+            [
+                'crew_group_id' => (new Options())->getCrewGroupIdFromCity($this->getUser()->city),
+                'is_route_from_favorite' => true,
+            ]
         );
 
         $this->bot->startConversation(new TaxiMenuConversation());

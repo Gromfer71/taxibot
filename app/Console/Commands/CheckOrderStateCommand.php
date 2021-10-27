@@ -212,7 +212,8 @@ class CheckOrderStateCommand extends Command
                     $actualOrder->finishOrder();
                     $question = Question::create(Translator::trans('messages.thx for order'));
 
-                    if (!$botMan->userStorage()->get('second_address_will_say_to_driver_flag')) {
+                    if (!$botMan->userStorage()->get('second_address_will_say_to_driver_flag') && !$botMan->userStorage(
+                        )->get('is_route_from_favorite')) {
                         $question->addButton(
                             Button::create(Translator::trans('buttons.add to favorite routes'))->value(
                                 'add to favorite routes'
