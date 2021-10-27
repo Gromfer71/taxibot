@@ -51,13 +51,13 @@ class BaseConversation extends Conversation
 
     public function ask($question, $next, $additionalParameters = [])
     {
-        $bot = $this->bot;
-        if (is_callable($next)) {
-            $next = function (Answer $answer) use ($next, $bot) {
-                $next($answer);
-                $bot->startConversation(new self());
-            };
-        }
+//        $bot = $this->bot;
+//        if (is_callable($next)) {
+//            $next = function (Answer $answer) use ($next, $bot) {
+//                $next($answer);
+//                $bot->startConversation(new self());
+//            };
+//        }
         $this->bot->reply($question, $additionalParameters);
         $this->bot->storeConversation($this, $next, $question, $additionalParameters);
 
