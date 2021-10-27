@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Базовый класс диалога, от него наследуются все диалоги
  */
-abstract class BaseConversation extends Conversation
+class BaseConversation extends Conversation
 {
     use UserManagerTrait;
 
@@ -47,6 +47,20 @@ abstract class BaseConversation extends Conversation
     public function __construct()
     {
         $this->options = new Options();
+    }
+
+    public function ask($question, $next, $additionalParameters = [])
+    {
+        if (is_callable($next)) {
+            $next = function () use ($next) {
+                $next();
+                $this->bot->startConversation(new self());
+            };
+        }
+        $this->bot->reply($question, $additionalParameters);
+        $this->bot->storeConversation($this, $next, $question, $additionalParameters);
+
+        return $this;
     }
 
     public function getDefaultCallback()
@@ -303,4 +317,8 @@ abstract class BaseConversation extends Conversation
         return $question;
     }
 
+    public function run()
+    {
+        // TODO: Implement run() method.
+    }
 }
