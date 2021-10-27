@@ -28,12 +28,12 @@ abstract class BaseAddressConversation extends BaseConversation
      *
      * @return \App\Conversations\BaseAddressConversation
      */
-    public function getAddress($message, $withFavoriteAddresses = false)
+    public function getAddress($message = null, $withFavoriteAddresses = false)
     {
         $this->saveCityInformation();
 
         $question = ComplexQuestion::createWithSimpleButtons(
-            $this->addAddressesToMessage($message),
+            $this->addAddressesToMessage($message ?: Translator::trans('messages.give me your address')),
             [ButtonsStructure::EXIT],
             ['location' => 'addresses']
         );
