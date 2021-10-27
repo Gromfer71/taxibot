@@ -53,6 +53,7 @@ class BaseConversation extends Conversation
     {
         return function (Answer $answer) {
             $this->handleAction($answer->getValue());
+            $this->run();
         };
     }
 
