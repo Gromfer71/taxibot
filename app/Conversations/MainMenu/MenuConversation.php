@@ -66,6 +66,7 @@ class MenuConversation extends BaseConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue());
+            $this->run();
         });
     }
 
