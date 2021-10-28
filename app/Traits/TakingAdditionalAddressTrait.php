@@ -5,8 +5,11 @@ namespace App\Traits;
 use App\Conversations\MainMenu\MenuConversation;
 use App\Models\AddressHistory;
 use App\Services\Address;
+use App\Services\Bot\ButtonsStructure;
+use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
+use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
@@ -15,18 +18,14 @@ trait TakingAdditionalAddressTrait
 {
     public function addAdditionalAddress()
     {
-        $this->_sayDebug('addAdditionalAddress');
-        $message = $this->__('messages.add additional address');
-        $message = $this->addAddressesToMessage($message);
-        $question = Question::create($message, $this->bot->getUser()->getId());
-        $question = $question->addButton(
-            Button::create($this->__('buttons.back'))->value('back')->additionalParameters(['location' => 'addresses'])
+        $question = ComplexQuestion::createWithSimpleButtons(
+            $this->addAddressesToMessage(Translator::trans('messages.add additional address')),
+            [ButtonsStructure::BACK], ['location' => 'addresses']
         );
+
         $question = $this->_addAddressFavoriteButtons($question);
         $question = $this->_addAddressHistoryButtons($question);
-        return $this->ask(
-            $question,
-            function (Answer $answer) {
+        return $this->ask($question, function (Answer $answer) {
                 if ($answer->isInteractiveMessageReply()) {
                     if ($answer->getValue() == 'back') {
                         $this->run();
