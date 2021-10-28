@@ -44,7 +44,7 @@ abstract class BaseAddressConversation extends BaseConversation
         $question = $this->_addAddressHistoryButtons($question);
 
         return $this->ask($question, function (Answer $answer) use ($withFavoriteAddresses) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
             $this->handleFirstAddress($answer, $withFavoriteAddresses);
         });
     }
@@ -81,7 +81,7 @@ abstract class BaseAddressConversation extends BaseConversation
         return $this->ask(
             $question,
             function (Answer $answer) use ($addressesList) {
-                $this->handleAction($answer->getValue());
+                $this->handleAction($answer);
                 $address = Address::findByAnswer($addressesList, $answer);
                 if ($address) {
                     $this->handleFirstChosenAddress($address);
@@ -126,7 +126,7 @@ abstract class BaseAddressConversation extends BaseConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK]);
+            $this->handleAction($answer, [ButtonsStructure::BACK]);
 
             if (count((array)$this->bot->userStorage()->get('address')) > 1) {
                 $this->handleForgetWriteHouse($answer->getText());
@@ -147,7 +147,7 @@ abstract class BaseAddressConversation extends BaseConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
             $this->addEntranceToAddress($answer->getText());
             $this->createAddressHistory($this->getFromStorage('address'));
 

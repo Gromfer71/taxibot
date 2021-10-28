@@ -57,7 +57,7 @@ class AddressesHistoryConversation extends BaseConversation
         $question = ComplexQuestion::setAddressButtons($question, $this->getUser()->addresses);
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
             $this->saveToStorage(['address' => $answer->getText()]);
             $this->addressMenu();
         });
@@ -76,7 +76,7 @@ class AddressesHistoryConversation extends BaseConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
+            $this->handleAction($answer, [ButtonsStructure::BACK => 'run']);
             $this->run();
         });
     }

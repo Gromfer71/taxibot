@@ -35,7 +35,7 @@ class FavoriteRouteConversation extends BaseConversation
 
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
             if ($this->getUser()->favoriteRoutes->where('name', $answer->getText())->isNotEmpty()) {
                 $this->createOrder($answer->getText());
             } else {

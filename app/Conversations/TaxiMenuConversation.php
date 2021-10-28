@@ -186,7 +186,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue(), [ButtonsStructure::CHANGE_PRICE => 'changePriceInOrderMenu']);
+            $this->handleAction($answer, [ButtonsStructure::CHANGE_PRICE => 'changePriceInOrderMenu']);
             $this->currentOrderMenu();
         });
     }
@@ -205,7 +205,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         $order = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
 
         return $this->ask($question, function (Answer $answer) use ($order) {
-            $this->handleAction($answer->getValue(), [
+            $this->handleAction($answer, [
                 ButtonsStructure::NEED_DRIVER => function () use ($order) {
                     (new OrderApiService())->connectClientAndDriver($order);
                     $this->say(Translator::trans('messages.connect with driver'));
@@ -285,7 +285,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         $question = $this->getChangePrice($question, $prices);
 
         return $this->ask($question, function (Answer $answer) use ($prices) {
-            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
+            $this->handleAction($answer, [ButtonsStructure::BACK => 'run']);
             $price = collect($prices)->filter(function ($item) use ($answer) {
                 if ($item->description == $answer->getText()) {
                     return $item;
@@ -323,7 +323,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         $question = $this->getChangePrice($question, $prices);
 
         return $this->ask($question, function (Answer $answer) use ($prices) {
-            $this->handleAction($answer->getValue(), [
+            $this->handleAction($answer, [
                 ButtonsStructure::CANCEL_CHANGE_PRICE => function () {
                     $this->bot->userStorage()->save(['changed_price' => null]);
                     $this->run();
@@ -358,7 +358,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         }
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
             $this->bot->userStorage()->save(['comment' => $answer->getText()]);
             $this->menuAfterWrittenComment();
         });
@@ -386,7 +386,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         }
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
             $this->bot->userStorage()->save(['comment' => $answer->getText()]);
             $this->menuAfterWrittenComment();
         });
@@ -416,7 +416,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         $question = $wishService->addButtonsToQuestion();
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
             $this->bot->userStorage()->save(
                 ['wishes' => collect($this->bot->userStorage()->get('wishes'))->push($answer->getText())]
             );

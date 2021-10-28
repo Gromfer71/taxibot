@@ -37,12 +37,12 @@ class FavoriteRouteSettingsConversation extends BaseConversation
             Translator::trans('messages.favorite routes menu'),
             [ButtonsStructure::BACK, ButtonsStructure::ADD_ROUTE]
         );
-        
+
         ComplexQuestion::addFavoriteRoutesButtons($question, $this->getUser()->favoriteRoutes);
 
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
 
             $this->confirmDeleteRoute($answer->getText());
         });
@@ -90,7 +90,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
 
                 $this->run();
             } else {
-                $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'addRoute']);
+                $this->handleAction($answer, [ButtonsStructure::BACK => 'addRoute']);
             }
         });
     }
@@ -104,7 +104,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
         );
 
         return $this->ask($question, function (Answer $answer) use ($routeName) {
-            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
+            $this->handleAction($answer, [ButtonsStructure::BACK => 'run']);
             $route = FavoriteRoute::where('name', $routeName)->where('user_id', $this->getUser()->id)->first();
             if ($route) {
                 $route->delete();

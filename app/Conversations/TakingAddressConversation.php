@@ -88,7 +88,7 @@ class TakingAddressConversation extends BaseAddressConversation
         return $this->ask(
             $question,
             function (Answer $answer) {
-                $this->handleAction($answer->getValue());
+                $this->handleAction($answer);
                 $this->handleSecondAddress($answer);
             }
         );
@@ -119,7 +119,7 @@ class TakingAddressConversation extends BaseAddressConversation
         return $this->ask(
             $question,
             function (Answer $answer) use ($addressesList) {
-                $this->handleAction($answer->getValue());
+                $this->handleAction($answer);
                 $this->handleSecondAddressAgain($addressesList, $answer);
             }
         );
@@ -134,7 +134,7 @@ class TakingAddressConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'getAddressTo']);
+            $this->handleAction($answer, [ButtonsStructure::BACK => 'getAddressTo']);
             $this->_saveSecondAddress($answer->getText());
             $this->getAddressToAgain();
         });

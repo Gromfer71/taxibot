@@ -60,7 +60,7 @@ class BaseConversation extends Conversation
     public function getDefaultCallback()
     {
         return function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
             $this->run();
         };
     }
@@ -73,10 +73,10 @@ class BaseConversation extends Conversation
         return User::find($this->bot->getUser()->getId());
     }
 
-    public function handleAction($value, $replaceActions = [])
+    public function handleAction($answer, $replaceActions = [])
     {
-        Log::newLogAnswer($this->getUser()->id, Translator::trans('buttons.' . $value), $value);
-        $callbackOrMethodName = $this->getActions($replaceActions)[$value] ?? '';
+        Log::newLogAnswer($this->getUser()->id, $answer->getText(), $answer->getValue());
+        $callbackOrMethodName = $this->getActions($replaceActions)[$answer->getValue()] ?? '';
         if (is_callable($callbackOrMethodName)) {
             $callbackOrMethodName();
             die();

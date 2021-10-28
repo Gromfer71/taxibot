@@ -56,7 +56,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         }
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
 
             if ($answer->getValue() == ButtonsStructure::ADD_ADDRESS) {
                 $this->getAddress(Translator::trans('messages.give me your favorite address'));
@@ -76,7 +76,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue(), [ButtonsStructure::BACK => 'run']);
+            $this->handleAction($answer, [ButtonsStructure::BACK => 'run']);
             FavoriteAddress::where([
                                        'user_id' => $this->getUser()->id,
                                        'name' => trim(
@@ -99,7 +99,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
             $this->checkAddressNameForLength($answer->getText());
             $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
             $this->confirmAddress();
@@ -121,7 +121,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
             $this->getAddressName();
         });
     }

@@ -66,7 +66,7 @@ class BonusesConversation extends BaseConversation
         return $this->ask(
             $question,
             function (Answer $answer) {
-                $this->handleAction($answer->getValue());
+                $this->handleAction($answer);
                 $this->run();
             }
         );
