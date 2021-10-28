@@ -106,7 +106,7 @@ abstract class BaseAddressConversation extends BaseConversation
             $question,
             function (Answer $answer) {
                 $this->handleAction(
-                    $answer->getValue(),
+                    $answer,
                     [ButtonsStructure::GO_AS_INDICATED => 'getEntrance']
                 );
                 if ($answer->getValue() == ButtonsStructure::BACK) {

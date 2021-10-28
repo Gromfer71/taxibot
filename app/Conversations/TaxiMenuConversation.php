@@ -235,7 +235,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         $order = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
         return $this->ask($question, function (Answer $answer) use ($order) {
             $this->handleAction(
-                $answer->getValue(),
+                $answer,
                 [
                     ButtonsStructure::NEED_DRIVER => function () use ($order) {
                         (new OrderApiService())->connectClientAndDriver($order);

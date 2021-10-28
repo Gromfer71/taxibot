@@ -61,7 +61,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
         $question = ComplexQuestion::addOrderHistoryButtons($question, $this->getUser()->orders);
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction(
-                $answer->getValue(),
+                $answer,
                 [ButtonsStructure::BACK => 'run']
             );
             $this->setRouteName($answer->getText());
