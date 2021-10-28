@@ -95,27 +95,6 @@ class BaseConversation extends Conversation
         return array_replace_recursive($actions, $replaceActions);
     }
 
-    public function _fallback($answer)
-    {
-        if ($answer->getValue() == 'add to favorite routes') {
-            $this->bot->startConversation(new AddedRouteMenuConversation());
-            die();
-        }
-
-        if ($answer->getValue() == 'aborted order' || $answer->getValue() == 'exit to menu') {
-            $this->bot->startConversation(new StartConversation());
-            return;
-        }
-
-        $className = get_class($this);
-        $this->_sayDebug(
-            'Ошибка - потерянный диалог в диалоге - ' . $className . ' text - ' . $answer->getText(
-            ) . ' value - ' . $answer->getValue()
-        );
-        $this->_sayDebug('Возвращаемся к диалогу ' . $className);
-        $this->bot->startConversation(new $className());
-    }
-
     public function _sayDebug($message)
     {
         if (config('app.debug')) {
