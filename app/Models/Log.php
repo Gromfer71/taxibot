@@ -29,7 +29,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Log extends Model
 {
-    public $timestamps = false;
     protected $table = 'logs';
     protected $guarded = [];
 
@@ -40,6 +39,7 @@ class Log extends Model
                                 'message' => $message,
                                 'message_value' => $value,
                                 'isBot' => 0,
+
                             ]);
     }
 
