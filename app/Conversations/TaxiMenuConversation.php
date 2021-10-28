@@ -111,7 +111,7 @@ class TaxiMenuConversation extends BaseAddressConversation
 
         $question = ComplexQuestion::setButtons(
             $question,
-            [ButtonsStructure::WRITE_COMMENT, ButtonsStructure::GO_FOR_CASH]
+            [ButtonsStructure::GO_FOR_CASH, ButtonsStructure::WRITE_COMMENT]
         );
 
         if ($haveEndAddress) {
