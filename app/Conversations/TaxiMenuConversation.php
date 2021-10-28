@@ -255,7 +255,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     }
                 ]
             );
-            $this->inWay(true);
+            $this->inWay();
         });
     }
 
