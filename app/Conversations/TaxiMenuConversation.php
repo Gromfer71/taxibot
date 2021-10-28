@@ -65,7 +65,9 @@ class TaxiMenuConversation extends BaseAddressConversation
                 $this->currentOrderMenu(true, true);
             },
             ButtonsStructure::FINISH_ORDER => function () use ($order) {
-                $order->finishOrder();
+                if ($order) {
+                    $order->finishOrder();
+                }
                 $this->end();
 //                $this->say(Translator::trans('messages.thx for order'));
 //                $this->bot->startConversation(new StartConversation());
