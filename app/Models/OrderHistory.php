@@ -106,6 +106,9 @@ class OrderHistory extends Model
     public static function getActualOrder($userId, $driverName)
     {
         $user = User::find($userId);
+        if (!$user) {
+            $user = User::where('id', $userId)->first();
+        }
 
         return self::Where(['user_id' => $user->id ?? 0, 'relevance' => 0, 'platform' => $driverName])->get()->first();
     }
