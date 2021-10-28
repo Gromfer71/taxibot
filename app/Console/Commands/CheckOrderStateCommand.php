@@ -157,7 +157,11 @@ class CheckOrderStateCommand extends Command
                     continue;
                 }
                 $question = ComplexQuestion::createWithSimpleButtons(
-                    Translator::trans('messages.auto waits for client', ['auto' => $actualOrder->getAutoInfo()]),
+                    Translator::trans(
+                        'messages.auto waits for client',
+                        ['auto' => $actualOrder->getAutoInfo()]
+                    ),
+                    ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT],
                     [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::CLIENT_GOES_OUT]
                 );
                 $botMan->say($question, $recipientId, $driverName);
