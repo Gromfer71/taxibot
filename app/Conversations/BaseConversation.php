@@ -48,6 +48,15 @@ class BaseConversation extends Conversation
         $this->options = new Options();
     }
 
+    public function ask($question, $next, $additionalParameters = [])
+    {
+        Log::newLogDebug($this->getUser()->id, $question->getText());
+        $this->bot->reply($question, $additionalParameters);
+        $this->bot->storeConversation($this, $next, $question, $additionalParameters);
+
+        return $this;
+    }
+
     public function getDefaultCallback()
     {
         return function (Answer $answer) {
@@ -66,7 +75,7 @@ class BaseConversation extends Conversation
 
     public function handleAction($value, $replaceActions = [])
     {
-        Log::newLogAnswer($this->getUser()->id, $value);
+        Log::newLogAnswer($this->getUser()->id, Translator::trans('buttons.' . $value), $value);
         $callbackOrMethodName = $this->getActions($replaceActions)[$value] ?? '';
         if (is_callable($callbackOrMethodName)) {
             $callbackOrMethodName();

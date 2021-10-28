@@ -33,21 +33,21 @@ class Log extends Model
     protected $table = 'logs';
     protected $guarded = [];
 
-    public static function newLogAnswer($userId, $value)
+    public static function newLogAnswer($userId, $message, $value)
     {
         return self::create([
                                 'user_id' => $userId,
-                                'message' => $value,
+                                'message' => $message,
                                 'message_value' => $value,
                                 'isBot' => 0,
                             ]);
     }
 
-    public static function newLogDebug($bot, $message)
+    public static function newLogDebug($userId, $value)
     {
         return self::create([
-                                'user_id' => $bot->getUser()->getId(),
-                                'message' => $message,
+                                'user_id' => $userId,
+                                'message' => $value,
                                 'message_value' => null,
                                 'isBot' => 1,
                             ]);
