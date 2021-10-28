@@ -60,6 +60,7 @@ class ButtonsStructure extends Button
     public const CONTINUE = 'continue';
     public const CANCEL_CHANGE_PRICE = 'cancel change price';
     public const CANCEL_LAST_WISH = 'cancel last wish';
+    public const NEED_MAP = 'need map';
 
 
     /**

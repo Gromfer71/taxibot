@@ -50,11 +50,14 @@ class TaxiMenuConversation extends BaseAddressConversation
             },
             ButtonsStructure::ORDER_CONFIRM => function () use ($order) {
                 $order->confirmOrder();
-                $this->bot->startConversation(new DriverAssignedConversation());
+                $this->confirmOrder();
             },
             ButtonsStructure::CLIENT_GOES_OUT => function () use ($order) {
                 (new OrderApiService())->changeOrderState($order, OrderApiService::USER_GOES_OUT);
-                $this->bot->startConversation(new ClientGoesOutConversation());
+                $this->inWay();
+            },
+            ButtonsStructure::CLIENT_GOES_OUT_LATE => function () use ($order) {
+                $this->inWay();
             },
             ButtonsStructure::NEED_DRIVER => function () use ($order) {
                 (new OrderApiService())->connectClientAndDriver($order);
@@ -63,8 +66,9 @@ class TaxiMenuConversation extends BaseAddressConversation
             },
             ButtonsStructure::FINISH_ORDER => function () use ($order) {
                 $order->finishOrder();
-                $this->say(Translator::trans('messages.thx for order'));
-                $this->bot->startConversation(new StartConversation());
+                $this->end();
+//                $this->say(Translator::trans('messages.thx for order'));
+//                $this->bot->startConversation(new StartConversation());
             },
             ButtonsStructure::ADD_TO_FAVORITE_ROUTES => 'App\Conversations\FavoriteRoutes\AddedRouteMenuConversation',
             ButtonsStructure::ABORTED_ORDER => 'App\Conversations\MainMenu\MenuConversation',
@@ -80,10 +84,12 @@ class TaxiMenuConversation extends BaseAddressConversation
                 $wishes->pop();
                 $this->bot->userStorage()->save(['wishes' => $wishes]);
                 $this->wishes(true);
+            },
+            ButtonsStructure::NEED_MAP => function () {
+                $this->sendDriverMap();
+                $this->confirmOrder(true);
             }
         ];
-
-        $actions[ButtonsStructure::CLIENT_GOES_OUT_LATE] = $actions[ButtonsStructure::CLIENT_GOES_OUT];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
     }
@@ -171,6 +177,72 @@ class TaxiMenuConversation extends BaseAddressConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer->getValue(), [ButtonsStructure::CHANGE_PRICE => 'changePriceInOrderMenu']);
             $this->currentOrderMenu();
+        });
+    }
+
+    public function confirmOrder($withoutMessage = false)
+    {
+        $question = ComplexQuestion::createWithSimpleButtons($withoutMessage ? '' : 'Ваш автомобиль уже в пути',
+                                                             [
+                                                                 ButtonsStructure::NEED_DISPATCHER,
+                                                                 ButtonsStructure::NEED_DRIVER,
+                                                                 ButtonsStructure::CANCEL_ORDER,
+                                                                 ButtonsStructure::NEED_MAP
+                                                             ],
+                                                             ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
+        );
+        $order = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
+
+        return $this->ask($question, function (Answer $answer) use ($order) {
+            $this->handleAction($answer->getValue(), [
+                ButtonsStructure::NEED_DRIVER => function () use ($order) {
+                    (new OrderApiService())->connectClientAndDriver($order);
+                    $this->say(Translator::trans('messages.connect with driver'));
+                    $this->confirmOrder(true);
+                },
+                ButtonsStructure::NEED_DISPATCHER => function () {
+                    $this->getUser()->setUserNeedDispatcher();
+                    $this->say(Translator::trans('messages.wait for dispatcher'));
+                    $this->confirmOrder(true);
+                }
+            ]);
+            $this->confirmOrder(true);
+        });
+    }
+
+    public function inWay($withoutMessage = false)
+    {
+        $question = ComplexQuestion::createWithSimpleButtons($withoutMessage ? '' : 'Приятной поездки',
+                                                             [
+                                                                 ButtonsStructure::FINISH_ORDER,
+                                                                 ButtonsStructure::NEED_DISPATCHER,
+                                                                 ButtonsStructure::NEED_DRIVER,
+                                                                 ButtonsStructure::NEED_MAP
+                                                             ],
+                                                             ['config' => ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT]
+        );
+        $order = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
+        return $this->ask($question, function (Answer $answer) use ($order) {
+            $this->handleAction(
+                $answer->getValue(),
+                [
+                    ButtonsStructure::NEED_DRIVER => function () use ($order) {
+                        (new OrderApiService())->connectClientAndDriver($order);
+                        $this->say(Translator::trans('messages.connect with driver'));
+                        $this->inWay(true);
+                    },
+                    ButtonsStructure::NEED_DISPATCHER => function () {
+                        $this->getUser()->setUserNeedDispatcher();
+                        $this->say(Translator::trans('messages.wait for dispatcher'));
+                        $this->inWay(true);
+                    },
+                    ButtonsStructure::NEED_MAP => function () {
+                        $this->sendDriverMap();
+                        $this->inWay(true);
+                    }
+                ]
+            );
+            $this->inWay(true);
         });
     }
 
