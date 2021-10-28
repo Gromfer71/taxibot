@@ -189,7 +189,7 @@ class TaxiMenuConversation extends BaseAddressConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer, [ButtonsStructure::CHANGE_PRICE => 'changePriceInOrderMenu']);
-            $this->currentOrderMenu();
+            $this->currentOrderMenu(null, true);
         });
     }
 
