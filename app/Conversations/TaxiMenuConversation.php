@@ -248,11 +248,8 @@ class TaxiMenuConversation extends BaseAddressConversation
 
     public function cancelOrder()
     {
-        $this->_sayDebug('cancelOrder');
         $order = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
-        $this->_sayDebug($order->id ?? 'error');
         if ($order) {
-            $this->_sayDebug('cancel order');
             $order->cancelOrder();
         }
         $question = ComplexQuestion::createWithSimpleButtons(

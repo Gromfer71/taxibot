@@ -33,7 +33,8 @@ class CheckRequestCallCommand extends Command
         parent::__construct();
     }
 
-    public function _handle_once($botMan) {
+    public function _handle_once($botMan)
+    {
         $users = User::where('need_call', 1)->get();
         foreach ($users as $user) {
             $api = new OrderApiService();
@@ -52,15 +53,6 @@ class CheckRequestCallCommand extends Command
         }
     }
 
-    public function checkProgramForErrors()
-    {
-        if(file_get_contents(storage_path('logs/laravel.log'))) {
-            $api = new OrderApiService();
-            $api->sendSMSCode('79177371437', file_get_contents(storage_path('logs/laravel.log')));
-            file_put_contents(storage_path('logs/laravel.log'), '');
-        }
-     }
-
     /**
      * Execute the console command.
      *
@@ -68,18 +60,20 @@ class CheckRequestCallCommand extends Command
      */
     public function handle()
     {
-       // $this->checkProgramForErrors();
+        // $this->checkProgramForErrors();
         $this->info('Запустили команду проверки запросов на телефонный звонок');
         $botMan = resolve('botman');
-        $finishTime = time()+57;
+        $finishTime = time() + 57;
         $targetTimeToEveryExecute = 1000000;//В микросекундах
 
-        while(time() <= $finishTime){
-            $timestart = microtime(true)*1000000;
+        while (time() <= $finishTime) {
+            $timestart = microtime(true) * 1000000;
             $this->_handle_once($botMan);
-            $timeEnd = microtime(true)*1000000;
+            $timeEnd = microtime(true) * 1000000;
             $timeToSlep = $targetTimeToEveryExecute - ($timeEnd - $timestart);
-            if ($timeToSlep > 0)  usleep($timeToSlep);
+            if ($timeToSlep > 0) {
+                usleep($timeToSlep);
+            }
         }
     }
 }
