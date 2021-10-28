@@ -182,8 +182,16 @@ class CheckOrderStateCommand extends Command
             } elseif ($newStateId == OrderHistory::FINISHED_BY_DRIVER) {
                 $actualOrder->finishOrder();
                 $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.thx for order'));
-                if (!$botMan->userStorage()->get('second_address_will_say_to_driver_flag') && !$botMan->userStorage(
-                    )->get('is_route_from_favorite')) {
+                if ($actualOrder->platform == self::TELEGRAM_DRIVER_NAME) {
+                    $storage = $botMan->userStorageFromId(
+                        User::where('id', $actualOrder->user_id)->first()->telegram_id
+                    );
+                } elseif ($actualOrder->platform == self::VK_DRIVER_NAME) {
+                    $storage = $botMan->userStorageFromId(User::where('id', $actualOrder->user_id)->first()->vk_id);
+                }
+                if (!$storage->get(
+                        'second_address_will_say_to_driver_flag'
+                    ) && !$storage->get('is_route_from_favorite')) {
                     $question = ComplexQuestion::setButtons($question, [ButtonsStructure::ADD_TO_FAVORITE_ROUTES]);
                 }
                 $question = ComplexQuestion::setButtons($question, [ButtonsStructure::EXIT_TO_MENU]);
