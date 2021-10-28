@@ -7,6 +7,7 @@ use App\Conversations\MainMenu\MenuConversation;
 use App\Models\Log;
 use App\Models\User;
 use App\Services\Address;
+use App\Services\Bot\ButtonsStructure;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
 use App\Services\Translator;
@@ -161,8 +162,10 @@ class BaseConversation extends Conversation
         return $this->ask($question, function (Answer $answer) {
             if ($answer->getValue() == 'add to favorite routes') {
                 $this->bot->startConversation(new AddedRouteMenuConversation());
-            } else {
+            } elseif ($answer->getValue() == ButtonsStructure::EXIT_TO_MENU) {
                 $this->bot->startConversation(new MenuConversation());
+            } else {
+                $this->end();
             }
         });
     }

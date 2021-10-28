@@ -160,7 +160,6 @@ class CheckOrderStateCommand extends Command
                     Translator::trans(
                         'messages.auto waits for client',
                         ['auto' => $actualOrder->getAutoInfo()]
-
                     ),
                     [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::CLIENT_GOES_OUT],
                     ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
