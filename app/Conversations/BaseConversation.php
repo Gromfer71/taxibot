@@ -75,7 +75,10 @@ class BaseConversation extends Conversation
 
     public function handleAction($answer, $replaceActions = [])
     {
-        Log::newLogAnswer($this->getUser()->id, $answer->getText(), $answer->getValue());
+        if (Translator::trans('buttons.' . $answer->getValue()) != '.buttons') {
+            $value = Translator::trans('buttons.' . $answer->getValue());
+        }
+        Log::newLogAnswer($this->getUser()->id, $answer->getText(), $value ?? null);
         $callbackOrMethodName = $this->getActions($replaceActions)[$answer->getValue()] ?? '';
         if (is_callable($callbackOrMethodName)) {
             $callbackOrMethodName();
