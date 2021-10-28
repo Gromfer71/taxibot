@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -14,41 +15,41 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $message_value
  * @property string|null $created_at
  * @property string|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|Log newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Log newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Log query()
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereIsBot($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereMessage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereMessageValue($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereUserId($value)
+ * @method static Builder|Log newModelQuery()
+ * @method static Builder|Log newQuery()
+ * @method static Builder|Log query()
+ * @method static Builder|Log whereCreatedAt($value)
+ * @method static Builder|Log whereId($value)
+ * @method static Builder|Log whereIsBot($value)
+ * @method static Builder|Log whereMessage($value)
+ * @method static Builder|Log whereMessageValue($value)
+ * @method static Builder|Log whereUpdatedAt($value)
+ * @method static Builder|Log whereUserId($value)
  * @mixin \Eloquent
  */
 class Log extends Model
 {
-	protected $table = 'logs';
-    protected $guarded = [];
     public $timestamps = false;
+    protected $table = 'logs';
+    protected $guarded = [];
 
-    public static function newLogAnswer($bot, $answer)
+    public static function newLogAnswer($userId, $value)
     {
-    	return self::create([
-		    'user_id' => $bot->getUser()->getId(),
-		    'message' => $answer->getText(),
-		    'message_value' => $answer->isInteractiveMessageReply() ? $answer->getValue() : null,
-		    'isBot' => 0,
-	    ]);
+        return self::create([
+                                'user_id' => $userId,
+                                'message' => $value,
+                                'message_value' => $value,
+                                'isBot' => 0,
+                            ]);
     }
 
     public static function newLogDebug($bot, $message)
     {
         return self::create([
-            'user_id' => $bot->getUser()->getId(),
-            'message' => $message,
-            'message_value' => null,
-            'isBot' => 1,
-        ]);
+                                'user_id' => $bot->getUser()->getId(),
+                                'message' => $message,
+                                'message_value' => null,
+                                'isBot' => 1,
+                            ]);
     }
 }

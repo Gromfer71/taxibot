@@ -13,7 +13,6 @@ use BotMan\BotMan\Storages\Storage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class OrderApiService
 {
@@ -180,30 +179,6 @@ class OrderApiService
 
         return json_decode($response);
     }
-
-
-    // нигде не используется
-//	public function connectDispatcher($phone)
-//	{
-//	    $endpoint = "https://sk-taxi.ru/tmapi/call-dispatcher.php";
-//
-//        $postData =  json_encode(
-//            [
-//                'phone' => '8' . $phone,
-//            ]
-//        );
-//
-//       $params = [
-//				'method'  => 'POST',
-//				'header'  => 'Content-Type: application/json',
-//				'content' => $postData,
-//			];
-//
-//		  $response = $this->file_get_contents_with_logging( $endpoint,$params);
-//
-//        return json_decode($response);
-//
-//    }
 
     public function changeOrderPrice(BotMan $bot, $order)
     {

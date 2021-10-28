@@ -4,7 +4,6 @@ namespace App\Traits;
 
 use App\Conversations\MainMenu\MenuConversation;
 use App\Models\AddressHistory;
-use App\Models\Log;
 use App\Services\Address;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
@@ -46,7 +45,6 @@ trait TakingAdditionalAddressTrait
                     $this->_saveAnotherAddress($address->address, $address['lat'], $address['lon']);
                     $this->run();
                 } else {
-                    Log::newLogAnswer($this->bot, $answer);
                     $this->_saveAnotherAddress($answer);
                     $addressesList = collect(
                         Address::getAddresses(
@@ -99,7 +97,6 @@ trait TakingAdditionalAddressTrait
         return $this->ask(
             $question,
             function (Answer $answer) use ($addressesList) {
-                Log::newLogAnswer($this->bot, $answer);
                 if ($answer->getValue() == 'back') {
                     $this->_forgetLastAddress();
                     $this->run();
@@ -180,7 +177,6 @@ trait TakingAdditionalAddressTrait
                          ]);
 
         return $this->ask($question, function (Answer $answer) {
-            Log::newLogAnswer($this->bot, $answer);
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() == 'exit') {
                     $this->_forgetLastAddress();

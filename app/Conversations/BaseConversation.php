@@ -26,8 +26,7 @@ class BaseConversation extends Conversation
 {
     use UserManagerTrait;
 
-    public
-    const EMOJI = [
+    public const EMOJI = [
         '0' => '0&#8419;',
         '1' => '1&#8419;',
         '2' => '2&#8419;',
@@ -67,6 +66,7 @@ class BaseConversation extends Conversation
 
     public function handleAction($value, $replaceActions = [])
     {
+        Log::newLogAnswer($this->getUser()->id, $value);
         $callbackOrMethodName = $this->getActions($replaceActions)[$value] ?? '';
         if (is_callable($callbackOrMethodName)) {
             $callbackOrMethodName();
@@ -150,7 +150,6 @@ class BaseConversation extends Conversation
             if ($answer->getValue() == 'add to favorite routes') {
                 $this->bot->startConversation(new AddedRouteMenuConversation());
             } else {
-                Log::newLogAnswer($this->bot, $answer);
                 $this->bot->startConversation(new MenuConversation());
             }
         });
