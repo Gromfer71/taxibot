@@ -64,6 +64,7 @@ class AddedRouteMenuConversation extends BaseAddressConversation
                                       ),
                                   ]);
 
+            $this->_sayDebug($this->bot->userStorage()->get('order_already_done'));
             if ($this->bot->userStorage()->get('order_already_done')) {
                 $this->bot->startConversation(new MenuConversation());
             } else {

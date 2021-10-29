@@ -73,6 +73,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             },
             ButtonsStructure::ADD_TO_FAVORITE_ROUTES => function () {
                 $this->bot->userStorage()->save(['order_already_done' => true]);
+                $this->_sayDebug($this->bot->userStorage()->get('order_already_done'));
                 $this->bot->startConversation(new AddedRouteMenuConversation());
             },
             ButtonsStructure::ABORTED_ORDER => 'App\Conversations\MainMenu\MenuConversation',
