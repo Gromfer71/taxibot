@@ -161,6 +161,7 @@ class BaseConversation extends Conversation
 
         return $this->ask($question, function (Answer $answer) {
             if ($answer->getValue() == 'add to favorite routes') {
+                $this->bot->userStorage()->save(['order_already_done' => true]);
                 $this->bot->startConversation(new AddedRouteMenuConversation());
             } elseif ($answer->getValue() == ButtonsStructure::EXIT_TO_MENU) {
                 $this->bot->startConversation(new MenuConversation());
