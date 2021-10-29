@@ -3,6 +3,7 @@
 namespace App\Conversations\FavoriteRoutes;
 
 use App\Conversations\BaseAddressConversation;
+use App\Conversations\MainMenu\MenuConversation;
 use App\Models\FavoriteRoute;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
@@ -63,7 +64,11 @@ class AddedRouteMenuConversation extends BaseAddressConversation
                                       ),
                                   ]);
 
-            $this->bot->startConversation(new FavoriteRouteSettingsConversation());
+            if ($this->bot->userStorage()->get('is_route_from_favorite')) {
+                $this->bot->startConversation(new MenuConversation());
+            } else {
+                $this->bot->startConversation(new FavoriteRouteSettingsConversation());
+            }
         });
     }
 }
