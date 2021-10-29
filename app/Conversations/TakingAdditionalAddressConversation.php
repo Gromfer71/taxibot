@@ -24,7 +24,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
                 $this->bot->userStorage()->save(['additional_address_is_incorrect_change_text_flag' => 1]);
                 $this->bot->startConversation(new TaxiMenuConversation());
             },
-            ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\TaxiMenuConversation',
+            ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
 
         ];
 
