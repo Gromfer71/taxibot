@@ -2,6 +2,7 @@
 
 namespace App\Conversations;
 
+use App\Conversations\FavoriteRoutes\AddedRouteMenuConversation;
 use App\Conversations\MainMenu\MenuConversation;
 use App\Models\OrderHistory;
 use App\Models\User;
@@ -15,13 +16,11 @@ use App\Services\OrderApiService;
 use App\Services\Translator;
 use App\Services\WishesService;
 use App\Traits\BotManagerTrait;
-use App\Traits\TakingAdditionalAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
 class TaxiMenuConversation extends BaseAddressConversation
 {
     use BotManagerTrait;
-    use TakingAdditionalAddressTrait;
 
     public function getActions(array $replaceActions = []): array
     {
@@ -72,7 +71,10 @@ class TaxiMenuConversation extends BaseAddressConversation
 //                $this->say(Translator::trans('messages.thx for order'));
 //                $this->bot->startConversation(new StartConversation());
             },
-            ButtonsStructure::ADD_TO_FAVORITE_ROUTES => 'App\Conversations\FavoriteRoutes\AddedRouteMenuConversation',
+            ButtonsStructure::ADD_TO_FAVORITE_ROUTES => function () {
+                $this->bot->userStorage()->save(['order_already_done' => true]);
+                $this->bot->startConversation(new AddedRouteMenuConversation());
+            },
             ButtonsStructure::ABORTED_ORDER => 'App\Conversations\MainMenu\MenuConversation',
             ButtonsStructure::CANCEL_CHANGE_PRICE => function () use ($order) {
                 $order->changed_price = null;
