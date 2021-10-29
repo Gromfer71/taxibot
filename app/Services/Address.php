@@ -76,7 +76,7 @@ class Address
     public static function getCitiesWithOneDistrict($cities, $cityName, $district)
     {
         $cities = collect($cities);
-        $cities = $cities->filter(function ($city) use ($district, $cityName) {
+        return $cities->filter(function ($city) use ($district, $cityName) {
             if ($city->name == $cityName) {
                 return $city;
             }
@@ -85,13 +85,11 @@ class Address
                 return $city;
             }
         });
-
-        return $cities;
     }
 
     public static function sortAddresses($addresses, $storage)
     {
-        $addresses = collect($addresses)->sort(function ($a, $b) use ($storage) {
+        return collect($addresses)->sort(function ($a, $b) use ($storage) {
             $city = $storage->get('city');
             if ($a['city'] == $city && $b['city'] != $city) {
                 return -1;
@@ -114,19 +112,16 @@ class Address
 
             return 0;
         });
-        return $addresses;
     }
 
     public static function getCitiesWithOneCrewId($cities, $crewId)
     {
         $cities = collect($cities);
-        $cities = $cities->filter(function ($city) use ($crewId) {
+        return $cities->filter(function ($city) use ($crewId) {
             if ($city->crewGroupId == $crewId) {
                 return $city;
             }
         });
-
-        return $cities;
     }
 
     public static function haveEndAddressFromStorageAndAllAdressesIsReal(Storage $userStorage)
@@ -144,7 +139,7 @@ class Address
         }
     }
 
-    public static function haveFirstAddressFromStorageAndFirstAdressesIsReal(Storage $userStorage)
+    public static function haveFirstAddressFromStorageAndFirstAddressesIsReal(Storage $userStorage)
     {
         if (count((array)$userStorage->get('lat')) > 0) {
             $address = collect((array)$userStorage->get('lat'))->first();

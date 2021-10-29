@@ -181,7 +181,7 @@ trait TakingAddressTrait
 
     public function getAddressToMessage()
     {
-        if (Address::haveFirstAddressFromStorageAndFirstAdressesIsReal($this->bot->userStorage())) {
+        if (Address::haveFirstAddressFromStorageAndFirstAddressesIsReal($this->bot->userStorage())) {
             $message = Translator::trans('messages.user address') . collect(
                     $this->bot->userStorage()->get('address')
                 )->first() . ' ' . Translator::trans('messages.give me end address');
