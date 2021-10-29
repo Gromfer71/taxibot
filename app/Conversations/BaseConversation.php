@@ -51,10 +51,6 @@ class BaseConversation extends Conversation
 
     public function ask($question, $next, $additionalParameters = [])
     {
-        if (!$this->getUser()) {
-            $this->bot->startConversation(new RegisterConversation());
-            die();
-        }
         Log::newLogDebug($this->getUser()->id, $question->getText());
         $this->bot->reply($question, $additionalParameters);
         $this->bot->storeConversation($this, $next, $question, $additionalParameters);
