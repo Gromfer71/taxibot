@@ -64,7 +64,7 @@ class AddedRouteMenuConversation extends BaseAddressConversation
                                       ),
                                   ]);
 
-            if ($this->bot->userStorage()->get('is_route_from_favorite')) {
+            if ($this->bot->userStorage()->get('address')) {
                 $this->bot->startConversation(new MenuConversation());
             } else {
                 $this->bot->startConversation(new FavoriteRouteSettingsConversation());
