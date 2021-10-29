@@ -30,7 +30,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
         $actions = [
             ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
-            ButtonsStructure::ADD_ADDRESS => 'addAdditionalAddress',
+            ButtonsStructure::ADD_ADDRESS => 'App\Conversations\TakingAdditionalAddressConversation',
             ButtonsStructure::GO_FOR_BONUSES => '_go_for_bonuses',
             ButtonsStructure::GO_FOR_CASH => '_go_for_cash',
             ButtonsStructure::WRITE_COMMENT => 'writeComment',
