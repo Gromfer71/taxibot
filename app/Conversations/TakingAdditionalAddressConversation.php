@@ -48,7 +48,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction(
-                $answer->getValue(),
+                $answer,
                 [ButtonsStructure::BACK => 'App\Conversations\TaxiMenuConversation']
             );
 
@@ -101,7 +101,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
         }
 
         return $this->ask($question, function (Answer $answer) use ($addressesList) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
             $address = Address::findByAnswer($addressesList, $answer);
             if ($address) {
                 if ($address['kind'] == 'street') {
@@ -139,7 +139,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
             $this->_saveAnotherAddress($answer, 0, 0, true);
             $this->addAdditionalAddressAgain();
         });
@@ -153,7 +153,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
             [ButtonsStructure::EXIT_TO_MENU]
         );
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer->getValue());
+            $this->handleAction($answer);
             $this->_addToLastAnotherAddress($answer);
             $this->addAdditionalAddressAgain();
         });
