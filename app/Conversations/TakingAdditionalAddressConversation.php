@@ -2,6 +2,7 @@
 
 namespace App\Conversations;
 
+use App\Conversations\FavoriteRoutes\AddedRouteMenuConversation;
 use App\Models\AddressHistory;
 use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
@@ -22,7 +23,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
             },
             ButtonsStructure::GO_AS_INDICATED => function () {
                 $this->bot->userStorage()->save(['additional_address_is_incorrect_change_text_flag' => 1]);
-                $this->bot->startConversation(new TaxiMenuConversation());
+                $this->exit();
             },
             ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
 
@@ -34,6 +35,15 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
     public function run()
     {
         $this->addAdditionalAddress();
+    }
+
+    public function exit()
+    {
+        if ($this->bot->userStorage()->get('additional_address_for_favorite_route')) {
+            $this->bot->startConversation(new AddedRouteMenuConversation());
+        } else {
+            $this->bot->startConversation(new TaxiMenuConversation());
+        }
     }
 
     public function addAdditionalAddress()
@@ -118,7 +128,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
                 );
 
                 $this->_saveAnotherAddress($answer, $address['coords']['lat'], $address['coords']['lon'], true);
-                $this->bot->startConversation(new TaxiMenuConversation());
+                $this->exit();
             } else {
                 $this->_saveAnotherAddress($answer, 0, 0, true);
                 $this->addAdditionalAddressAgain();
@@ -167,6 +177,6 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
             $this->bot->userStorage()->save(['additional_address_is_incorrect_change_text_flag' => 1]);
         }
         $this->_saveAnotherAddress($address->address, $address['lat'], $address['lon']);
-        $this->bot->startConversation(new TaxiMenuConversation());
+        $this->exit();
     }
 }

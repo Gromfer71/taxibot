@@ -4,22 +4,24 @@ namespace App\Conversations\FavoriteRoutes;
 
 use App\Conversations\BaseAddressConversation;
 use App\Conversations\MainMenu\MenuConversation;
+use App\Conversations\TakingAdditionalAddressConversation;
 use App\Models\FavoriteRoute;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
-use App\Traits\TakingAdditionalAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
 class AddedRouteMenuConversation extends BaseAddressConversation
 {
-    use TakingAdditionalAddressTrait;
 
     public function getActions(array $replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::SAVE => 'setRouteName',
-            ButtonsStructure::ADD_ADDRESS => 'addAdditionalAddress'
+            ButtonsStructure::ADD_ADDRESS => function () {
+                $this->bot->userStorage()->save(['additional_address_for_favorite_route' => true]);
+                $this->bot->startConversation(new TakingAdditionalAddressConversation());
+            }
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
