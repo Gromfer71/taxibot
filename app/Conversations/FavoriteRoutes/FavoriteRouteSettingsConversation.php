@@ -6,6 +6,7 @@ use App\Conversations\BaseConversation;
 use App\Models\FavoriteRoute;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
+use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
@@ -51,10 +52,18 @@ class FavoriteRouteSettingsConversation extends BaseConversation
     public function addRoute()
     {
         $message = $this->addOrdersRoutesToMessage(Translator::trans('messages.add route menu'));
+        if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+            $additional = [
+                'location' => 'addresses',
+                'config' => ButtonsFormatterService::SPLIT_BY_THREE_EXCLUDE_TWO_LINES
+            ];
+        } else {
+            $additional = [];
+        }
         $question = ComplexQuestion::createWithSimpleButtons(
             $message,
             [ButtonsStructure::BACK, ButtonsStructure::CREATE_ROUTE],
-            ['location' => 'addresses']
+            $additional
         );
 
 
