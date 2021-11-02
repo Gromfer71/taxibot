@@ -64,7 +64,7 @@ class ButtonsFormatterService
 
     private static function splitByThreeExcludeTwoLines(Collection $buttons)
     {
-        $result = collect([[$buttons->shift(), $buttons->shift()]]);
+        $result = collect([[$buttons->shift()], [$buttons->shift()]]);
         return $result->concat(self::splitByThree($buttons));
     }
 
