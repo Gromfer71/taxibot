@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Conversations\FavoriteRoutes\TakingAddressForFavoriteRouteConversation;
 use App\Models\AddressHistory;
 use App\Services\Address;
 use App\Services\Options;
@@ -184,7 +185,9 @@ trait TakingAddressTrait
         if (Address::haveFirstAddressFromStorageAndFirstAddressesIsReal($this->bot->userStorage())) {
             $message = Translator::trans('messages.user address') . collect(
                     $this->bot->userStorage()->get('address')
-                )->first() . ' ' . Translator::trans('messages.give me end address');
+                )->first() . ' ' . Translator::trans(
+                    $this->conversationAfterTakeAddress == TakingAddressForFavoriteRouteConversation::ADDED_ROUTE_CONVERSATION ? 'messages.give me end address without say to driver button' : 'messages.give me end address'
+                );
         } else {
             $message = Translator::trans(
                 'messages.ask for second address if first address incorrect',
