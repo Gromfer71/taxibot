@@ -35,7 +35,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
     public function run()
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.favorite routes menu'),
+            Translator::trans('messages.add favorite routes menu'),
             [ButtonsStructure::BACK, ButtonsStructure::ADD_ROUTE, ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY]
         );
 
