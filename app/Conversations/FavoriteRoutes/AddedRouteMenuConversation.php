@@ -17,12 +17,14 @@ class AddedRouteMenuConversation extends BaseAddressConversation
     public function getActions(array $replaceActions = []): array
     {
         $actions = [
+            ButtonsStructure::BACK => 'App\Conversations\FavoriteRoutes\FavoriteRouteSettingsConversation',
             ButtonsStructure::SAVE => 'setRouteName',
             ButtonsStructure::ADD_ADDRESS => function () {
                 $this->bot->userStorage()->save(['additional_address_for_favorite_route' => true]);
                 $this->bot->startConversation(new TakingAdditionalAddressConversation());
             }
         ];
+
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
     }
@@ -39,7 +41,7 @@ class AddedRouteMenuConversation extends BaseAddressConversation
                     'address'
                 )
             ),
-            [ButtonsStructure::SAVE, ButtonsStructure::ADD_ADDRESS]
+            [ButtonsStructure::BACK, ButtonsStructure::SAVE, ButtonsStructure::ADD_ADDRESS]
         );
 
         return $this->ask($question, $this->getDefaultCallback());
