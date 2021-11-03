@@ -33,7 +33,7 @@
             @foreach($users as $user)
                 <tr>
                     <td>{{ $user->id ?: '-' }}</td>
-                    <td>{{ $user->created_at->timestamp }}</td>
+                    <td>{{ ($user->created_at->timestamp == '1635933838' ? '-' : $user->created_at) }}</td>
                     <td>{{ $user->telegram_id ?: '-' }}</td>
                     <td>{{ $user->vk_id ?: '-' }}</td>
                     <td>{{ $user->username }}</td>
