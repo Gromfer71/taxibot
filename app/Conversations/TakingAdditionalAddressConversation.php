@@ -39,11 +39,16 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
 
     public function exit()
     {
-        if ($this->bot->userStorage()->get('additional_address_for_favorite_route')) {
+        if ($this->isAdditionalAddressForFavoriteRoute()) {
             $this->bot->startConversation(new AddedRouteMenuConversation());
         } else {
             $this->bot->startConversation(new TaxiMenuConversation());
         }
+    }
+
+    public function isAdditionalAddressForFavoriteRoute()
+    {
+        return (bool)$this->bot->userStorage()->get('additional_address_for_favorite_route');
     }
 
     public function addAdditionalAddress()
@@ -59,7 +64,10 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction(
                 $answer,
-                [ButtonsStructure::BACK => 'App\Conversations\TaxiMenuConversation']
+                [
+                    ButtonsStructure::BACK => $this->isAdditionalAddressForFavoriteRoute(
+                    ) ? 'exit' : 'App\Conversations\TaxiMenuConversation'
+                ]
             );
 
             $address = $this->_getAddressFromHistoryByAnswer($answer);
