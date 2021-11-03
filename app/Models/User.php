@@ -57,7 +57,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class User extends Model
 {
-    public $timestamps = ['created_at'];
+    public const UPDATED_AT = null;
     protected $table = 'users';
     protected $guarded = [];
 
