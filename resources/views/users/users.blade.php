@@ -20,6 +20,7 @@
             <thead>
             <tr>
                 <th>ID</th>
+                <th>Дата регистрации</th>
                 <th>Телеграм ID</th>
                 <th>ВК ID</th>
                 <th>Логин</th>
@@ -32,6 +33,7 @@
             @foreach($users as $user)
                 <tr>
                     <td>{{ $user->id ?: '-' }}</td>
+                    <td>{{ $user->created_at ?: '-' }}</td>
                     <td>{{ $user->telegram_id ?: '-' }}</td>
                     <td>{{ $user->vk_id ?: '-' }}</td>
                     <td>{{ $user->username }}</td>
