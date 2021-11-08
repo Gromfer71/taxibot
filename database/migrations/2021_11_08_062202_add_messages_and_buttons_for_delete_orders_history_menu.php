@@ -57,7 +57,7 @@ class AddMessagesAndButtonsForDeleteOrdersHistoryMenu extends Migration
                 'locale' => 'ru',
                 'group' => 'buttons',
                 'key' => 'clear orders history menu',
-                'value' => 'Проблемы с удалением поездки!',
+                'value' => 'Сносим историю поездок',
             ]
         );
     }

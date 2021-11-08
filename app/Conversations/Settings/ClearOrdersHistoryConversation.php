@@ -59,7 +59,7 @@ class ClearOrdersHistoryConversation extends BaseConversation
         $question = ComplexQuestion::addOrderHistoryButtons($question, $this->getUser()->orders);
         $orders = $this->getUser()->orders;
         foreach ($orders as $order) {
-            $order->address = implode(' – ', collect(json_decode($order->address)->address));
+            $order->address = implode(' – ', collect(json_decode($order->address)->address)->toArray());
         }
         $this->bot->userStorage()->save($this->getUser()->orders->pluck('id', 'address'));
 
