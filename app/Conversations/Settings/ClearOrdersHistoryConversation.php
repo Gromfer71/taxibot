@@ -50,10 +50,7 @@ class ClearOrdersHistoryConversation extends BaseConversation
         foreach ($orders as $order) {
             $order->address = implode(' – ', collect(json_decode($order->address)->address)->toArray());
         }
-
-
         $this->bot->userStorage()->save(['routes' => $orders->pluck('id', 'address')->toArray()]);
-        $this->_sayDebug(json_encode($this->bot->userStorage()->get('routes'), JSON_UNESCAPED_UNICODE));
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer);
@@ -72,13 +69,6 @@ class ClearOrdersHistoryConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer, [ButtonsStructure::BACK => 'run']);
             if ($answer->getValue() == ButtonsStructure::DELETE) {
-                $this->_sayDebug(
-                    json_encode(
-                        array_get($this->bot->userStorage()->get('routes'), $this->getFromStorage('route'))
-                    )
-                );
-                $this->_sayDebug($answer->getText());
-                $this->_sayDebug(json_encode($this->bot->userStorage()->get('routes'), JSON_UNESCAPED_UNICODE));
                 if ($order = OrderHistory::where(
                     [
                         'user_id' => $this->getUser()->id,
