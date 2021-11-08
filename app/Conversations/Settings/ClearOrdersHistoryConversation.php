@@ -9,6 +9,7 @@ use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
+use Illuminate\Support\Facades\Log;
 
 class ClearOrdersHistoryConversation extends BaseConversation
 {
@@ -50,7 +51,8 @@ class ClearOrdersHistoryConversation extends BaseConversation
         foreach ($orders as $order) {
             $order->address = implode(' – ', collect(json_decode($order->address)->address)->toArray());
         }
-        $this->_sayDebug('1 - ' . json_encode($this->bot->userStorage()->all()));
+        Log::info(json_encode($this->bot->userStorage()->all()));
+
         $this->bot->userStorage()->save($orders->pluck('id', 'address')->toArray());
 
 
