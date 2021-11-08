@@ -31,6 +31,7 @@ class ButtonsStructure extends Button
     public const ADDRESS_WILL_SAY_TO_DRIVER = 'address will say to driver';
     public const NO_ENTRANCE = 'no entrance';
     public const CANCEL = 'cancel';
+    public const CLEAR_ORDERS_HISTORY_MENU = 'clear orders history menu';
     //routes
     public const ADD_ROUTE = 'add route';
     public const CREATE_ROUTE = 'create route';
@@ -104,6 +105,7 @@ class ButtonsStructure extends Button
             ButtonsStructure::CHANGE_CITY,
             ButtonsStructure::LANG_MENU,
             ButtonsStructure::ADDRESS_HISTORY_MENU,
+            ButtonsStructure::CLEAR_ORDERS_HISTORY_MENU,
             ButtonsStructure::FAVORITE_ADDRESSES_MENU,
             ButtonsStructure::FAVORITE_ROUTE_SETTINGS,
         ];

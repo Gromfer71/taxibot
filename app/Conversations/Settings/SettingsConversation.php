@@ -20,6 +20,7 @@ class SettingsConversation extends BaseConversation
             ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
             ButtonsStructure::FAVORITE_ROUTE_SETTINGS => 'App\Conversations\FavoriteRoutes\FavoriteRouteSettingsConversation',
             ButtonsStructure::ADDRESS_HISTORY_MENU => 'App\Conversations\MainMenu\AddressesHistoryConversation',
+            ButtonsStructure::CLEAR_ORDERS_HISTORY_MENU => 'App\Conversations\Settings\ClearOrdersHistoryConversation',
             ButtonsStructure::FAVORITE_ADDRESSES_MENU => 'App\Conversations\FavoriteAddressesConversation',
         ];
 

@@ -204,6 +204,11 @@ class User extends Model
         return $this->addresses->where('address', $address)->first();
     }
 
+    public function getUserOrderByName($address): ?AddressHistory
+    {
+        return $this->addresses->where('address', $address)->first();
+    }
+
     /**
      * Регистрирует server_id. Поле используется для бонусов
      *
@@ -250,8 +255,6 @@ class User extends Model
             return $item;
         });
 
-        \Illuminate\Support\Facades\Log::alert($address);
-        \Illuminate\Support\Facades\Log::alert(json_encode($addressInfo, JSON_UNESCAPED_UNICODE));
         if ($addressInfo->where('address', $address)->isEmpty()) {
             $addressInfo = $addressInfo->filter(function ($item) use ($address) {
                 return false !== stristr($item['address'], $address);
@@ -269,6 +272,11 @@ class User extends Model
         }
 
         return $addressInfo;
+    }
+
+    public function getOrderByImplodedRoute($route)
+    {
+        $route = Address::removeEllipsisFromAddressIfExists($route);
     }
 
     public function favoriteRoutes()

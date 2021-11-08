@@ -215,6 +215,20 @@ class BaseConversation extends Conversation
 
         return $questionText;
     }
+//
+//    public function addOrdersToMessage($questionText)
+//    {
+//        if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+//            $questionText .= "\n";
+//
+//            foreach ($this->getUser()->orders as $orderKey => $order) {
+//                $address = implode(' – ', collect(json_decode($order->address)->address));
+//                $questionText .= $this->numberToEmodji($orderKey + 1) . ' ' . $address . "\n";
+//            }
+//        }
+//
+//        return $questionText;
+//    }
 
     public function addAddressesFromApi($questionText, $addresses)
     {
