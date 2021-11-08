@@ -31,6 +31,7 @@ class ClearOrdersHistoryConversation extends BaseConversation
      */
     public function run()
     {
+        $this->_sayDebug('test');
         if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
             $additional = [
                 'location' => 'addresses',
