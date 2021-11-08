@@ -72,11 +72,12 @@ class ClearOrdersHistoryConversation extends BaseConversation
             $this->handleAction($answer, [ButtonsStructure::BACK => 'run']);
             if ($answer->getValue() == ButtonsStructure::DELETE) {
                 $this->_sayDebug(
-                    json_decode(
-                        array_get($this->bot->userStorage()->get('routes'), $answer->getText()),
-                        true
+                    json_encode(
+                        array_get($this->bot->userStorage()->get('routes'), $answer->getText())
                     )
                 );
+                $this->_sayDebug($answer->getText());
+                $this->_sayDebug(json_encode($this->bot->userStorage()->get('routes'), JSON_UNESCAPED_UNICODE));
                 if ($order = OrderHistory::where(
                     [
                         'user_id' => $this->getUser()->id,
