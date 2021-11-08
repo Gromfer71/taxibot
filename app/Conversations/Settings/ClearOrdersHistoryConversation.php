@@ -61,7 +61,7 @@ class ClearOrdersHistoryConversation extends BaseConversation
         foreach ($orders as $order) {
             $order->address = implode(' – ', collect(json_decode($order->address)->address)->toArray());
         }
-        $this->bot->userStorage()->save($this->getUser()->orders->pluck('id', 'address'));
+        $this->bot->userStorage()->save($this->getUser()->orders->pluck('id', 'address')->toArray());
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer);
