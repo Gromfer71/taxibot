@@ -57,6 +57,7 @@ class ClearOrdersHistoryConversation extends BaseConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer);
+            $this->saveToStorage(['route' => $answer->getText()]);
             $this->orderMenu();
         });
     }
@@ -73,7 +74,7 @@ class ClearOrdersHistoryConversation extends BaseConversation
             if ($answer->getValue() == ButtonsStructure::DELETE) {
                 $this->_sayDebug(
                     json_encode(
-                        array_get($this->bot->userStorage()->get('routes'), $answer->getText())
+                        array_get($this->bot->userStorage()->get('routes'), $this->getFromStorage('route'))
                     )
                 );
                 $this->_sayDebug($answer->getText());
@@ -81,7 +82,7 @@ class ClearOrdersHistoryConversation extends BaseConversation
                 if ($order = OrderHistory::where(
                     [
                         'user_id' => $this->getUser()->id,
-                        'id' => array_get($this->bot->userStorage()->get('routes'), $answer->getText())
+                        'id' => array_get($this->bot->userStorage()->get('routes'), $this->getFromStorage('route'))
                     ]
                 )->first()) {
                     $order->delete();
