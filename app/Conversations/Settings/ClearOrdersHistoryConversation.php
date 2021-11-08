@@ -50,7 +50,7 @@ class ClearOrdersHistoryConversation extends BaseConversation
         foreach ($orders as $order) {
             $order->address = implode(' – ', collect(json_decode($order->address)->address)->toArray());
         }
-        $this->bot->userStorage()->save($this->getUser()->orders->pluck('id', 'address')->toArray());
+        $this->bot->userStorage()->save($orders->pluck('id', 'address')->toArray());
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer);
@@ -73,10 +73,10 @@ class ClearOrdersHistoryConversation extends BaseConversation
                 )->first()) {
                     $order->delete();
                     $this->say(Translator::trans('messages.order has been deleted'));
-                    $this->run();
                 } else {
                     $this->say(Translator::trans('messages.problems with delete order'));
                 }
+                $this->run();
             } else {
                 $this->orderMenu();
             }
