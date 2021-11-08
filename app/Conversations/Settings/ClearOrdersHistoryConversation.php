@@ -31,7 +31,6 @@ class ClearOrdersHistoryConversation extends BaseConversation
      */
     public function run()
     {
-        $this->_sayDebug('test');
         if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
             $additional = [
                 'location' => 'addresses',
@@ -51,6 +50,7 @@ class ClearOrdersHistoryConversation extends BaseConversation
         foreach ($orders as $order) {
             $order->address = implode(' – ', collect(json_decode($order->address)->address)->toArray());
         }
+        $this->_sayDebug('test');
         $this->bot->userStorage()->save($orders->pluck('id', 'address')->toArray());
         $this->_sayDebug('1 - ' . json_encode($this->bot->userStorage()->all()));
 
