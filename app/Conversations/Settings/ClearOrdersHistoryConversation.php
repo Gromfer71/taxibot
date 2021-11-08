@@ -21,17 +21,6 @@ class ClearOrdersHistoryConversation extends BaseConversation
                 $this->getUser()->orders()->delete();
                 $this->bot->startConversation(new SettingsConversation());
             },
-            ButtonsStructure::DELETE => function (Answer $answer) {
-                if ($order = OrderHistory::where(
-                    ['user_id' => $this->getUser()->id, 'id' => $this->bot->userStorage()->get($answer->getText())]
-                )->first()) {
-                    $order->delete();
-                    $this->say(Translator::trans('messages.order has been deleted'));
-                    $this->run();
-                } else {
-                    $this->say(Translator::trans('messages.problems with delete order'));
-                }
-            }
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
@@ -78,7 +67,19 @@ class ClearOrdersHistoryConversation extends BaseConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer, [ButtonsStructure::BACK => 'run']);
-            $this->orderMenu();
+            if ($answer->getValue() == ButtonsStructure::DELETE) {
+                if ($order = OrderHistory::where(
+                    ['user_id' => $this->getUser()->id, 'id' => $this->bot->userStorage()->get($answer->getText())]
+                )->first()) {
+                    $order->delete();
+                    $this->say(Translator::trans('messages.order has been deleted'));
+                    $this->run();
+                } else {
+                    $this->say(Translator::trans('messages.problems with delete order'));
+                }
+            } else {
+                $this->orderMenu();
+            }
         });
     }
 }
