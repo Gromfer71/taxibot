@@ -9,7 +9,6 @@ use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
-use Illuminate\Support\Facades\Log;
 
 class ClearOrdersHistoryConversation extends BaseConversation
 {
@@ -51,9 +50,9 @@ class ClearOrdersHistoryConversation extends BaseConversation
         foreach ($orders as $order) {
             $order->address = implode(' – ', collect(json_decode($order->address)->address)->toArray());
         }
-        Log::info(json_encode($this->bot->userStorage()->all()));
+        $this->_sayDebug(json_encode($this->bot->userStorage()->get('routes'), JSON_UNESCAPED_UNICODE));
 
-        $this->bot->userStorage()->save($orders->pluck('id', 'address')->toArray());
+        $this->bot->userStorage()->save(['routes' => $orders->pluck('id', 'address')->toArray()]);
 
 
         return $this->ask($question, function (Answer $answer) {
@@ -78,7 +77,10 @@ class ClearOrdersHistoryConversation extends BaseConversation
                     )
                 );
                 if ($order = OrderHistory::where(
-                    ['user_id' => $this->getUser()->id, 'id' => $this->bot->userStorage()->get($answer->getText())]
+                    [
+                        'user_id' => $this->getUser()->id,
+                        'id' => array_get($this->bot->userStorage()->get('routes'), $answer->getText())
+                    ]
                 )->first()) {
                     $order->delete();
                     $this->say(Translator::trans('messages.order has been deleted'));
