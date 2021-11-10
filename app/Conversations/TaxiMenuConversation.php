@@ -221,7 +221,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     $this->confirmOrder(true);
                 }
             ]);
-            if (OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName())) {
+            if (!OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName())) {
                 $this->end();
             } else {
                 $this->confirmOrder(true);
