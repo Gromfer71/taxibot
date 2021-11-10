@@ -18,13 +18,13 @@ class FavoriteRouteSettingsConversation extends BaseConversation
             ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
             ButtonsStructure::CREATE_ROUTE => 'App\Conversations\FavoriteRoutes\TakingAddressForFavoriteRouteConversation',
             ButtonsStructure::ADD_ROUTE => 'addRoute',
-            ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY => function () {
-                $this->getUser()->favoriteRoutes->each(function ($item) {
-                    $item->delete();
-                });
-                $this->say(Translator::trans('messages.clean addresses history'));
-                $this->run();
-            }
+//            ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY => function () {
+//                $this->getUser()->favoriteRoutes->each(function ($item) {
+//                    $item->delete();
+//                });
+//                $this->say(Translator::trans('messages.clean addresses history'));
+//                $this->run();
+//            }
         ];
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
     }
@@ -36,7 +36,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans('messages.add favorite routes menu'),
-            [ButtonsStructure::BACK, ButtonsStructure::ADD_ROUTE, ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY]
+            [ButtonsStructure::BACK, ButtonsStructure::ADD_ROUTE]
         );
 
         ComplexQuestion::addFavoriteRoutesButtons($question, $this->getUser()->favoriteRoutes);

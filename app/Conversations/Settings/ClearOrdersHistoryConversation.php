@@ -3,6 +3,7 @@
 namespace App\Conversations\Settings;
 
 use App\Conversations\BaseConversation;
+use App\Conversations\MainMenu\MenuConversation;
 use App\Models\OrderHistory;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
@@ -19,7 +20,7 @@ class ClearOrdersHistoryConversation extends BaseConversation
             ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY => function () {
                 $this->say(Translator::trans('messages.delete all orders'));
                 $this->getUser()->orders()->delete();
-                $this->bot->startConversation(new SettingsConversation());
+                $this->bot->startConversation(new MenuConversation());
             },
         ];
 
