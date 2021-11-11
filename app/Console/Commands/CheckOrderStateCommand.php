@@ -168,7 +168,12 @@ class CheckOrderStateCommand extends Command
             } elseif ($newStateId == OrderHistory::CLIENT_INSIDE) {
                 $question = ComplexQuestion::createWithSimpleButtons(
                     '👍',
-                    [ButtonsStructure::FINISH_ORDER, ButtonsStructure::NEED_DISPATCHER, ButtonsStructure::NEED_DRIVER],
+                    [
+                        ButtonsStructure::FINISH_ORDER,
+                        ButtonsStructure::NEED_DISPATCHER,
+                        ButtonsStructure::NEED_DRIVER,
+                        ButtonsStructure::GET_DRIVER_LOCATION
+                    ],
                     ['config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT]
                 );
                 $botMan->say($question, $recipientId, $driverName);
