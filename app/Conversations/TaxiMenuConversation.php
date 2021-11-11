@@ -421,7 +421,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             ],
             ['config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT]
         );
-        if ($second) {
+        if ($second && Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage())) {
             $question = ComplexQuestion::setButtons($question, [ButtonsStructure::GO_FOR_BONUSES]);
         }
 
