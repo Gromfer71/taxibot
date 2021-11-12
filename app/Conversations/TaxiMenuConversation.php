@@ -257,10 +257,14 @@ class TaxiMenuConversation extends BaseAddressConversation
                                                                  ButtonsStructure::FINISH_ORDER,
                                                                  ButtonsStructure::NEED_DISPATCHER,
                                                                  ButtonsStructure::NEED_DRIVER,
-                                                                 ButtonsStructure::NEED_MAP
                                                              ],
                                                              ['config' => ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT]
         );
+        if ($this->getActualOrderStateId() == OrderHistory::CLIENT_INSIDE) {
+            $question = ComplexQuestion::setButtons($question, [ButtonsStructure::GET_DRIVER_LOCATION]);
+        } else {
+            $question = ComplexQuestion::setButtons($question, [ButtonsStructure::NEED_MAP]);
+        }
         $order = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
         return $this->ask($question, function (Answer $answer) use ($order) {
             $this->handleAction(

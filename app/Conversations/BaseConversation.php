@@ -344,6 +344,14 @@ class BaseConversation extends Conversation
         return $question ?? null;
     }
 
+    public function getActualOrderStateId()
+    {
+        $actualOrder = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
+        $orderStatus = $actualOrder->getCurrentOrderState();
+
+        return $orderStatus->state_id ?? null;
+    }
+
     public function run()
     {
         // TODO: Implement run() method.
