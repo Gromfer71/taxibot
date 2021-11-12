@@ -204,8 +204,8 @@ class TaxiMenuConversation extends BaseAddressConversation
 
             $actualOrder = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
             $orderStatus = $actualOrder->checkOrder();
+            $this->_sayDebug($orderStatus);
             if ($orderStatus == OrderHistory::DRIVER_ASSIGNED) {
-                $this->_sayDebug($orderStatus);
                 $api = new OrderApiService();
                 $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
                 $auto = $actualOrder->getAutoInfo();
