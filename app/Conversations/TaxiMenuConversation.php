@@ -200,7 +200,22 @@ class TaxiMenuConversation extends BaseAddressConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer, [ButtonsStructure::CHANGE_PRICE => 'changePriceInOrderMenu']);
-            $this->currentOrderMenu(null, true);
+
+            $actualOrder = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
+            $orderStatus = $actualOrder->checkOrder();
+            if ($orderStatus == OrderHistory::DRIVER_ASSIGNED) {
+                $api = new OrderApiService();
+                $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
+                $auto = $actualOrder->getAutoInfo();
+                $question = ComplexQuestion::createWithSimpleButtons(
+                    Translator::trans('messages.auto info with time', ['time' => $time, 'auto' => $auto]),
+                    [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::ORDER_CONFIRM],
+                    ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
+                );
+                $this->say($question);
+            } else {
+                $this->currentOrderMenu(null, true);
+            }
         });
     }
 
