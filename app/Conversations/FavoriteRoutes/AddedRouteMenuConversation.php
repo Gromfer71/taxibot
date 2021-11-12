@@ -67,7 +67,10 @@ class AddedRouteMenuConversation extends BaseAddressConversation
                                           JSON_UNESCAPED_UNICODE
                                       ),
                                   ]);
-
+            if ($answer->getValue() == 'cancel') {
+                $this->bot->startConversation(new MenuConversation());
+                die();
+            }
             if ($this->bot->userStorage()->get('order_already_done')) {
                 $this->bot->startConversation(new MenuConversation());
             } else {
