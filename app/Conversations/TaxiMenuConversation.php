@@ -203,8 +203,8 @@ class TaxiMenuConversation extends BaseAddressConversation
             $this->handleAction($answer, [ButtonsStructure::CHANGE_PRICE => 'changePriceInOrderMenu']);
 
             $actualOrder = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
-            $orderStatus = $actualOrder->checkOrder();
-            $this->_sayDebug($orderStatus);
+            $orderStatus = $actualOrder->getCurrentOrderState();
+            $this->_sayDebug(json_encode($orderStatus));
             if ($orderStatus == OrderHistory::DRIVER_ASSIGNED) {
                 $api = new OrderApiService();
                 $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;

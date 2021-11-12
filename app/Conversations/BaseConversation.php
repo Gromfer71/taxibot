@@ -5,11 +5,14 @@ namespace App\Conversations;
 use App\Conversations\FavoriteRoutes\AddedRouteMenuConversation;
 use App\Conversations\MainMenu\MenuConversation;
 use App\Models\Log;
+use App\Models\OrderHistory;
 use App\Models\User;
 use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
+use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
+use App\Services\OrderApiService;
 use App\Services\Translator;
 use App\Traits\UserManagerTrait;
 use BotMan\BotMan\Messages\Conversations\Conversation;
@@ -311,6 +314,25 @@ class BaseConversation extends Conversation
         }
 
         return $question;
+    }
+
+    public function getQuestionInOrderFromCron()
+    {
+        $actualOrder = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
+        $orderStatus = $actualOrder->getCurrentOrderState();
+
+
+        $this->_sayDebug(json_encode($orderStatus));
+        if ($orderStatus == OrderHistory::DRIVER_ASSIGNED) {
+            $api = new OrderApiService();
+            $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
+            $auto = $actualOrder->getAutoInfo();
+            $question = ComplexQuestion::createWithSimpleButtons(
+                Translator::trans('messages.auto info with time', ['time' => $time, 'auto' => $auto]),
+                [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::ORDER_CONFIRM],
+                ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
+            );
+        }
     }
 
     public function run()
