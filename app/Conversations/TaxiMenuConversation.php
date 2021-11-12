@@ -205,18 +205,12 @@ class TaxiMenuConversation extends BaseAddressConversation
             $actualOrder = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
             $orderStatus = $actualOrder->getCurrentOrderState();
             $this->_sayDebug($orderStatus->state_id);
-            if ($orderStatus->state_id == OrderHistory::DRIVER_ASSIGNED) {
-                $api = new OrderApiService();
-                $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
-                $auto = $actualOrder->getAutoInfo();
-                $question = ComplexQuestion::createWithSimpleButtons(
-                    Translator::trans('messages.auto info with time', ['time' => $time, 'auto' => $auto]),
-                    [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::ORDER_CONFIRM],
-                    ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
-                );
+            $question = $this->getQuestionInOrderFromCron();
+            if ($question) {
                 $this->say($question);
-            } else {
                 $this->currentOrderMenu(null, true);
+            } else {
+                $this->currentOrderMenu();
             }
         });
     }
@@ -250,7 +244,16 @@ class TaxiMenuConversation extends BaseAddressConversation
             if (!OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName())) {
                 $this->end();
             } else {
-                $this->confirmOrder(true);
+                $actualOrder = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
+                $orderStatus = $actualOrder->getCurrentOrderState();
+                $this->_sayDebug($orderStatus->state_id);
+                $question = $this->getQuestionInOrderFromCron();
+                if ($question) {
+                    $this->say($question);
+                    $this->confirmOrder(true);
+                } else {
+                    $this->confirmOrder();
+                }
             }
         });
     }

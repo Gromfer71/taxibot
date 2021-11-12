@@ -322,8 +322,8 @@ class BaseConversation extends Conversation
         $orderStatus = $actualOrder->getCurrentOrderState();
 
 
-        $this->_sayDebug(json_encode($orderStatus));
-        if ($orderStatus == OrderHistory::DRIVER_ASSIGNED) {
+        $this->_sayDebug($orderStatus->state_id);
+        if ($orderStatus->state_id == OrderHistory::DRIVER_ASSIGNED) {
             $api = new OrderApiService();
             $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
             $auto = $actualOrder->getAutoInfo();
@@ -332,7 +332,18 @@ class BaseConversation extends Conversation
                 [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::ORDER_CONFIRM],
                 ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
             );
+        } elseif ($orderStatus->state_id == OrderHistory::CAR_AT_PLACE) {
+            $question = ComplexQuestion::createWithSimpleButtons(
+                Translator::trans(
+                    'messages.auto waits for client',
+                    ['auto' => $actualOrder->getAutoInfo()]
+                ),
+                [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::CLIENT_GOES_OUT],
+                ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
+            );
         }
+
+        return $question ?? null;
     }
 
     public function run()
