@@ -177,6 +177,7 @@ class TaxiMenuConversation extends BaseAddressConversation
 
     public function currentOrderMenu($withMessageAboutOrderCreated = null, $exactlyWithoutMessage = false)
     {
+        $this->_sayDebug('currentOrderMenu');
         if ($withMessageAboutOrderCreated) {
             $message = MessageGeneratorService::getFullOrderInfoFromStorage2($this->bot->userStorage());
         } else {
@@ -204,6 +205,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             $actualOrder = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
             $orderStatus = $actualOrder->checkOrder();
             if ($orderStatus == OrderHistory::DRIVER_ASSIGNED) {
+                $this->_sayDebug('status assigned');
                 $api = new OrderApiService();
                 $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
                 $auto = $actualOrder->getAutoInfo();
