@@ -177,7 +177,6 @@ class TaxiMenuConversation extends BaseAddressConversation
 
     public function currentOrderMenu($withMessageAboutOrderCreated = null, $exactlyWithoutMessage = false)
     {
-        $this->_sayDebug('currentOrderMenu');
         if ($withMessageAboutOrderCreated) {
             $message = MessageGeneratorService::getFullOrderInfoFromStorage2($this->bot->userStorage());
         } else {
@@ -283,7 +282,11 @@ class TaxiMenuConversation extends BaseAddressConversation
                     }
                 ]
             );
-            $this->inWay();
+            if (!OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName())) {
+                $this->end();
+            } else {
+                $this->inWay();
+            }
         });
     }
 

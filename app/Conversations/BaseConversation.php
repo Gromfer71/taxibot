@@ -321,8 +321,6 @@ class BaseConversation extends Conversation
         $actualOrder = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
         $orderStatus = $actualOrder->getCurrentOrderState();
 
-
-        $this->_sayDebug($orderStatus->state_id);
         if ($orderStatus->state_id == OrderHistory::DRIVER_ASSIGNED) {
             $api = new OrderApiService();
             $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
