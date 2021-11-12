@@ -201,10 +201,6 @@ class TaxiMenuConversation extends BaseAddressConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer, [ButtonsStructure::CHANGE_PRICE => 'changePriceInOrderMenu']);
-
-            $actualOrder = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
-            $orderStatus = $actualOrder->getCurrentOrderState();
-            $this->_sayDebug($orderStatus->state_id);
             $question = $this->getQuestionInOrderFromCron();
             if ($question) {
                 $this->say($question);
@@ -244,9 +240,6 @@ class TaxiMenuConversation extends BaseAddressConversation
             if (!OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName())) {
                 $this->end();
             } else {
-                $actualOrder = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
-                $orderStatus = $actualOrder->getCurrentOrderState();
-                $this->_sayDebug($orderStatus->state_id);
                 $question = $this->getQuestionInOrderFromCron();
                 if ($question) {
                     $this->say($question);
