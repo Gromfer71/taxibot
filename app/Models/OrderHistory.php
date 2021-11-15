@@ -157,7 +157,7 @@ class OrderHistory extends Model
             return false;
         }
         if ($newState->code == 12) {
-            return true;
+            return 12;
         }
         //Другой запрос для обработки механизма удаления заказов, который не меняет state_id
         if ($newState->data->finish_time && $newState->data->state_id != self::FINISHED && $newState->data->state_id != self::FINISHED_BY_DRIVER && $newState->data->state_id != self::ABORTED) {
