@@ -153,8 +153,11 @@ class OrderHistory extends Model
     {
         $api = new OrderApiService();
         $newState = $api->getOrderState($this);
-        if ($newState->code != 0) {
+        if ($newState->code != 0 && $newState->code != 12) {
             return false;
+        }
+        if ($newState->code == 12) {
+            return true;
         }
         //Другой запрос для обработки механизма удаления заказов, который не меняет state_id
         if ($newState->data->finish_time && $newState->data->state_id != self::FINISHED && $newState->data->state_id != self::FINISHED_BY_DRIVER && $newState->data->state_id != self::ABORTED) {
@@ -272,9 +275,15 @@ class OrderHistory extends Model
     {
         $oldState = $this->getCurrentOrderState()->state_id ?? self::NEW_ORDER;
         $newState = $this->updateOrderState();
+
         if (!$newState) {
             return self::ORDER_NOT_FOUND;
         }
+
+        if (!isset($newState->state_id)) {
+            return null;
+        }
+
         if ($newState->state_id != $oldState) {
             $this->state = json_encode($newState);
             if (empty($this->state_id_chain)) {
