@@ -280,7 +280,7 @@ class OrderHistory extends Model
             return self::ORDER_NOT_FOUND;
         }
 
-        if ((int)$newState == 12) {
+        if ($newState == 12) {
             return null;
         }
 
