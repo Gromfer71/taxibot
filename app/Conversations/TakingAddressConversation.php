@@ -42,7 +42,7 @@ class TakingAddressConversation extends BaseAddressConversation
             ButtonsStructure::EXIT => 'App\Conversations\MainMenu\MenuConversation',
             ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
             ButtonsStructure::GO_AS_INDICATED => function () {
-                if (self::NEED_TO_SAVE_ADDRESS_HISTORY) {
+                if ($this->needToSaveAddressToHistory()) {
                     AddressHistory::newAddress(
                         $this->getUser()->id,
                         collect($this->bot->userStorage()->get('address'))->last(),
@@ -59,7 +59,7 @@ class TakingAddressConversation extends BaseAddressConversation
                 $this->bot->startConversation(new $this->conversationAfterTakeAddress());
             },
             ButtonsStructure::NO_ENTRANCE => function () {
-                if (self::NEED_TO_SAVE_ADDRESS_HISTORY) {
+                if ($this->needToSaveAddressToHistory()) {
                     $this->createAddressHistory($this->getFromStorage('address'));
                 }
 

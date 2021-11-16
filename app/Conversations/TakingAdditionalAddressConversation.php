@@ -128,7 +128,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
                     return;
                 }
 
-                if (self::NEED_TO_SAVE_ADDRESS_HISTORY) {
+                if ($this->needToSaveAddressToHistory()) {
                     AddressHistory::newAddress(
                         $this->getUser()->id,
                         $answer->getText(),

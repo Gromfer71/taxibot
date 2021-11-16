@@ -22,8 +22,6 @@ abstract class BaseAddressConversation extends BaseConversation
 {
     use TakingAddressTrait;
 
-    public const NEED_TO_SAVE_ADDRESS_HISTORY = true;
-
 
     /**
      * Ввод начального адреса пользователя
@@ -151,7 +149,7 @@ abstract class BaseAddressConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer);
             $this->addEntranceToAddress($answer->getText());
-            if (self::NEED_TO_SAVE_ADDRESS_HISTORY) {
+            if ($this->needToSaveAddressToHistory()) {
                 $this->createAddressHistory($this->getFromStorage('address'));
             }
 
@@ -327,6 +325,11 @@ abstract class BaseAddressConversation extends BaseConversation
         ];
         $this->_sayDebug('Сохраняем второй адрес - ' . json_encode($data, JSON_UNESCAPED_UNICODE));
         $this->bot->userStorage()->save($data);
+    }
+
+    public function needToSaveAddressToHistory()
+    {
+        return true;
     }
 
 

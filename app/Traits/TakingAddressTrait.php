@@ -124,7 +124,7 @@ trait TakingAddressTrait
                 $this->saveSecondAddressIfStreet($address);
                 $this->forgetWriteHouse();
             } else {
-                if (self::NEED_TO_SAVE_ADDRESS_HISTORY) {
+                if ($this->needToSaveAddressToHistory()) {
                     AddressHistory::newAddress(
                         $this->getUser()->id,
                         Address::toString($address),
@@ -228,7 +228,7 @@ trait TakingAddressTrait
      */
     public function createAddressHistory($addressName)
     {
-        if (self::NEED_TO_SAVE_ADDRESS_HISTORY) {
+        if ($this->needToSaveAddressToHistory()) {
             AddressHistory::newAddress(
                 $this->getUser()->id,
                 $addressName,
