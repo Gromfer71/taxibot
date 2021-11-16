@@ -228,7 +228,6 @@ trait TakingAddressTrait
      */
     public function createAddressHistory($addressName)
     {
-        $this->_sayDebug(self::NEED_TO_SAVE_ADDRESS_HISTORY);
         if (self::NEED_TO_SAVE_ADDRESS_HISTORY) {
             AddressHistory::newAddress(
                 $this->getUser()->id,
