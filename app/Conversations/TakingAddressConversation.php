@@ -19,7 +19,6 @@ class TakingAddressConversation extends BaseAddressConversation
 {
     use TakingAddressTrait;
 
-    public $conversationAfterTakeAddress = 'App\Conversations\TaxiMenuConversation';
 
     /**
      * @return void

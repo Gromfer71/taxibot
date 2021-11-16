@@ -22,6 +22,7 @@ abstract class BaseAddressConversation extends BaseConversation
 {
     use TakingAddressTrait;
 
+    public $conversationAfterTakeAddress = 'App\Conversations\TaxiMenuConversation';
 
     /**
      * Ввод начального адреса пользователя
