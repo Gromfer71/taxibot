@@ -329,7 +329,7 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function needToSaveAddressToHistory()
     {
-        return $this->getFromStorage('dont_save_address_to_history');
+        return !$this->getFromStorage('dont_save_address_to_history');
     }
 
 
