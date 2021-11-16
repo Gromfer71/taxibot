@@ -22,6 +22,8 @@ abstract class BaseAddressConversation extends BaseConversation
 {
     use TakingAddressTrait;
 
+    public const NEED_TO_SAVE_ADDRESS_HISTORY = true;
+
 
     /**
      * Ввод начального адреса пользователя

@@ -42,12 +42,14 @@ class TakingAddressConversation extends BaseAddressConversation
             ButtonsStructure::EXIT => 'App\Conversations\MainMenu\MenuConversation',
             ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
             ButtonsStructure::GO_AS_INDICATED => function () {
-                AddressHistory::newAddress(
-                    $this->getUser()->id,
-                    collect($this->bot->userStorage()->get('address'))->last(),
-                    ['lat' => 0, 'lon' => 0],
-                    $this->bot->userStorage()->get('address_city')
-                );
+                if (self::NEED_TO_SAVE_ADDRESS_HISTORY) {
+                    AddressHistory::newAddress(
+                        $this->getUser()->id,
+                        collect($this->bot->userStorage()->get('address'))->last(),
+                        ['lat' => 0, 'lon' => 0],
+                        $this->bot->userStorage()->get('address_city')
+                    );
+                }
                 $this->bot->startConversation(new $this->conversationAfterTakeAddress());
             },
             ButtonsStructure::ADDRESS_WILL_SAY_TO_DRIVER => function () {

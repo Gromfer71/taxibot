@@ -128,12 +128,14 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
                     return;
                 }
 
-                AddressHistory::newAddress(
-                    $this->getUser()->id,
-                    $answer->getText(),
-                    $address['coords'],
-                    $address['city']
-                );
+                if (self::NEED_TO_SAVE_ADDRESS_HISTORY) {
+                    AddressHistory::newAddress(
+                        $this->getUser()->id,
+                        $answer->getText(),
+                        $address['coords'],
+                        $address['city']
+                    );
+                }
 
                 $this->_saveAnotherAddress($answer, $address['coords']['lat'], $address['coords']['lon'], true);
                 $this->exit();

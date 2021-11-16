@@ -124,12 +124,15 @@ trait TakingAddressTrait
                 $this->saveSecondAddressIfStreet($address);
                 $this->forgetWriteHouse();
             } else {
-                AddressHistory::newAddress(
-                    $this->getUser()->id,
-                    Address::toString($address),
-                    $address['coords'],
-                    $address['city']
-                );
+                if (self::NEED_TO_SAVE_ADDRESS_HISTORY) {
+                    AddressHistory::newAddress(
+                        $this->getUser()->id,
+                        Address::toString($address),
+                        $address['coords'],
+                        $address['city']
+                    );
+                }
+
                 $this->_saveSecondAddress(
                     Address::toString($address),
                     $address['coords']['lat'],
@@ -225,15 +228,17 @@ trait TakingAddressTrait
      */
     public function createAddressHistory($addressName)
     {
-        AddressHistory::newAddress(
-            $this->getUser()->id,
-            $addressName,
-            [
-                'lat' => $this->bot->userStorage()->get('lat'),
-                'lon' => $this->bot->userStorage()->get('lon')
-            ],
-            $this->bot->userStorage()->get('address_city')
-        );
+        if (self::NEED_TO_SAVE_ADDRESS_HISTORY) {
+            AddressHistory::newAddress(
+                $this->getUser()->id,
+                $addressName,
+                [
+                    'lat' => $this->bot->userStorage()->get('lat'),
+                    'lon' => $this->bot->userStorage()->get('lon')
+                ],
+                $this->bot->userStorage()->get('address_city')
+            );
+        }
     }
 
     public function isAddressIsStreet($address)
