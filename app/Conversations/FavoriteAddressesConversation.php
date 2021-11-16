@@ -59,6 +59,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             $this->handleAction($answer);
 
             if ($answer->getValue() == ButtonsStructure::ADD_ADDRESS) {
+                $this->saveToStorage(['dont_save_address_to_history' => true]);
                 $this->getAddress(Translator::trans('messages.give me your favorite address'));
                 return;
             }
