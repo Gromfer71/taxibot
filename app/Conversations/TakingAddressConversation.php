@@ -19,6 +19,7 @@ class TakingAddressConversation extends BaseAddressConversation
 {
     use TakingAddressTrait;
 
+    public $conversationAfterTakeAddress = 'App\Conversations\TaxiMenuConversation';
 
     /**
      * @return void
@@ -55,6 +56,7 @@ class TakingAddressConversation extends BaseAddressConversation
                 $this->_saveSecondAddressByText('');
                 $this->saveToStorage(['second_address_will_say_to_driver_change_text_flag' => 1]);
                 $this->saveToStorage(['second_address_will_say_to_driver_flag' => 1]);
+                $this->_sayDebug($this->conversationAfterTakeAddress);
                 $this->bot->startConversation(new $this->conversationAfterTakeAddress());
             },
             ButtonsStructure::NO_ENTRANCE => function () {
