@@ -59,7 +59,10 @@ class TakingAddressConversation extends BaseAddressConversation
                 $this->bot->startConversation(new $this->conversationAfterTakeAddress());
             },
             ButtonsStructure::NO_ENTRANCE => function () {
-                $this->createAddressHistory($this->getFromStorage('address'));
+                if (self::NEED_TO_SAVE_ADDRESS_HISTORY) {
+                    $this->createAddressHistory($this->getFromStorage('address'));
+                }
+
                 $this->getAddressTo();
             }
         ];

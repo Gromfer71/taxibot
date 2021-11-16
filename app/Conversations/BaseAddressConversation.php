@@ -151,8 +151,9 @@ abstract class BaseAddressConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer);
             $this->addEntranceToAddress($answer->getText());
-            $this->_sayDebug(self::NEED_TO_SAVE_ADDRESS_HISTORY);
-            $this->createAddressHistory($this->getFromStorage('address'));
+            if (self::NEED_TO_SAVE_ADDRESS_HISTORY) {
+                $this->createAddressHistory($this->getFromStorage('address'));
+            }
 
             $this->redirectAfterGetEntrance();
         });
