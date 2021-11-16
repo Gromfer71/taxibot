@@ -77,9 +77,17 @@ trait BotManagerTrait
             $auto = $actualOrder->getAutoInfo();
             $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
             $state = $actualOrder->getCurrentOrderState()->state_id;
-            if ($state == OrderHistory::DRIVER_ASSIGNED || $state == OrderApiService::ORDER_CONFIRMED_BY_USER || $state == OrderApiService::USER_GOES_OUT) {
+            if ($state == OrderHistory::DRIVER_ASSIGNED || $state == OrderApiService::ORDER_CONFIRMED_BY_USER) {
                 $this->say(
                     Translator::trans('messages.need map message while driver goes', ['time' => $time, 'auto' => $auto])
+                );
+            }
+            if ($state == OrderApiService::USER_GOES_OUT) {
+                $this->say(
+                    Translator::trans(
+                        'messages.auto waits for client',
+                        ['auto' => $actualOrder->getAutoInfo()]
+                    )
                 );
             }
             OrderApiService::sendDriverLocation($this->bot, $driverLocation->lat, $driverLocation->lon);
