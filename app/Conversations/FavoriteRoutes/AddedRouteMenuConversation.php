@@ -41,8 +41,11 @@ class AddedRouteMenuConversation extends BaseAddressConversation
                     'address'
                 )
             ),
-            [ButtonsStructure::CANCEL, ButtonsStructure::SAVE, ButtonsStructure::ADD_ADDRESS]
+            [ButtonsStructure::CANCEL, ButtonsStructure::SAVE]
         );
+        if (!$this->getFromStorage('order_already_done')) {
+            $question = ComplexQuestion::setButtons($question, [ButtonsStructure::ADD_ADDRESS]);
+        }
 
         return $this->ask($question, $this->getDefaultCallback());
     }
@@ -52,6 +55,10 @@ class AddedRouteMenuConversation extends BaseAddressConversation
         $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.write favorite route name'));
 
         return $this->ask($question, function (Answer $answer) {
+            if ($answer->getValue() == 'cancel') {
+                $this->bot->startConversation(new MenuConversation());
+                die();
+            }
             FavoriteRoute::create([
                                       'user_id' => $this->getUser()->id,
                                       'name' => $answer->getText(),
@@ -67,10 +74,7 @@ class AddedRouteMenuConversation extends BaseAddressConversation
                                           JSON_UNESCAPED_UNICODE
                                       ),
                                   ]);
-            if ($answer->getValue() == 'cancel') {
-                $this->bot->startConversation(new MenuConversation());
-                die();
-            }
+
             if ($this->bot->userStorage()->get('order_already_done')) {
                 $this->bot->startConversation(new MenuConversation());
             } else {
