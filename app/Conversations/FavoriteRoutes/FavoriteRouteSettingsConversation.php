@@ -69,6 +69,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
 
         $question = ComplexQuestion::addOrderHistoryButtons($question, $this->getUser()->orders);
         return $this->ask($question, function (Answer $answer) {
+            $this->saveToStorage(['dont_save_address_to_history' => true]);
             $this->handleAction(
                 $answer,
                 [ButtonsStructure::BACK => 'run']

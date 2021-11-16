@@ -9,8 +9,4 @@ class TakingAddressForFavoriteRouteConversation extends TakingAddressConversatio
     public const ADDED_ROUTE_CONVERSATION = 'App\Conversations\FavoriteRoutes\AddedRouteMenuConversation';
     public $conversationAfterTakeAddress = self::ADDED_ROUTE_CONVERSATION;
 
-    public function needToSaveAddressToHistory()
-    {
-        return false;
-    }
 }
