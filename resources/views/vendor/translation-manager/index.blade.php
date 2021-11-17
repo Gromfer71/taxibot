@@ -694,7 +694,7 @@
                 </div>
                 <div class="col-sm-2 m-2" style="margin-top: 10px;">
                     <button type="submit" class="btn btn-primary" data-disable-with="Loading..">
-                        Восстановить все пакеты
+                        Восстановить все удаленные пакеты
                     </button>
                 </div>
             </div>
