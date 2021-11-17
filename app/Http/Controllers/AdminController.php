@@ -17,6 +17,7 @@ class AdminController extends Controller
         $this->middleware('auth');
     }
 
+
     /**
      * Создание нового администратора
      *
