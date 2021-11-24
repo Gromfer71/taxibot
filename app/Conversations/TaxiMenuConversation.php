@@ -212,7 +212,7 @@ class TaxiMenuConversation extends BaseAddressConversation
 
     public function confirmOrder($withoutMessage = false)
     {
-        $question = ComplexQuestion::createWithSimpleButtons($withoutMessage ? '' : 'Ваш автомобиль уже в пути',
+        $question = ComplexQuestion::createWithSimpleButtons($withoutMessage ? '' : Translator::trans('messages.auto in way'),
                                                              [
                                                                  ButtonsStructure::NEED_DISPATCHER,
                                                                  ButtonsStructure::NEED_DRIVER,
@@ -252,7 +252,7 @@ class TaxiMenuConversation extends BaseAddressConversation
 
     public function inWay($withoutMessage = false)
     {
-        $question = ComplexQuestion::createWithSimpleButtons($withoutMessage ? '' : 'Приятной поездки',
+        $question = ComplexQuestion::createWithSimpleButtons($withoutMessage ? '' : Translator::trans('messages.have a nice trip'),
                                                              [
                                                                  ButtonsStructure::FINISH_ORDER,
                                                                  ButtonsStructure::NEED_DISPATCHER,

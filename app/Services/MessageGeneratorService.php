@@ -4,7 +4,6 @@
 namespace App\Services;
 
 
-use App\Services\Address;
 use BotMan\BotMan\Storages\Storage;
 use Illuminate\Support\Collection;
 
@@ -16,8 +15,10 @@ class MessageGeneratorService
         $bonusbalance = $userStorage->get('bonusbalance');
         $costBonus = $bonusbalance > $price ? $price : $bonusbalance;
         $costCash = $price - $costBonus;
-        $message = ' Оплата бонусами - ' . $costBonus;
-        if ($costCash > 0) $message = $message . ', оплата наличкой - ' . $costCash;
+        $message = ' ' . Translator::trans('messages.payment with bonuses') . ' - ' . $costBonus;
+        if ($costCash > 0) {
+            $message = $message . ', ' . Translator::trans('messages.payment with cash') . ' - ' . $costCash;
+        }
         return $message;
     }
 
@@ -80,8 +81,6 @@ class MessageGeneratorService
                 $data['route'] = MessageGeneratorService::implodeAddress(collect($userStorage->get('address')));
                 return Translator::trans('messages.menu without end address with route', $data);
             }
-
-
         }
 
         if ($userStorage->get('second_address_from_history_incorrect_change_text_flag') && $userStorage->get('second_address_from_history_incorrect_change_text_flag') == 1) {
@@ -104,48 +103,49 @@ class MessageGeneratorService
 
 
         if ($userStorage->get('second_address_will_say_to_driver_flag') && $userStorage->get('second_address_will_say_to_driver_flag') == 1) {
-            $message = 'Ваш адрес: ' . collect($userStorage->get('address'))->first() . '.';
+            $message = Translator::trans('messages.your address') . ' ' . collect($userStorage->get('address'))->first() . '.';
         } else {
-            $message = 'Ваш маршрут: ' . MessageGeneratorService::implodeAddress(collect($userStorage->get('address'))) . '.';
+            $message = Translator::trans('messages.your route') . ' ' . MessageGeneratorService::implodeAddress(collect($userStorage->get('address'))) . '.';
         }
 
 
         if ($userStorage->get('comment')) {
-            $message = $message . ' Комментарий - ' . $userStorage->get('comment') . '. ';
+            $message = $message . ' ' . Translator::trans('messages.comment') . ' - ' . $userStorage->get('comment') . '. ';
         }
 
         if ($userStorage->get('wishes')) {
-            $message = $message . ' Пожелания - ' . MessageGeneratorService::implodeWishes(collect($userStorage->get('wishes'))) . '. ';
+            $message = $message . ' ' . Translator::trans('messages.wishes') . ' - ' . MessageGeneratorService::implodeWishes(collect($userStorage->get('wishes'))) . '. ';
         }
 
         if ($userStorage->get('changed_price')) {
             $changedPriceValue = $userStorage->get('changed_price')['value'];
-            $message = $message . ' Изменение цены ' . ($changedPriceValue > 0 ? '+' : '') . $changedPriceValue . 'р. ';
+            $message = $message . ' ' . Translator::trans('messages.price change') . ' ' . ($changedPriceValue > 0 ? '+' : '') . $changedPriceValue . Translator::trans('messages.currency short');
         }
         if ($userStorage->get('changed_price_in_order')) {
             $changedPriceValue = $userStorage->get('changed_price_in_order')['value'];
-            $message = $message . ' Изменение цены ' . ($changedPriceValue > 0 ? '+' : '') . $changedPriceValue . '. ';
+            $message = $message . ' ' . Translator::trans('messages.price change') . ' ' . ($changedPriceValue > 0 ? '+' : '') . $changedPriceValue . '. ';
         }
         if ($userStorage->get('usebonus')) {
             $price = $userStorage->get('price');
-            $message = $message . ' Предварительная стоимость поездки - ' . $price . ' рублей. ';
+            $message = $message . ' ' . Translator::trans('messages.estimated order cost') . ' - ' . $price . ' ' . Translator::trans('messages.currency') . '. ';
             $bonusbalance = $userStorage->get('bonusbalance');
             $costBonus = $bonusbalance > $price ? $price : $bonusbalance;
             $costCash = $price - $costBonus;
-            $message = $message . ' Оплата бонусами - ' . $costBonus;
-            if ($costCash > 0) $message = $message . ', оплата наличкой - ' . $costCash;
+            $message = $message . ' ' . Translator::trans('messages.payment with bonuses') . ' - ' . $costBonus;
+            if ($costCash > 0) {
+                $message = $message . ', ' . Translator::trans('messages.payment with cash') . ' - ' . $costCash;
+            }
         } else {
             $price = $userStorage->get('price');
             $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($userStorage);
             if ($haveEndAddress) {
-                $message = $message . ' Стоимость поездки - ' . $price . ' рублей. ';
+                $message = $message . ' ' . Translator::trans('messages.cost') . ' - ' . $price . ' ' . Translator::trans('messages.currency') . '. ';
             } else {
-                $message = $message . ' Предварительная стоимость - ' . $price . ' руб. ';
+                $message = $message . ' ' . Translator::trans('messages.estimated order cost') . ' - ' . $price . Translator::trans('messages.currency short');
             }
-
         }
 
-        $message .= ' Выберите варианты ниже.';
+        $message .= ' ' . Translator::trans('messages.make your choice');
         return $message;
     }
 
@@ -158,36 +158,34 @@ class MessageGeneratorService
         $message = '';
 
         if ($userStorage->get('usebonus')) {
-            $message = 'Вау! У Вас есть ' . $userStorage->get('bonusbalance') . ' бонусов(а)! Ждём-с, я ищу Вам машину. ';
-        } else {
-            //Если адресов больше 2х, либо есть доп пожелания, либо коммент - то текст с кнопочной гимнастикой, иначе обычный
-            if (count($userStorage->get('address')) > 2 || $userStorage->get('comment') || $userStorage->get('wishes') || $userStorage->get('changed_price')) {
-                $message = Translator::trans('messages.komment_i_pozhelanie_skazhu_voditelu_punkt_43');
-            }
+            $message = Translator::trans('messages.bonus balance and searching auto', ['bonuses' => $userStorage->get('bonusbalance')]);
+        } elseif (count($userStorage->get('address')) > 2 || $userStorage->get('comment') || $userStorage->get('wishes') || $userStorage->get('changed_price')) {
+            $message = Translator::trans('messages.komment_i_pozhelanie_skazhu_voditelu_punkt_43');
         }
 
+
         if ($userStorage->get('second_address_will_say_to_driver_flag') && $userStorage->get('second_address_will_say_to_driver_flag') == 1) {
-            $message .= 'Ваш адрес по-прежнему: ' . collect($userStorage->get('address'))->first() . '.';
+            $message .= Translator::trans('messages.your address is still') . ': ' . collect($userStorage->get('address'))->first() . '.';
         } else {
-            $message .= 'Ваш маршрут по-прежнему: ' . MessageGeneratorService::implodeAddress(collect($userStorage->get('address'))) . '.';
+            $message .= Translator::trans('messages.your route is still') . ': ' . MessageGeneratorService::implodeAddress(collect($userStorage->get('address'))) . '.';
         }
 
 
         if ($userStorage->get('comment')) {
-            $message = $message . ' Комментарий - ' . $userStorage->get('comment') . '. ';
+            $message = $message . ' ' . Translator::trans('messages.comment') . ' - ' . $userStorage->get('comment') . '. ';
         }
 
         if ($userStorage->get('wishes')) {
-            $message = $message . ' Пожелания - ' . MessageGeneratorService::implodeWishes(collect($userStorage->get('wishes'))) . '. ';
+            $message = $message . ' ' . Translator::trans('messages.wishes') . ' - ' . MessageGeneratorService::implodeWishes(collect($userStorage->get('wishes'))) . '. ';
         }
 
         if ($userStorage->get('changed_price')) {
             $changedPriceValue = $userStorage->get('changed_price')['value'];
-            $message = $message . ' Изменение цены ' . ($changedPriceValue > 0 ? '+' : '') . $changedPriceValue . '. ';
+            $message = $message . ' ' . Translator::trans('messages.price change') . ' ' . ($changedPriceValue > 0 ? '+' : '') . $changedPriceValue . '. ';
         }
         if ($userStorage->get('changed_price_in_order')) {
             $changedPriceValue = $userStorage->get('changed_price_in_order')['value'];
-            $message = $message . ' Изменение цены ' . ($changedPriceValue > 0 ? '+' : '') . $changedPriceValue . '. ';
+            $message = $message . ' ' . Translator::trans('messages.price change') . ' ' . ($changedPriceValue > 0 ? '+' : '') . $changedPriceValue . '. ';
         }
 
         if ($userStorage->get('usebonus')) {
@@ -196,12 +194,12 @@ class MessageGeneratorService
         } else {
             $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($userStorage);
             if ($haveEndAddress) {
-                $message = $message . ' Стоимость поездки - ' . $userStorage->get('price') . ' рублей. ';
+                $message = $message . ' ' . Translator::trans('messages.cost') . ' - ' . $userStorage->get('price') . ' ' . Translator::trans('messages.currency') . '. ';
             } else {
-                $message = $message . ' Предварительная стоимость - ' . $userStorage->get('price') . ' руб. ';
+                $message = $message . ' ' . Translator::trans('messages.estimated order cost') . ' - ' . $userStorage->get('price') . ' ' . Translator::trans('messages.currency short') . ' ';
             }
 
-            $message = $message . ' И наконец-то я с радостью ищу Вам машину!';
+            $message = $message . ' ' . Translator::trans('messages.searching auto first');
         }
 
 
@@ -242,6 +240,6 @@ class MessageGeneratorService
      */
     public static function implodeWishes($wishes)
     {
-        return '❗️'.$wishes->implode('❗️');
+        return '❗️' . $wishes->implode('❗️');
     }
 }
