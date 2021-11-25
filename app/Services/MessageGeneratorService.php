@@ -167,7 +167,7 @@ class MessageGeneratorService
         if ($userStorage->get('second_address_will_say_to_driver_flag') && $userStorage->get('second_address_will_say_to_driver_flag') == 1) {
             $message .= Translator::trans('messages.your address is still') . ': ' . collect($userStorage->get('address'))->first() . '.';
         } else {
-            $message .= Translator::trans('messages.your route is still') . ': ' . MessageGeneratorService::implodeAddress(collect($userStorage->get('address'))) . '.';
+            $message .= ' ' . Translator::trans('messages.your route is still') . ': ' . MessageGeneratorService::implodeAddress(collect($userStorage->get('address'))) . '.';
         }
 
 
