@@ -322,7 +322,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         $question = $this->getChangePrice($question, $prices);
 
         return $this->ask($question, function (Answer $answer) use ($prices) {
-            $this->handleAction($answer, [ButtonsStructure::BACK => 'run']);
+            $this->handleAction($answer, [ButtonsStructure::BACK => 'currentOrderMenu']);
             $price = collect($prices)->filter(function ($item) use ($answer) {
                 if ($item->description == $answer->getText()) {
                     return $item;
