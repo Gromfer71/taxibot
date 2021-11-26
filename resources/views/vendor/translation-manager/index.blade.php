@@ -538,11 +538,13 @@
 
 
         <?php
+        $counter = 0;
         foreach ($translations as $key => $translation): ?>
 
-        <tr id="<?php
+
+        <tr id="<?php  $counter++;
         echo htmlentities($key, ENT_QUOTES, 'UTF-8', false) ?>">
-            <td>{{ $key }}</td>
+            <td>{{ $counter }}</td>
             <td><?php
                 echo htmlentities($key, ENT_QUOTES, 'UTF-8', false) ?></td>
             <?php
