@@ -77,7 +77,7 @@ class Options
         $storage = $bot->userStorage();
 
         $user = User::find($bot->getUser()->getId());
-        if (config('app.debug') || $user->phone == '9177371437') {
+        if (config('app.debug')) {
             $orderParams->push(78);
         }
 
