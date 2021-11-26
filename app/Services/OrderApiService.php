@@ -190,7 +190,7 @@ class OrderApiService
             'content' => json_encode([
                                          'order_id' => $order->id,
                                          'auto_recalc_cost' => true,
-                                         'order_params' => $options->getOrderParamsArray($bot->userStorage())
+                                         'order_params' => $options->getOrderParamsArray($bot)
                                      ]),
         ];
 

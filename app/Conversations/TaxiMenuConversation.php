@@ -163,7 +163,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
         $priceResponse = $api->calcOrderPrice(
             $tariff->data->tariff_id,
-            $options->getOrderParamsArray($this->bot->userStorage()),
+            $options->getOrderParamsArray($this->bot),
             $this->bot->userStorage()
         );
         if (!isset($priceResponse->data->sum)) {
