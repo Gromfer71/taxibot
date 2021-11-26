@@ -132,7 +132,7 @@ class Options
             }
         });
 
-        return $result->first()->crewGroupId ?? 25;
+        return $result->first()->name ?? null;
     }
 
     public function getDistrictFromCity($city)

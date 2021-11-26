@@ -7,7 +7,6 @@ use BotMan\BotMan\Storages\Storage;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise\Utils;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class Address
@@ -31,8 +30,7 @@ class Address
         $promises = collect();
 
         $cities = self::getCitiesWithOneDistrict($cities, $storage->get('city'), $storage->get('district'));
-        Log::alert($storage->get('city'));
-        Log::alert($storage->get('district'));
+
 
         foreach ($cities as $city) {
             $paramJson = json_encode(

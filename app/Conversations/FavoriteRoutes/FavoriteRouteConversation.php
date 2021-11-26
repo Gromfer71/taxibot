@@ -50,10 +50,14 @@ class FavoriteRouteConversation extends BaseConversation
         $addressInfo = collect(json_decode($route->address));
         $this->bot->userStorage()->delete();
         $this->bot->userStorage()->save($addressInfo->toArray());
+        $options = new Options();
+        $city = $options->getCityFromCrewId($route->crew_group_id) ?: $options->getCrewGroupIdFromCity($this->getUser()->city);
         $this->bot->userStorage()->save(
             [
-                'crew_group_id' => $route->crew_group_id ?: (new Options())->getCrewGroupIdFromCity($this->getUser()->city),
+                'crew_group_id' => $route->crew_group_id,
                 'is_route_from_favorite' => true,
+                'city' => $city,
+                'district' => $options->getDistrictFromCity($city)
             ]
         );
 
