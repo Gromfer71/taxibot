@@ -86,6 +86,7 @@ class OrderApiService
             $phone = '8' . $user->phone;
         }
 
+
         $params = [
             'method' => 'POST',
             'header' => 'Content-Type: application/json',
@@ -94,7 +95,7 @@ class OrderApiService
                                          'comment' => $bot->userStorage()->get('comment'),
                                          'crew_group_id' => $bot->userStorage()->get('crew_group_id'),
                                          'is_prior' => false,
-                                         'order_params' => $options->getOrderParamsArray($bot->userStorage()),
+                                         'order_params' => $options->getOrderParamsArray($bot),
                                          'phone' => $phone,
                                          'server_time_offset' => 0,
                                          'source_time' => Carbon::createFromTimestamp(time())->format('YmdHis'),

@@ -4,7 +4,8 @@
 namespace App\Services;
 
 use App\Models\Config;
-use BotMan\BotMan\Storages\Storage;
+use App\Models\User;
+use BotMan\BotMan\BotMan;
 
 /**
  * Получаем настройки бота с файла. По коду обращаемся к данным настройкам
@@ -70,11 +71,13 @@ class Options
         return $this->options->minPrice;
     }
 
-    public function getOrderParamsArray(Storage $storage)
+    public function getOrderParamsArray(BotMan $bot)
     {
         $orderParams = collect();
+        $storage = $bot->userStorage();
 
-        if (config('app.debug')) {
+        $user = User::find($bot->getUser()->getId());
+        if (config('app.debug') || $user->phone == '9177371437') {
             $orderParams->push(78);
         }
 
@@ -82,6 +85,7 @@ class Options
         if ($storage->get('changed_price')) {
             $orderParams->push($storage->get('changed_price')['id']);
         }
+
         if ($storage->get('changed_price_in_order')) {
             $orderParams->push($storage->get('changed_price_in_order')['id']);
         }
