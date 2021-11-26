@@ -73,6 +73,7 @@ class AddedRouteMenuConversation extends BaseAddressConversation
                                           ],
                                           JSON_UNESCAPED_UNICODE
                                       ),
+                                      'crew_group_id' => $this->bot->userStorage()->get('crew_group_id')
                                   ]);
 
             if ($this->bot->userStorage()->get('order_already_done')) {
