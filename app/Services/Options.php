@@ -123,6 +123,18 @@ class Options
         return $result->first()->crewGroupId ?? 25;
     }
 
+    public function getCityFromCrewId($crewId)
+    {
+        $cities = collect($this->options->cities);
+        $result = $cities->filter(function ($item) use ($crewId) {
+            if ($item->crewGroupId == $crewId) {
+                return $item;
+            }
+        });
+
+        return $result->first()->crewGroupId ?? 25;
+    }
+
     public function getDistrictFromCity($city)
     {
         $cities = collect($this->options->cities);

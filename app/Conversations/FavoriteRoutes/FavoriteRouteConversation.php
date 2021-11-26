@@ -54,8 +54,6 @@ class FavoriteRouteConversation extends BaseConversation
             [
                 'crew_group_id' => $route->crew_group_id ?: (new Options())->getCrewGroupIdFromCity($this->getUser()->city),
                 'is_route_from_favorite' => true,
-                Lt,
-                f
             ]
         );
 
