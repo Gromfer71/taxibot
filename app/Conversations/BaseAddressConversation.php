@@ -41,7 +41,7 @@ abstract class BaseAddressConversation extends BaseConversation
         if ($withFavoriteAddresses) {
             $question = $this->_addAddressFavoriteButtons($question);
         }
-        $question = $this->_addAddressHistoryButtons($question);
+        $question = $this->_addAddressHistoryButtons($question, true);
 
         return $this->ask($question, function (Answer $answer) use ($withFavoriteAddresses) {
             $this->handleAction($answer);
