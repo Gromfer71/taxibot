@@ -412,7 +412,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans(
-                $haveEndAddress ? 'messages.order info with comment' : 'messages.komment_i_pozhelanie_skazhu_voditelu_punkt_6',
+                'messages.order info with comment',
                 $data
             ),
             [ButtonsStructure::BACK, ButtonsStructure::WISHES, ButtonsStructure::GO_FOR_CASH],
