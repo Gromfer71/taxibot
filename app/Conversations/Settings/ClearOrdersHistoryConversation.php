@@ -32,18 +32,10 @@ class ClearOrdersHistoryConversation extends BaseConversation
      */
     public function run()
     {
-        if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
-            $additional = [
-                'location' => 'addresses',
-                'config' => ButtonsFormatterService::SPLIT_BY_THREE_EXCLUDE_TWO_LINES
-            ];
-        } else {
-            $additional = [];
-        }
         $question = ComplexQuestion::createWithSimpleButtons(
             $this->addOrdersRoutesToMessage(Translator::trans('messages.delete orders history menu')),
             [ButtonsStructure::BACK, ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY],
-            $additional
+            ButtonsFormatterService::getAdditionalForClearMenu($this->bot->getDriver())
         );
 
         $question = ComplexQuestion::addOrderHistoryButtons($question, $this->getUser()->orders);

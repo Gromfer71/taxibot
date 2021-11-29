@@ -6,6 +6,7 @@ use App\Conversations\BaseConversation;
 use App\Models\AddressHistory;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
+use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
@@ -52,7 +53,7 @@ class AddressesHistoryConversation extends BaseConversation
         $question = ComplexQuestion::createWithSimpleButtons(
             $this->addAddressesToMessageOnlyFromHistory(Translator::trans('messages.addresses menu')),
             [ButtonsStructure::BACK, ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY],
-            ['location' => 'addresses']
+            ButtonsFormatterService::getAdditionalForClearMenu($this->bot->getDriver())
         );
         $question = ComplexQuestion::setAddressButtons($question, $this->getUser()->addresses);
 

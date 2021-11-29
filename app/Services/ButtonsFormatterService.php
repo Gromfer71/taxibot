@@ -38,6 +38,20 @@ class ButtonsFormatterService
         return $buttons;
     }
 
+    public static function getAdditionalForClearMenu($driver)
+    {
+        if (property_exists($driver, 'needToAddAddressesToMessage')) {
+            $additional = [
+                'location' => 'addresses',
+                'config' => ButtonsFormatterService::SPLIT_BY_THREE_EXCLUDE_TWO_LINES
+            ];
+        } else {
+            $additional = [];
+        }
+
+        return $additional;
+    }
+
     private static function splitByTwo(Collection $buttons)
     {
         $linesCount = ceil($buttons->count() / 2);
@@ -67,7 +81,6 @@ class ButtonsFormatterService
         $result = collect([[$buttons->shift()], [$buttons->shift()]]);
         return $result->concat(self::splitByThree($buttons));
     }
-
 
     private static function formatByConfig(Collection $buttons, $config)
     {
