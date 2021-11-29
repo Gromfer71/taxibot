@@ -33,7 +33,7 @@ abstract class BaseAddressConversation extends BaseConversation
         $this->saveCityInformation();
 
         $question = ComplexQuestion::createWithSimpleButtons(
-            $this->addAddressesToMessage($message),
+            $withFavoriteAddresses ? $this->addAddressesToMessage($message) : $this->addAddressesToMessageOnlyFromHistory($message),
             [ButtonsStructure::EXIT],
             ['location' => 'addresses']
         );
