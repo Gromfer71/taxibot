@@ -29,7 +29,7 @@ class WishesService
     {
         $carOptionsSelected = false;
         foreach ($this->wishesMenu['carOptions'] as $wish) {
-            if (in_array($wish->name, $this->wishes->toArray())) {
+            if (in_array($wish->id, $this->wishes->toArray())) {
                 $carOptionsSelected = true;
                 break;
             }
@@ -37,7 +37,7 @@ class WishesService
 
         $changeOptionsSelected = false;
         foreach ($this->wishesMenu['changeOptions'] as $wish) {
-            if (in_array($wish->name, $this->wishes->toArray())) {
+            if (in_array($wish->id, $this->wishes->toArray())) {
                 $changeOptionsSelected = true;
                 break;
             }
