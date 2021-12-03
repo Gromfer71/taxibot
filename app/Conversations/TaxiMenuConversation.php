@@ -322,7 +322,11 @@ class TaxiMenuConversation extends BaseAddressConversation
         $question = $this->getChangePrice($question, $prices);
 
         return $this->ask($question, function (Answer $answer) use ($prices) {
-            $this->handleAction($answer, [ButtonsStructure::BACK => 'currentOrderMenu']);
+            $this->handleAction($answer, [
+                ButtonsStructure::BACK => function () {
+                    $this->currentOrderMenu(true);
+                }
+            ]);
             $price = collect($prices)->filter(function ($item) use ($answer) {
                 if ($item->description == $answer->getText()) {
                     return $item;
@@ -344,7 +348,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                 ['changed_price_in_order' => $price, 'price' => $order->price + $price->value]
             );
             $order->changePrice($this->bot);
-            $this->currentOrderMenu();
+            $this->currentOrderMenu(true);
         });
     }
 
