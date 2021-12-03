@@ -243,7 +243,7 @@ class MessageGeneratorService
     public static function implodeWishes($wishes)
     {
         $wishes = $wishes->transform(function ($item) {
-            return Translator::trans('wish #' . $item);
+            return Translator::trans('buttons.wish #' . $item);
         });
 
         return '❗️' . $wishes->implode('❗️');
