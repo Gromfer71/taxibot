@@ -330,6 +330,10 @@ class TaxiMenuConversation extends BaseAddressConversation
 
             $key = substr(stristr($answer->getText(), '#'), 1);
 
+            if (!$key) {
+                $key = substr(stristr($answer->getValue(), '#'), 1);
+            }
+
             $price = collect($prices)->filter(function ($item) use ($key) {
                 if ($item->id == $key) {
                     return $item;
@@ -374,8 +378,6 @@ class TaxiMenuConversation extends BaseAddressConversation
                 }
             ]);
             $key = substr(stristr($answer->getText(), '#'), 1);
-            $this->_sayDebug($answer->getText());
-            $this->_sayDebug($key);
 
             if (!$key) {
                 $key = substr(stristr($answer->getValue(), '#'), 1);
