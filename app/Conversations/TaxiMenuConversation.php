@@ -16,6 +16,7 @@ use App\Services\OrderApiService;
 use App\Services\Translator;
 use App\Services\WishesService;
 use App\Traits\BotManagerTrait;
+use Barryvdh\TranslationManager\Models\Translation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
 class TaxiMenuConversation extends BaseAddressConversation
@@ -370,8 +371,14 @@ class TaxiMenuConversation extends BaseAddressConversation
                     $this->run();
                 }
             ]);
-            $price = collect($prices)->filter(function ($item) use ($answer) {
-                if ($item->description == $answer->getText()) {
+            $key = stristr(Translation::where('value', $answer->getText())->first()->key ?? null, '#');
+            if (!$key) {
+                $this->changePrice();
+                return;
+            }
+
+            $price = collect($prices)->filter(function ($item) use ($key) {
+                if ($item->id == $key) {
                     return $item;
                 } else {
                     return false;

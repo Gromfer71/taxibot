@@ -152,8 +152,7 @@ class BaseConversation extends Conversation
     public function end()
     {
         $question = Question::create($this->__('messages.thx for order'));
-        if (!$this->bot->userStorage()->get('second_address_will_say_to_driver_flag') && !$this->bot->userStorage(
-            )->get('is_route_from_favorite')) {
+        if (!$this->bot->userStorage()->get('second_address_will_say_to_driver_flag') && !$this->bot->userStorage()->get('is_route_from_favorite')) {
             $question->addButton(
                 Button::create(Translator::trans('buttons.add to favorite routes'))->value(
                     'add to favorite routes'
@@ -310,7 +309,7 @@ class BaseConversation extends Conversation
     public function getChangePrice(Question $question, $prices)
     {
         foreach ($prices as $price) {
-            $question = $question->addButton(Button::create($price->description));
+            $question = $question->addButton(Button::create(Translator::trans('buttons.change price #' . $price->id)));
         }
 
         return $question;
