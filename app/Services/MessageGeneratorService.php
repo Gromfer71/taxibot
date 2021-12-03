@@ -119,7 +119,9 @@ class MessageGeneratorService
 
         if ($userStorage->get('changed_price')) {
             $changedPriceValue = $userStorage->get('changed_price')['value'];
-            $message = $message . ' ' . Translator::trans('messages.price change') . ' ' . ($changedPriceValue > 0 ? '+' : '') . $changedPriceValue . Translator::trans('messages.currency short');
+            $message = $message . ' ' . Translator::trans('messages.price change') . ' ' . ($changedPriceValue > 0 ? '+' : '') . $changedPriceValue . ' ' . Translator::trans(
+                    'messages.currency short'
+                );
         }
         if ($userStorage->get('changed_price_in_order')) {
             $changedPriceValue = $userStorage->get('changed_price_in_order')['value'];
@@ -141,7 +143,7 @@ class MessageGeneratorService
             if ($haveEndAddress) {
                 $message = $message . ' ' . Translator::trans('messages.cost') . ' - ' . $price . ' ' . Translator::trans('messages.currency') . '. ';
             } else {
-                $message = $message . ' ' . Translator::trans('messages.estimated order cost') . ' - ' . $price . Translator::trans('messages.currency short');
+                $message = $message . ' ' . Translator::trans('messages.estimated order cost') . ' - ' . $price . ' ' . Translator::trans('messages.currency short');
             }
         }
 
