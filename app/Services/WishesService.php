@@ -54,7 +54,7 @@ class WishesService
             }
         }
         foreach ($this->wishesMenu['wishOptions'] as $wish) {
-            if (!in_array($wish->name, $this->wishes->toArray())) {
+            if (!in_array($wish->id, $this->wishes->toArray())) {
                 $this->question->addButton(Button::create(Translator::trans('buttons.wish #' . $wish->id))->value('wish #' . $wish->id));
             }
         }
