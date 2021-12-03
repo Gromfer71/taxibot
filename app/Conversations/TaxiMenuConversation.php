@@ -485,6 +485,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             }
             if (!$key) {
                 $this->wishes();
+                die();
             }
             $this->bot->userStorage()->save(
                 ['wishes' => collect($this->bot->userStorage()->get('wishes'))->push($key)]
