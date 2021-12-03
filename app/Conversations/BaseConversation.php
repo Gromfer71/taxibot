@@ -309,7 +309,7 @@ class BaseConversation extends Conversation
     public function getChangePrice(Question $question, $prices)
     {
         foreach ($prices as $price) {
-            $question = $question->addButton(Button::create(Translator::trans('buttons.change price #' . $price->id)));
+            $question = $question->addButton(Button::create(Translator::trans('buttons.change price #' . $price->id))->value('change price #' . $price->id));
         }
 
         return $question;

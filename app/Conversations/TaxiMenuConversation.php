@@ -378,6 +378,10 @@ class TaxiMenuConversation extends BaseAddressConversation
             $this->_sayDebug($key);
 
             if (!$key) {
+                $key = substr(stristr($answer->getValue(), '#'), 1);
+            }
+
+            if (!$key) {
                 $this->changePrice();
                 return;
             }
