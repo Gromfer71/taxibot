@@ -327,8 +327,11 @@ class TaxiMenuConversation extends BaseAddressConversation
                     $this->currentOrderMenu(true);
                 }
             ]);
-            $price = collect($prices)->filter(function ($item) use ($answer) {
-                if ($item->description == $answer->getText()) {
+
+            $key = substr(stristr($answer->getText(), '#'), 1);
+
+            $price = collect($prices)->filter(function ($item) use ($key) {
+                if ($item->id == $key) {
                     return $item;
                 } else {
                     return false;
@@ -371,7 +374,6 @@ class TaxiMenuConversation extends BaseAddressConversation
                 }
             ]);
             $key = substr(stristr($answer->getText(), '#'), 1);
-            $this->_sayDebug($key);
 
             if (!$key) {
                 $this->changePrice();
