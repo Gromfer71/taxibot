@@ -370,7 +370,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     $this->run();
                 }
             ]);
-            $key = stristr($answer->getText(), '#');
+            $key = substr(stristr($answer->getText(), '#'), 0, 1);
             $this->_sayDebug($key);
 
             if (!$key) {
