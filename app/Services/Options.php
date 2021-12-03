@@ -97,7 +97,7 @@ class Options
         );
         foreach ((array)$storage->get('wishes') as $wish) {
             $wishItem = $options->filter(function ($item) use ($wish) {
-                if ($item->name == $wish) {
+                if ($item->id == $wish) {
                     return $item;
                 }
             })->first();

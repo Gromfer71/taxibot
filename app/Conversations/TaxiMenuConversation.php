@@ -478,8 +478,13 @@ class TaxiMenuConversation extends BaseAddressConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer);
+            $key = substr(stristr($answer->getText(), '#'), 1);
+
+            if (!$key) {
+                $key = substr(stristr($answer->getValue(), '#'), 1);
+            }
             $this->bot->userStorage()->save(
-                ['wishes' => collect($this->bot->userStorage()->get('wishes'))->push($answer->getText())]
+                ['wishes' => collect($this->bot->userStorage()->get('wishes'))->push($key)]
             );
             $this->wishes(true);
         });

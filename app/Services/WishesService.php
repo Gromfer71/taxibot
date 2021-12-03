@@ -45,17 +45,17 @@ class WishesService
 
         if (!$changeOptionsSelected) {
             foreach ($this->wishesMenu['changeOptions'] as $wish) {
-                $this->question->addButton(Button::create($wish->name));
+                $this->question->addButton(Button::create(Translator::trans('buttons.wish #' . $wish->id))->value('wish #' . $wish->id));
             }
         }
         if (!$carOptionsSelected) {
             foreach ($this->wishesMenu['carOptions'] as $wish) {
-                $this->question->addButton(Button::create($wish->name));
+                $this->question->addButton(Button::create(Translator::trans('buttons.wish #' . $wish->id))->value('wish #' . $wish->id));
             }
         }
         foreach ($this->wishesMenu['wishOptions'] as $wish) {
             if (!in_array($wish->name, $this->wishes->toArray())) {
-                $this->question->addButton(Button::create($wish->name));
+                $this->question->addButton(Button::create(Translator::trans('buttons.wish #' . $wish->id))->value('wish #' . $wish->id));
             }
         }
 
