@@ -373,6 +373,8 @@ class TaxiMenuConversation extends BaseAddressConversation
             ]);
             $key = stristr(Translation::where('value', $answer->getText())->first()->key ?? null, '#');
             $this->_sayDebug($key);
+            $this->_sayDebug(Translation::where('value', $answer->getText())->first()->key ?? null);
+            $this->_sayDebug(Translation::where('value', $answer->getText())->first()->key);
             if (!$key) {
                 $this->changePrice();
                 return;
