@@ -483,6 +483,9 @@ class TaxiMenuConversation extends BaseAddressConversation
             if (!$key) {
                 $key = substr(stristr($answer->getValue(), '#'), 1);
             }
+            if (!$key) {
+                $this->wishes();
+            }
             $this->bot->userStorage()->save(
                 ['wishes' => collect($this->bot->userStorage()->get('wishes'))->push($key)]
             );
