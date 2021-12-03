@@ -366,6 +366,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
 
         $prices = (new Options())->filterChangePriceOptions(User::find($this->bot->getUser()->getId())->city);
+        $this->_sayDebug(json_encode($prices));
         $prices = $this->_filterChangePrice($prices);
         $question = $this->_addChangePriceDefaultButtons($question);
         $question = $this->getChangePrice($question, $prices);
