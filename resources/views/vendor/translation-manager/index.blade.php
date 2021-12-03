@@ -517,6 +517,35 @@
     </form>
     <hr>
     <h4>Всего: <?= $numTranslations ?>, Изменено: <?= $numChanged ?></h4>
+    <div class="col-4">
+        <div class="alert alert-info" role="alert">
+            Доступные переменные
+            <br>
+            <code>:route</code> - маршрут
+            <br>
+            <code>:price</code> - стоимость поездки
+            <br>
+            <code>:address</code> - адрес
+            <br>
+            <code>:wishes</code> - пожелания
+            <br>
+            <code>:comment</code> - комментарий
+            <br>
+            <code>:phone</code> - телефон
+            <br>
+            <code>:city</code> - город
+            <br>
+            <code>:auto</code> - информация об авто
+            <br>
+            <code>:time</code> - время до подачи авто
+            <br>
+            <code>:bonusbalance</code> - бонусный баланс
+            <br>
+            <code>:name</code> - псевдоним любимого адреса
+            <br>
+            <code>:bonuses</code> - тоже бонусный баланс, но при заказе авто
+        </div>
+    </div>
     <table class="table">
         <thead>
         <tr>
