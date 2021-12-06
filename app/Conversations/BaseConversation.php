@@ -82,7 +82,7 @@ class BaseConversation extends Conversation
         if (Translator::trans('buttons.' . $answer->getValue()) != 'buttons.') {
             $value = Translator::trans('buttons.' . $answer->getValue());
         }
-        Log::newLogAnswer($this->getUser()->id, $answer->getText(), $value ?? null);
+        Log::newLogAnswer($this->getUser()->id ?? null, $answer->getText(), $value ?? null);
         $callbackOrMethodName = $this->getActions($replaceActions)[$answer->getValue()] ?? '';
         if (is_callable($callbackOrMethodName)) {
             $callbackOrMethodName();
