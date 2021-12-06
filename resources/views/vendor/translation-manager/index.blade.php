@@ -544,6 +544,8 @@
             <code>:name</code> - псевдоним любимого адреса
             <br>
             <code>:bonuses</code> - тоже бонусный баланс, но при заказе авто
+            <br>
+            <code>:lang</code> - текущий язык пользователя
         </div>
     </div>
     <table class="table">
