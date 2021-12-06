@@ -12,9 +12,7 @@ use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Storages\Storage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
-use Exception;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class OrderApiService
 {
@@ -439,22 +437,28 @@ class OrderApiService
 
     private function file_get_contents_with_logging($url, $params)
     {
-        $success = false;
-        do {
-            try {
-                $context = stream_context_create(['http' => $params]);
-                $log = LogApi::newLogApi($url, json_encode($params, JSON_UNESCAPED_UNICODE));
-                $result = file_get_contents($url, false, $context);
-                $log->result = $result;
-                $log->save();
-                $success = true;
-            } catch (Exception $exception) {
-                Log::error($exception->getMessage());
-                sleep(1);
-                $success = false;
-            }
-        } while (!$success);
-
+//        $success = false;
+//        do {
+//            try {
+//                $context = stream_context_create(['http' => $params]);
+//                $log = LogApi::newLogApi($url, json_encode($params, JSON_UNESCAPED_UNICODE));
+//                $result = file_get_contents($url, false, $context);
+//                $log->result = $result;
+//                $log->save();
+//                $success = true;
+//            } catch (Exception $exception) {
+//                Log::error($exception->getMessage());
+//                sleep(1);
+//                $success = false;
+//            }
+//        } while (!$success);
+//
+//        return $result;
+        $context = stream_context_create(['http' => $params]);
+        $log = LogApi::newLogApi($url, json_encode($params, JSON_UNESCAPED_UNICODE));
+        $result = file_get_contents($url, false, $context);
+        $log->result = $result;
+        $log->save();
         return $result;
     }
 }
