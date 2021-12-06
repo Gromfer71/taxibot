@@ -38,7 +38,7 @@ class SwitchLangConversation extends BaseConversation
     public function run(string $message = ''): SwitchLangConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            $message ?: Translator::trans('messages.choose lang'),
+            $message ?: Translator::trans('messages.choose lang', ['lang' => $this->getUser()->lang->name ?? '']),
             [ButtonsStructure::BACK]
         );
 
