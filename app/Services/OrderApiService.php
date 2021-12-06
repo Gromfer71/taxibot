@@ -448,9 +448,9 @@ class OrderApiService
                 $log->save();
                 $success = true;
             } catch (Exception $exception) {
+                sleep(1);
                 $success = false;
             }
-            sleep(1);
         } while (!$success);
 
         return $result;
