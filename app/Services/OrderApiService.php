@@ -450,7 +450,6 @@ class OrderApiService
                 $success = true;
             } catch (Exception $exception) {
                 Log::error($exception->getMessage());
-                Log::error($exception->getTraceAsString());
                 sleep(1);
                 $success = false;
             }
