@@ -14,6 +14,7 @@ use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Exception;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class OrderApiService
 {
@@ -448,6 +449,8 @@ class OrderApiService
                 $log->save();
                 $success = true;
             } catch (Exception $exception) {
+                Log::error($exception->getMessage());
+                Log::error($exception->getTraceAsString());
                 sleep(1);
                 $success = false;
             }
