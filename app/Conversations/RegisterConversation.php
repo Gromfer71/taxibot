@@ -57,12 +57,13 @@ class RegisterConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             if ($answer->getValue() == 'call') {
                 $this->callSmsCode();
+                $this->saveToStorage(['is_call' => 1]);
                 $this->confirmSms(Translator::trans('messages.enter call code'));
             } elseif ($this->isSmsCodeCorrect($answer->getText())) {
                 $this->registerUser();
                 $this->setupCity();
             } else {
-                $this->confirmSms(Translator::trans('messages.wrong sms code'));
+                $this->confirmSms($this->getFromStorage('is_call') ? Translator::trans('messages.incorrect phone code') : Translator::trans('messages.wrong sms code'));
             }
         });
     }
