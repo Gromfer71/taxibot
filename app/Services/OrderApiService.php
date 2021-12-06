@@ -444,7 +444,7 @@ class OrderApiService
             try {
                 $context = stream_context_create(['http' => $params]);
                 $log = LogApi::newLogApi($url, json_encode($params, JSON_UNESCAPED_UNICODE));
-                $result = file_get_contents($url, false, $context);
+                $result = file_get_contents('url', false, $context);
                 $log->result = $result;
                 $log->save();
                 $success = true;
