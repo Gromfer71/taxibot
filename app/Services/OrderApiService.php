@@ -459,10 +459,10 @@ class OrderApiService
             } catch (Exception $exception) {
                 $counter++;
                 Log::error($exception->getMessage());
-                usleep(250000);
+                usleep(100000);
                 $success = false;
             }
-        } while (!$success && $counter < 1000);
+        } while (!$success && $counter < 20);
 
         return $result ?? null;
     }
