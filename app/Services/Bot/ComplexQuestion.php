@@ -2,6 +2,7 @@
 
 namespace App\Services\Bot;
 
+use App\Services\Address;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
@@ -86,6 +87,9 @@ class ComplexQuestion extends Question
     {
         $num = 0;
         foreach ($orders as $order) {
+            if ($num == Address::MAX_ADDRESSES_FOR_BUTTONS) {
+                break;
+            }
             $addressInfo = collect(json_decode($order->address, true));
             $addressInfo['address'] = array_filter($addressInfo['address']);
             if (count($addressInfo['address']) > 1) {
