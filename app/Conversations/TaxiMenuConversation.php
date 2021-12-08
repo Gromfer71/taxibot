@@ -464,11 +464,9 @@ class TaxiMenuConversation extends BaseAddressConversation
             ) : Translator::trans('messages.select wishes'),
             [
                 ButtonsStructure::GO_FOR_CASH,
-
-
             ],
             [
-                ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT
+                'config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT
             ]
         );
         if (Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage())) {
