@@ -65,15 +65,15 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             }
 
             $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
-            $address = FavoriteAddress::where(['user_id' => $this->getUser()->id, 'name' => $answer->getText()])->first()->address ?? '';
-            $this->addressMenu($address);
+//            $address = FavoriteAddress::where(['user_id' => $this->getUser()->id, 'name' => $answer->getText()])->first()->address ?? '';
+            $this->addressMenu();
         });
     }
 
-    public function addressMenu($address)
+    public function addressMenu()
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.favorite address menu', ['address' => $address]),
+            Translator::trans('messages.favorite address menu', ['address' => $this->getFromStorage('address_name')]),
             [ButtonsStructure::BACK, ButtonsStructure::DELETE]
         );
 
