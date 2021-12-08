@@ -468,7 +468,7 @@ class TaxiMenuConversation extends BaseAddressConversation
 
             ],
             [
-                ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT
+                ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT
             ]
         );
         if (Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage())) {
