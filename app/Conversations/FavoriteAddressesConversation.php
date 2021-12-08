@@ -3,6 +3,7 @@
 
 namespace App\Conversations;
 
+use App\Models\AddressHistory;
 use App\Models\FavoriteAddress;
 use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
@@ -65,14 +66,15 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             }
 
             $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
-            $this->addressMenu();
+            $address = AddressHistory::where(['user_id' => $this->getUser()->id, 'name' => $answer->getValue()])->first()->address ?? '';
+            $this->addressMenu($address);
         });
     }
 
-    public function addressMenu()
+    public function addressMenu($address)
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.favorite address menu'),
+            Translator::trans('messages.favorite address menu', ['address' => $address]),
             [ButtonsStructure::BACK, ButtonsStructure::DELETE]
         );
 
