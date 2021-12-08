@@ -262,6 +262,7 @@ class User extends Model
         } else {
             $addressInfo = $addressInfo->where('address', $address)->first();
         }
+        \Illuminate\Support\Facades\Log::debug($addressInfo);
 
         $addressInfo['address'] = explode(' – ', $addressInfo['address']);
 
