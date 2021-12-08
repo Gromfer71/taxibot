@@ -254,6 +254,7 @@ class User extends Model
             $item['address'] = implode(' – ', $item['address']);
             return $item;
         });
+        \Illuminate\Support\Facades\Log::debug($address);
 
         if ($addressInfo->where('address', $address)->isEmpty()) {
             $addressInfo = $addressInfo->filter(function ($item) use ($address) {
