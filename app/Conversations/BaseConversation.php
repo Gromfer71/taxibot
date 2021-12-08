@@ -298,8 +298,12 @@ class BaseConversation extends Conversation
                             ' – ',
                             $addressInfo->get('address')
                         );
+                    $textForSave = implode(
+                        ' – ',
+                        $addressInfo->get('address')
+                    );
                     $message .= $text . "\n";
-                    $this->saveToStorage(['address_in_number' => collect($this->getFromStorage('address_in_number'))->put($num + 1, $text)]);
+                    $this->saveToStorage(['address_in_number' => collect($this->getFromStorage('address_in_number'))->put($num + 1, $textForSave)]);
                     $num++;
                 }
             }
