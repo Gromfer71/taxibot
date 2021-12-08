@@ -72,7 +72,7 @@ class AddressesHistoryConversation extends BaseConversation
     public function addressMenu(): AddressesHistoryConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.address menu'),
+            Translator::trans('messages.address menu', ['address' => $this->getFromStorage('address')]),
             [ButtonsStructure::DELETE, ButtonsStructure::BACK]
         );
 
