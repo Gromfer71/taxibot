@@ -60,7 +60,7 @@ class ClearOrdersHistoryConversation extends BaseConversation
     public function orderMenu()
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.delete order'),
+            Translator::trans('messages.delete order', ['route' => $this->getFromStorage('route')]),
             [ButtonsStructure::DELETE, ButtonsStructure::BACK]
         );
 
