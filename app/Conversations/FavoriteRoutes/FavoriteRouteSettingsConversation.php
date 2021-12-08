@@ -84,6 +84,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
             } else {
                 $address = $answer->getText();
             }
+            Log::debug($address);
             $this->setRouteName($address);
         });
     }
