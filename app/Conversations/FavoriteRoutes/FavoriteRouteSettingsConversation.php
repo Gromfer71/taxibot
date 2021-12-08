@@ -85,9 +85,9 @@ class FavoriteRouteSettingsConversation extends BaseConversation
             $addressToSave = $this->getUser()->getOrderInfoByImplodedAddress($address);
             if (!$addressToSave) {
                 $this->addRoute();
+            } else {
+                $this->setRouteName($addressToSave);
             }
-
-            $this->setRouteName($addressToSave);
         });
     }
 
