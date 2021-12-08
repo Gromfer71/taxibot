@@ -65,7 +65,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             }
 
             $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
-            $address = FavoriteAddress::where(['user_id' => $this->getUser()->id, 'name' => $answer->getValue()])->first()->address ?? '';
+            $address = FavoriteAddress::where(['user_id' => $this->getUser()->id, 'name' => $answer->getText()])->first()->address ?? '';
             $this->addressMenu($address);
         });
     }
