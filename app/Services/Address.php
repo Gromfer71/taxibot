@@ -14,6 +14,7 @@ class Address
 
     public const MAX_ADDRESS_LENGTH = 120;
     public const MAX_ADDRESSES_COUNT = 25;
+    public const MAX_ADDRESSES_FOR_BUTTONS = 24;
 
     /**
      * @param string $query Адрес, который ввел пользователь
