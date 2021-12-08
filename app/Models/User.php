@@ -260,7 +260,10 @@ class User extends Model
 
         if ($addressInfo->where('address', $address)->isEmpty()) {
             $addressInfo = $addressInfo->filter(function ($item) use ($address) {
-                return false !== stristr($item['address'], $address);
+                //return false !== stristr($item['address'], $address);
+                \Illuminate\Support\Facades\Log::debug($item['address']);
+                \Illuminate\Support\Facades\Log::debug($address);
+                return $item['address'] == $address;
             })->first();
         } else {
             $addressInfo = $addressInfo->where('address', $address)->first();
