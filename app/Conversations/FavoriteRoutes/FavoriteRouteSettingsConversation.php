@@ -77,7 +77,14 @@ class FavoriteRouteSettingsConversation extends BaseConversation
             );
             Log::debug($answer->getText());
             Log::debug($answer->getValue());
-            $this->setRouteName($answer->getValue());
+
+            if (!$answer->getValue() && property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+                $address = collect($this->getFromStorage('address_in_number'));
+                $address = $address->get($answer->getText());
+            } else {
+                $address = $answer->getText();
+            }
+            $this->setRouteName($address);
         });
     }
 

@@ -294,10 +294,12 @@ class BaseConversation extends Conversation
                 $addressInfo = collect(json_decode($order->address, true));
                 $addressInfo['address'] = array_filter($addressInfo['address']);
                 if (count($addressInfo['address']) > 1) {
-                    $message .= self::numberToEmodji($num + 1) . ' ' . implode(
+                    $text = self::numberToEmodji($num + 1) . ' ' . implode(
                             ' – ',
                             $addressInfo->get('address')
-                        ) . "\n";
+                        );
+                    $message .= $text . "\n";
+                    $this->saveToStorage(['address_in_number' => collect($this->getFromStorage('address_in_number'))->put($num + 1, $text)]);
                     $num++;
                 }
             }
