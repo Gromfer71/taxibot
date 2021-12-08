@@ -246,6 +246,9 @@ class User extends Model
 
     public function getOrderInfoByImplodedAddress($address)
     {
+        if (!$address) {
+            return null;
+        }
         $address = Address::removeEllipsisFromAddressIfExists($address);
         $addresses = $this->orders->map(function ($item) {
             return collect(json_decode($item->address));
