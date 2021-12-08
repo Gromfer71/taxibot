@@ -463,9 +463,9 @@ class TaxiMenuConversation extends BaseAddressConversation
                 $this->bot->userStorage()
             ) : Translator::trans('messages.select wishes'),
             [
-                ButtonsStructure::BACK,
-                ButtonsStructure::CANCEL_LAST_WISH,
-                ButtonsStructure::GO_FOR_CASH
+                ButtonsStructure::GO_FOR_CASH,
+
+
             ],
             [
                 'config' => Address::haveEndAddressFromStorageAndAllAdressesIsReal(
@@ -473,10 +473,12 @@ class TaxiMenuConversation extends BaseAddressConversation
                 ) ? ButtonsFormatterService::SPLIT_BY_TWO_EXCLUDE_TWO_LINES : ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT
             ]
         );
-        //if ($second && Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage())) {
         if (Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage())) {
             $question = ComplexQuestion::setButtons($question, [ButtonsStructure::GO_FOR_BONUSES]);
         }
+        $question = ComplexQuestion::setButtons($question, [ButtonsStructure::BACK, ButtonsStructure::CANCEL_LAST_WISH]);
+        //if ($second && Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage())) {
+
 
         $wishService = new WishesService($wishes, $question, (new Options())->getWishes());
         $question = $wishService->addButtonsToQuestion();
