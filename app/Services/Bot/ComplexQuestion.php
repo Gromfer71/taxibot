@@ -87,7 +87,7 @@ class ComplexQuestion extends Question
     {
         $num = 0;
         foreach ($orders as $order) {
-            if ($num == Address::MAX_ADDRESSES_FOR_BUTTONS) {
+            if ($num == Address::MAX_ADDRESSES_FOR_BUTTONS - 1) {
                 break;
             }
             $addressInfo = collect(json_decode($order->address, true));
