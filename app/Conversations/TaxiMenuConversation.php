@@ -467,7 +467,11 @@ class TaxiMenuConversation extends BaseAddressConversation
                 ButtonsStructure::CANCEL_LAST_WISH,
                 ButtonsStructure::GO_FOR_CASH
             ],
-            ['config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT]
+            [
+                'config' => Address::haveEndAddressFromStorageAndAllAdressesIsReal(
+                    $this->bot->userStorage()
+                ) ? ButtonsFormatterService::SPLIT_BY_TWO_EXCLUDE_TWO_LINES : ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT
+            ]
         );
         //if ($second && Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage())) {
         if (Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage())) {
