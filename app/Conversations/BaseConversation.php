@@ -291,7 +291,7 @@ class BaseConversation extends Conversation
             $num = 0;
             $message .= "\n";
             foreach ($this->getUser()->orders as $order) {
-                if ($num == Address::MAX_ADDRESSES_COUNT - 1) {
+                if ($num == Address::MAX_ADDRESSES_COUNT) {
                     break;
                 }
                 $addressInfo = collect(json_decode($order->address, true));
