@@ -56,10 +56,23 @@ class AddressesHistoryConversation extends BaseConversation
             ButtonsFormatterService::getAdditionalForClearMenu($this->bot->getDriver())
         );
         $question = ComplexQuestion::setAddressButtons($question, $this->getUser()->addresses);
+        foreach ($this->getUser()->addresses as $key => $address) {
+            $this->saveToStorage(['addresses' => collect($this->getFromStorage('addresses'))->put($key + 1, $address)]);
+        }
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer);
-            $this->saveToStorage(['address' => $answer->getText()]);
+            if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+                $address = collect($this->getFromStorage('addresses'))->get($answer->getText());
+                if (!$address) {
+                    $address = $answer->getText();
+                }
+            } else {
+                $address = $answer->getText();
+            }
+
+
+            $this->saveToStorage(['address' => $address]);
             $this->addressMenu();
         });
     }
