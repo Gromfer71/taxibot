@@ -9,7 +9,6 @@ use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
-use Illuminate\Support\Facades\Log;
 
 class FavoriteRouteSettingsConversation extends BaseConversation
 {
@@ -75,8 +74,6 @@ class FavoriteRouteSettingsConversation extends BaseConversation
                 $answer,
                 [ButtonsStructure::BACK => 'run']
             );
-            Log::debug($answer->getText());
-            Log::debug($answer->getValue());
 
             if (!$answer->getValue() && property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
                 $address = collect($this->getFromStorage('address_in_number'));
@@ -84,8 +81,13 @@ class FavoriteRouteSettingsConversation extends BaseConversation
             } else {
                 $address = $answer->getText();
             }
-            Log::debug($address);
-            $this->setRouteName($address);
+
+            $addressToSave = $this->getUser()->getOrderInfoByImplodedAddress($address);
+            if (!$addressToSave) {
+                $this->addRoute();
+            }
+
+            $this->setRouteName($addressToSave);
         });
     }
 
@@ -102,9 +104,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
                                           'user_id' => $this->getUser()->id,
                                           'name' => $answer->getText(),
                                           'address' => json_encode(
-                                              $this->getUser()->getOrderInfoByImplodedAddress(
-                                                  $address
-                                              ),
+                                              $address,
                                               JSON_UNESCAPED_UNICODE
                                           )
                                       ]);
