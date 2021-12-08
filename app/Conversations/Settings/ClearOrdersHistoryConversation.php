@@ -47,7 +47,12 @@ class ClearOrdersHistoryConversation extends BaseConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer);
-            $this->saveToStorage(['route' => $answer->getText()]);
+            $route = collect($this->getFromStorage('address_in_number'));
+            $route = $route->get($answer->getText());
+            if (!$route) {
+                $route = $answer->getText();
+            }
+            $this->saveToStorage(['route' => $route]);
             $this->orderMenu();
         });
     }
