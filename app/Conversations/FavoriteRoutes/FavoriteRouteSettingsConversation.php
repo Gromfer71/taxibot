@@ -9,6 +9,7 @@ use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
+use Illuminate\Support\Facades\Log;
 
 class FavoriteRouteSettingsConversation extends BaseConversation
 {
@@ -74,6 +75,8 @@ class FavoriteRouteSettingsConversation extends BaseConversation
                 $answer,
                 [ButtonsStructure::BACK => 'run']
             );
+            Log::debug($answer->getText());
+            Log::debug($answer->getValue());
             $this->setRouteName($answer->getValue());
         });
     }

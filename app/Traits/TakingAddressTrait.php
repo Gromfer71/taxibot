@@ -8,7 +8,6 @@ use App\Services\Address;
 use App\Services\Options;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 use Tightenco\Collect\Support\Collection;
 
@@ -76,8 +75,7 @@ trait TakingAddressTrait
     public function handleSecondAddress($answer)
     {
         $address = $this->_getAddressFromHistoryByAnswer($answer);
-        Log::debug($answer->getText());
-        Log::debug($answer->getValue());
+
         if ($address) {
             $this->_saveSecondAddress($address->address, $address['lat'], $address['lon']);
             if ($address['lat'] == 0) {
