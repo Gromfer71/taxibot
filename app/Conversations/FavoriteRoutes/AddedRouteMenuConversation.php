@@ -41,13 +41,18 @@ class AddedRouteMenuConversation extends BaseAddressConversation
                     'address'
                 )
             ),
-            [ButtonsStructure::CANCEL, ButtonsStructure::SAVE]
+            [ButtonsStructure::SAVE, ButtonsStructure::CANCEL]
         );
         if (!$this->getFromStorage('order_already_done')) {
             $question = ComplexQuestion::setButtons($question, [ButtonsStructure::ADD_ADDRESS]);
         }
 
-        return $this->ask($question, $this->getDefaultCallback());
+        return $this->ask($question, function (Answer $answer) {
+            $this->handleAction($answer);
+            if ($answer->getValue() == 'save' || $answer->getValue() == 'cancel') {
+                $this->run();
+            }
+        });
     }
 
     public function setRouteName()
