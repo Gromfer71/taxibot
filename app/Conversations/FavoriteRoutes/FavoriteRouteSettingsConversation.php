@@ -144,7 +144,10 @@ class FavoriteRouteSettingsConversation extends BaseConversation
     public function confirmDeleteRoute($routeName)
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.confirm delete favorite route', ['route' => $routeName]),
+            Translator::trans(
+                'messages.confirm delete favorite route',
+                ['route' => implode(' – ', collect(json_decode(FavoriteRoute::where('name', $routeName)->where('user_id', $this->getUser()->id)->first()->address)->address)->toArray())]
+            ),
             [ButtonsStructure::BACK, ButtonsStructure::DELETE]
         );
 
