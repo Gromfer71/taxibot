@@ -49,9 +49,6 @@ class AddedRouteMenuConversation extends BaseAddressConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer);
-            if ($answer->getValue() == 'save' || $answer->getValue() == 'cancel') {
-                $this->run();
-            }
         });
     }
 
@@ -60,8 +57,8 @@ class AddedRouteMenuConversation extends BaseAddressConversation
         $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.write favorite route name'));
 
         return $this->ask($question, function (Answer $answer) {
-            if ($answer->getValue() == 'cancel') {
-                $this->bot->startConversation(new MenuConversation());
+            if ($answer->getValue() == 'cancel' || $answer->getValue() == 'save') {
+                $this->setRouteName();
                 die();
             }
             FavoriteRoute::create([
