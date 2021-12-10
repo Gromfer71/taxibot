@@ -86,10 +86,13 @@ class FavoriteRouteSettingsConversation extends BaseConversation
             if (!$addressToSave) {
                 $this->addRoute();
             } else {
-                $this->setRouteName($addressToSave);
+                $this->saveToStorage(['dont_add_address' => true]);
+                $this->bot->startConversation(new AddedRouteMenuConversation());
+                //$this->setRouteName($addressToSave);
             }
         });
     }
+
 
     public function setRouteName($address)
     {

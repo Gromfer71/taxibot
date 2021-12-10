@@ -43,7 +43,7 @@ class AddedRouteMenuConversation extends BaseAddressConversation
             ),
             [ButtonsStructure::SAVE, ButtonsStructure::CANCEL]
         );
-        if (!$this->getFromStorage('order_already_done')) {
+        if (!$this->getFromStorage('order_already_done') || !$this->getFromStorage('dont_add_address')) {
             $question = ComplexQuestion::setButtons($question, [ButtonsStructure::ADD_ADDRESS]);
         }
 
