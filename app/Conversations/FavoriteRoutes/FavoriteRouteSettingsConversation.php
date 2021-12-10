@@ -18,6 +18,8 @@ class FavoriteRouteSettingsConversation extends BaseConversation
             ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
             ButtonsStructure::CREATE_ROUTE => 'App\Conversations\FavoriteRoutes\TakingAddressForFavoriteRouteConversation',
             ButtonsStructure::ADD_ROUTE => 'addRoute',
+            ButtonsStructure::CANCEL => '',
+
 //            ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY => function () {
 //                $this->getUser()->favoriteRoutes->each(function ($item) {
 //                    $item->delete();
@@ -86,9 +88,25 @@ class FavoriteRouteSettingsConversation extends BaseConversation
             if (!$addressToSave) {
                 $this->addRoute();
             } else {
-                $this->saveToStorage(['dont_add_address' => true]);
-                $this->bot->startConversation(new AddedRouteMenuConversation());
-                //$this->setRouteName($addressToSave);
+                $this->saveMenu($addressToSave);
+            }
+        });
+    }
+
+    public function saveMenu($address)
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.added favorite route menu') . ' ' . $this->bot->userStorage()->get(
+                'address'
+            ),
+            [ButtonsStructure::SAVE, ButtonsStructure::CANCEL]
+        );
+
+        return $this->ask($question, function (Answer $answer) use ($address) {
+            if ($answer->getValue() == ButtonsStructure::SAVE) {
+                $this->setRouteName($address);
+            } elseif ($answer->getValue() == ButtonsStructure::CANCEL) {
+                $this->run();
             }
         });
     }
