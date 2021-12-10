@@ -107,6 +107,8 @@ class FavoriteRouteSettingsConversation extends BaseConversation
                 $this->setRouteName($address);
             } elseif ($answer->getValue() == ButtonsStructure::CANCEL) {
                 $this->run();
+            } else {
+                $this->saveMenu($address);
             }
         });
     }
