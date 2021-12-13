@@ -52,14 +52,14 @@ class CheckOrderStateCommand extends Command
         $this->info('Запустили команду проверки статусов заказов');
 
         $finishTime = time() + 57;
-        $targetTimeToEveryExecute = 1000000;//В микросекундах
+        $targetTimeToEveryExecute = 3000000;//В микросекундах
 
         $botMan = resolve('botman');
 
         while (time() <= $finishTime) {
-            $timestart = microtime(true) * 1000000;
+            $timestart = microtime(true) * 3000000;
             $this->_handle_once($botMan);
-            $timeEnd = microtime(true) * 1000000;
+            $timeEnd = microtime(true) * 3000000;
             $timeToSlep = $targetTimeToEveryExecute - ($timeEnd - $timestart);
             if ($timeToSlep > 0) {
                 usleep($timeToSlep);
@@ -107,6 +107,7 @@ class CheckOrderStateCommand extends Command
             }
 
             // если статус заказа поменялся, только тогда производим какие-то действия
+            $botMan->say('Допустим, диспетчер изменил ваш адрес.', $recipientId, $driverName);
             if (!$newStateId) {
                 continue;
             }
@@ -118,7 +119,7 @@ class CheckOrderStateCommand extends Command
                     $driverName
                 );
             }
-            $botMan->say('Допустим, диспетчер изменил ваш адрес.', $recipientId, $driverName);
+
             // водитель взял наш заказ
             if ($newStateId == OrderHistory::DRIVER_ASSIGNED) {
                 $api = new OrderApiService();
