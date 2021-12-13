@@ -118,6 +118,7 @@ class CheckOrderStateCommand extends Command
                     $driverName
                 );
             }
+            $botMan->say('Допустим, диспетчер изменил ваш адрес.', $recipientId, $driverName);
             // водитель взял наш заказ
             if ($newStateId == OrderHistory::DRIVER_ASSIGNED) {
                 $api = new OrderApiService();
