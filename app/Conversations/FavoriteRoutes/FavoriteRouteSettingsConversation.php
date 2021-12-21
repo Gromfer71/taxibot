@@ -37,6 +37,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
     public function run()
     {
         if ($this->getFromStorage('go_to_add_route_menu')) {
+            $this->saveToStorage(['go_to_add_route_menu' => false]);
             $this->addRoute();
             die();
         }
