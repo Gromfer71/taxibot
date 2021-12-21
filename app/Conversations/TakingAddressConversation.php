@@ -84,7 +84,7 @@ class TakingAddressConversation extends BaseAddressConversation
         }
         $question = ComplexQuestion::setButtons(
             $question,
-            [ButtonsStructure::EXIT],
+            [$this->backButton()],
             ['location' => 'addresses']
         );
         $question = $this->_addAddressFavoriteButtons($question);
