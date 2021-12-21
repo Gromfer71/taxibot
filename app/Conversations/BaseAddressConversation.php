@@ -34,7 +34,7 @@ abstract class BaseAddressConversation extends BaseConversation
 
         $question = ComplexQuestion::createWithSimpleButtons(
             $withFavoriteAddresses ? $this->addAddressesToMessage($message) : $this->addAddressesToMessageOnlyFromHistory($message),
-            [ButtonsStructure::EXIT],
+            [$this->backButton()],
             ['location' => 'addresses']
         );
         // Добавляем в кнопки избранные адреса и адреса из истории
@@ -330,6 +330,11 @@ abstract class BaseAddressConversation extends BaseConversation
     public function needToSaveAddressToHistory()
     {
         return !$this->getFromStorage('dont_save_address_to_history');
+    }
+
+    public function backButton()
+    {
+        return ButtonsStructure::EXIT;
     }
 
 
