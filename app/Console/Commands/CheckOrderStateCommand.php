@@ -122,7 +122,9 @@ class CheckOrderStateCommand extends Command
                     $storage = $botMan->userStorageFromId(
                         User::where('id', $actualOrder->user_id)->first()->telegram_id
                     );
-                    Address::updateAddressesInStorage($oldState, $storage);
+
+                    // newState - это когда меняет диспетчер, т.е. адреса ставим новые, а для отладки когда меняем адреса в бд, надо юзать oldState
+                    Address::updateAddressesInStorage($newState, $storage);
 
 
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
