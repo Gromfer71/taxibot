@@ -148,12 +148,17 @@ class OrderHistory extends Model
         $this->save();
     }
 
-    public function updateOrderState($state)
+    public function updateOrderState($state = null)
     {
         $api = new OrderApiService();
         // $newState = $api->getOrderState($this);
         //$newState = $api->getOrderState($this);
-        $newState = $state;
+        if (!$state) {
+            $newState = $api->getOrderState($this);
+        } else {
+            $newState = $state;
+        }
+
         if ($newState->code != 0 && $newState->code != 12) {
             return false;
         }
