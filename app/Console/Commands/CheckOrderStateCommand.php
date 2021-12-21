@@ -8,6 +8,7 @@ use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
+use App\Services\MessageGeneratorService;
 use App\Services\OrderApiService;
 use App\Services\Translator;
 use Barryvdh\TranslationManager\Models\LangPackage;
@@ -115,7 +116,13 @@ class CheckOrderStateCommand extends Command
 
             if ($newState && $oldState) {
                 if (Address::isAddressChangedFromState($oldState, $newState)) {
+                    $storage = $botMan->userStorageFromId(
+                        User::where('id', $actualOrder->user_id)->first()->telegram_id
+                    );
+
+
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
+                    $botMan->say(MessageGeneratorService::getFullOrderInfoFromStorage($storage), $recipientId, $driverName);
                 }
             }
 
