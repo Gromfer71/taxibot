@@ -14,7 +14,7 @@ use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
+
 
 class CheckOrderStateCommand extends Command
 {
@@ -84,8 +84,6 @@ class CheckOrderStateCommand extends Command
             $oldStateId = $currentState->state_id ?? OrderHistory::NEW_ORDER;
 
             $newState = (new OrderApiService())->getOrderState($actualOrder);
-            Log::info(json_encode($newState));
-            Log::info(json_encode($currentState));
             $newStateId = $actualOrder->checkOrder($newState);
             $newState = $newState->data;
             $actualOrder->refresh();

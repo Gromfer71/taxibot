@@ -7,7 +7,6 @@ use BotMan\BotMan\Storages\Storage;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise\Utils;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class Address
@@ -222,8 +221,6 @@ class Address
 
     public static function isAddressChangedFromState($oldState, $newState)
     {
-        Log::info('Старый адрес source ' . $oldState->source);
-        Log::info('Новый адрес source ' . $newState->source);
         if ($newState->source != $oldState->source || $newState->destination != $oldState->destination) {
             return true;
         }
