@@ -290,7 +290,7 @@ class OrderHistory extends Model
             return null;
         }
 
-        if ($newState->state_id != $oldState->state_id) {
+        if ($newState->state_id != $oldState) {
             $this->state = json_encode($newState);
             if (empty($this->state_id_chain)) {
                 $this->state_id_chain = json_encode([]);
