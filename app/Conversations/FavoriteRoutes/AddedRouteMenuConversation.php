@@ -49,6 +49,7 @@ class AddedRouteMenuConversation extends BaseAddressConversation
 
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer);
+            $this->run();
         });
     }
 
