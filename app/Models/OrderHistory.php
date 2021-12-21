@@ -289,7 +289,8 @@ class OrderHistory extends Model
         if ($newState === 12) {
             return null;
         }
-
+        \Illuminate\Support\Facades\Log::info($newState->state_id);
+        \Illuminate\Support\Facades\Log::info($oldState);
         if ($newState->state_id != $oldState) {
             $this->state = json_encode($newState);
             if (empty($this->state_id_chain)) {
