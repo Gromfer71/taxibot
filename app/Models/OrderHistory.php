@@ -279,6 +279,8 @@ class OrderHistory extends Model
 
     public function checkOrder($newState)
     {
+        // На этом моменте, если chain_id повторяются в бд, но по факту ничего не меняется, значит некорректно сделали json_decode
+        // и взяли по умолчанию NEW_ORDER. Это обычно из-за того что в бд руками правили состояние заказа
         $oldState = $this->getCurrentOrderState()->state_id ?? self::NEW_ORDER;
         $newState = $this->updateOrderState($newState);
 
@@ -289,8 +291,8 @@ class OrderHistory extends Model
         if ($newState === 12) {
             return null;
         }
-        \Illuminate\Support\Facades\Log::info($newState->state_id);
-        \Illuminate\Support\Facades\Log::info($oldState);
+//        \Illuminate\Support\Facades\Log::info($newState->state_id);
+//        \Illuminate\Support\Facades\Log::info($oldState);
         if ($newState->state_id != $oldState) {
             $this->state = json_encode($newState);
             if (empty($this->state_id_chain)) {
