@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\OrderHistory;
 use App\Models\User;
+use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
@@ -78,8 +79,12 @@ class CheckOrderStateCommand extends Command
             }
 
             // получение старого и нового состояния заказа
-            $oldStateId = $actualOrder->getCurrentOrderState()->state_id ?? OrderHistory::NEW_ORDER;
-            $newStateId = $actualOrder->checkOrder();
+            $currentState = $actualOrder->getCurrentOrderState();
+            $oldStateId = $currentState->state_id ?? OrderHistory::NEW_ORDER;
+
+            $newState = (new OrderApiService())->getOrderState($actualOrder);
+            $newStateId = $actualOrder->checkOrder($newState);
+
             $actualOrder->refresh();
             if ($actualOrder->relevance != 0) {
                 continue;
@@ -106,10 +111,18 @@ class CheckOrderStateCommand extends Command
                 $recipientId = $user->telegram_id;
             }
 
-            // если статус заказа поменялся, только тогда производим какие-то действия
-            if (!$newStateId) {
-                continue;
+            if (Address::isAddressChangedFromState($currentState, $newState)) {
+                $botMan->say('Адрес поменялся', $recipientId, $driverName);
             }
+
+
+            // если статус заказа поменялся, только тогда производим какие-то действия
+            {
+                if (!$newStateId) {
+                    continue;
+                }
+            }
+
 
             if (config('app.debug')) {
                 $botMan->say(

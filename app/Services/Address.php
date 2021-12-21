@@ -219,6 +219,24 @@ class Address
         }
     }
 
+    public static function isAddressChangedFromState($oldState, $newState)
+    {
+        if ($newState->source != $oldState->source || $newState->destination != $oldState->destination) {
+            return true;
+        }
+        if (count($newState->stops)) {
+            if (count($newState->stops) != count($oldState->stops)) {
+                return true;
+            }
+            foreach ($newState->stops as $key => $stop) {
+                if ($stop != $oldState->stops[$key]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private static function _log($url, $params, $result)
     {
         $log = new LogApi();

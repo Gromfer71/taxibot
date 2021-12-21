@@ -88,8 +88,7 @@ class OrderHistory extends Model
                                         JSON_UNESCAPED_UNICODE
                                     ),
                                     'price' => $bot->userStorage()->get('price'),
-                                    'changed_price' => $bot->userStorage()->get('changed_price') ? $bot->userStorage(
-                                    )->get('changed_price')['id'] : null,
+                                    'changed_price' => $bot->userStorage()->get('changed_price') ? $bot->userStorage()->get('changed_price')['id'] : null,
                                     'comment' => $bot->userStorage()->get('comment'),
                                     'wishes' => MessageGeneratorService::implodeWishes(
                                         collect($bot->userStorage()->get('wishes'))
@@ -149,10 +148,12 @@ class OrderHistory extends Model
         $this->save();
     }
 
-    public function updateOrderState()
+    public function updateOrderState($state)
     {
         $api = new OrderApiService();
-        $newState = $api->getOrderState($this);
+        // $newState = $api->getOrderState($this);
+        //$newState = $api->getOrderState($this);
+        $newState = $state;
         if ($newState->code != 0 && $newState->code != 12) {
             return false;
         }
@@ -271,10 +272,10 @@ class OrderHistory extends Model
         return false;
     }
 
-    public function checkOrder()
+    public function checkOrder($state)
     {
         $oldState = $this->getCurrentOrderState()->state_id ?? self::NEW_ORDER;
-        $newState = $this->updateOrderState();
+        $newState = $this->updateOrderState($state);
 
         if (!$newState) {
             return self::ORDER_NOT_FOUND;
