@@ -46,6 +46,29 @@ trait BotManagerTrait
         }
     }
 
+    public function updateAddressesInStorage($orderState)
+    {
+        $addresses = collect();
+        $lat = collect();
+        $lon = collect();
+
+        $addresses->push($orderState->source);
+        $lat->push($orderState->source_lat);
+        $lon->push($orderState->source_lon);
+
+        $addresses->push($orderState->destination);
+        $lat->push($orderState->destination_lat);
+        $lon->push($orderState->destination_lon);
+
+        foreach ($orderState->stops as $stop) {
+            $addresses->push($stop->address);
+            $lat->push($stop->lat);
+            $lon->push($stop->lon);
+        }
+
+        $this->saveToStorage(['address' => $addresses->toArray(), 'lat' => $lat->toArray(), 'lon' => $lon->toArray()]);
+    }
+
     /**
      *  Проверка на ошибку в программе
      */

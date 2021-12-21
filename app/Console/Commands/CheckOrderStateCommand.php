@@ -11,6 +11,7 @@ use App\Services\ButtonsFormatterService;
 use App\Services\MessageGeneratorService;
 use App\Services\OrderApiService;
 use App\Services\Translator;
+use App\Traits\BotManagerTrait;
 use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
@@ -19,6 +20,8 @@ use Illuminate\Console\Command;
 
 class CheckOrderStateCommand extends Command
 {
+    use BotManagerTrait;
+
     public const TELEGRAM_DRIVER_NAME = 'Telegram';
     public const VK_DRIVER_NAME = 'VkCommunityCallback';
     /**
@@ -119,6 +122,7 @@ class CheckOrderStateCommand extends Command
                     $storage = $botMan->userStorageFromId(
                         User::where('id', $actualOrder->user_id)->first()->telegram_id
                     );
+                    $this->updateAddressesInStorage($newState);
 
 
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
