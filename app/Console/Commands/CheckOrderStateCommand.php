@@ -114,7 +114,7 @@ class CheckOrderStateCommand extends Command
 
             if ($newState && $currentState) {
                 if (Address::isAddressChangedFromState($currentState, $newState)) {
-                    $botMan->say('Адрес поменялся', $recipientId, $driverName);
+                    $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
                 }
             }
 
