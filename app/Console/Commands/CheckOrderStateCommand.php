@@ -114,8 +114,10 @@ class CheckOrderStateCommand extends Command
                 $recipientId = $user->telegram_id;
             }
 
-            if (Address::isAddressChangedFromState($currentState, $newState)) {
-                $botMan->say('Адрес поменялся', $recipientId, $driverName);
+            if ($newState && $currentState) {
+                if (Address::isAddressChangedFromState($currentState, $newState)) {
+                    $botMan->say('Адрес поменялся', $recipientId, $driverName);
+                }
             }
 
 
