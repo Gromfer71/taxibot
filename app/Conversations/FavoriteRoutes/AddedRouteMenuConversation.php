@@ -63,6 +63,9 @@ class AddedRouteMenuConversation extends BaseAddressConversation
             } elseif ($answer->getValue() == ButtonsStructure::SAVE) {
                 $this->setRouteName();
                 die();
+            } elseif ($answer->getValue() == ButtonsStructure::ADD_ADDRESS) {
+                $this->setRouteName();
+                die();
             }
             FavoriteRoute::create([
                                       'user_id' => $this->getUser()->id,
