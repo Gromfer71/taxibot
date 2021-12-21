@@ -85,6 +85,7 @@ class CheckOrderStateCommand extends Command
 
             $newState = (new OrderApiService())->getOrderState($actualOrder);
             Log::info(json_encode($newState));
+            Log::info(json_encode($currentState));
             $newStateId = $actualOrder->checkOrder($newState);
 
             $actualOrder->refresh();
