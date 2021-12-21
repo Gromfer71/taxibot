@@ -57,7 +57,9 @@ class AddedRouteMenuConversation extends BaseAddressConversation
         $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.write favorite route name'));
 
         return $this->ask($question, function (Answer $answer) {
-            if ($answer->getValue() == 'cancel' || $answer->getValue() == 'save') {
+            if ($answer->getValue() == ButtonsStructure::CANCEL) {
+                $this->bot->startConversation(new MenuConversation());
+            } elseif ($answer->getValue() == ButtonsStructure::SAVE) {
                 $this->setRouteName();
                 die();
             }
