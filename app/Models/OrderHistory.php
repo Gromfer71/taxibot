@@ -277,10 +277,10 @@ class OrderHistory extends Model
         return false;
     }
 
-    public function checkOrder($state)
+    public function checkOrder($newState)
     {
         $oldState = $this->getCurrentOrderState()->state_id ?? self::NEW_ORDER;
-        $newState = $this->updateOrderState($state);
+        $newState = $this->updateOrderState($newState);
 
         if (!$newState) {
             return self::ORDER_NOT_FOUND;
@@ -290,7 +290,7 @@ class OrderHistory extends Model
             return null;
         }
 
-        if ($newState->state_id != $oldState) {
+        if ($newState->state_id != $oldState->state_id) {
             $this->state = json_encode($newState);
             if (empty($this->state_id_chain)) {
                 $this->state_id_chain = json_encode([]);

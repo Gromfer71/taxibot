@@ -80,11 +80,12 @@ class CheckOrderStateCommand extends Command
             }
 
             // получение старого и нового состояния заказа
-            $currentState = $actualOrder->getCurrentOrderState();
-            $oldStateId = $currentState->state_id ?? OrderHistory::NEW_ORDER;
+            $oldState = $actualOrder->getCurrentOrderState();
+            $oldStateId = $oldState->state_id ?? OrderHistory::NEW_ORDER;
 
             $newState = (new OrderApiService())->getOrderState($actualOrder);
             $newStateId = $actualOrder->checkOrder($newState);
+
             $newState = $newState->data;
             $actualOrder->refresh();
             if ($actualOrder->relevance != 0) {
@@ -112,8 +113,8 @@ class CheckOrderStateCommand extends Command
                 $recipientId = $user->telegram_id;
             }
 
-            if ($newState && $currentState) {
-                if (Address::isAddressChangedFromState($currentState, $newState)) {
+            if ($newState && $oldState) {
+                if (Address::isAddressChangedFromState($oldState, $newState)) {
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
                 }
             }
