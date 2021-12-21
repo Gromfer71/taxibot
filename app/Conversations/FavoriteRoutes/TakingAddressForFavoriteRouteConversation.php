@@ -18,7 +18,10 @@ class TakingAddressForFavoriteRouteConversation extends TakingAddressConversatio
     public function getActions(array $replaceActions = []): array
     {
         $actions = [
-            ButtonsStructure::BACK => FavoriteRouteSettingsConversation::class,
+            ButtonsStructure::BACK => function () {
+                $this->saveToStorage(['go_to_add_route_menu' => true]);
+                $this->bot->startConversation(new FavoriteRouteSettingsConversation());
+            }
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));

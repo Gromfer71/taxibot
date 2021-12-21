@@ -36,6 +36,11 @@ class FavoriteRouteSettingsConversation extends BaseConversation
      */
     public function run()
     {
+        if ($this->getFromStorage('go_to_add_route_menu')) {
+            $this->addRoute();
+            die();
+        }
+
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans('messages.add favorite routes menu'),
             [ButtonsStructure::BACK, ButtonsStructure::ADD_ROUTE]
