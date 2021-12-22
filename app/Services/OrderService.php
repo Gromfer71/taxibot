@@ -4,6 +4,7 @@ namespace App\Services;
 
 use BotMan\BotMan\Storages\Storage;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class OrderService
 {
@@ -38,7 +39,7 @@ class OrderService
         if (!isset($priceResponse->data->sum)) {
             throw new Exception('Calc price error from api. Code ' . $priceResponse->code ?? 'error code');
         }
-
+        Log::info('Новая цена ' . $priceResponse->data->sum);
         $this->getStorage()->save(['price' => $priceResponse->data->sum]);
         $this->getStorage()->save(['tariff_id' => $tariff->data->tariff_id]);
         $this->getStorage()->save(['crew_group_id' => $crewGroupId]);
