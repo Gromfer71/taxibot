@@ -125,7 +125,7 @@ class CheckOrderStateCommand extends Command
                     );
 
                     // newState - это когда меняет диспетчер, т.е. адреса ставим новые, а для отладки когда меняем адреса в бд, надо юзать oldState
-                    Address::updateAddressesInStorage($newState, $storage);
+                    Address::updateAddressesInStorage($oldState, $storage);
                     $orderService = new OrderService($storage);
                     $orderService->calcPrice();
 
