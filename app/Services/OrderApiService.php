@@ -324,7 +324,6 @@ class OrderApiService
         $oldAddresses = $oldAddresses->values()->all();
         $lat = $lat->values()->all();
         $lon = $lon->values()->all();
-        Log::info(json_encode($oldAddresses));
         $addresses = collect();
         foreach ($oldAddresses as $key => $address) {
             $addresses->push(
