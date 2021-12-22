@@ -13,6 +13,7 @@ use App\Services\ButtonsFormatterService;
 use App\Services\MessageGeneratorService;
 use App\Services\Options;
 use App\Services\OrderApiService;
+use App\Services\OrderService;
 use App\Services\Translator;
 use App\Services\WishesService;
 use App\Traits\BotManagerTrait;
@@ -104,7 +105,8 @@ class TaxiMenuConversation extends BaseAddressConversation
 
     public function run()
     {
-        $this->calcPrice();
+        $orderService = new OrderService($this->bot->userStorage());
+        $orderService->calcPrice();
         $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
         $question = ComplexQuestion::createWithSimpleButtons(
             MessageGeneratorService::getFullOrderInfoFromStorage($this->bot->userStorage()),
@@ -144,35 +146,6 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, $this->getDefaultCallback());
-    }
-
-    public function calcPrice()
-    {
-        $options = new Options();
-        $crewGroupId = collect($this->bot->userStorage()->get('crew_group_id'))->first();
-
-        if (!$crewGroupId) {
-            $city = User::find($this->bot->getUser()->getId())->city;
-            $crewGroupId = $options->getCrewGroupIdFromCity($city ?? null);
-        }
-        $api = new OrderApiService();
-        $tariff = $api->selectTariffForOrder(
-            $crewGroupId,
-            $this->bot->userStorage()->get('lat'),
-            $this->bot->userStorage()->get('lon')
-        );
-        $priceResponse = $api->calcOrderPrice(
-            $tariff->data->tariff_id,
-            $options->getOrderParamsArray($this->bot),
-            $this->bot->userStorage()
-        );
-        if (!isset($priceResponse->data->sum)) {
-            $this->_sayDebug('Цена поездки посчиталась некорректно!');
-        }
-
-        $this->bot->userStorage()->save(['price' => $priceResponse->data->sum ?? 100]);
-        $this->bot->userStorage()->save(['tariff_id' => $tariff->data->tariff_id]);
-        $this->bot->userStorage()->save(['crew_group_id' => $crewGroupId]);
     }
 
     public function currentOrderMenu($withMessageAboutOrderCreated = null, $exactlyWithoutMessage = false)
@@ -455,7 +428,8 @@ class TaxiMenuConversation extends BaseAddressConversation
 
     public function wishes($second = false)
     {
-        $this->calcPrice();
+        $orderService = new OrderService($this->bot->userStorage());
+        $orderService->calcPrice();
         $wishes = collect($this->bot->userStorage()->get('wishes'));
 
         $question = ComplexQuestion::createWithSimpleButtons(

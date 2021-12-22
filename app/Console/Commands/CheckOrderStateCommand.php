@@ -10,6 +10,7 @@ use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\MessageGeneratorService;
 use App\Services\OrderApiService;
+use App\Services\OrderService;
 use App\Services\Translator;
 use App\Traits\BotManagerTrait;
 use Barryvdh\TranslationManager\Models\LangPackage;
@@ -125,6 +126,8 @@ class CheckOrderStateCommand extends Command
 
                     // newState - это когда меняет диспетчер, т.е. адреса ставим новые, а для отладки когда меняем адреса в бд, надо юзать oldState
                     Address::updateAddressesInStorage($newState, $storage);
+                    $orderService = new OrderService($storage);
+                    $orderService->calcPrice();
 
 
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);

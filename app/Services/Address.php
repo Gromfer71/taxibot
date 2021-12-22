@@ -243,13 +243,17 @@ class Address
         $lat = collect();
         $lon = collect();
 
+
         $addresses->push($orderState->source);
         $lat->push($orderState->source_lat);
         $lon->push($orderState->source_lon);
 
-        $addresses->push($orderState->destination);
-        $lat->push($orderState->destination_lat);
-        $lon->push($orderState->destination_lon);
+
+        if ($orderState->destination) {
+            $addresses->push($orderState->destination);
+            $lat->push($orderState->destination_lat);
+            $lon->push($orderState->destination_lon);
+        }
 
         foreach ($orderState->stops as $stop) {
             $addresses->push($stop->address);
