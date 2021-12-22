@@ -253,6 +253,8 @@ class Address
             $addresses->push($orderState->destination);
             $lat->push($orderState->destination_lat);
             $lon->push($orderState->destination_lon);
+        } else {
+            $storage->save(['second_address_will_say_to_driver_flag' => 1]);
         }
 
         foreach ($orderState->stops as $stop) {
