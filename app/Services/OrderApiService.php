@@ -313,9 +313,17 @@ class OrderApiService
 
     public function analyzeRoute(Storage $storage)
     {
-        $lat = collect($storage->get('lat'))->values()->all();
-        $lon = collect($storage->get('lon'))->values()->all();
-        $oldAddresses = collect($storage->get('address'))->values()->all();
+        $lat = collect($storage->get('lat'));
+        $lon = collect($storage->get('lon'));
+        $oldAddresses = collect($storage->get('address'));
+        if ($oldAddresses->count() == 1) {
+            $oldAddresses->push('');
+            $lat->push('');
+            $lon->push('');
+        }
+        $oldAddresses = $oldAddresses->values()->all();
+        $lat = $lat->values()->all();
+        $lon = $lon->values()->all();
         Log::info(json_encode($oldAddresses));
         $addresses = collect();
         foreach ($oldAddresses as $key => $address) {
