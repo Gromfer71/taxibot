@@ -19,9 +19,6 @@ use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * Базовый класс диалога, от него наследуются все диалоги
@@ -52,29 +49,12 @@ class BaseConversation extends Conversation
         $this->options = new Options();
     }
 
-    public function ask($question, $next, $additionalParameters = [])
-    {
-        Log::newLogDebug($this->getUser()->id ?? null, $question->getText());
-        $this->bot->reply($question, $additionalParameters);
-        $this->bot->storeConversation($this, $next, $question, $additionalParameters);
-
-        return $this;
-    }
-
     public function getDefaultCallback()
     {
         return function (Answer $answer) {
             $this->handleAction($answer);
             $this->run();
         };
-    }
-
-    /**
-     * @return User|User[]|Builder|Collection|Model|object
-     */
-    public function getUser()
-    {
-        return User::find($this->bot->getUser()->getId());
     }
 
     public function handleAction($answer, $replaceActions = [])
@@ -96,6 +76,10 @@ class BaseConversation extends Conversation
         }
     }
 
+    public function getUser()
+    {
+        return User::find($this->bot->getUser()->getId());
+    }
 
     /**
      * Массив действий под определенную кнопку. Если значение это анонимная функция, то выполнится она, если имя метода,
@@ -111,13 +95,9 @@ class BaseConversation extends Conversation
         return array_replace_recursive($actions, $replaceActions);
     }
 
-    public function _sayDebug($message)
+    public function run()
     {
-        if (config('app.debug')) {
-            $this->say(
-                '||DEBUG|| ' . $message
-            );
-        }
+        // TODO: Implement run() method.
     }
 
     public function _filterChangePrice($prices, $key_price = 'changed_price')
@@ -173,6 +153,15 @@ class BaseConversation extends Conversation
         });
     }
 
+    public function ask($question, $next, $additionalParameters = [])
+    {
+        Log::newLogDebug($this->getUser()->id ?? null, $question->getText());
+        $this->bot->reply($question, $additionalParameters);
+        $this->bot->storeConversation($this, $next, $question, $additionalParameters);
+
+        return $this;
+    }
+
     public function addAddressesToMessage($questionText)
     {
         if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
@@ -192,6 +181,15 @@ class BaseConversation extends Conversation
         return $questionText;
     }
 
+    public function _sayDebug($message)
+    {
+        if (config('app.debug')) {
+            $this->say(
+                '||DEBUG|| ' . $message
+            );
+        }
+    }
+
     public function numberToEmodji($number)
     {
         $number = (string)$number;
@@ -202,20 +200,6 @@ class BaseConversation extends Conversation
         }
 
         return $result;
-    }
-
-
-    public function addAddressesToMessageOnlyFromHistory($questionText)
-    {
-        if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
-            $questionText .= "\n";
-
-            foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
-                $questionText .= $this->numberToEmodji($historyAddressKey + 1) . ' ' . $address->address . "\n";
-            }
-        }
-
-        return $questionText;
     }
 //
 //    public function addOrdersToMessage($questionText)
@@ -232,6 +216,19 @@ class BaseConversation extends Conversation
 //        return $questionText;
 //    }
 
+    public function addAddressesToMessageOnlyFromHistory($questionText)
+    {
+        if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
+            $questionText .= "\n";
+
+            foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
+                $questionText .= $this->numberToEmodji($historyAddressKey + 1) . ' ' . $address->address . "\n";
+            }
+        }
+
+        return $questionText;
+    }
+
     public function addAddressesFromApi($questionText, $addresses)
     {
         if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
@@ -244,29 +241,6 @@ class BaseConversation extends Conversation
         }
 
         return $questionText;
-    }
-
-
-    /**
-     * Упрощенный доступ в пользовательскому хранилищу (кешу)
-     *
-     * @param $key
-     * @return Mixed
-     */
-    public function getFromStorage($key)
-    {
-        return $this->bot->userStorage()->get($key);
-    }
-
-    /**
-     * Упрощенное сохранение в пользовательское хранилище
-     *
-     * @param array $data
-     * @return Mixed
-     */
-    public function saveToStorage(array $data)
-    {
-        return $this->bot->userStorage()->save($data);
     }
 
     /**
@@ -315,6 +289,28 @@ class BaseConversation extends Conversation
         return $message;
     }
 
+    /**
+     * Упрощенное сохранение в пользовательское хранилище
+     *
+     * @param array $data
+     * @return Mixed
+     */
+    public function saveToStorage(array $data)
+    {
+        return $this->bot->userStorage()->save($data);
+    }
+
+    /**
+     * Упрощенный доступ в пользовательскому хранилищу (кешу)
+     *
+     * @param $key
+     * @return Mixed
+     */
+    public function getFromStorage($key)
+    {
+        return $this->bot->userStorage()->get($key);
+    }
+
     public function getChangePrice(Question $question, $prices)
     {
         foreach ($prices as $price) {
@@ -358,10 +354,5 @@ class BaseConversation extends Conversation
         $orderStatus = $actualOrder->getCurrentOrderState();
 
         return $orderStatus->state_id ?? null;
-    }
-
-    public function run()
-    {
-        // TODO: Implement run() method.
     }
 }
