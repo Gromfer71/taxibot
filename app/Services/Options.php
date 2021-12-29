@@ -23,11 +23,6 @@ class Options
         }
     }
 
-    public function getCities()
-    {
-        return $this->options->cities;
-    }
-
     public function getWishes()
     {
         return [
@@ -168,6 +163,25 @@ class Options
         return $cities->map(function ($city) {
             return $city->name;
         })->toArray();
+    }
+
+    public function getCities()
+    {
+        return $this->options->cities;
+    }
+
+    public function getChangedPrice($id)
+    {
+        $options = collect($this->options->overpriceOptions)->merge($this->options->overpriceOptionsAfterOrderCreated);
+
+        return $options->where('id', $id)->first() ?: null;
+    }
+
+    public function isOrderParamWish($id)
+    {
+        $options = collect($this->options->wishOptions)->merge($this->options->carOptions)->merge($this->options->changeOptions);
+
+        return $options->where('id', $id)->first() ?: null;
     }
 
 

@@ -9,6 +9,7 @@ use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\MessageGeneratorService;
+use App\Services\Options;
 use App\Services\OrderApiService;
 use App\Services\OrderService;
 use App\Services\Translator;
@@ -125,25 +126,38 @@ class CheckOrderStateCommand extends Command
             }
 
             if ($newState && $oldState) {
+                $options = new Options();
                 $apiService = new OrderApiService();
                 $newPrice = $apiService->driverTimeCount($actualOrder->id)->data->DISCOUNTEDSUMM;
                 $isPriceChanged = $newPrice != $storage->get('price');
 
-                if (Address::isAddressOrParamsChangedFromState($oldState, $newState)) {
+                if (Address::isAddressChangedFromState($oldState, $newState)) {
                     // newState - это когда меняет диспетчер, т.е. адреса ставим новые, а для отладки когда меняем адреса в бд, надо юзать oldState
-
                     Address::updateAddressesInStorage($newState, $storage);
                     $orderService = new OrderService($storage);
                     $orderService->calcPrice();
                 }
 
+
+                if ($newState->order_params != $oldState->order_params) {
+                    foreach ($newState->order_params as $param) {
+                        if ($options->getChangedPrice($param)) {
+                            $storage->save(['changed_price' => $options->getChangedPrice($param), 'changed_price_in_order' => $options->getChangedPrice($param)]);
+                        } elseif ($options->isOrderParamWish($param)) {
+                            $storage->save(['wishes' => collect($storage->get('wishes'))->push($param)]);
+                        }
+                    }
+                }
+
+
                 if ($isPriceChanged) {
                     $storage->save(['price' => $newPrice]);
+
                     $actualOrder->price = $newPrice;
                     $actualOrder->save();
                 }
 
-                if (Address::isAddressOrParamsChangedFromState($oldState, $newState) || $isPriceChanged) {
+                if (Address::isAddressChangedFromState($oldState, $newState) || $isPriceChanged) {
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
                     $botMan->say(MessageGeneratorService::getFullOrderInfoFromStorage($storage), $recipientId, $driverName);
                 }

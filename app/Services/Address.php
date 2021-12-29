@@ -230,14 +230,12 @@ class Address
         }
     }
 
-    public static function isAddressOrParamsChangedFromState($oldState, $newState)
+    public static function isAddressChangedFromState($oldState, $newState)
     {
         if ($newState->source != $oldState->source || $newState->destination != $oldState->destination) {
             return true;
         }
-        if ($newState->order_params != $oldState->order_params) {
-            return true;
-        }
+
         if (count($newState->stops)) {
             if (count($newState->stops) != count($oldState->stops)) {
                 return true;
