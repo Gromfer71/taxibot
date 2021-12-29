@@ -155,9 +155,9 @@ class CheckOrderStateCommand extends Command
 
 
                 if ($isPriceChanged) {
-                    $storage->save(['price' => $newPrice + $changedPrice->value]);
+                    $storage->save(['price' => $newPrice + $changedPrice->value ?? $changedPrice['value']]);
 
-                    $actualOrder->price = $newPrice + $changedPrice->value;
+                    $actualOrder->price = $newPrice + $changedPrice->value ?? $changedPrice['value'];
                     $actualOrder->save();
                 }
 
