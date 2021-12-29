@@ -142,9 +142,10 @@ class CheckOrderStateCommand extends Command
                     $actualOrder->price = $newPrice;
                 }
 
-                if (Address::isAddressOrParamsChangedFromState($oldState, $newState) || $isPriceChanged)
+                if (Address::isAddressOrParamsChangedFromState($oldState, $newState) || $isPriceChanged) {
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
-                $botMan->say(MessageGeneratorService::getFullOrderInfoFromStorage($storage), $recipientId, $driverName);
+                    $botMan->say(MessageGeneratorService::getFullOrderInfoFromStorage($storage), $recipientId, $driverName);
+                }
             }
 
             // если статус заказа поменялся, только тогда производим какие-то действия
