@@ -138,7 +138,7 @@ class CheckOrderStateCommand extends Command
                 if (Address::isAddressChangedFromState($oldState, $newState)) {
                     // newState - это когда меняет диспетчер, т.е. адреса ставим новые, а для отладки когда меняем адреса в бд, надо юзать oldState
                     // TODO: oldstate
-                    Address::updateAddressesInStorage($oldState, $storage);
+                    Address::updateAddressesInStorage($newPrice, $storage);
                     $orderService = new OrderService($storage);
                     //$orderService->calcPrice();
                 }
@@ -148,7 +148,7 @@ class CheckOrderStateCommand extends Command
                 // TODO: oldstate
                 $storage->save(['wishes' => []]);
                 $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
-                foreach ($oldState->order_params as $param) {
+                foreach ($newState->order_params as $param) {
                     if ($changedPrice = (array)$options->getChangedPrice($param)) {
                         $storage->save(['changed_price_in_order' => $changedPrice]);
                         $storage->save(['price' => $newPrice + $changedPrice['value']]);
