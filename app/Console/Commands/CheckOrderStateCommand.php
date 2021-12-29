@@ -143,7 +143,7 @@ class CheckOrderStateCommand extends Command
                 if ($newState->order_params != $oldState->order_params) {
                     foreach ($oldState->order_params as $param) {
                         if ($changedPrice = $options->getChangedPrice($param)) {
-                            $storage->save(['changed_price_in_order' => $changedPrice]);
+                            $storage->save(['changed_price_in_order' => $changedPrice, 'changed_price' => null]);
                             $storage->save(['price' => $storage->get('price') + $changedPrice->value]);
                             $actualOrder->price = $storage->get('price') + $changedPrice->value;
                             $actualOrder->save();
