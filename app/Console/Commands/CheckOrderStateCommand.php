@@ -146,6 +146,7 @@ class CheckOrderStateCommand extends Command
 
                 if ($newState->order_params != $oldState->order_params) {
                     // TODO: oldstate
+                    $storage->save(['wishes' => []]);
                     foreach ($oldState->order_params as $param) {
                         if ($changedPrice = (array)$options->getChangedPrice($param)) {
                             $storage->save(['changed_price_in_order' => $changedPrice, 'changed_price' => null]);
