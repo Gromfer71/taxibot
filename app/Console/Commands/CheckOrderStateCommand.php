@@ -140,6 +140,7 @@ class CheckOrderStateCommand extends Command
                 if ($isPriceChanged) {
                     $storage->save(['price' => $newPrice]);
                     $actualOrder->price = $newPrice;
+                    $actualOrder->save();
                 }
 
                 if (Address::isAddressOrParamsChangedFromState($oldState, $newState) || $isPriceChanged) {
