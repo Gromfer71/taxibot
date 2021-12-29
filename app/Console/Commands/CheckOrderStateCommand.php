@@ -125,9 +125,7 @@ class CheckOrderStateCommand extends Command
                 $recipientId = $user->telegram_id;
             }
             // если статус заказа поменялся, только тогда производим какие-то действия
-            if (!$newStateId) {
-                continue;
-            }
+
 
             if ($newState && $oldState) {
                 $options = new Options();
@@ -169,6 +167,9 @@ class CheckOrderStateCommand extends Command
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
                     $botMan->say(MessageGeneratorService::getFullOrderInfoFromStorage($storage), $recipientId, $driverName);
                 }
+            }
+            if (!$newStateId) {
+                continue;
             }
 
 
