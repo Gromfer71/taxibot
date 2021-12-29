@@ -144,21 +144,21 @@ class CheckOrderStateCommand extends Command
                 }
 
 
-                if ($newState->order_params != $oldState->order_params) {
-                    // TODO: oldstate
-                    $storage->save(['wishes' => []]);
-                    $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
-                    foreach ($oldState->order_params as $param) {
-                        if ($changedPrice = (array)$options->getChangedPrice($param)) {
-                            $storage->save(['changed_price_in_order' => $changedPrice]);
-                            $storage->save(['price' => $newPrice + $changedPrice['value']]);
-                            $actualOrder->price = $newPrice + $changedPrice['value'];
-                            $actualOrder->save();
-                        } elseif ($options->isOrderParamWish($param)) {
-                            $storage->save(['wishes' => collect($storage->get('wishes'))->push($param)->unique()]);
-                        }
+                //if ($newState->order_params != $oldState->order_params) {
+                // TODO: oldstate
+                $storage->save(['wishes' => []]);
+                $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
+                foreach ($oldState->order_params as $param) {
+                    if ($changedPrice = (array)$options->getChangedPrice($param)) {
+                        $storage->save(['changed_price_in_order' => $changedPrice]);
+                        $storage->save(['price' => $newPrice + $changedPrice['value']]);
+                        $actualOrder->price = $newPrice + $changedPrice['value'];
+                        $actualOrder->save();
+                    } elseif ($options->isOrderParamWish($param)) {
+                        $storage->save(['wishes' => collect($storage->get('wishes'))->push($param)->unique()]);
                     }
                 }
+                // }
 
 
                 if ($isPriceChanged) {
