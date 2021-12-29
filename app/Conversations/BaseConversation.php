@@ -201,20 +201,6 @@ class BaseConversation extends Conversation
 
         return $result;
     }
-//
-//    public function addOrdersToMessage($questionText)
-//    {
-//        if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
-//            $questionText .= "\n";
-//
-//            foreach ($this->getUser()->orders as $orderKey => $order) {
-//                $address = implode(' – ', collect(json_decode($order->address)->address));
-//                $questionText .= $this->numberToEmodji($orderKey + 1) . ' ' . $address . "\n";
-//            }
-//        }
-//
-//        return $questionText;
-//    }
 
     public function addAddressesToMessageOnlyFromHistory($questionText)
     {
@@ -243,20 +229,9 @@ class BaseConversation extends Conversation
         return $questionText;
     }
 
-    /**
-     * Упрощенное удаление из хранилища. Null потому что delete() не работает во всех драйверах
-     *
-     * @param $key
-     * @return Mixed
-     */
     public function removeFromStorage($key)
     {
         return $this->bot->userStorage()->save([$key => null]);
-    }
-
-    public function navigationMapper()
-    {
-        return [];
     }
 
     public function addOrdersRoutesToMessage($message)
@@ -289,23 +264,11 @@ class BaseConversation extends Conversation
         return $message;
     }
 
-    /**
-     * Упрощенное сохранение в пользовательское хранилище
-     *
-     * @param array $data
-     * @return Mixed
-     */
     public function saveToStorage(array $data)
     {
         return $this->bot->userStorage()->save($data);
     }
 
-    /**
-     * Упрощенный доступ в пользовательскому хранилищу (кешу)
-     *
-     * @param $key
-     * @return Mixed
-     */
     public function getFromStorage($key)
     {
         return $this->bot->userStorage()->get($key);
@@ -314,7 +277,8 @@ class BaseConversation extends Conversation
     public function getChangePrice(Question $question, $prices)
     {
         foreach ($prices as $price) {
-            $question = $question->addButton(Button::create(Translator::trans('buttons.change price #' . $price->id))->value('change price #' . $price->id));
+            $question = $question->addButton(Button::create(Translator::trans('buttons.change price #' . $price->id))
+                ->value('change price #' . $price->id));
         }
 
         return $question;

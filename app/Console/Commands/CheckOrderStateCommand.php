@@ -106,12 +106,18 @@ class CheckOrderStateCommand extends Command
             Translator::$lang = $package->code;
 
             // получением платформу на который был произведен заказ
+            $storage = $botMan->userStorageFromId(
+                User::where('id', $actualOrder->user_id)->first()->telegram_id
+            );
             if ($actualOrder->platform == self::TELEGRAM_DRIVER_NAME) {
                 $driverName = TelegramDriver::class;
                 $recipientId = $user->telegram_id;
             } elseif ($actualOrder->platform == self::VK_DRIVER_NAME) {
                 $driverName = VkCommunityCallbackDriver::class;
                 $recipientId = $user->vk_id;
+                $storage = $botMan->userStorageFromId(
+                    User::where('id', $actualOrder->user_id)->first()->vk_id
+                );
             } else {
                 //временно оставим по дефолту телеграм, чтобы драйвер не был null
                 $driverName = TelegramDriver::class;
@@ -119,24 +125,27 @@ class CheckOrderStateCommand extends Command
             }
 
             if ($newState && $oldState) {
-                if (Address::isAddressChangedFromState($oldState, $newState)) {
-                    $storage = $botMan->userStorageFromId(
-                        User::where('id', $actualOrder->user_id)->first()->telegram_id
-                    );
+                $apiService = new OrderApiService();
+                $newPrice = $apiService->driverTimeCount($actualOrder->id)->data->DISCOUNTEDSUMM;
+                $isPriceChanged = $newPrice != $storage->get('price');
 
+                if (Address::isAddressOrParamsChangedFromState($oldState, $newState)) {
                     // newState - это когда меняет диспетчер, т.е. адреса ставим новые, а для отладки когда меняем адреса в бд, надо юзать oldState
 
                     Address::updateAddressesInStorage($newState, $storage);
-
                     $orderService = new OrderService($storage);
                     $orderService->calcPrice();
-
-
-                    $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
-                    $botMan->say(MessageGeneratorService::getFullOrderInfoFromStorage($storage), $recipientId, $driverName);
                 }
-            }
 
+                if ($isPriceChanged) {
+                    $storage->save(['price' => $newPrice]);
+                    $actualOrder->price = $newPrice;
+                }
+
+                if (Address::isAddressOrParamsChangedFromState($oldState, $newState) || $isPriceChanged)
+                    $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
+                $botMan->say(MessageGeneratorService::getFullOrderInfoFromStorage($storage), $recipientId, $driverName);
+            }
 
             // если статус заказа поменялся, только тогда производим какие-то действия
             {

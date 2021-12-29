@@ -8,6 +8,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Promise\Utils;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Str;
+use Throwable;
+use Tightenco\Collect\Support\Collection;
 
 class Address
 {
@@ -19,10 +21,10 @@ class Address
     /**
      * @param string $query Адрес, который ввел пользователь
      * @param          $cities
-     * @param \BotMan\BotMan\Storages\Storage $storage
+     * @param Storage $storage
      *
-     * @return array|\Illuminate\Support\Collection|\Tightenco\Collect\Support\Collection
-     * @throws \Throwable
+     * @return array|\Illuminate\Support\Collection|Collection
+     * @throws Throwable
      */
     public static function getAddresses(string $query, $cities, Storage $storage)
     {
@@ -87,6 +89,15 @@ class Address
                 return $city;
             }
         });
+    }
+
+    private static function _log($url, $params, $result)
+    {
+        $log = new LogApi();
+        $log->params = $params;
+        $log->url = $url;
+        $log->result = $result;
+        $log->save();
     }
 
     public static function sortAddresses($addresses, $storage)
@@ -219,9 +230,12 @@ class Address
         }
     }
 
-    public static function isAddressChangedFromState($oldState, $newState)
+    public static function isAddressOrParamsChangedFromState($oldState, $newState)
     {
         if ($newState->source != $oldState->source || $newState->destination != $oldState->destination) {
+            return true;
+        }
+        if ($newState->order_params != $oldState->order_params) {
             return true;
         }
         if (count($newState->stops)) {
@@ -236,6 +250,7 @@ class Address
         }
         return false;
     }
+
 
     public static function updateAddressesInStorage($orderState, Storage $storage)
     {
@@ -266,13 +281,5 @@ class Address
         $storage->save(['address' => $addresses->toArray(), 'lat' => $lat->toArray(), 'lon' => $lon->toArray()]);
     }
 
-    private static function _log($url, $params, $result)
-    {
-        $log = new LogApi();
-        $log->params = $params;
-        $log->url = $url;
-        $log->result = $result;
-        $log->save();
-    }
 
 }

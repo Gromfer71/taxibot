@@ -5,8 +5,10 @@ namespace App\Models;
 use App\Services\MessageGeneratorService;
 use App\Services\OrderApiService;
 use BotMan\BotMan\BotMan;
+use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\OrderHistory
@@ -22,8 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $relevance
  * @property string|null $state
  * @property string|null $fail_reason
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @method static Builder|OrderHistory newModelQuery()
  * @method static Builder|OrderHistory newQuery()
  * @method static Builder|OrderHistory query()
@@ -39,10 +41,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|OrderHistory whereUpdatedAt($value)
  * @method static Builder|OrderHistory whereUserId($value)
  * @method static Builder|OrderHistory whereWishes($value)
- * @mixin \Eloquent
+ * @mixin Eloquent
  * @property int $usebonus
  * @property string $platform
- * @property-read \App\Models\User $user
+ * @property-read User $user
  * @method static Builder|OrderHistory wherePlatform($value)
  * @method static Builder|OrderHistory whereStateIdChain($value)
  * @method static Builder|OrderHistory whereUsebonus($value)
@@ -77,26 +79,26 @@ class OrderHistory extends Model
 
         if ($response['code'] === 0) {
             return self::create([
-                                    'id' => $response['data']['order_id'],
-                                    'user_id' => User::find($bot->getUser()->getId())->id,
-                                    'address' => json_encode(
-                                        [
-                                            'address' => $bot->userStorage()->get('address'),
-                                            'lat' => $bot->userStorage()->get('lat'),
-                                            'lon' => $bot->userStorage()->get('lon')
-                                        ],
-                                        JSON_UNESCAPED_UNICODE
-                                    ),
-                                    'price' => $bot->userStorage()->get('price'),
-                                    'changed_price' => $bot->userStorage()->get('changed_price') ? $bot->userStorage()->get('changed_price')['id'] : null,
-                                    'comment' => $bot->userStorage()->get('comment'),
-                                    'wishes' => MessageGeneratorService::implodeWishes(
-                                        collect($bot->userStorage()->get('wishes'))
-                                    ),
-                                    'relevance' => 0,
-                                    'usebonus' => $useBonus,
-                                    'platform' => $bot->getDriver()->getName()
-                                ]);
+                'id' => $response['data']['order_id'],
+                'user_id' => User::find($bot->getUser()->getId())->id,
+                'address' => json_encode(
+                    [
+                        'address' => $bot->userStorage()->get('address'),
+                        'lat' => $bot->userStorage()->get('lat'),
+                        'lon' => $bot->userStorage()->get('lon')
+                    ],
+                    JSON_UNESCAPED_UNICODE
+                ),
+                'price' => $bot->userStorage()->get('price'),
+                'changed_price' => $bot->userStorage()->get('changed_price') ? $bot->userStorage()->get('changed_price')['id'] : null,
+                'comment' => $bot->userStorage()->get('comment'),
+                'wishes' => MessageGeneratorService::implodeWishes(
+                    collect($bot->userStorage()->get('wishes'))
+                ),
+                'relevance' => 0,
+                'usebonus' => $useBonus,
+                'platform' => $bot->getDriver()->getName()
+            ]);
         } else {
             return null;
         }
@@ -124,6 +126,7 @@ class OrderHistory extends Model
         );
     }
 
+
     public function cancelOrder()
     {
         $this->relevance = -1;
@@ -132,20 +135,6 @@ class OrderHistory extends Model
         $api = new OrderApiService();
         $api->cancelOrder($this);
         $this->updateOrderState();
-    }
-
-    public function setAbortedOrder()
-    {
-        $this->relevance = -1;
-        $this->fail_reason = 'Отмена заказа диспетчером или водителем';
-        $this->save();
-    }
-
-    public function setDeletedOrder()
-    {
-        $this->relevance = -1;
-        $this->fail_reason = 'Заказ удален';
-        $this->save();
     }
 
     public function updateOrderState($state = null)
@@ -185,9 +174,18 @@ class OrderHistory extends Model
         return json_decode($this->state);
     }
 
-    public function getCurrentOrderState()
+    public function setAbortedOrder()
     {
-        return json_decode($this->state);
+        $this->relevance = -1;
+        $this->fail_reason = 'Отмена заказа диспетчером или водителем';
+        $this->save();
+    }
+
+    public function setDeletedOrder()
+    {
+        $this->relevance = -1;
+        $this->fail_reason = 'Заказ удален';
+        $this->save();
     }
 
     public function getAutoInfo()
@@ -199,6 +197,11 @@ class OrderHistory extends Model
         } else {
             return '';
         }
+    }
+
+    public function getCurrentOrderState()
+    {
+        return json_decode($this->state);
     }
 
     public function finishOrder()
