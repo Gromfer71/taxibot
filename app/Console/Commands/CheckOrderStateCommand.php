@@ -148,10 +148,8 @@ class CheckOrderStateCommand extends Command
             }
 
             // если статус заказа поменялся, только тогда производим какие-то действия
-            {
-                if (!$newStateId) {
-                    continue;
-                }
+            if (!$newStateId) {
+                continue;
             }
 
 
