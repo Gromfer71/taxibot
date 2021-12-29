@@ -131,8 +131,8 @@ class CheckOrderStateCommand extends Command
                 $options = new Options();
                 $apiService = new OrderApiService();
                 $newPrice = $apiService->driverTimeCount($actualOrder->id)->data->DISCOUNTEDSUMM;
-                $changedPrice = $storage->get('changed_price') ?: $storage->get('changed_price_in_order');
-                $isPriceChanged = $newPrice + $changedPrice['value'] != $storage->get('price');
+                $changedPrice = $storage->get('changed_price_in_order') ?: $storage->get('changed_price');
+                $isPriceChanged = ($newPrice + $changedPrice['value']) != $storage->get('price');
 
 
                 if (Address::isAddressChangedFromState($oldState, $newState)) {
