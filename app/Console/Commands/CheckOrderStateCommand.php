@@ -148,8 +148,8 @@ class CheckOrderStateCommand extends Command
                     foreach ($oldState->order_params as $param) {
                         if ($changedPrice = (array)$options->getChangedPrice($param)) {
                             $storage->save(['changed_price_in_order' => $changedPrice, 'changed_price' => null]);
-                            $storage->save(['price' => $storage->get('price') + $changedPrice['value']]);
-                            $actualOrder->price = $storage->get('price') + $changedPrice['value'];
+                            $storage->save(['price' => $newPrice + $changedPrice['value']]);
+                            $actualOrder->price = $newPrice + $changedPrice['value'];
                             $actualOrder->save();
                         } elseif ($options->isOrderParamWish($param)) {
                             $storage->save(['wishes' => collect($storage->get('wishes'))->push($param)->unique()]);
@@ -159,9 +159,9 @@ class CheckOrderStateCommand extends Command
 
 
                 if ($isPriceChanged) {
-                    $storage->save(['price' => $newPrice + $changedPrice['value'] ?? $changedPrice['value']]);
+                    $storage->save(['price' => $newPrice + $changedPrice['value']]);
 
-                    $actualOrder->price = $newPrice + $changedPrice['value'] ?? $changedPrice['value'];
+                    $actualOrder->price = $newPrice + $changedPrice['value'];
                     $actualOrder->save();
                 }
 
