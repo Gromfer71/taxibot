@@ -131,8 +131,9 @@ class CheckOrderStateCommand extends Command
                 $options = new Options();
                 $apiService = new OrderApiService();
                 $newPrice = $apiService->driverTimeCount($actualOrder->id)->data->DISCOUNTEDSUMM;
-                $isPriceChanged = $newPrice != $storage->get('price');
                 $changedPrice = $storage->get('changed_price') ?: $storage->get('changed_price_in_order');
+                $isPriceChanged = $newPrice + $changedPrice['value'] != $storage->get('price');
+
 
                 if (Address::isAddressChangedFromState($oldState, $newState)) {
                     // newState - это когда меняет диспетчер, т.е. адреса ставим новые, а для отладки когда меняем адреса в бд, надо юзать oldState
