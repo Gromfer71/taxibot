@@ -170,7 +170,7 @@ class CheckOrderStateCommand extends Command
 //                    $actualOrder->save();
 //                }
 
-                if (Address::isAddressChangedFromState($oldState, $newState) || $isPriceChanged || $newState->order_params != $oldState->order_params) {
+                if (Address::isAddressChangedFromState($oldState, $newState) || $newState->order_params != $oldState->order_params) {
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
                     $botMan->say(MessageGeneratorService::getFullOrderInfoFromStorage($storage), $recipientId, $driverName);
                 }
