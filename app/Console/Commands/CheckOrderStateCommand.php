@@ -89,7 +89,7 @@ class CheckOrderStateCommand extends Command
             $oldState = $actualOrder->getCurrentOrderState();
             $oldStateId = $oldState->state_id ?? OrderHistory::NEW_ORDER;
 
-            $newState = (new OrderApiService())->getOrderState($actualOrder);
+            $newState = (new OrderApiService())->getOrderState($actualOrder->id);
             $newStateId = $actualOrder->checkOrder($newState);
 
             $newState = $newState->data;
@@ -137,15 +137,14 @@ class CheckOrderStateCommand extends Command
 
                 if (Address::isAddressChangedFromState($oldState, $newState)) {
                     // newState - это когда меняет диспетчер, т.е. адреса ставим новые, а для отладки когда меняем адреса в бд, надо юзать oldState
-                    // TODO: oldstate
                     Address::updateAddressesInStorage($newPrice, $storage);
                     $orderService = new OrderService($storage);
-                    //$orderService->calcPrice();
+                    // тут вопрос как бы, какой метод юзать
+                    //  $orderService->calcPrice();
                 }
 
 
                 //if ($newState->order_params != $oldState->order_params) {
-                // TODO: oldstate
                 $storage->save(['wishes' => []]);
                 $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
                 foreach ($newState->order_params as $param) {

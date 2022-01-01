@@ -24,6 +24,9 @@ class OrderApiService
     public const ORDER_FROM_VK_OPTION = 150;
     public const ORDER_FROM_TELEGRAM_OPTION = 149;
 
+    // TODO: переписать все запросы используя этот метод
+    // TODO: разобраться чтобы шторм не менял методы местами сам
+
     public static function replacePhoneCountyCode($phone)
     {
         if (substr($phone, 0, 1) == '7') {
@@ -37,11 +40,6 @@ class OrderApiService
         return $phone;
     }
 
-    /**
-     * @param BotMan $bot
-     * @param double $lat
-     * @param double $lon
-     */
     public static function sendDriverLocation(BotMan $bot, $lat, $lon)
     {
         if (get_class($bot->getDriver()) == VkCommunityCallbackDriver::class) {
@@ -54,15 +52,6 @@ class OrderApiService
         } elseif (get_class($bot->getDriver()) == TelegramDriver::class) {
             $query = http_build_query(['chat_id' => $bot->getUser()->getId(), 'latitude' => $lat, 'longitude' => $lon]);
             file_get_contents('https://api.telegram.org/bot' . Config::getToken()->value . '/sendlocation?' . $query);
-        }
-    }
-
-    public static function getOptionIdFromDriverName($driverName)
-    {
-        if ($driverName == VkCommunityCallbackDriver::DRIVER_NAME) {
-            return self::ORDER_FROM_VK_OPTION;
-        } elseif ($driverName == TelegramDriver::DRIVER_NAME) {
-            return self::ORDER_FROM_TELEGRAM_OPTION;
         }
     }
 
@@ -89,22 +78,18 @@ class OrderApiService
         }
 
 
-        $params = [
-            'method' => 'POST',
-            'header' => 'Content-Type: application/json',
-            'content' => json_encode([
-                                         'addresses' => $addresses,
-                                         'comment' => $bot->userStorage()->get('comment'),
-                                         'crew_group_id' => $bot->userStorage()->get('crew_group_id'),
-                                         'is_prior' => false,
-                                         'order_params' => $options->getOrderParamsArray($bot->userStorage()),
-                                         'phone' => $phone,
-                                         'server_time_offset' => 0,
-                                         'source_time' => Carbon::createFromTimestamp(time())->format('YmdHis'),
-                                         'tariff_id' => $bot->userStorage()->get('tariff_id'),
-                                         'use_bonus' => $useBonus,
-                                     ]),
-        ];
+        $params = $this->makeDefaultRequestParams([
+            'addresses' => $addresses,
+            'comment' => $bot->userStorage()->get('comment'),
+            'crew_group_id' => $bot->userStorage()->get('crew_group_id'),
+            'is_prior' => false,
+            'order_params' => $options->getOrderParamsArray($bot->userStorage()),
+            'phone' => $phone,
+            'server_time_offset' => 0,
+            'source_time' => Carbon::createFromTimestamp(time())->format('YmdHis'),
+            'tariff_id' => $bot->userStorage()->get('tariff_id'),
+            'use_bonus' => $useBonus,
+        ]);
 
 
         $response = $this->file_get_contents_with_logging(
@@ -115,9 +100,124 @@ class OrderApiService
         return json_decode($response, true);
     }
 
+    // TODO: перенести в Options
+    public static function getOptionIdFromDriverName($driverName)
+    {
+        if ($driverName == VkCommunityCallbackDriver::DRIVER_NAME) {
+            return self::ORDER_FROM_VK_OPTION;
+        } elseif ($driverName == TelegramDriver::DRIVER_NAME) {
+            return self::ORDER_FROM_TELEGRAM_OPTION;
+        }
+    }
+
+
+    public function analyzeRoute(Storage $storage)
+    {
+        $lat = collect($storage->get('lat'));
+        $lon = collect($storage->get('lon'));
+        $oldAddresses = collect($storage->get('address'));
+        if ($oldAddresses->count() == 1) {
+            $oldAddresses->push('');
+            $lat->push('');
+            $lon->push('');
+        }
+        $oldAddresses = $oldAddresses->values()->all();
+        $lat = $lat->values()->all();
+        $lon = $lon->values()->all();
+        $addresses = collect();
+        foreach ($oldAddresses as $key => $address) {
+            $addresses->push(
+                [
+                    'address' => $address,
+                    'lat' => (float)$lat[$key],
+                    'lon' => (float)$lon[$key],
+                ]
+            );
+        }
+        $addresses = $addresses->toArray();
+        Log::info(json_encode($addresses));
+
+        $params = [
+            'method' => 'POST',
+            'header' => 'Content-Type: application/json',
+            'content' => json_encode(
+                [
+                    'get_full_route_coords' => false,
+                    'addresses' => $addresses,
+                ]
+            ),
+        ];
+
+        $response = $this->file_get_contents_with_logging(
+            'https://sk-taxi.ru/tmapi/api.php?method=/common_api/1.0/analyze_route2',
+            $params
+        );
+
+
+        return json_decode($response);
+    }
+
+    // TODO: переименовать
+    private function file_get_contents_with_logging($url, $params)
+    {
+//        $context = stream_context_create(['http' => $params]);
+//        $log = LogApi::newLogApi($url, json_encode($params, JSON_UNESCAPED_UNICODE));
+//        $result = file_get_contents($url, false, $context);
+//        $log->result = $result;
+//        $log->save();
+//        return $result;
+
+
+        $counter = 0;
+        do {
+            $success = true;
+            try {
+                $context = stream_context_create(['http' => $params]);
+                $log = LogApi::newLogApi($url, json_encode($params, JSON_UNESCAPED_UNICODE));
+                $result = file_get_contents($url, false, $context);
+                $log->result = $result;
+                $log->save();
+            } catch (Exception $exception) {
+                $counter++;
+                Log::error($exception->getMessage());
+                usleep(100000);
+                $success = false;
+            }
+        } while (!$success && $counter < 20);
+
+        return $result ?? null;
+    }
+
+    public function makeDefaultRequestParams($content)
+    {
+        return [
+            'method' => 'POST',
+            'header' => 'Content-Type: application/json',
+            'content' => json_encode($content),
+        ];
+    }
+
     public function cancelOrder($order)
     {
         $this->changeOrderState($order, OrderHistory::ABORTED_BY_DRIVER);
+    }
+
+    public function changeOrderState($order, $state)
+    {
+        $params = [
+            'method' => 'POST',
+            'header' => 'Content-Type: application/json',
+            'content' => json_encode([
+                'order_id' => $order->id,
+                'new_state' => $state,
+            ]),
+        ];
+        $response = $this->file_get_contents_with_logging(
+            'https://sk-taxi.ru/tmapi/api.php?method=%2Fcommon_api%2F1.0%2Fchange_order_state',
+            $params
+        );
+
+        return json_decode($response);
     }
 
     public function finishOrder($order)
@@ -136,47 +236,11 @@ class OrderApiService
             'method' => 'POST',
             'header' => 'Content-Type: application/json',
             'content' => json_encode([
-                                         'client_id' => $client_id,
-                                     ]),
+                'client_id' => $client_id,
+            ]),
         ];
         $response = $this->file_get_contents_with_logging(
             'https://sk-taxi.ru/tmapi/api.php?method=%2Fcommon_api%2F1.0%2Fget_current_orders',
-            $params
-        );
-
-        return json_decode($response);
-    }
-
-    public function getOrderState($order)
-    {
-        $params = [
-            'method' => 'POST',
-            'header' => 'Content-Type: application/json',
-            'content' => json_encode([
-                                         'order_id' => $order->id,
-                                     ]),
-        ];
-
-        $response = $this->file_get_contents_with_logging(
-            'https://sk-taxi.ru/tmapi/api.php?method=%2Fcommon_api%2F1.0%2Fget_order_state',
-            $params
-        );
-
-        return json_decode($response);
-    }
-
-    public function changeOrderState($order, $state)
-    {
-        $params = [
-            'method' => 'POST',
-            'header' => 'Content-Type: application/json',
-            'content' => json_encode([
-                                         'order_id' => $order->id,
-                                         'new_state' => $state,
-                                     ]),
-        ];
-        $response = $this->file_get_contents_with_logging(
-            'https://sk-taxi.ru/tmapi/api.php?method=%2Fcommon_api%2F1.0%2Fchange_order_state',
             $params
         );
 
@@ -190,10 +254,10 @@ class OrderApiService
             'method' => 'POST',
             'header' => 'Content-Type: application/json',
             'content' => json_encode([
-                                         'order_id' => $order->id,
-                                         'auto_recalc_cost' => true,
-                                         'order_params' => $options->getOrderParamsArray($bot->userStorage())
-                                     ]),
+                'order_id' => $order->id,
+                'auto_recalc_cost' => true,
+                'order_params' => $options->getOrderParamsArray($bot->userStorage())
+            ]),
         ];
 
 
@@ -201,8 +265,47 @@ class OrderApiService
             'https://sk-taxi.ru/tmapi/api.php?method=%2Fcommon_api%2F1.0%2Fupdate_order',
             $params
         );
+        // TODO: это что? просто обращается к апи, убрать если ничего не делает
         $this->driverTimeCount($order->id);
-        $this->getOrderState($order);
+        $this->getOrderState($order->id);
+
+        return json_decode($response);
+    }
+
+    public function driverTimeCount($orderId)
+    {
+        $params = [
+            'method' => 'POST',
+            'header' => 'Content-Type: application/json',
+            'content' => json_encode(
+                [
+                    'FIELDS' => 'DISCOUNTEDSUMM-DRIVER_TIMECOUNT',
+                    'ORDER_ID' => $orderId,
+                ]
+            ),
+        ];
+
+        $response = $this->file_get_contents_with_logging(
+            'https://sk-taxi.ru/tmapi/api.php?method=%2Ftm_tapi%2F1.0%2Fget_info_by_order_id',
+            $params
+        );
+        return json_decode($response);
+    }
+
+    public function getOrderState($orderId)
+    {
+        $params = [
+            'method' => 'POST',
+            'header' => 'Content-Type: application/json',
+            'content' => json_encode([
+                'order_id' => $orderId,
+            ]),
+        ];
+
+        $response = $this->file_get_contents_with_logging(
+            'https://sk-taxi.ru/tmapi/api.php?method=%2Fcommon_api%2F1.0%2Fget_order_state',
+            $params
+        );
 
         return json_decode($response);
     }
@@ -213,8 +316,8 @@ class OrderApiService
             'method' => 'POST',
             'header' => 'Content-Type: application/json',
             'content' => json_encode([
-                                         'order_id' => $order->id,
-                                     ]),
+                'order_id' => $order->id,
+            ]),
         ];
 
         $response = $this->file_get_contents_with_logging(
@@ -259,9 +362,9 @@ class OrderApiService
             'method' => 'POST',
             'header' => 'Content-Type: application/json',
             'content' => json_encode([
-                                         'crew_group_id' => $crewGroupId,
-                                         'addresses' => $addresses,
-                                     ])
+                'crew_group_id' => $crewGroupId,
+                'addresses' => $addresses,
+            ])
         ];
 
         $response = $this->file_get_contents_with_logging(
@@ -311,54 +414,9 @@ class OrderApiService
         return json_decode($response);
     }
 
-    public function analyzeRoute(Storage $storage)
-    {
-        $lat = collect($storage->get('lat'));
-        $lon = collect($storage->get('lon'));
-        $oldAddresses = collect($storage->get('address'));
-        if ($oldAddresses->count() == 1) {
-            $oldAddresses->push('');
-            $lat->push('');
-            $lon->push('');
-        }
-        $oldAddresses = $oldAddresses->values()->all();
-        $lat = $lat->values()->all();
-        $lon = $lon->values()->all();
-        $addresses = collect();
-        foreach ($oldAddresses as $key => $address) {
-            $addresses->push(
-                [
-                    'address' => $address,
-                    'lat' => (float)$lat[$key],
-                    'lon' => (float)$lon[$key],
-                ]
-            );
-        }
-        $addresses = $addresses->toArray();
-        Log::info(json_encode($addresses));
-
-        $params = [
-            'method' => 'POST',
-            'header' => 'Content-Type: application/json',
-            'content' => json_encode(
-                [
-                    'get_full_route_coords' => false,
-                    'addresses' => $addresses,
-                ]
-            ),
-        ];
-
-        $response = $this->file_get_contents_with_logging(
-            'https://sk-taxi.ru/tmapi/api.php?method=/common_api/1.0/analyze_route2',
-            $params
-        );
-
-
-        return json_decode($response);
-    }
-
     public function sendSMSCode($phone, $code)
     {
+        // TODO: вынести, возможно в новый класс Phone
         if (substr($phone, 0, 1) == '8') {
             $phone = substr($phone, 1);
             $phone = '7' . $phone;
@@ -393,30 +451,11 @@ class OrderApiService
         );
     }
 
+    // TODO: вынести
     public function getRandomSMSCode()
     {
         $haystack = '0123456789';
         return substr(str_shuffle($haystack), 0, 4);
-    }
-
-    public function driverTimeCount($orderId)
-    {
-        $params = [
-            'method' => 'POST',
-            'header' => 'Content-Type: application/json',
-            'content' => json_encode(
-                [
-                    'FIELDS' => 'DISCOUNTEDSUMM-DRIVER_TIMECOUNT',
-                    'ORDER_ID' => $orderId,
-                ]
-            ),
-        ];
-
-        $response = $this->file_get_contents_with_logging(
-            'https://sk-taxi.ru/tmapi/api.php?method=%2Ftm_tapi%2F1.0%2Fget_info_by_order_id',
-            $params
-        );
-        return json_decode($response);
     }
 
     public function getCrewCoords($crewId)
@@ -443,35 +482,5 @@ class OrderApiService
         } else {
             return collect($response->data->crews_coords)->first();
         }
-    }
-
-    private function file_get_contents_with_logging($url, $params)
-    {
-//        $context = stream_context_create(['http' => $params]);
-//        $log = LogApi::newLogApi($url, json_encode($params, JSON_UNESCAPED_UNICODE));
-//        $result = file_get_contents($url, false, $context);
-//        $log->result = $result;
-//        $log->save();
-//        return $result;
-
-
-        $counter = 0;
-        do {
-            $success = true;
-            try {
-                $context = stream_context_create(['http' => $params]);
-                $log = LogApi::newLogApi($url, json_encode($params, JSON_UNESCAPED_UNICODE));
-                $result = file_get_contents($url, false, $context);
-                $log->result = $result;
-                $log->save();
-            } catch (Exception $exception) {
-                $counter++;
-                Log::error($exception->getMessage());
-                usleep(100000);
-                $success = false;
-            }
-        } while (!$success && $counter < 20);
-
-        return $result ?? null;
     }
 }

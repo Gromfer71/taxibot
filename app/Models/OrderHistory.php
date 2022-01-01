@@ -143,7 +143,7 @@ class OrderHistory extends Model
         // $newState = $api->getOrderState($this);
         //$newState = $api->getOrderState($this);
         if (!$state) {
-            $newState = $api->getOrderState($this);
+            $newState = $api->getOrderState($this->id);
         } else {
             $newState = $state;
         }

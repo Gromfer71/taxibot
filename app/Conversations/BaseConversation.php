@@ -23,7 +23,7 @@ use BotMan\BotMan\Messages\Outgoing\Question;
 /**
  * Базовый класс диалога, от него наследуются все диалоги
  */
-class BaseConversation extends Conversation
+abstract class BaseConversation extends Conversation
 {
     use UserManagerTrait;
 
@@ -93,11 +93,6 @@ class BaseConversation extends Conversation
         $actions = [];
 
         return array_replace_recursive($actions, $replaceActions);
-    }
-
-    public function run()
-    {
-        // TODO: Implement run() method.
     }
 
     public function _filterChangePrice($prices, $key_price = 'changed_price')

@@ -26,9 +26,6 @@ trait BotManagerTrait
         }
     }
 
-    /**
-     *  Создание заказа за бонусы
-     */
     public function _go_for_bonuses()
     {
         if ($this->getUser()->getBonusBalance() > 0) {
@@ -46,10 +43,6 @@ trait BotManagerTrait
         }
     }
 
-
-    /**
-     *  Проверка на ошибку в программе
-     */
     protected function checkProgramForBroken()
     {
         if ($this->bot->userStorage()->get('error')) {
@@ -66,7 +59,7 @@ trait BotManagerTrait
                 OrderHistory::getActualOrder(
                     $this->getUser()->id,
                     $this->bot->getDriver()->getName()
-                )
+                )->id
             )->data->crew_id ?? null
         );
         if ($driverLocation) {
