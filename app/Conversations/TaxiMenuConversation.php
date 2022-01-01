@@ -80,10 +80,11 @@ class TaxiMenuConversation extends BaseAddressConversation
             ButtonsStructure::ABORTED_ORDER => 'App\Conversations\MainMenu\MenuConversation',
             ButtonsStructure::CANCEL_CHANGE_PRICE => function () use ($order) {
                 $order->changed_price = null;
-                $order->save();
+
                 $this->bot->userStorage()->save(['changed_price_in_order' => null, 'price' => $order->price]);
                 $order->changePrice($this->bot);
                 $order->updateOrderState();
+                $order->save();
                 $this->currentOrderMenu(true);
             },
             ButtonsStructure::CANCEL_LAST_WISH => function () {
@@ -325,12 +326,12 @@ class TaxiMenuConversation extends BaseAddressConversation
                 $this->bot->getDriver()->getName()
             );
             $order->changed_price = (int)$price->id;
-            $order->save();
             $this->bot->userStorage()->save(
                 ['changed_price_in_order' => $price, 'price' => $order->price + $price->value]
             );
             $order->changePrice($this->bot);
             $order->updateOrderState();
+            $order->save();
             $this->currentOrderMenu(true);
         });
     }
