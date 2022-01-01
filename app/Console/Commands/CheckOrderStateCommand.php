@@ -165,10 +165,10 @@ class CheckOrderStateCommand extends Command
                 // }
 
 
-                if ($isPriceChanged) {
-                    $actualOrder->price = $newPrice;
-                    $actualOrder->save();
-                }
+//                if ($isPriceChanged) {
+//                    $actualOrder->price = $newPrice;
+//                    $actualOrder->save();
+//                }
 
                 if (Address::isAddressChangedFromState($oldState, $newState) || $isPriceChanged || $newState->order_params != $oldState->order_params) {
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
