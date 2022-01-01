@@ -134,7 +134,7 @@ class CheckOrderStateCommand extends Command
                 $newPrice = $apiService->driverTimeCount($actualOrder->id)->data->DISCOUNTEDSUMM;
                 //$changedPrice = $storage->get('changed_price_in_order') ?: $storage->get('changed_price');
                 $isPriceChanged = $newPrice != $storage->get('price');
-                if ($newState->order_params == $oldState->order_params) {
+                if ($newState->order_params != $oldState->order_params) {
                     $isPriceChanged = false;
                 }
                 $storage->save(['price' => $newPrice]);
