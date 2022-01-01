@@ -139,8 +139,8 @@ class CheckOrderStateCommand extends Command
                     $isPriceChanged = false;
                 }
                 $storage->save(['price' => $newPrice]);
-                Log::alert('новая цена ' . $newPrice);
-                Log::alert('цена в кеше' . $storage->get('price'));
+//                Log::alert('новая цена ' . $newPrice);
+//                Log::alert('цена в кеше' . $storage->get('price'));
 
                 if (Address::isAddressChangedFromState($oldState, $newState)) {
                     // newState - это когда меняет диспетчер, т.е. адреса ставим новые, а для отладки когда меняем адреса в бд, надо юзать oldState
@@ -169,8 +169,9 @@ class CheckOrderStateCommand extends Command
 //                    $actualOrder->price = $newPrice;
 //                    $actualOrder->save();
 //                }
-
-                if (Address::isAddressChangedFromState($oldState, $newState) || $newState->order_params != $oldState->order_params) {
+                Log::alert($newState->order_params);
+                Log::alert($oldState->order_params);
+                if (Address::isAddressChangedFromState($oldState, $newState) || $isPriceChanged || $newState->order_params != $oldState->order_params) {
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
                     $botMan->say(MessageGeneratorService::getFullOrderInfoFromStorage($storage), $recipientId, $driverName);
                 }
