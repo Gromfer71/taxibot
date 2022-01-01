@@ -18,6 +18,7 @@ use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 
 class CheckOrderStateCommand extends Command
@@ -131,12 +132,13 @@ class CheckOrderStateCommand extends Command
                 $options = new Options();
                 $apiService = new OrderApiService();
                 $newPrice = $apiService->driverTimeCount($actualOrder->id)->data->DISCOUNTEDSUMM;
-                $changedPrice = $storage->get('changed_price_in_order') ?: $storage->get('changed_price');
-                $isPriceChanged = ($newPrice + $changedPrice['value'] ?? 0) != $storage->get('price');
+                //$changedPrice = $storage->get('changed_price_in_order') ?: $storage->get('changed_price');
+                $isPriceChanged = $newPrice != $storage->get('price');
                 if ($newState->order_params == $oldState->order_params) {
                     $isPriceChanged = false;
                 }
                 $storage->save(['price' => $newPrice]);
+                Log::alert('новая цена ' . $newPrice);
 
                 if (Address::isAddressChangedFromState($oldState, $newState)) {
                     // newState - это когда меняет диспетчер, т.е. адреса ставим новые, а для отладки когда меняем адреса в бд, надо юзать oldState
