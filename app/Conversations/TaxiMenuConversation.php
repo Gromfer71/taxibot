@@ -83,6 +83,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                 $order->save();
                 $this->bot->userStorage()->save(['changed_price_in_order' => null, 'price' => $order->price]);
                 $order->changePrice($this->bot);
+                $order->updateOrderState();
                 $this->currentOrderMenu(true);
             },
             ButtonsStructure::CANCEL_LAST_WISH => function () {
