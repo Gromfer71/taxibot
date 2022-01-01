@@ -128,7 +128,7 @@ class CheckOrderStateCommand extends Command
             // если статус заказа поменялся, только тогда производим какие-то действия
 
 
-            if ($newState && $oldState) {
+            if ($newState && $oldState && false) {
                 $options = new Options();
                 $apiService = new OrderApiService();
                 $newPrice = $apiService->driverTimeCount($actualOrder->id)->data->DISCOUNTEDSUMM;
