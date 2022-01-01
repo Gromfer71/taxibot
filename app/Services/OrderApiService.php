@@ -266,8 +266,8 @@ class OrderApiService
             $params
         );
         // TODO: это что? просто обращается к апи, убрать если ничего не делает
-        $this->driverTimeCount($order->id);
-        $this->getOrderState($order->id);
+        //$this->driverTimeCount($order->id);
+        //$this->getOrderState($order->id);
 
         return json_decode($response);
     }

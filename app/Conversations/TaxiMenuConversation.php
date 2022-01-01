@@ -329,7 +329,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             $this->bot->userStorage()->save(
                 ['changed_price_in_order' => $price, 'price' => $order->price + $price->value]
             );
-            $order->changePrice($this->bot);
+            //$order->changePrice($this->bot);
             $order->updateOrderState();
             $this->currentOrderMenu(true);
         });
