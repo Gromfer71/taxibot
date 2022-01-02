@@ -132,7 +132,7 @@ class CheckOrderStateCommand extends Command
                 $apiService = new OrderApiService();
                 $newPrice = $apiService->driverTimeCount($actualOrder->id)->data->DISCOUNTEDSUMM;
                 //$changedPrice = $storage->get('changed_price_in_order') ?: $storage->get('changed_price');
-                $isPriceChanged = $newPrice != $storage->get('price');
+
 
                 if ($newState->order_params != $oldState->order_params) {
                     $isPriceChanged = false;
@@ -156,11 +156,12 @@ class CheckOrderStateCommand extends Command
                 foreach ($newState->order_params as $param) {
                     if ($changedPrice = (array)$options->getChangedPrice($param)) {
                         $storage->save(['changed_price_in_order' => $changedPrice]);
-                        //$storage->save(['price' => $newPrice + $changedPrice['value']]);
+                        $storage->save(['price' => $actualOrder->price + $changedPrice['value']]);
                     } elseif ($options->isOrderParamWish($param)) {
                         $storage->save(['wishes' => collect($storage->get('wishes'))->push($param)->unique()]);
                     }
                 }
+                $isPriceChanged = $newPrice != $storage->get('price');
                 // }
 
 
