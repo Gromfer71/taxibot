@@ -3,24 +3,15 @@
 namespace App\Conversations\MainMenu;
 
 use App\Conversations\BaseConversation;
+use App\Conversations\TakingAddressConversation;
 use App\Models\OrderHistory;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 
-/**
- * Главное меню бота
- */
 class MenuConversation extends BaseConversation
 {
-    /**
-     * Массив действий под определенную кнопку. Если значение это анонимная функция, то выполнится она, если имя метода,
-     * то выполнится он в контексте текущего класса, если название класса (с полным путем), то запустится его Conversation.
-     *
-     * @param array $replaceActions
-     * @return array
-     */
     public function getActions(array $replaceActions = []): array
     {
         $actions = [
@@ -28,7 +19,7 @@ class MenuConversation extends BaseConversation
                 $this->getUser()->setUserNeedDispatcher();
                 $this->run(Translator::trans('messages.wait for dispatcher'));
             },
-            ButtonsStructure::TAKE_TAXI => 'App\Conversations\TakingAddressConversation',
+            ButtonsStructure::TAKE_TAXI => TakingAddressConversation::class,
             ButtonsStructure::PRICE_LIST => function () {
                 $this->run(Translator::trans('messages.price list'));
             },
@@ -37,23 +28,14 @@ class MenuConversation extends BaseConversation
             ButtonsStructure::BACK => 'run',
             ButtonsStructure::FAVORITE_ROUTES => 'App\Conversations\FavoriteRoutes\FavoriteRouteConversation',
             ButtonsStructure::SETTINGS => 'App\Conversations\Settings\SettingsConversation'
-
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
     }
 
-    /**
-     * Главное меню
-     *
-     * @param null $message
-     * @return MenuConversation
-     */
     public function run($message = null): MenuConversation
     {
-        // В главном меню обновляем язык вручную т.к. после изменения языка он меняется только после нажатия кнопки
         $this->saveToStorage(['user_id' => $this->bot->getUser()->getId()]);
-
         $this->bot->userStorage()->delete();
         OrderHistory::cancelAllOrders($this->getUser()->id, $this->bot->getDriver()->getName());
 
