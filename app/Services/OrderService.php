@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use BotMan\BotMan\Storages\Storage;
 use Exception;
 
