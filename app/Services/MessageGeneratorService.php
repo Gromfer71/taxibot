@@ -6,22 +6,10 @@ namespace App\Services;
 
 use BotMan\BotMan\Storages\Storage;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class MessageGeneratorService
 {
-    public static function getPaymentByBonusesMessage($userStorage)
-    {
-        $price = $userStorage->get('price');
-        $bonusbalance = $userStorage->get('bonusbalance');
-        $costBonus = $bonusbalance > $price ? $price : $bonusbalance;
-        $costCash = $price - $costBonus;
-        $message = ' ' . Translator::trans('messages.payment with bonuses') . ' - ' . $costBonus;
-        if ($costCash > 0) {
-            $message = $message . ', ' . Translator::trans('messages.payment with cash') . ' - ' . $costCash;
-        }
-        return $message;
-    }
-
     public static function getFullOrderInfoFromStorage(Storage $userStorage)
     {
         if (!$userStorage->get('address')) {
@@ -31,30 +19,20 @@ class MessageGeneratorService
         $countAddresses = count($userStorage->get('address'));
         if ($haveEndAddress && $countAddresses == 2 && !$userStorage->get('comment') && !$userStorage->get('wishes') && !$userStorage->get('changed_price')) {
             $route = MessageGeneratorService::implodeAddress(collect($userStorage->get('address')));
+            Log::alert('Простая инфа о заказе');
             return Translator::trans('messages.addres_naznachen_za_bonusi_punkt_21', ['route' => $route, 'price' => $userStorage->get('price')]);
         }
         return self::getFullOrderInfoFromStorageFallback($userStorage);
     }
 
-    public static function getFullOrderInfoFromStorage2(Storage $userStorage)
+    /**
+     * @param Collection $addresses
+     * @return string
+     */
+    public static function implodeAddress($addresses)
     {
-        if (!$userStorage->get('address')) {
-            return '';
-        }
-        $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($userStorage);
-        $countAddresses = count($userStorage->get('address'));
-        if ($userStorage->get('usebonus') && $haveEndAddress && $countAddresses == 2 && !$userStorage->get('comment') && !$userStorage->get('wishes') && !$userStorage->get('changed_price')) {
-            $bonusbalance = $userStorage->get('bonusbalance');
-            $payment = self::getPaymentByBonusesMessage($userStorage);
-            return Translator::trans('messages.addres_naznachen_za_bonusi_punkt_29', ['bonusbalance' => $bonusbalance, 'payment' => $payment]);
-        }
-
-        if (!$haveEndAddress && !$userStorage->get('comment') && !$userStorage->get('wishes') && !$userStorage->get('changed_price')) {
-            return Translator::trans('messages.skazhu_voditelu_punkt_20');
-        }
-        return self::getFullOrderInfoFromStorage2Fallback($userStorage);
+        return $addresses->implode('👉') . '👉';
     }
-
 
     public static function getFullOrderInfoFromStorageFallback(Storage $userStorage)
     {
@@ -151,6 +129,50 @@ class MessageGeneratorService
         return $message;
     }
 
+    /**
+     * @param Collection $wishes
+     * @return string
+     */
+    public static function implodeWishes($wishes)
+    {
+        $wishes = $wishes->transform(function ($item) {
+            return Translator::trans('buttons.wish #' . $item);
+        });
+
+        return '❗️' . $wishes->implode('❗️');
+    }
+
+    public static function getFullOrderInfoFromStorage2(Storage $userStorage)
+    {
+        if (!$userStorage->get('address')) {
+            return '';
+        }
+        $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($userStorage);
+        $countAddresses = count($userStorage->get('address'));
+        if ($userStorage->get('usebonus') && $haveEndAddress && $countAddresses == 2 && !$userStorage->get('comment') && !$userStorage->get('wishes') && !$userStorage->get('changed_price')) {
+            $bonusbalance = $userStorage->get('bonusbalance');
+            $payment = self::getPaymentByBonusesMessage($userStorage);
+            return Translator::trans('messages.addres_naznachen_za_bonusi_punkt_29', ['bonusbalance' => $bonusbalance, 'payment' => $payment]);
+        }
+
+        if (!$haveEndAddress && !$userStorage->get('comment') && !$userStorage->get('wishes') && !$userStorage->get('changed_price')) {
+            return Translator::trans('messages.skazhu_voditelu_punkt_20');
+        }
+        return self::getFullOrderInfoFromStorage2Fallback($userStorage);
+    }
+
+    public static function getPaymentByBonusesMessage($userStorage)
+    {
+        $price = $userStorage->get('price');
+        $bonusbalance = $userStorage->get('bonusbalance');
+        $costBonus = $bonusbalance > $price ? $price : $bonusbalance;
+        $costCash = $price - $costBonus;
+        $message = ' ' . Translator::trans('messages.payment with bonuses') . ' - ' . $costBonus;
+        if ($costCash > 0) {
+            $message = $message . ', ' . Translator::trans('messages.payment with cash') . ' - ' . $costCash;
+        }
+        return $message;
+    }
 
     public static function getFullOrderInfoFromStorage2Fallback(Storage $userStorage)
     {
@@ -225,27 +247,5 @@ class MessageGeneratorService
         $str = str_replace('"', "'", $str);
 
         return addslashes($str);
-    }
-
-    /**
-     * @param Collection $addresses
-     * @return string
-     */
-    public static function implodeAddress($addresses)
-    {
-        return $addresses->implode('👉') . '👉';
-    }
-
-    /**
-     * @param Collection $wishes
-     * @return string
-     */
-    public static function implodeWishes($wishes)
-    {
-        $wishes = $wishes->transform(function ($item) {
-            return Translator::trans('buttons.wish #' . $item);
-        });
-
-        return '❗️' . $wishes->implode('❗️');
     }
 }

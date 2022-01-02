@@ -182,7 +182,7 @@ class CheckOrderStateCommand extends Command
                 $actualOrder->price = $newPrice - $storage->get('changed_price_in_order')['value'] ?? ($storage->get('changed_price')['value'] ?? 0);
                 $actualOrder->save();
                 $storage->save(['price' => $newPrice]);
-                Log::alert('Записали в кеш новую цену ' . $newPrice);
+                Log::alert('Записали в кеш новую цену ' . $storage->get('price'));
                 // }
 //                Log::alert($newState->order_params);
 //                Log::alert($oldState->order_params);
