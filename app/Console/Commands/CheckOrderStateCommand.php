@@ -165,10 +165,10 @@ class CheckOrderStateCommand extends Command
                 // }
 
 
-//                if ($isPriceChanged) {
-//                    $actualOrder->price = $newPrice;
-//                    $actualOrder->save();
-//                }
+                if ($isPriceChanged) {
+                    $actualOrder->price = $newPrice - ($changedPrice['value'] ?? 0);
+                    $actualOrder->save();
+                }
 //                Log::alert($newState->order_params);
 //                Log::alert($oldState->order_params);
                 if (Address::isAddressChangedFromState($oldState, $newState) || $isPriceChanged) {
