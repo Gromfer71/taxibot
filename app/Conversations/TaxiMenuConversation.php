@@ -79,6 +79,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             },
             ButtonsStructure::ABORTED_ORDER => 'App\Conversations\MainMenu\MenuConversation',
             ButtonsStructure::CANCEL_CHANGE_PRICE => function () use ($order) {
+
                 $order->changed_price = null;
 
                 $this->bot->userStorage()->save(['changed_price_in_order' => null, 'price' => $order->price, 'changed_price' => null]);
