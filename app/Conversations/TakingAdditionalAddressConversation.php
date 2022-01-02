@@ -14,7 +14,7 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 
 class TakingAdditionalAddressConversation extends BaseAddressConversation
 {
-    public function getActions(array $replaceActions = []): array
+    public function getActions($replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::BACK => function () {
@@ -65,8 +65,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
             $this->handleAction(
                 $answer,
                 [
-                    ButtonsStructure::BACK => $this->isAdditionalAddressForFavoriteRoute(
-                    ) ? 'exit' : 'App\Conversations\TaxiMenuConversation'
+                    ButtonsStructure::BACK => $this->isAdditionalAddressForFavoriteRoute() ? 'exit' : 'App\Conversations\TaxiMenuConversation'
                 ]
             );
 

@@ -13,7 +13,7 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 
 class ClearOrdersHistoryConversation extends BaseConversation
 {
-    public function getActions(array $replaceActions = []): array
+    public function getActions($replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',

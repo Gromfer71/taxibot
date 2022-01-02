@@ -16,7 +16,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
 {
     use TakingAddressTrait;
 
-    public function getActions(array $replaceActions = []): array
+    public function getActions($replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::EXIT => 'run',
@@ -46,7 +46,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
     public function run()
     {
         $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.favorite addresses menu'),
-                                                             [ButtonsStructure::BACK, ButtonsStructure::ADD_ADDRESS]
+            [ButtonsStructure::BACK, ButtonsStructure::ADD_ADDRESS]
         );
 
         foreach ($this->getUser()->favoriteAddresses as $address) {
@@ -70,6 +70,11 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         });
     }
 
+    public function redirectAfterGetEntrance()
+    {
+        $this->getAddressName();
+    }
+
     public function addressMenu()
     {
         $question = ComplexQuestion::createWithSimpleButtons(
@@ -80,15 +85,15 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         return $this->ask($question, function (Answer $answer) {
             $this->handleAction($answer, [ButtonsStructure::BACK => 'run']);
             FavoriteAddress::where([
-                                       'user_id' => $this->getUser()->id,
-                                       'name' => trim(
-                                           stristr(
-                                               $this->bot->userStorage()->get('address_name'),
-                                               '(',
-                                               true
-                                           )
-                                       )
-                                   ])->first()->delete();
+                'user_id' => $this->getUser()->id,
+                'name' => trim(
+                    stristr(
+                        $this->bot->userStorage()->get('address_name'),
+                        '(',
+                        true
+                    )
+                )
+            ])->first()->delete();
             $this->run();
         });
     }
@@ -108,7 +113,6 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         });
     }
 
-
     public function confirmAddress()
     {
         $question = ComplexQuestion::createWithSimpleButtons(
@@ -126,11 +130,6 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             $this->handleAction($answer);
             $this->getAddressName();
         });
-    }
-
-    public function redirectAfterGetEntrance()
-    {
-        $this->getAddressName();
     }
 
     public function checkAddressNameForLength($addressName)

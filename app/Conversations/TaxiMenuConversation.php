@@ -23,7 +23,7 @@ class TaxiMenuConversation extends BaseAddressConversation
 {
     use BotManagerTrait;
 
-    public function getActions(array $replaceActions = []): array
+    public function getActions($replaceActions = []): array
     {
         $order = OrderHistory::getActualOrder(
             $this->bot->getUser()->getId(),
@@ -105,6 +105,51 @@ class TaxiMenuConversation extends BaseAddressConversation
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
+    }
+
+    public function run()
+    {
+        $orderService = new OrderService($this->bot->userStorage());
+        $orderService->calcPrice();
+        $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
+        $question = ComplexQuestion::createWithSimpleButtons(
+            MessageGeneratorService::getFullOrderInfoFromStorage($this->bot->userStorage()),
+            [ButtonsStructure::EXIT_TO_MENU], ['config' => ButtonsFormatterService::TAXI_MENU_FORMAT]
+        );
+        if ($haveEndAddress) {
+            $question = ComplexQuestion::setButtons(
+                $question,
+                [ButtonsStructure::ADD_ADDRESS]
+            );
+
+            $question = ComplexQuestion::setButtons(
+                $question,
+                [ButtonsStructure::GO_FOR_CASH, ButtonsStructure::WRITE_COMMENT]
+            );
+        } else {
+            $question = ComplexQuestion::setButtons(
+                $question,
+                [ButtonsStructure::WRITE_COMMENT, ButtonsStructure::GO_FOR_CASH]
+            );
+        }
+
+        if ($haveEndAddress) {
+            $question = ComplexQuestion::setButtons(
+                $question,
+                [ButtonsStructure::GO_FOR_BONUSES]
+            );
+        }
+
+        $question = ComplexQuestion::setButtons(
+            $question,
+            [
+
+                ButtonsStructure::WISHES,
+                ButtonsStructure::CHANGE_PRICE
+            ]
+        );
+
+        return $this->ask($question, $this->getDefaultCallback());
     }
 
     public function currentOrderMenu($withMessageAboutOrderCreated = null, $exactlyWithoutMessage = false)
@@ -384,51 +429,6 @@ class TaxiMenuConversation extends BaseAddressConversation
             $this->bot->userStorage()->save(['changed_price' => $price]);
             $this->run();
         });
-    }
-
-    public function run()
-    {
-        $orderService = new OrderService($this->bot->userStorage());
-        $orderService->calcPrice();
-        $haveEndAddress = Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage());
-        $question = ComplexQuestion::createWithSimpleButtons(
-            MessageGeneratorService::getFullOrderInfoFromStorage($this->bot->userStorage()),
-            [ButtonsStructure::EXIT_TO_MENU], ['config' => ButtonsFormatterService::TAXI_MENU_FORMAT]
-        );
-        if ($haveEndAddress) {
-            $question = ComplexQuestion::setButtons(
-                $question,
-                [ButtonsStructure::ADD_ADDRESS]
-            );
-
-            $question = ComplexQuestion::setButtons(
-                $question,
-                [ButtonsStructure::GO_FOR_CASH, ButtonsStructure::WRITE_COMMENT]
-            );
-        } else {
-            $question = ComplexQuestion::setButtons(
-                $question,
-                [ButtonsStructure::WRITE_COMMENT, ButtonsStructure::GO_FOR_CASH]
-            );
-        }
-
-        if ($haveEndAddress) {
-            $question = ComplexQuestion::setButtons(
-                $question,
-                [ButtonsStructure::GO_FOR_BONUSES]
-            );
-        }
-
-        $question = ComplexQuestion::setButtons(
-            $question,
-            [
-
-                ButtonsStructure::WISHES,
-                ButtonsStructure::CHANGE_PRICE
-            ]
-        );
-
-        return $this->ask($question, $this->getDefaultCallback());
     }
 
     public function writeComment()

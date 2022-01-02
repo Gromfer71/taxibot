@@ -15,7 +15,7 @@ class TakingAddressForFavoriteRouteConversation extends TakingAddressConversatio
         return ButtonsStructure::BACK;
     }
 
-    public function getActions(array $replaceActions = []): array
+    public function getActions($replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::BACK => function () {

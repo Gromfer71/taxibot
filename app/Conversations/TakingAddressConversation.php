@@ -36,7 +36,7 @@ class TakingAddressConversation extends BaseAddressConversation
      * @param array $replaceActions
      * @return array
      */
-    public function getActions(array $replaceActions = []): array
+    public function getActions($replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::EXIT => 'App\Conversations\MainMenu\MenuConversation',
@@ -68,6 +68,11 @@ class TakingAddressConversation extends BaseAddressConversation
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
+    }
+
+    public function redirectAfterGetEntrance()
+    {
+        $this->getAddressTo();
     }
 
     public function getAddressTo()
@@ -143,11 +148,6 @@ class TakingAddressConversation extends BaseAddressConversation
             $this->_saveSecondAddress($answer->getText());
             $this->getAddressToAgain();
         });
-    }
-
-    public function redirectAfterGetEntrance()
-    {
-        $this->getAddressTo();
     }
 
 

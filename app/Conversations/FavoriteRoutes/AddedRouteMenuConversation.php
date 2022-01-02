@@ -14,7 +14,7 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 class AddedRouteMenuConversation extends BaseAddressConversation
 {
 
-    public function getActions(array $replaceActions = []): array
+    public function getActions($replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::CANCEL => 'App\Conversations\MainMenu\MenuConversation',
@@ -69,21 +69,21 @@ class AddedRouteMenuConversation extends BaseAddressConversation
                 die();
             }
             FavoriteRoute::create([
-                                      'user_id' => $this->getUser()->id,
-                                      'name' => $answer->getText(),
-                                      'address' => json_encode(
-                                          [
-                                              'address' => $this->bot->userStorage()->get(
-                                                  'address'
-                                              ),
+                'user_id' => $this->getUser()->id,
+                'name' => $answer->getText(),
+                'address' => json_encode(
+                    [
+                        'address' => $this->bot->userStorage()->get(
+                            'address'
+                        ),
 
-                                              'lat' => $this->bot->userStorage()->get('lat'),
-                                              'lon' => $this->bot->userStorage()->get('lon')
-                                          ],
-                                          JSON_UNESCAPED_UNICODE
-                                      ),
-                                      'crew_group_id' => $this->bot->userStorage()->get('crew_group_id')
-                                  ]);
+                        'lat' => $this->bot->userStorage()->get('lat'),
+                        'lon' => $this->bot->userStorage()->get('lon')
+                    ],
+                    JSON_UNESCAPED_UNICODE
+                ),
+                'crew_group_id' => $this->bot->userStorage()->get('crew_group_id')
+            ]);
 
             if ($this->bot->userStorage()->get('order_already_done')) {
                 $this->bot->startConversation(new MenuConversation());

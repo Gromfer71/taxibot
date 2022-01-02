@@ -11,7 +11,7 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 
 class SettingsConversation extends BaseConversation
 {
-    public function getActions(array $replaceActions = []): array
+    public function getActions($replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::CHANGE_PHONE => 'App\Conversations\Settings\ChangePhoneConversation',

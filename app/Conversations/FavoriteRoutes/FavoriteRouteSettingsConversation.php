@@ -12,7 +12,7 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 
 class FavoriteRouteSettingsConversation extends BaseConversation
 {
-    public function getActions(array $replaceActions = []): array
+    public function getActions($replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
@@ -131,13 +131,13 @@ class FavoriteRouteSettingsConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) use ($address) {
             if (!$answer->isInteractiveMessageReply()) {
                 FavoriteRoute::create([
-                                          'user_id' => $this->getUser()->id,
-                                          'name' => $answer->getText(),
-                                          'address' => json_encode(
-                                              $address,
-                                              JSON_UNESCAPED_UNICODE
-                                          )
-                                      ]);
+                    'user_id' => $this->getUser()->id,
+                    'name' => $answer->getText(),
+                    'address' => json_encode(
+                        $address,
+                        JSON_UNESCAPED_UNICODE
+                    )
+                ]);
 
                 $this->run();
             } else {

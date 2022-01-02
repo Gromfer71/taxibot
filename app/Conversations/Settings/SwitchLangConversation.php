@@ -22,7 +22,7 @@ class SwitchLangConversation extends BaseConversation
      * @param array $replaceActions
      * @return array
      */
-    public function getActions(array $replaceActions = []): array
+    public function getActions($replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
