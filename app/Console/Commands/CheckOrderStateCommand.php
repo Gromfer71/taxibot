@@ -169,7 +169,7 @@ class CheckOrderStateCommand extends Command
                 $isPriceChanged = $newPrice != $storage->get('price');
                 // }
                 if ($isPriceChanged) {
-                    sleep(5);
+                    sleep(10);
                     $storage = $botMan->userStorageFromId(
                         User::where('id', $actualOrder->user_id)->first()->vk_id
                     );
