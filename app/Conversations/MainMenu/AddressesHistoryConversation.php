@@ -3,6 +3,7 @@
 namespace App\Conversations\MainMenu;
 
 use App\Conversations\BaseConversation;
+use App\Conversations\Settings\SettingsConversation;
 use App\Models\AddressHistory;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
@@ -10,22 +11,12 @@ use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
-/**
- * Меню истории адресов
- */
 class AddressesHistoryConversation extends BaseConversation
 {
-
-    /**
-     * Действия
-     *
-     * @param array $replaceActions
-     * @return array
-     */
     public function getActions($replaceActions = []): array
     {
         $actions = [
-            ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
+            ButtonsStructure::BACK => SettingsConversation::class,
             ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY => function () {
                 $this->say(Translator::trans('messages.clean addresses history'));
                 AddressHistory::clearByUserId($this->getUser()->id);
@@ -45,9 +36,6 @@ class AddressesHistoryConversation extends BaseConversation
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function run()
     {
         $question = ComplexQuestion::createWithSimpleButtons(

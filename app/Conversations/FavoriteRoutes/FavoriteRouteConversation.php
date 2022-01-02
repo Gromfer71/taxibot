@@ -3,6 +3,7 @@
 namespace App\Conversations\FavoriteRoutes;
 
 use App\Conversations\BaseConversation;
+use App\Conversations\MainMenu\MenuConversation;
 use App\Conversations\TaxiMenuConversation;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
@@ -15,7 +16,7 @@ class FavoriteRouteConversation extends BaseConversation
     public function getActions($replaceActions = []): array
     {
         $actions = [
-            ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
+            ButtonsStructure::BACK => MenuConversation::class,
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));

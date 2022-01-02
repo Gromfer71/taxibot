@@ -3,6 +3,7 @@
 namespace App\Conversations;
 
 use App\Conversations\FavoriteRoutes\TakingAddressForFavoriteRouteConversation;
+use App\Conversations\MainMenu\MenuConversation;
 use App\Models\AddressHistory;
 use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
@@ -19,7 +20,7 @@ class TakingAddressConversation extends BaseAddressConversation
 {
     use TakingAddressTrait;
 
-    public $conversationAfterTakeAddress = 'App\Conversations\TaxiMenuConversation';
+    public $conversationAfterTakeAddress = TaxiMenuConversation::class;
 
     /**
      * @return void
@@ -39,8 +40,8 @@ class TakingAddressConversation extends BaseAddressConversation
     public function getActions($replaceActions = []): array
     {
         $actions = [
-            ButtonsStructure::EXIT => 'App\Conversations\MainMenu\MenuConversation',
-            ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
+            ButtonsStructure::EXIT => MenuConversation::class,
+            ButtonsStructure::EXIT_TO_MENU => MenuConversation::class,
             ButtonsStructure::GO_AS_INDICATED => function () {
                 if ($this->needToSaveAddressToHistory()) {
                     AddressHistory::newAddress(

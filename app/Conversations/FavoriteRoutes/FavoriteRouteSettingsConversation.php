@@ -3,6 +3,7 @@
 namespace App\Conversations\FavoriteRoutes;
 
 use App\Conversations\BaseConversation;
+use App\Conversations\Settings\SettingsConversation;
 use App\Models\FavoriteRoute;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
@@ -15,25 +16,14 @@ class FavoriteRouteSettingsConversation extends BaseConversation
     public function getActions($replaceActions = []): array
     {
         $actions = [
-            ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
-            ButtonsStructure::CREATE_ROUTE => 'App\Conversations\FavoriteRoutes\TakingAddressForFavoriteRouteConversation',
+            ButtonsStructure::BACK => SettingsConversation::class,
+            ButtonsStructure::CREATE_ROUTE => TakingAddressForFavoriteRouteConversation::class,
             ButtonsStructure::ADD_ROUTE => 'addRoute',
             ButtonsStructure::CANCEL => '',
-
-//            ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY => function () {
-//                $this->getUser()->favoriteRoutes->each(function ($item) {
-//                    $item->delete();
-//                });
-//                $this->say(Translator::trans('messages.clean addresses history'));
-//                $this->run();
-//            }
         ];
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function run()
     {
         if ($this->getFromStorage('go_to_add_route_menu')) {

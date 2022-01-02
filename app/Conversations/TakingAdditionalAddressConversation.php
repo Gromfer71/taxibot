@@ -3,6 +3,7 @@
 namespace App\Conversations;
 
 use App\Conversations\FavoriteRoutes\AddedRouteMenuConversation;
+use App\Conversations\MainMenu\MenuConversation;
 use App\Models\AddressHistory;
 use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
@@ -25,7 +26,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
                 $this->bot->userStorage()->save(['additional_address_is_incorrect_change_text_flag' => 1]);
                 $this->exit();
             },
-            ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
+            ButtonsStructure::EXIT_TO_MENU => MenuConversation::class,
 
         ];
 
@@ -65,7 +66,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
             $this->handleAction(
                 $answer,
                 [
-                    ButtonsStructure::BACK => $this->isAdditionalAddressForFavoriteRoute() ? 'exit' : 'App\Conversations\TaxiMenuConversation'
+                    ButtonsStructure::BACK => $this->isAdditionalAddressForFavoriteRoute() ? 'exit' : TaxiMenuConversation::class
                 ]
             );
 

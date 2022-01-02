@@ -7,10 +7,10 @@ use App\Services\Bot\ButtonsStructure;
 
 class TakingAddressForFavoriteRouteConversation extends TakingAddressConversation
 {
-    public const ADDED_ROUTE_CONVERSATION = 'App\Conversations\FavoriteRoutes\AddedRouteMenuConversation';
+    public const ADDED_ROUTE_CONVERSATION = AddedRouteMenuConversation::class;
     public $conversationAfterTakeAddress = self::ADDED_ROUTE_CONVERSATION;
 
-    public function backButton()
+    public function backButton(): string
     {
         return ButtonsStructure::BACK;
     }

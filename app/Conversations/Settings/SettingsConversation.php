@@ -3,6 +3,10 @@
 namespace App\Conversations\Settings;
 
 use App\Conversations\BaseConversation;
+use App\Conversations\FavoriteAddressesConversation;
+use App\Conversations\FavoriteRoutes\FavoriteRouteSettingsConversation;
+use App\Conversations\MainMenu\AddressesHistoryConversation;
+use App\Conversations\MainMenu\MenuConversation;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
@@ -14,14 +18,14 @@ class SettingsConversation extends BaseConversation
     public function getActions($replaceActions = []): array
     {
         $actions = [
-            ButtonsStructure::CHANGE_PHONE => 'App\Conversations\Settings\ChangePhoneConversation',
-            ButtonsStructure::LANG_MENU => 'App\Conversations\Settings\SwitchLangConversation',
+            ButtonsStructure::CHANGE_PHONE => ChangePhoneConversation::class,
+            ButtonsStructure::LANG_MENU => SwitchLangConversation::class,
             ButtonsStructure::CHANGE_CITY => 'changeCity',
-            ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
-            ButtonsStructure::FAVORITE_ROUTE_SETTINGS => 'App\Conversations\FavoriteRoutes\FavoriteRouteSettingsConversation',
-            ButtonsStructure::ADDRESS_HISTORY_MENU => 'App\Conversations\MainMenu\AddressesHistoryConversation',
-            ButtonsStructure::CLEAR_ORDERS_HISTORY_MENU => 'App\Conversations\Settings\ClearOrdersHistoryConversation',
-            ButtonsStructure::FAVORITE_ADDRESSES_MENU => 'App\Conversations\FavoriteAddressesConversation',
+            ButtonsStructure::BACK => MenuConversation::class,
+            ButtonsStructure::FAVORITE_ROUTE_SETTINGS => FavoriteRouteSettingsConversation::class,
+            ButtonsStructure::ADDRESS_HISTORY_MENU => AddressesHistoryConversation::class,
+            ButtonsStructure::CLEAR_ORDERS_HISTORY_MENU => ClearOrdersHistoryConversation::class,
+            ButtonsStructure::FAVORITE_ADDRESSES_MENU => FavoriteAddressesConversation::class,
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));

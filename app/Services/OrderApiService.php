@@ -55,6 +55,17 @@ class OrderApiService
         }
     }
 
+    public static function getOptionIdFromDriverName($driverName)
+    {
+        if ($driverName == VkCommunityCallbackDriver::DRIVER_NAME) {
+            return self::ORDER_FROM_VK_OPTION;
+        } elseif ($driverName == TelegramDriver::DRIVER_NAME) {
+            return self::ORDER_FROM_TELEGRAM_OPTION;
+        }
+    }
+
+    // TODO: перенести в Options
+
     public function createOrder(BotMan $bot, $useBonus = false)
     {
         $bot->userStorage()->save(['platform_option' => self::getOptionIdFromDriverName($bot->getDriver()->getName())]);
@@ -99,17 +110,6 @@ class OrderApiService
 
         return json_decode($response, true);
     }
-
-    // TODO: перенести в Options
-    public static function getOptionIdFromDriverName($driverName)
-    {
-        if ($driverName == VkCommunityCallbackDriver::DRIVER_NAME) {
-            return self::ORDER_FROM_VK_OPTION;
-        } elseif ($driverName == TelegramDriver::DRIVER_NAME) {
-            return self::ORDER_FROM_TELEGRAM_OPTION;
-        }
-    }
-
 
     public function analyzeRoute(Storage $storage)
     {
@@ -158,35 +158,6 @@ class OrderApiService
     }
 
     // TODO: переименовать
-    private function file_get_contents_with_logging($url, $params)
-    {
-//        $context = stream_context_create(['http' => $params]);
-//        $log = LogApi::newLogApi($url, json_encode($params, JSON_UNESCAPED_UNICODE));
-//        $result = file_get_contents($url, false, $context);
-//        $log->result = $result;
-//        $log->save();
-//        return $result;
-
-
-        $counter = 0;
-        do {
-            $success = true;
-            try {
-                $context = stream_context_create(['http' => $params]);
-                $log = LogApi::newLogApi($url, json_encode($params, JSON_UNESCAPED_UNICODE));
-                $result = file_get_contents($url, false, $context);
-                $log->result = $result;
-                $log->save();
-            } catch (Exception $exception) {
-                $counter++;
-                Log::error($exception->getMessage());
-                usleep(100000);
-                $success = false;
-            }
-        } while (!$success && $counter < 20);
-
-        return $result ?? null;
-    }
 
     public function makeDefaultRequestParams($content)
     {
@@ -451,12 +422,13 @@ class OrderApiService
         );
     }
 
-    // TODO: вынести
     public function getRandomSMSCode()
     {
         $haystack = '0123456789';
         return substr(str_shuffle($haystack), 0, 4);
     }
+
+    // TODO: вынести
 
     public function getCrewCoords($crewId)
     {
@@ -482,5 +454,35 @@ class OrderApiService
         } else {
             return collect($response->data->crews_coords)->first();
         }
+    }
+
+    private function file_get_contents_with_logging($url, $params)
+    {
+//        $context = stream_context_create(['http' => $params]);
+//        $log = LogApi::newLogApi($url, json_encode($params, JSON_UNESCAPED_UNICODE));
+//        $result = file_get_contents($url, false, $context);
+//        $log->result = $result;
+//        $log->save();
+//        return $result;
+
+
+        $counter = 0;
+        do {
+            $success = true;
+            try {
+                $context = stream_context_create(['http' => $params]);
+                $log = LogApi::newLogApi($url, json_encode($params, JSON_UNESCAPED_UNICODE));
+                $result = file_get_contents($url, false, $context);
+                $log->result = $result;
+                $log->save();
+            } catch (Exception $exception) {
+                $counter++;
+                Log::error($exception->getMessage());
+                usleep(100000);
+                $success = false;
+            }
+        } while (!$success && $counter < 20);
+
+        return $result ?? null;
     }
 }

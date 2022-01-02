@@ -31,8 +31,8 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
         // TODO: ВСЕ ИМЕНА КЛАССОВ ПЕРЕПИСАТЬ В ::class
         $actions = [
-            ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
-            ButtonsStructure::ADD_ADDRESS => 'App\Conversations\TakingAdditionalAddressConversation',
+            ButtonsStructure::EXIT_TO_MENU => MenuConversation::class,
+            ButtonsStructure::ADD_ADDRESS => TakingAdditionalAddressConversation::class,
             ButtonsStructure::GO_FOR_BONUSES => '_go_for_bonuses',
             ButtonsStructure::GO_FOR_CASH => '_go_for_cash',
             ButtonsStructure::WRITE_COMMENT => 'writeComment',
@@ -77,7 +77,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                 $this->bot->userStorage()->save(['order_already_done' => true]);
                 $this->bot->startConversation(new AddedRouteMenuConversation());
             },
-            ButtonsStructure::ABORTED_ORDER => 'App\Conversations\MainMenu\MenuConversation',
+            ButtonsStructure::ABORTED_ORDER => MenuConversation::class,
             ButtonsStructure::CANCEL_CHANGE_PRICE => function () use ($order) {
 
                 $order->changed_price = null;

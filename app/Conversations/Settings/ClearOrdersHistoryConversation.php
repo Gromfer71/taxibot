@@ -16,7 +16,7 @@ class ClearOrdersHistoryConversation extends BaseConversation
     public function getActions($replaceActions = []): array
     {
         $actions = [
-            ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
+            ButtonsStructure::BACK => SettingsConversation::class,
             ButtonsStructure::CLEAN_ALL_ADDRESS_HISTORY => function () {
                 $this->say(Translator::trans('messages.delete all orders'));
                 $this->getUser()->orders()->delete();

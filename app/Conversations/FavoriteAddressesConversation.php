@@ -3,6 +3,8 @@
 
 namespace App\Conversations;
 
+use App\Conversations\MainMenu\MenuConversation;
+use App\Conversations\Settings\SettingsConversation;
 use App\Models\FavoriteAddress;
 use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
@@ -20,8 +22,8 @@ class FavoriteAddressesConversation extends BaseAddressConversation
     {
         $actions = [
             ButtonsStructure::EXIT => 'run',
-            ButtonsStructure::BACK => 'App\Conversations\Settings\SettingsConversation',
-            ButtonsStructure::EXIT_TO_MENU => 'App\Conversations\MainMenu\MenuConversation',
+            ButtonsStructure::BACK => SettingsConversation::class,
+            ButtonsStructure::EXIT_TO_MENU => MenuConversation::class,
             ButtonsStructure::CANCEL => 'run',
             ButtonsStructure::SAVE => function () {
                 $address = Address::subStrAddress($this->bot->userStorage()->get('address'));
