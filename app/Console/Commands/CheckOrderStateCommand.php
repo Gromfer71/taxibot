@@ -18,7 +18,6 @@ use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 
 class CheckOrderStateCommand extends Command
@@ -51,11 +50,6 @@ class CheckOrderStateCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
         $this->info('Запустили команду проверки статусов заказов');
@@ -125,31 +119,20 @@ class CheckOrderStateCommand extends Command
                 $driverName = TelegramDriver::class;
                 $recipientId = $user->telegram_id;
             }
+
             // если статус заказа поменялся, только тогда производим какие-то действия
-
-
             if ($newState && $oldState) {
                 $options = new Options();
                 $apiService = new OrderApiService();
                 $newPrice = $apiService->driverTimeCount($actualOrder->id)->data->DISCOUNTEDSUMM;
-                //$changedPrice = $storage->get('changed_price_in_order') ?: $storage->get('changed_price');
-
-
-//                if ($newState->order_params != $oldState->order_params) {
-//                    $isPriceChanged = false;
-//                }
-                //   $storage->save(['price' => $newPrice]);
-//                Log::alert('новая цена ' . $newPrice);
-//                Log::alert('цена в кеше' . $storage->get('price'));
 
                 if (Address::isAddressChangedFromState($oldState, $newState)) {
                     // newState - это когда меняет диспетчер, т.е. адреса ставим новые, а для отладки когда меняем адреса в бд, надо юзать oldState
                     Address::updateAddressesInStorage($newPrice, $storage);
                     $orderService = new OrderService($storage);
                     // тут вопрос как бы, какой метод юзать
-                    //$orderService->calcPrice();
+                    $orderService->calcPrice();
                 }
-
 
                 //if ($newState->order_params != $oldState->order_params) {
                 // $storage->save(['wishes' => []]);
@@ -167,29 +150,29 @@ class CheckOrderStateCommand extends Command
 //                if (!$haveChangedPrice) {
 //                    $storage->save(['price' => $newPrice]);
 //                }
-                $isPriceChanged = $newPrice != $storage->get('price');
-                // }
-                if ($isPriceChanged) {
-                    sleep(10);
-                    $storage = $botMan->userStorageFromId(
-                        User::where('id', $actualOrder->user_id)->first()->vk_id
-                    );
-                    $newPrice = $apiService->driverTimeCount($actualOrder->id)->data->DISCOUNTEDSUMM;
-                }
-                $isPriceChanged = $newPrice != $storage->get('price');
+//                $isPriceChanged = $newPrice != $storage->get('price');
+//                // }
+//                if ($isPriceChanged) {
+//                    sleep(10);
+//                    $storage = $botMan->userStorageFromId(
+//                        User::where('id', $actualOrder->user_id)->first()->vk_id
+//                    );
+//                    $newPrice = $apiService->driverTimeCount($actualOrder->id)->data->DISCOUNTEDSUMM;
+//                }
+//                $isPriceChanged = $newPrice != $storage->get('price');
 
                 //  if ($isPriceChanged) {
-                if (!$actualOrder->changed_price) {
-                    $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
-                }
-                $actualOrder->price = $newPrice - $storage->get('changed_price_in_order')['value'] ?? ($storage->get('changed_price')['value'] ?? 0);
-                $actualOrder->save();
-                $storage->save(['price' => $newPrice - $storage->get('changed_price_in_order')['value'] ?? ($storage->get('changed_price')['value'] ?? 0)]);
-                Log::alert('Записали в кеш новую цену ' . $storage->get('price'));
+//                if (!$actualOrder->changed_price) {
+//                    $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
+//                }
+                //       $actualOrder->price = $newPrice - $storage->get('changed_price_in_order')['value'] ?? ($storage->get('changed_price')['value'] ?? 0);
+                //      $actualOrder->save();
+                //     $storage->save(['price' => $newPrice - $storage->get('changed_price_in_order')['value'] ?? ($storage->get('changed_price')['value'] ?? 0)]);
+                //   Log::alert('Записали в кеш новую цену ' . $storage->get('price'));
                 // }
 //                Log::alert($newState->order_params);
 //                Log::alert($oldState->order_params);
-                if (Address::isAddressChangedFromState($oldState, $newState) || $isPriceChanged) {
+                if (Address::isAddressChangedFromState($oldState, $newState)) {
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
                     $botMan->say(MessageGeneratorService::getFullOrderInfoFromStorage($storage), $recipientId, $driverName);
                 }

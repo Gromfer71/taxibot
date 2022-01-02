@@ -3,6 +3,8 @@
 namespace App\Conversations\MainMenu;
 
 use App\Conversations\BaseConversation;
+use App\Conversations\FavoriteRoutes\FavoriteRouteConversation;
+use App\Conversations\Settings\SettingsConversation;
 use App\Conversations\TakingAddressConversation;
 use App\Models\OrderHistory;
 use App\Services\Bot\ButtonsStructure;
@@ -12,7 +14,7 @@ use App\Services\Translator;
 
 class MenuConversation extends BaseConversation
 {
-    public function getActions(array $replaceActions = []): array
+    public function getActions($replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::REQUEST_CALL => function () {
@@ -23,17 +25,16 @@ class MenuConversation extends BaseConversation
             ButtonsStructure::PRICE_LIST => function () {
                 $this->run(Translator::trans('messages.price list'));
             },
-            ButtonsStructure::ALL_ABOUT_BONUSES => 'App\Conversations\MainMenu\BonusesConversation',
-
+            ButtonsStructure::ALL_ABOUT_BONUSES => BonusesConversation::class,
             ButtonsStructure::BACK => 'run',
-            ButtonsStructure::FAVORITE_ROUTES => 'App\Conversations\FavoriteRoutes\FavoriteRouteConversation',
-            ButtonsStructure::SETTINGS => 'App\Conversations\Settings\SettingsConversation'
+            ButtonsStructure::FAVORITE_ROUTES => FavoriteRouteConversation::class,
+            ButtonsStructure::SETTINGS => SettingsConversation::class
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
     }
 
-    public function run($message = null): MenuConversation
+    public function run($message = null)
     {
         $this->saveToStorage(['user_id' => $this->bot->getUser()->getId()]);
         $this->bot->userStorage()->delete();
@@ -47,6 +48,4 @@ class MenuConversation extends BaseConversation
 
         return $this->ask($question, $this->getDefaultCallback());
     }
-
-
 }

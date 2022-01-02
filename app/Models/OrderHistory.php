@@ -52,7 +52,7 @@ use Illuminate\Support\Carbon;
 class OrderHistory extends Model
 {
     public const NEW_ORDER = 100;
-    public const    DRIVER_ASSIGNED = 7;
+    public const DRIVER_ASSIGNED = 7;
     public const CAR_AT_PLACE = 10;
     public const CLIENT_INSIDE = 11;
     public const ABORTED_BY_DRIVER = 93;
@@ -69,6 +69,7 @@ class OrderHistory extends Model
     public const ORDER_SENDED_TO_DRIVER = 13;
     public const ORDER_RECIEVED_BY_DRIVER = 14;
     public const DRIVER_ABORTED_FROM_ORDER = 1;
+
     protected $guarded = [];
     protected $table = 'orders_history';
 
@@ -122,10 +123,9 @@ class OrderHistory extends Model
     public static function cancelAllOrders($userId, $driverName)
     {
         self::where(['user_id' => $userId, 'relevance' => 0, 'platform' => $driverName])->update(
-            ['relevance' => -1, 'fail_reason' => 'Пользователь перешел в главное меню, отменились все заявки']
+            ['relevance' => -1, 'fail_reason' => 'Пользователь перешел в главное меню, отменились все заказы']
         );
     }
-
 
     public function cancelOrder()
     {

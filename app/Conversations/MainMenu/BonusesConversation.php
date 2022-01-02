@@ -9,29 +9,13 @@ use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
-/**
- * Меню бонусов (вход из главного меню)
- */
 class BonusesConversation extends BaseConversation
 {
-
-    /**
-     * Массив действий под определенную кнопку. Если значение это анонимная функция, то выполнится она, если имя метода,
-     * то выполнится он в контексте текущего класса, если название класса (с полным путем), то запустится его Conversation.
-     *
-     * @param array $replaceActions
-     * @return array
-     */
-    public function getActions(array $replaceActions = []): array
+    public function getActions($replaceActions = []): array
     {
         $actions = [
             ButtonsStructure::BONUS_BALANCE => function () {
-                $this->run(
-                    Translator::trans(
-                        'messages.get bonus balance',
-                        ['bonuses' => $this->getUser()->getBonusBalance() ?? 0]
-                    )
-                );
+                $this->run(Translator::trans('messages.get bonus balance', ['bonuses' => $this->getUser()->getBonusBalance() ?? 0]));
             },
             ButtonsStructure::WORK_AS_DRIVER => function () {
                 $this->run(Translator::trans('messages.work as driver'));
@@ -42,7 +26,7 @@ class BonusesConversation extends BaseConversation
             ButtonsStructure::OUR_APP => function () {
                 $this->run(Translator::trans('messages.our app'));
             },
-            ButtonsStructure::BACK => 'App\Conversations\MainMenu\MenuConversation',
+            ButtonsStructure::BACK => MenuConversation::class,
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
@@ -59,8 +43,8 @@ class BonusesConversation extends BaseConversation
         }
 
         $question = ComplexQuestion::createWithSimpleButtons($message,
-                                                             ButtonsStructure::getBonusesMenu(),
-                                                             ['config' => ButtonsFormatterService::BONUS_MENU_FORMAT]
+            ButtonsStructure::getBonusesMenu(),
+            ['config' => ButtonsFormatterService::BONUS_MENU_FORMAT]
         );
 
         return $this->ask(
