@@ -18,7 +18,6 @@ use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 
 class CheckOrderStateCommand extends Command
@@ -169,9 +168,9 @@ class CheckOrderStateCommand extends Command
 //                    $actualOrder->price = $newPrice;
 //                    $actualOrder->save();
 //                }
-                Log::alert($newState->order_params);
-                Log::alert($oldState->order_params);
-                if (Address::isAddressChangedFromState($oldState, $newState) || $isPriceChanged || $newState->order_params != $oldState->order_params) {
+//                Log::alert($newState->order_params);
+//                Log::alert($oldState->order_params);
+                if (Address::isAddressChangedFromState($oldState, $newState) || $isPriceChanged) {
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
                     $botMan->say(MessageGeneratorService::getFullOrderInfoFromStorage($storage), $recipientId, $driverName);
                 }
