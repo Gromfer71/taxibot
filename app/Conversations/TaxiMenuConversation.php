@@ -331,6 +331,8 @@ class TaxiMenuConversation extends BaseAddressConversation
             );
             $order->changePrice($this->bot);
             $order->updateOrderState();
+            $newPrice = (new OrderApiService())->driverTimeCount($order->id)->data->DISCOUNTEDSUMM;
+            $order->price = $newPrice - $price->value;
             $order->save();
             $this->currentOrderMenu(true);
         });

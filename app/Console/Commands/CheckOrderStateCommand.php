@@ -146,34 +146,35 @@ class CheckOrderStateCommand extends Command
                     Address::updateAddressesInStorage($newPrice, $storage);
                     $orderService = new OrderService($storage);
                     // тут вопрос как бы, какой метод юзать
-                    //  $orderService->calcPrice();
+                    //$orderService->calcPrice();
                 }
 
 
                 //if ($newState->order_params != $oldState->order_params) {
-                $storage->save(['wishes' => []]);
-                $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
-                $haveChangedPrice = false;
-                foreach ($newState->order_params as $param) {
-                    if ($changedPrice = (array)$options->getChangedPrice($param)) {
-                        $storage->save(['changed_price_in_order' => $changedPrice]);
-                        $storage->save(['price' => $actualOrder->price + (int)$changedPrice['value']]);
-                        $haveChangedPrice = true;
-                    } elseif ($options->isOrderParamWish($param)) {
-                        $storage->save(['wishes' => collect($storage->get('wishes'))->push($param)->unique()]);
-                    }
-                }
-                if (!$haveChangedPrice) {
-                    $storage->save(['price' => $newPrice]);
-                }
-                $isPriceChanged = $newPrice - ($changedPrice['value'] ?? 0) != $storage->get('price');
+                // $storage->save(['wishes' => []]);
+                // $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
+                // $haveChangedPrice = false;
+//                foreach ($newState->order_params as $param) {
+//                    if ($changedPrice = (array)$options->getChangedPrice($param)) {
+//                        $storage->save(['changed_price_in_order' => $changedPrice]);
+//                        $storage->save(['price' => $actualOrder->price + (int)$changedPrice['value']]);
+//                        $haveChangedPrice = true;
+//                    } elseif ($options->isOrderParamWish($param)) {
+//                        $storage->save(['wishes' => collect($storage->get('wishes'))->push($param)->unique()]);
+//                    }
+//                }
+//                if (!$haveChangedPrice) {
+//                    $storage->save(['price' => $newPrice]);
+//                }
+                $isPriceChanged = $newPrice != $storage->get('price');
                 // }
 
 
-                if ($isPriceChanged) {
-                    $actualOrder->price = $newPrice - ($changedPrice['value'] ?? 0);
-                    $actualOrder->save();
-                }
+                //  if ($isPriceChanged) {
+                $actualOrder->price = $newPrice - $storage->get('changed_price_in_order')['value'] ?? ($storage->get('changed_price')['value'] ?? 0);
+                $actualOrder->save();
+                $storage->save(['price' => $newPrice]);
+                // }
 //                Log::alert($newState->order_params);
 //                Log::alert($oldState->order_params);
                 if (Address::isAddressChangedFromState($oldState, $newState) || $isPriceChanged) {
