@@ -134,7 +134,7 @@ class CheckOrderStateCommand extends Command
                     $orderService->calcPrice();
                 }
                 $isPriceChanged = false;
-                if ($newPrice != $storage->get('price')) {
+                if ($newPrice != 1) {
                     $isPriceChanged = true;
                     $storage->save(['wishes' => []]);
                     $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
