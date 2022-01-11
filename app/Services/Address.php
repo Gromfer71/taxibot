@@ -224,7 +224,7 @@ class Address
 
     public static function isAddressChangedFromState($oldState, $newState, $userId)
     {
-        AddressHistory::firstOrCreate(['user_id' => $userId, 'address' => $newState->destination, 'lat' => $newState->source_lat, 'lon' => $newState->source_lon]);
+        AddressHistory::firstOrCreate(['user_id' => $userId, 'address' => $newState->source, 'lat' => $newState->source_lat, 'lon' => $newState->source_lon]);
         AddressHistory::firstOrCreate(['user_id' => $userId, 'address' => $newState->destination, 'lat' => $newState->destination_lat, 'lon' => $newState->destination_lon]);
         foreach ($newState->stops as $stop) {
             AddressHistory::firstOrCreate(['user_id' => $userId, 'address' => $stop->address, 'lat' => $stop->lat, 'lon' => $stop->lon]);
