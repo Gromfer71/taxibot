@@ -136,7 +136,7 @@ class CheckOrderStateCommand extends Command
                     Log::info('Произошло изменение адреса диспетчером, сохранили новый, пересчитали цену');
                 }
                 $isPriceChanged = false;
-                if ($newPrice != $storage->get('price')) {
+                if ($newPrice != 1) {
                     Log::info('Изменена цена диспетчером, старая цена ' . $storage->get('price') . ' , новая - ' . $newPrice);
                     $isPriceChanged = true;
                     $storage->save(['wishes' => []]);
