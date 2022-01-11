@@ -78,7 +78,6 @@ class TaxiMenuConversation extends BaseAddressConversation
             },
             ButtonsStructure::ABORTED_ORDER => MenuConversation::class,
             ButtonsStructure::CANCEL_CHANGE_PRICE => function () use ($order) {
-
                 $order->changed_price = null;
 
                 $this->bot->userStorage()->save(['changed_price_in_order' => null, 'price' => $order->price, 'changed_price' => null]);
@@ -189,13 +188,13 @@ class TaxiMenuConversation extends BaseAddressConversation
     public function confirmOrder($withoutMessage = false)
     {
         $question = ComplexQuestion::createWithSimpleButtons($withoutMessage ? '' : Translator::trans('messages.auto in way'),
-            [
-                ButtonsStructure::NEED_DISPATCHER,
-                ButtonsStructure::NEED_DRIVER,
-                ButtonsStructure::CANCEL_ORDER,
-                ButtonsStructure::NEED_MAP
-            ],
-            ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
+                                                             [
+                                                                 ButtonsStructure::NEED_DISPATCHER,
+                                                                 ButtonsStructure::NEED_DRIVER,
+                                                                 ButtonsStructure::CANCEL_ORDER,
+                                                                 ButtonsStructure::NEED_MAP
+                                                             ],
+                                                             ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
         );
         $order = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
 
@@ -229,12 +228,12 @@ class TaxiMenuConversation extends BaseAddressConversation
     public function inWay($withoutMessage = false)
     {
         $question = ComplexQuestion::createWithSimpleButtons($withoutMessage ? '' : Translator::trans('messages.have a nice trip'),
-            [
-                ButtonsStructure::FINISH_ORDER,
-                ButtonsStructure::NEED_DISPATCHER,
-                ButtonsStructure::NEED_DRIVER,
-            ],
-            ['config' => ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT]
+                                                             [
+                                                                 ButtonsStructure::FINISH_ORDER,
+                                                                 ButtonsStructure::NEED_DISPATCHER,
+                                                                 ButtonsStructure::NEED_DRIVER,
+                                                             ],
+                                                             ['config' => ButtonsFormatterService::SPLITBYTWOEXCLUDEFIRST_MENU_FORMAT]
         );
         if ($this->getActualOrderStateId() == OrderHistory::CLIENT_INSIDE) {
             $question = ComplexQuestion::setButtons($question, [ButtonsStructure::GET_DRIVER_LOCATION]);
@@ -371,12 +370,13 @@ class TaxiMenuConversation extends BaseAddressConversation
                 $this->bot->getDriver()->getName()
             );
             $order->changed_price = (int)$price->id;
-            $this->bot->userStorage()->save(
-                ['changed_price_in_order' => $price, 'price' => $order->price + $price->value]
-            );
+
 
             $order->save();
             $order->changePrice($this->bot);
+            $this->bot->userStorage()->save(
+                ['changed_price_in_order' => $price, 'price' => $order->price + $price->value]
+            );
             $order->updateOrderState();
             $newPrice = (new OrderApiService())->driverTimeCount($order->id)->data->DISCOUNTEDSUMM;
             $order->price = $newPrice - $price->value;
