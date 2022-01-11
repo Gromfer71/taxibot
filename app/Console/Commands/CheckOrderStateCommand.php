@@ -133,20 +133,21 @@ class CheckOrderStateCommand extends Command
                     // тут вопрос как бы, какой метод юзать
                     $orderService->calcPrice();
                 }
-
-                //if ($newState->order_params != $oldState->order_params) {
-                // $storage->save(['wishes' => []]);
-                // $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
-                // $haveChangedPrice = false;
-//                foreach ($newState->order_params as $param) {
-//                    if ($changedPrice = (array)$options->getChangedPrice($param)) {
-//                        $storage->save(['changed_price_in_order' => $changedPrice]);
-//                        $storage->save(['price' => $actualOrder->price + (int)$changedPrice['value']]);
-//                        $haveChangedPrice = true;
-//                    } elseif ($options->isOrderParamWish($param)) {
-//                        $storage->save(['wishes' => collect($storage->get('wishes'))->push($param)->unique()]);
-//                    }
-//                }
+                $isPriceChanged = false;
+                if ($newPrice != $storage->get('price')) {
+                    $isPriceChanged = true;
+                    $storage->save(['wishes' => []]);
+                    $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
+                    foreach ($newState->order_params as $param) {
+                        if ($changedPrice = (array)$options->getChangedPrice($param)) {
+                            $storage->save(['changed_price_in_order' => $changedPrice]);
+                            $storage->save(['price' => $actualOrder->price + (int)$changedPrice['value']]);
+                        } elseif ($options->isOrderParamWish($param)) {
+                            $storage->save(['wishes' => collect($storage->get('wishes'))->push($param)->unique()]);
+                        }
+                    }
+                    $storage->save(['price' => $newPrice]);
+                }
 //                if (!$haveChangedPrice) {
 //                    $storage->save(['price' => $newPrice]);
 //                }
@@ -172,11 +173,12 @@ class CheckOrderStateCommand extends Command
                 // }
 //                Log::alert($newState->order_params);
 //                Log::alert($oldState->order_params);
-                if (Address::isAddressChangedFromState($oldState, $newState)) {
+                if (Address::isAddressChangedFromState($oldState, $newState) || $isPriceChanged) {
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
                     $botMan->say(MessageGeneratorService::getFullOrderInfoFromStorage($storage), $recipientId, $driverName);
                 }
             }
+
             if (!$newStateId) {
                 continue;
             }
