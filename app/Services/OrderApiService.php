@@ -90,17 +90,17 @@ class OrderApiService
 
 
         $params = $this->makeDefaultRequestParams([
-            'addresses' => $addresses,
-            'comment' => $bot->userStorage()->get('comment'),
-            'crew_group_id' => $bot->userStorage()->get('crew_group_id'),
-            'is_prior' => false,
-            'order_params' => $options->getOrderParamsArray($bot->userStorage()),
-            'phone' => $phone,
-            'server_time_offset' => 0,
-            'source_time' => Carbon::createFromTimestamp(time())->format('YmdHis'),
-            'tariff_id' => $bot->userStorage()->get('tariff_id'),
-            'use_bonus' => $useBonus,
-        ]);
+                                                      'addresses' => $addresses,
+                                                      'comment' => $bot->userStorage()->get('comment'),
+                                                      'crew_group_id' => $bot->userStorage()->get('crew_group_id'),
+                                                      'is_prior' => false,
+                                                      'order_params' => $options->getOrderParamsArray($bot->userStorage()),
+                                                      'phone' => $phone,
+                                                      'server_time_offset' => 0,
+                                                      'source_time' => Carbon::createFromTimestamp(time())->format('YmdHis'),
+                                                      'tariff_id' => $bot->userStorage()->get('tariff_id'),
+                                                      'use_bonus' => $useBonus,
+                                                  ]);
 
 
         $response = $this->file_get_contents_with_logging(
@@ -135,7 +135,7 @@ class OrderApiService
             );
         }
         $addresses = $addresses->toArray();
-        Log::info(json_encode($addresses));
+
 
         $params = [
             'method' => 'POST',
@@ -179,9 +179,9 @@ class OrderApiService
             'method' => 'POST',
             'header' => 'Content-Type: application/json',
             'content' => json_encode([
-                'order_id' => $order->id,
-                'new_state' => $state,
-            ]),
+                                         'order_id' => $order->id,
+                                         'new_state' => $state,
+                                     ]),
         ];
         $response = $this->file_get_contents_with_logging(
             'https://sk-taxi.ru/tmapi/api.php?method=%2Fcommon_api%2F1.0%2Fchange_order_state',
@@ -207,8 +207,8 @@ class OrderApiService
             'method' => 'POST',
             'header' => 'Content-Type: application/json',
             'content' => json_encode([
-                'client_id' => $client_id,
-            ]),
+                                         'client_id' => $client_id,
+                                     ]),
         ];
         $response = $this->file_get_contents_with_logging(
             'https://sk-taxi.ru/tmapi/api.php?method=%2Fcommon_api%2F1.0%2Fget_current_orders',
@@ -225,10 +225,10 @@ class OrderApiService
             'method' => 'POST',
             'header' => 'Content-Type: application/json',
             'content' => json_encode([
-                'order_id' => $order->id,
-                'auto_recalc_cost' => true,
-                'order_params' => $options->getOrderParamsArray($bot->userStorage())
-            ]),
+                                         'order_id' => $order->id,
+                                         'auto_recalc_cost' => true,
+                                         'order_params' => $options->getOrderParamsArray($bot->userStorage())
+                                     ]),
         ];
 
 
@@ -269,8 +269,8 @@ class OrderApiService
             'method' => 'POST',
             'header' => 'Content-Type: application/json',
             'content' => json_encode([
-                'order_id' => $orderId,
-            ]),
+                                         'order_id' => $orderId,
+                                     ]),
         ];
 
         $response = $this->file_get_contents_with_logging(
@@ -287,8 +287,8 @@ class OrderApiService
             'method' => 'POST',
             'header' => 'Content-Type: application/json',
             'content' => json_encode([
-                'order_id' => $order->id,
-            ]),
+                                         'order_id' => $order->id,
+                                     ]),
         ];
 
         $response = $this->file_get_contents_with_logging(
@@ -333,9 +333,9 @@ class OrderApiService
             'method' => 'POST',
             'header' => 'Content-Type: application/json',
             'content' => json_encode([
-                'crew_group_id' => $crewGroupId,
-                'addresses' => $addresses,
-            ])
+                                         'crew_group_id' => $crewGroupId,
+                                         'addresses' => $addresses,
+                                     ])
         ];
 
         $response = $this->file_get_contents_with_logging(

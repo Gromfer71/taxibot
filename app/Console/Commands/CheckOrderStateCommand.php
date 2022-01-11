@@ -18,6 +18,7 @@ use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 
 class CheckOrderStateCommand extends Command
@@ -132,9 +133,11 @@ class CheckOrderStateCommand extends Command
                     $orderService = new OrderService($storage);
                     // тут вопрос как бы, какой метод юзать
                     $orderService->calcPrice();
+                    Log::info('Произошло изменение адреса диспетчером, сохранили новый, пересчитали цену');
                 }
                 $isPriceChanged = false;
                 if ($newPrice != $storage->get('price')) {
+                    Log::info('Изменена цена диспетчером, старая цена ' . $storage->get('price') . ' , новая - ' . $newPrice);
                     $isPriceChanged = true;
                     $storage->save(['wishes' => []]);
                     $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
@@ -174,6 +177,7 @@ class CheckOrderStateCommand extends Command
 //                Log::alert($newState->order_params);
 //                Log::alert($oldState->order_params);
                 if (Address::isAddressChangedFromState($oldState, $newState) || $isPriceChanged) {
+                    Log::info('Отреагировали, при этом изменение адреса -  ' . Address::isAddressChangedFromState($oldState, $newState) . ' Изменение цены ' . $isPriceChanged);
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
                     $botMan->say(MessageGeneratorService::getFullOrderInfoFromStorage($storage), $recipientId, $driverName);
                 }

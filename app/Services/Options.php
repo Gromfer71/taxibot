@@ -6,7 +6,6 @@ namespace App\Services;
 use App\Models\Config;
 use App\Models\User;
 use BotMan\BotMan\Storages\Storage;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Получаем настройки бота с файла. По коду обращаемся к данным настройкам
@@ -102,7 +101,7 @@ class Options
             }
         }
         $orderParams = $orderParams->filter();
-        Log::alert($orderParams);
+
         return $orderParams->toArray();
     }
 

@@ -6,7 +6,6 @@ namespace App\Services;
 
 use BotMan\BotMan\Storages\Storage;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class MessageGeneratorService
 {
@@ -19,7 +18,7 @@ class MessageGeneratorService
         $countAddresses = count($userStorage->get('address'));
         if ($haveEndAddress && $countAddresses == 2 && !$userStorage->get('comment') && !$userStorage->get('wishes') && !$userStorage->get('changed_price')) {
             $route = MessageGeneratorService::implodeAddress(collect($userStorage->get('address')));
-            Log::alert('Простая инфа о заказе');
+
             return Translator::trans('messages.addres_naznachen_za_bonusi_punkt_21', ['route' => $route, 'price' => $userStorage->get('price')]);
         }
         return self::getFullOrderInfoFromStorageFallback($userStorage);
