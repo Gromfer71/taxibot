@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AddressHistory;
 use App\Models\LogApi;
 use BotMan\BotMan\Storages\Storage;
 use GuzzleHttp\Client;
@@ -89,15 +90,6 @@ class Address
                 return $city;
             }
         });
-    }
-
-    private static function _log($url, $params, $result)
-    {
-        $log = new LogApi();
-        $log->params = $params;
-        $log->url = $url;
-        $log->result = $result;
-        $log->save();
     }
 
     public static function sortAddresses($addresses, $storage)
@@ -230,8 +222,14 @@ class Address
         }
     }
 
-    public static function isAddressChangedFromState($oldState, $newState)
+    public static function isAddressChangedFromState($oldState, $newState, $userId)
     {
+        AddressHistory::firstOrCreate(['user_id' => $userId, 'address' => $newState->destination, 'lat' => $newState->source_lat, 'lon' => $newState->source_lon]);
+        AddressHistory::firstOrCreate(['user_id' => $userId, 'address' => $newState->destination, 'lat' => $newState->destination_lat, 'lon' => $newState->destination_lon]);
+        foreach ($newState->stops as $stop) {
+            AddressHistory::firstOrCreate(['user_id' => $userId, 'address' => $stop->address, 'lat' => $stop->lat, 'lon' => $stop->lon]);
+        }
+
         if ($newState->source != $oldState->source || $newState->destination != $oldState->destination) {
             return true;
         }
@@ -248,7 +246,6 @@ class Address
         }
         return false;
     }
-
 
     public static function updateAddressesInStorage($orderState, Storage $storage)
     {
@@ -277,6 +274,15 @@ class Address
         }
 
         $storage->save(['address' => $addresses->toArray(), 'lat' => $lat->toArray(), 'lon' => $lon->toArray()]);
+    }
+
+    private static function _log($url, $params, $result)
+    {
+        $log = new LogApi();
+        $log->params = $params;
+        $log->url = $url;
+        $log->result = $result;
+        $log->save();
     }
 
 
