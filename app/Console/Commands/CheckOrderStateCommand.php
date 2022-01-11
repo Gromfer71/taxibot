@@ -148,7 +148,7 @@ class CheckOrderStateCommand extends Command
                             $storage->save(['wishes' => collect($storage->get('wishes'))->push($param)->unique()]);
                         }
                     }
-                    $storage->save(['price' => $newPrice]);
+                    $storage->save(['price' => 50]);
                 }
 //                if (!$haveChangedPrice) {
 //                    $storage->save(['price' => $newPrice]);
