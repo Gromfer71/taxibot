@@ -18,6 +18,7 @@ use Barryvdh\TranslationManager\Models\LangPackage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 
 class CheckOrderStateCommand extends Command
@@ -134,7 +135,8 @@ class CheckOrderStateCommand extends Command
                     $orderService->calcPrice();
                 }
                 $isPriceChanged = false;
-                if ($newPrice != 1) {
+                Log::info('Цена ' . $newPrice);
+                if ($newPrice != 0) {
                     $isPriceChanged = true;
                     $storage->save(['wishes' => []]);
                     $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
