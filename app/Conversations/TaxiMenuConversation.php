@@ -29,7 +29,6 @@ class TaxiMenuConversation extends BaseAddressConversation
             $this->bot->getUser()->getId(),
             $this->bot->getDriver()->getName()
         );
-        // TODO: ВСЕ ИМЕНА КЛАССОВ ПЕРЕПИСАТЬ В ::class
         $actions = [
             ButtonsStructure::EXIT_TO_MENU => MenuConversation::class,
             ButtonsStructure::ADD_ADDRESS => TakingAdditionalAddressConversation::class,
