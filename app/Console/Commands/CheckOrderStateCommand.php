@@ -87,7 +87,11 @@ class CheckOrderStateCommand extends Command
 
             $newState = (new OrderApiService())->getOrderState($actualOrder->id);
             $newStateId = $actualOrder->checkOrder($newState);
-
+            if ($newStateId == 12) {
+                $actualOrder->relevance = -1;
+                $actualOrder->fail_reason = 'Заказ удален диспетчером';
+                continue;
+            }
             $newState = $newState->data;
             $actualOrder->refresh();
             if ($actualOrder->relevance != 0) {

@@ -80,26 +80,26 @@ class OrderHistory extends Model
 
         if ($response['code'] === 0) {
             return self::create([
-                'id' => $response['data']['order_id'],
-                'user_id' => User::find($bot->getUser()->getId())->id,
-                'address' => json_encode(
-                    [
-                        'address' => $bot->userStorage()->get('address'),
-                        'lat' => $bot->userStorage()->get('lat'),
-                        'lon' => $bot->userStorage()->get('lon')
-                    ],
-                    JSON_UNESCAPED_UNICODE
-                ),
-                'price' => $bot->userStorage()->get('price'),
-                'changed_price' => $bot->userStorage()->get('changed_price') ? $bot->userStorage()->get('changed_price')['id'] : null,
-                'comment' => $bot->userStorage()->get('comment'),
-                'wishes' => MessageGeneratorService::implodeWishes(
-                    collect($bot->userStorage()->get('wishes'))
-                ),
-                'relevance' => 0,
-                'usebonus' => $useBonus,
-                'platform' => $bot->getDriver()->getName()
-            ]);
+                                    'id' => $response['data']['order_id'],
+                                    'user_id' => User::find($bot->getUser()->getId())->id,
+                                    'address' => json_encode(
+                                        [
+                                            'address' => $bot->userStorage()->get('address'),
+                                            'lat' => $bot->userStorage()->get('lat'),
+                                            'lon' => $bot->userStorage()->get('lon')
+                                        ],
+                                        JSON_UNESCAPED_UNICODE
+                                    ),
+                                    'price' => $bot->userStorage()->get('price'),
+                                    'changed_price' => $bot->userStorage()->get('changed_price') ? $bot->userStorage()->get('changed_price')['id'] : null,
+                                    'comment' => $bot->userStorage()->get('comment'),
+                                    'wishes' => MessageGeneratorService::implodeWishes(
+                                        collect($bot->userStorage()->get('wishes'))
+                                    ),
+                                    'relevance' => 0,
+                                    'usebonus' => $useBonus,
+                                    'platform' => $bot->getDriver()->getName()
+                                ]);
         } else {
             return null;
         }
@@ -292,7 +292,7 @@ class OrderHistory extends Model
         }
 
         if ($newState === 12) {
-            return null;
+            return 12;
         }
 //        \Illuminate\Support\Facades\Log::info($newState->state_id);
 //        \Illuminate\Support\Facades\Log::info($oldState);

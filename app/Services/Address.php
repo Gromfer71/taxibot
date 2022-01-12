@@ -224,11 +224,13 @@ class Address
 
     public static function isAddressChangedFromState($oldState, $newState, $userId)
     {
-        AddressHistory::firstOrCreate(['user_id' => $userId, 'address' => $newState->source, 'lat' => $newState->source_lat, 'lon' => $newState->source_lon]);
         AddressHistory::firstOrCreate(['user_id' => $userId, 'address' => $newState->destination, 'lat' => $newState->destination_lat, 'lon' => $newState->destination_lon]);
+        $stops = array_reverse($newState->stops);
         foreach ($newState->stops as $stop) {
             AddressHistory::firstOrCreate(['user_id' => $userId, 'address' => $stop->address, 'lat' => $stop->lat, 'lon' => $stop->lon]);
         }
+        AddressHistory::firstOrCreate(['user_id' => $userId, 'address' => $newState->source, 'lat' => $newState->source_lat, 'lon' => $newState->source_lon]);
+
 
         if ($newState->source != $oldState->source || $newState->destination != $oldState->destination) {
             return true;
