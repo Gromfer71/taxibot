@@ -17,10 +17,7 @@ class AddedRouteMenuConversation extends BaseAddressConversation
     public function getActions($replaceActions = []): array
     {
         $actions = [
-            ButtonsStructure::CANCEL => function () {
-                $this->saveToStorage(['go_to_add_route_menu' => true]);
-                $this->bot->startConversation(new FavoriteRouteSettingsConversation());
-            },
+            ButtonsStructure::CANCEL => FavoriteRouteSettingsConversation::class,
             ButtonsStructure::SAVE => 'setRouteName',
             ButtonsStructure::ADD_ADDRESS => function () {
                 $this->bot->userStorage()->save(['additional_address_for_favorite_route' => true]);
