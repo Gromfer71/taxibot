@@ -290,7 +290,7 @@ class User extends Model
 
     public function favoriteRoutes()
     {
-        return $this->hasMany(FavoriteRoute::class, 'user_id', 'id');
+        return $this->hasMany(FavoriteRoute::class, 'user_id', 'id')->orderByDesc('id');
     }
 
 

@@ -59,7 +59,7 @@ class AddedRouteMenuConversation extends BaseAddressConversation
 
         return $this->ask($question, function (Answer $answer) {
             if ($answer->getValue() == ButtonsStructure::CANCEL) {
-                $this->bot->startConversation(new MenuConversation());
+                $this->bot->startConversation(new FavoriteRouteSettingsConversation());
                 die();
             } elseif ($answer->getValue() == ButtonsStructure::SAVE) {
                 $this->setRouteName();
