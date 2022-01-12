@@ -87,7 +87,7 @@ class CheckOrderStateCommand extends Command
 
             $newState = (new OrderApiService())->getOrderState($actualOrder->id);
             $newStateId = $actualOrder->checkOrder($newState);
-            if ($newStateId == 12 || !$newStateId) {
+            if ($newStateId == 12) {
                 $newStateId = 5;
             }
             $newState = $newState->data;

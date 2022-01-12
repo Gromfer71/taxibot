@@ -288,11 +288,11 @@ class OrderHistory extends Model
         $newState = $this->updateOrderState($newState);
 
         if (!$newState) {
-            return null;
+            return self::ORDER_NOT_FOUND;
         }
 
         if ($newState === 12) {
-            return null;
+            return 12;
         }
 //        \Illuminate\Support\Facades\Log::info($newState->state_id);
 //        \Illuminate\Support\Facades\Log::info($oldState);
