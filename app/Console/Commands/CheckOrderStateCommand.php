@@ -133,6 +133,7 @@ class CheckOrderStateCommand extends Command
                     [ButtonsStructure::ABORTED_ORDER]
                 );
                 $botMan->say($question, $recipientId, $driverName);
+                continue;
             }
 
             // если статус заказа поменялся, только тогда производим какие-то действия
