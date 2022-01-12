@@ -90,6 +90,7 @@ class CheckOrderStateCommand extends Command
             if ($newStateId == 12) {
                 $newStateId = 5;
             }
+
             $newState = $newState->data;
             $actualOrder->refresh();
             if ($actualOrder->relevance != 0) {
@@ -121,6 +122,17 @@ class CheckOrderStateCommand extends Command
                 //временно оставим по дефолту телеграм, чтобы драйвер не был null
                 $driverName = TelegramDriver::class;
                 $recipientId = $user->telegram_id;
+            }
+
+            if ($newStateId == OrderHistory::ORDER_NOT_FOUND) {
+                //Заказ удален
+                $actualOrder->refresh();
+                $actualOrder->setDeletedOrder();
+                $question = ComplexQuestion::createWithSimpleButtons(
+                    Translator::trans('messages.aborted order'),
+                    [ButtonsStructure::ABORTED_ORDER]
+                );
+                $botMan->say($question, $recipientId, $driverName);
             }
 
             // если статус заказа поменялся, только тогда производим какие-то действия
@@ -285,15 +297,6 @@ class CheckOrderStateCommand extends Command
                     Translator::trans('messages.dont come out'),
                     [ButtonsStructure::CLIENT_GOES_OUT_LATE, ButtonsStructure::CANCEL_ORDER],
                     ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
-                );
-                $botMan->say($question, $recipientId, $driverName);
-            } elseif ($newStateId == OrderHistory::ORDER_NOT_FOUND) {
-                //Заказ удален
-                $actualOrder->refresh();
-                $actualOrder->setDeletedOrder();
-                $question = ComplexQuestion::createWithSimpleButtons(
-                    Translator::trans('messages.aborted order'),
-                    [ButtonsStructure::ABORTED_ORDER]
                 );
                 $botMan->say($question, $recipientId, $driverName);
             }
