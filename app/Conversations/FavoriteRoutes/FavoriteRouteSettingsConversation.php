@@ -41,9 +41,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
 
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
-
-            $this->confirmDeleteRoute($answer->getText());
+            $this->handleAction($answer) ?: $this->confirmDeleteRoute($answer->getText());
         });
     }
 
@@ -121,13 +119,13 @@ class FavoriteRouteSettingsConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) use ($address) {
             if (!$answer->isInteractiveMessageReply()) {
                 FavoriteRoute::create([
-                    'user_id' => $this->getUser()->id,
-                    'name' => $answer->getText(),
-                    'address' => json_encode(
-                        $address,
-                        JSON_UNESCAPED_UNICODE
-                    )
-                ]);
+                                          'user_id' => $this->getUser()->id,
+                                          'name' => $answer->getText(),
+                                          'address' => json_encode(
+                                              $address,
+                                              JSON_UNESCAPED_UNICODE
+                                          )
+                                      ]);
 
                 $this->run();
             } else {
