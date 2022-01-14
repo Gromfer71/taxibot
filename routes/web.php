@@ -33,6 +33,7 @@ Route::group(['midlleware' => 'auth'], function () {
     Route::post('add_user', 'UserController@addUser')->name('add_user');
     Route::get('users/{id}', 'UserController@user')->name('user');
     Route::get('users/{id}/orders', 'UserController@orders')->name('user_orders');
+
     Route::get('users/{id}/addresses', 'UserController@addresses')->name('user_addresses');
     Route::get('users/{id}/delete', 'UserController@delete')->name('user_delete');
     Route::get('users/{id}/reset', 'UserController@reset')->name('user_reset');
