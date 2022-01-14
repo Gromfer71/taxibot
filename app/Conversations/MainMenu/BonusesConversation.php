@@ -43,15 +43,15 @@ class BonusesConversation extends BaseConversation
         }
 
         $question = ComplexQuestion::createWithSimpleButtons($message,
-            ButtonsStructure::getBonusesMenu(),
-            ['config' => ButtonsFormatterService::BONUS_MENU_FORMAT]
+                                                             ButtonsStructure::getBonusesMenu(),
+                                                             ['config' => ButtonsFormatterService::BONUS_MENU_FORMAT]
         );
 
         return $this->ask(
             $question,
             function (Answer $answer) {
                 $this->handleAction($answer);
-                $this->run();
+                //$this->run();
             }
         );
     }
