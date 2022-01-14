@@ -49,7 +49,9 @@ class AddressesHistoryConversation extends BaseConversation
         }
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
+            if ($this->handleAction($answer)) {
+                return;
+            }
             if (property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
                 $address = collect($this->getFromStorage('addresses'))->get($answer->getText());
                 if (!$address) {
@@ -78,8 +80,7 @@ class AddressesHistoryConversation extends BaseConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer, [ButtonsStructure::BACK => 'run']);
-            $this->run();
+            $this->handleAction($answer, [ButtonsStructure::BACK => 'run']) ?: $this->run();
         });
     }
 }

@@ -16,7 +16,6 @@ use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use Illuminate\Support\Str;
-use Throwable;
 
 abstract class BaseAddressConversation extends BaseConversation
 {
@@ -44,21 +43,12 @@ abstract class BaseAddressConversation extends BaseConversation
         $question = $this->_addAddressHistoryButtons($question, !$withFavoriteAddresses);
 
         return $this->ask($question, function (Answer $answer) use ($withFavoriteAddresses) {
-            $this->handleAction($answer);
-            $this->handleFirstAddress($answer, $withFavoriteAddresses);
+            $this->handleAction($answer) ?: $this->handleFirstAddress($answer, $withFavoriteAddresses);
         });
     }
 
 
-    /**
-     * Меню выбора первого адреса маршрута, после ввода адреса пользователем. Пользователь выбирает из предложенного списка.
-     * В зависимости от выбранного адреса бот отправляет в сценарий, если выбрана только улица без номера дома, либо если всё
-     * хорошо, то на ввод подъезда. Либо пользователь просто вводит первый адрес снова, тогда он попадает на этот же диалог.
-     *
-     * @return \App\Conversations\BaseAddressConversation
-     * @throws Throwable
-     */
-    public function getAddressAgain(): BaseAddressConversation
+    public function getAddressAgain()
     {
         $addressesList = $this->getAddressesList();
         $question = ComplexQuestion::createWithSimpleButtons(
@@ -75,13 +65,15 @@ abstract class BaseAddressConversation extends BaseConversation
         );
         if ($addressesList->isEmpty()) {
             $this->streetNotFound();
-            die();
+            return;
         }
 
         return $this->ask(
             $question,
             function (Answer $answer) use ($addressesList) {
-                $this->handleAction($answer);
+                if ($this->handleAction($answer)) {
+                    return;
+                }
                 $address = Address::findByAnswer($addressesList, $answer);
                 if ($address) {
                     $this->handleFirstChosenAddress($address);
@@ -105,13 +97,15 @@ abstract class BaseAddressConversation extends BaseConversation
         return $this->ask(
             $question,
             function (Answer $answer) {
-                $this->handleAction(
+                if ($this->handleAction(
                     $answer,
                     [ButtonsStructure::GO_AS_INDICATED => 'getEntrance']
-                );
+                )) {
+                    return;
+                }
                 if ($answer->getValue() == ButtonsStructure::BACK) {
                     $this->getAddress(Translator::trans('messages.give me your address'), true);
-                    die();
+                    return;
                 }
                 $this->_saveFirstAddress($answer->getText());
                 $this->getAddressAgain();

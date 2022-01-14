@@ -50,7 +50,9 @@ class SwitchLangConversation extends BaseConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
+            if ($this->handleAction($answer)) {
+                return;
+            }
             if ($langPackage = LangPackage::getByName($answer->getText())) {
                 $this->getUser()->switchLang($langPackage->id);
                 $this->bot->startConversation(new SettingsConversation());

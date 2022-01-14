@@ -63,12 +63,14 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
         $question = $this->_addAddressHistoryButtons($question);
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction(
+            if ($this->handleAction(
                 $answer,
                 [
                     ButtonsStructure::BACK => $this->isAdditionalAddressForFavoriteRoute() ? 'exit' : TaxiMenuConversation::class
                 ]
-            );
+            )) {
+                return;
+            }
 
             $address = $this->_getAddressFromHistoryByAnswer($answer);
             if ($address) {
@@ -115,11 +117,13 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
             );
         } else {
             $this->streetNotFoundAdditionalAddress();
-            die();
+            return;
         }
 
         return $this->ask($question, function (Answer $answer) use ($addressesList) {
-            $this->handleAction($answer);
+            if ($this->handleAction($answer)) {
+                return;
+            }
             $address = Address::findByAnswer($addressesList, $answer);
             if ($address) {
                 if ($address['kind'] == 'street') {
@@ -159,7 +163,9 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
+            if ($this->handleAction($answer)) {
+                return;
+            }
             $this->_saveAnotherAddress($answer, 0, 0, true);
             $this->addAdditionalAddressAgain();
         });
@@ -173,7 +179,9 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
             [ButtonsStructure::EXIT_TO_MENU]
         );
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
+            if ($this->handleAction($answer)) {
+                return;
+            }
             $this->_addToLastAnotherAddress($answer);
             $this->addAdditionalAddressAgain();
         });

@@ -29,7 +29,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
         if ($this->getFromStorage('go_to_add_route_menu')) {
             $this->saveToStorage(['go_to_add_route_menu' => false]);
             $this->addRoute();
-            die();
+            return;
         }
 
         $question = ComplexQuestion::createWithSimpleButtons(
@@ -66,10 +66,9 @@ class FavoriteRouteSettingsConversation extends BaseConversation
         $question = ComplexQuestion::addOrderHistoryButtons($question, $this->getUser()->orders);
         return $this->ask($question, function (Answer $answer) {
             $this->saveToStorage(['dont_save_address_to_history' => true]);
-            $this->handleAction(
-                $answer,
-                [ButtonsStructure::BACK => 'run']
-            );
+            if ($this->handleAction($answer, [ButtonsStructure::BACK => 'run'])) {
+                return;
+            }
 
             if (!$answer->getValue() && property_exists($this->bot->getDriver(), 'needToAddAddressesToMessage')) {
                 $address = collect($this->getFromStorage('address_in_number'));

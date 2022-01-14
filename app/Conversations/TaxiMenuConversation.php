@@ -175,7 +175,9 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer, [ButtonsStructure::CHANGE_PRICE => 'changePriceInOrderMenu']);
+            if ($this->handleAction($answer, [ButtonsStructure::CHANGE_PRICE => 'changePriceInOrderMenu'])) {
+                return;
+            }
             $question = $this->getQuestionInOrderFromCron();
             if ($question) {
                 $this->say($question);
@@ -200,7 +202,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         $order = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
 
         return $this->ask($question, function (Answer $answer) use ($order) {
-            $this->handleAction($answer, [
+            if ($this->handleAction($answer, [
                 ButtonsStructure::NEED_DRIVER => function () use ($order) {
                     (new OrderApiService())->connectClientAndDriver($order);
                     $this->say(Translator::trans('messages.connect with driver'));
@@ -211,7 +213,9 @@ class TaxiMenuConversation extends BaseAddressConversation
                     $this->say(Translator::trans('messages.wait for dispatcher'));
                     $this->confirmOrder(true);
                 }
-            ]);
+            ])) {
+                return;
+            }
             if (!OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName())) {
                 $this->end();
             } else {
@@ -243,7 +247,7 @@ class TaxiMenuConversation extends BaseAddressConversation
         }
         $order = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
         return $this->ask($question, function (Answer $answer) use ($order) {
-            $this->handleAction(
+            if ($this->handleAction(
                 $answer,
                 [
                     ButtonsStructure::NEED_DRIVER => function () use ($order) {
@@ -261,7 +265,9 @@ class TaxiMenuConversation extends BaseAddressConversation
                         $this->inWay(true);
                     }
                 ]
-            );
+            )) {
+                return;
+            }
             if (!OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName())) {
                 $this->end();
             } else {
@@ -298,7 +304,9 @@ class TaxiMenuConversation extends BaseAddressConversation
         $question = $wishService->addButtonsToQuestion();
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
+            if ($this->handleAction($answer)) {
+                return;
+            }
             $key = substr(stristr($answer->getText(), '#'), 1);
 
             if (!$key) {
@@ -306,7 +314,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             }
             if (!$key) {
                 $this->wishes();
-                die();
+                return;
             }
             $this->bot->userStorage()->save(
                 ['wishes' => collect($this->bot->userStorage()->get('wishes'))->push($key)]
@@ -343,11 +351,13 @@ class TaxiMenuConversation extends BaseAddressConversation
         $question = $this->getChangePrice($question, $prices);
 
         return $this->ask($question, function (Answer $answer) use ($prices) {
-            $this->handleAction($answer, [
+            if ($this->handleAction($answer, [
                 ButtonsStructure::BACK => function () {
                     $this->currentOrderMenu(true);
                 }
-            ]);
+            ])) {
+                return;
+            }
 
             $key = substr(stristr($answer->getText(), '#'), 1);
 
@@ -392,12 +402,14 @@ class TaxiMenuConversation extends BaseAddressConversation
         $question = $this->getChangePrice($question, $prices);
 
         return $this->ask($question, function (Answer $answer) use ($prices) {
-            $this->handleAction($answer, [
+            if ($this->handleAction($answer, [
                 ButtonsStructure::CANCEL_CHANGE_PRICE => function () {
                     $this->bot->userStorage()->save(['changed_price' => null]);
                     $this->run();
                 }
-            ]);
+            ])) {
+                return;
+            }
             $key = substr(stristr($answer->getText(), '#'), 1);
 
             if (!$key) {
@@ -438,7 +450,9 @@ class TaxiMenuConversation extends BaseAddressConversation
         }
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
+            if ($this->handleAction($answer)) {
+                return;
+            }
             $this->bot->userStorage()->save(['comment' => $answer->getText()]);
             $this->menuAfterWrittenComment();
         });
@@ -467,7 +481,9 @@ class TaxiMenuConversation extends BaseAddressConversation
         }
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
+            if ($this->handleAction($answer)) {
+                return;
+            }
             $this->bot->userStorage()->save(['comment' => $answer->getText()]);
             $this->menuAfterWrittenComment();
         });

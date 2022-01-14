@@ -48,7 +48,7 @@ class FavoriteAddressesConversation extends BaseAddressConversation
     public function run()
     {
         $question = ComplexQuestion::createWithSimpleButtons(Translator::trans('messages.favorite addresses menu'),
-            [ButtonsStructure::BACK, ButtonsStructure::ADD_ADDRESS]
+                                                             [ButtonsStructure::BACK, ButtonsStructure::ADD_ADDRESS]
         );
 
         foreach ($this->getUser()->favoriteAddresses as $address) {
@@ -58,7 +58,9 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         }
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
+            if ($this->handleAction($answer)) {
+                return;
+            }
 
             if ($answer->getValue() == ButtonsStructure::ADD_ADDRESS) {
                 $this->saveToStorage(['dont_save_address_to_history' => true]);
@@ -85,17 +87,19 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer, [ButtonsStructure::BACK => 'run']);
+            if ($this->handleAction($answer, [ButtonsStructure::BACK => 'run'])) {
+                return;
+            }
             FavoriteAddress::where([
-                'user_id' => $this->getUser()->id,
-                'name' => trim(
-                    stristr(
-                        $this->bot->userStorage()->get('address_name'),
-                        '(',
-                        true
-                    )
-                )
-            ])->first()->delete();
+                                       'user_id' => $this->getUser()->id,
+                                       'name' => trim(
+                                           stristr(
+                                               $this->bot->userStorage()->get('address_name'),
+                                               '(',
+                                               true
+                                           )
+                                       )
+                                   ])->first()->delete();
             $this->run();
         });
     }
@@ -108,8 +112,12 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
-            $this->checkAddressNameForLength($answer->getText());
+            if ($this->handleAction($answer)) {
+                return;
+            }
+            if (!$this->checkAddressNameForLength($answer->getText())) {
+                return;
+            }
             $this->bot->userStorage()->save(['address_name' => $answer->getText()]);
             $this->confirmAddress();
         });
@@ -129,8 +137,8 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
-            $this->getAddressName();
+            $this->handleAction($answer) ?:
+                $this->getAddressName();
         });
     }
 
@@ -139,7 +147,9 @@ class FavoriteAddressesConversation extends BaseAddressConversation
         if (mb_strlen($addressName) > 32) {
             $this->say(Translator::trans('messages.address name too long'));
             $this->getAddressName();
-            die();
+            return false;
         }
+
+        return true;
     }
 }

@@ -52,8 +52,7 @@ abstract class BaseConversation extends Conversation
     public function getDefaultCallback()
     {
         return function (Answer $answer) {
-            $this->handleAction($answer);
-            //$this->run();
+            $this->handleAction($answer) ?: $this->run();
         };
     }
 

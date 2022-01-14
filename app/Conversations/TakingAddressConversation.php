@@ -99,8 +99,7 @@ class TakingAddressConversation extends BaseAddressConversation
         return $this->ask(
             $question,
             function (Answer $answer) {
-                $this->handleAction($answer);
-                $this->handleSecondAddress($answer);
+                $this->handleAction($answer) ?: $this->handleSecondAddress($answer);
             }
         );
     }
@@ -124,14 +123,14 @@ class TakingAddressConversation extends BaseAddressConversation
             );
         } else {
             $this->streetNotFoundAddressTo();
-            die();
+            return;
         }
 
         return $this->ask(
             $question,
             function (Answer $answer) use ($addressesList) {
-                $this->handleAction($answer);
-                $this->handleSecondAddressAgain($addressesList, $answer);
+                $this->handleAction($answer) ?:
+                    $this->handleSecondAddressAgain($addressesList, $answer);
             }
         );
     }
@@ -145,7 +144,9 @@ class TakingAddressConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer, [ButtonsStructure::BACK => 'getAddressTo']);
+            if ($this->handleAction($answer, [ButtonsStructure::BACK => 'getAddressTo'])) {
+                return;
+            }
             $this->_saveSecondAddress($answer->getText());
             $this->getAddressToAgain();
         });

@@ -46,7 +46,9 @@ class ClearOrdersHistoryConversation extends BaseConversation
         $this->bot->userStorage()->save(['routes' => $orders->pluck('id', 'address')->toArray()]);
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
+            if ($this->handleAction($answer)) {
+                return;
+            }
             $route = collect($this->getFromStorage('address_in_number'));
             $route = $route->get($answer->getText());
             if (!$route) {
@@ -65,7 +67,9 @@ class ClearOrdersHistoryConversation extends BaseConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer, [ButtonsStructure::BACK => 'run']);
+            if ($this->handleAction($answer, [ButtonsStructure::BACK => 'run'])) {
+                return;
+            }
             if ($answer->getValue() == ButtonsStructure::DELETE) {
                 if ($order = OrderHistory::where(
                     [
