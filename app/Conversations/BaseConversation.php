@@ -64,7 +64,7 @@ abstract class BaseConversation extends Conversation
         }
         Log::newLogAnswer($this->getUser()->id ?? null, $answer->getText(), $value ?? null);
         $callbackOrMethodName = $this->getActions($replaceActions)[$answer->getValue()] ?? '';
-        \Illuminate\Support\Facades\Log::info('$callbackOrMethodName - ' . $callbackOrMethodName);
+
         if (is_callable($callbackOrMethodName)) {
             \Illuminate\Support\Facades\Log::info('вызвали анонимную функцию');
             $callbackOrMethodName();
