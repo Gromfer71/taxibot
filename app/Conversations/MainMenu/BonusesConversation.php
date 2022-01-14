@@ -47,15 +47,15 @@ class BonusesConversation extends BaseConversation
                                                              ButtonsStructure::getBonusesMenu(),
                                                              ['config' => ButtonsFormatterService::BONUS_MENU_FORMAT]
         );
+        Log::info('Перед завершением скрипта после handle внутри диалога');
+        die();
+        Log::info('Скрипт не умер сразу после die внутри диалога');
 
         return $this->ask(
             $question,
             function (Answer $answer) {
                 $this->handleAction($answer);
                 $this->run();
-                Log::info('Перед завершением скрипта после handle');
-                die();
-                Log::info('Скрипт не умер сразу после die');
             }
         );
     }
