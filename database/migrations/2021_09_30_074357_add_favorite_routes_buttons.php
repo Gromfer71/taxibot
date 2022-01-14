@@ -44,6 +44,14 @@ class AddFavoriteRoutesButtons extends Migration
                 'value' => 'Напишите псевдоним маршрута',
             ]
         );
+        Translation::firstOrCreate(
+            [
+                'locale' => 'ru',
+                'group' => 'buttons',
+                'key' => 'create route',
+                'value' => 'Создать маршрут',
+            ]
+        );
     }
 
     /**
