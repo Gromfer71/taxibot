@@ -8,6 +8,7 @@ use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
+use Illuminate\Support\Facades\Log;
 
 class BonusesConversation extends BaseConversation
 {
@@ -51,7 +52,8 @@ class BonusesConversation extends BaseConversation
             $question,
             function (Answer $answer) {
                 $this->handleAction($answer);
-                //$this->run();
+                $this->run();
+                Log::info('Скрипт не умер');
             }
         );
     }
