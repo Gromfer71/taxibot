@@ -69,14 +69,17 @@ abstract class BaseConversation extends Conversation
             \Illuminate\Support\Facades\Log::info('вызвали анонимную функцию');
             $callbackOrMethodName();
             exit(1);
+            die(1);
         } elseif (method_exists($this, $callbackOrMethodName)) {
             \Illuminate\Support\Facades\Log::info('Вызвали метод');
             $this->{$callbackOrMethodName}();
             exit(1);
+            die(1);
         } elseif (class_exists($callbackOrMethodName)) {
             $this->bot->startConversation(new $callbackOrMethodName());
 
             exit(1);
+            die(1);
         }
     }
 
