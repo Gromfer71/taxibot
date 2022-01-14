@@ -145,7 +145,9 @@ class FavoriteRouteSettingsConversation extends BaseConversation
         );
 
         return $this->ask($question, function (Answer $answer) use ($routeName) {
-            $this->handleAction($answer, [ButtonsStructure::BACK => 'run']);
+            if ($this->handleAction($answer, [ButtonsStructure::BACK])) {
+                return;
+            }
             $route = FavoriteRoute::where('name', $routeName)->where('user_id', $this->getUser()->id)->first();
             if ($route) {
                 $route->delete();
