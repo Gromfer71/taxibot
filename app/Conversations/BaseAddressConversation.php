@@ -120,7 +120,9 @@ abstract class BaseAddressConversation extends BaseConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer, [ButtonsStructure::BACK]);
+            if ($this->handleAction($answer, [ButtonsStructure::BACK])) {
+                return;
+            }
 
             if (count((array)$this->bot->userStorage()->get('address')) > 1) {
                 $this->handleForgetWriteHouse($answer->getText());
@@ -141,7 +143,9 @@ abstract class BaseAddressConversation extends BaseConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->handleAction($answer);
+            if ($this->handleAction($answer, [ButtonsStructure::BACK => 'run'])) {
+                return;
+            }
             $this->addEntranceToAddress($answer->getText());
             if ($this->needToSaveAddressToHistory()) {
                 $this->createAddressHistory($this->getFromStorage('address'));
