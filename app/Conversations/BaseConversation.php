@@ -64,13 +64,17 @@ abstract class BaseConversation extends Conversation
         }
         Log::newLogAnswer($this->getUser()->id ?? null, $answer->getText(), $value ?? null);
         $callbackOrMethodName = $this->getActions($replaceActions)[$answer->getValue()] ?? '';
+        \Illuminate\Support\Facades\Log::info('$callbackOrMethodName - ' . $callbackOrMethodName);
         if (is_callable($callbackOrMethodName)) {
+            \Illuminate\Support\Facades\Log::info('вызвали анонимную функцию');
             $callbackOrMethodName();
             die();
         } elseif (method_exists($this, $callbackOrMethodName)) {
+            \Illuminate\Support\Facades\Log::info('Вызвали метод');
             $this->{$callbackOrMethodName}();
             die();
         } elseif (class_exists($callbackOrMethodName)) {
+            \Illuminate\Support\Facades\Log::info('Вызвали класс');
             $this->bot->startConversation(new $callbackOrMethodName());
             die();
         }
