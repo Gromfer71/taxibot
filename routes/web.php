@@ -1,7 +1,10 @@
 <?php
 
 Route::get('/', function () {
-    return redirect(route('login'));
+    echo 'До ';
+    die();
+    echo 'После';
+    //return redirect(route('login'));
 });
 
 Auth::routes([
