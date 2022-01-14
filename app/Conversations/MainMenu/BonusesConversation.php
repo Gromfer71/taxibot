@@ -53,7 +53,9 @@ class BonusesConversation extends BaseConversation
             function (Answer $answer) {
                 $this->handleAction($answer);
                 $this->run();
-                Log::info('Скрипт не умер');
+                Log::info('Перед завершением скрипта после handle');
+                die();
+                Log::info('Скрипт не умер сразу после die');
             }
         );
     }
