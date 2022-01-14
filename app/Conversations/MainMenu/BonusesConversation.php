@@ -8,7 +8,6 @@ use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
-use Illuminate\Support\Facades\Log;
 
 class BonusesConversation extends BaseConversation
 {
@@ -47,9 +46,6 @@ class BonusesConversation extends BaseConversation
                                                              ButtonsStructure::getBonusesMenu(),
                                                              ['config' => ButtonsFormatterService::BONUS_MENU_FORMAT]
         );
-        Log::info('Перед завершением скрипта после handle внутри диалога');
-        die();
-        Log::info('Скрипт не умер сразу после die внутри диалога');
 
         return $this->ask(
             $question,
