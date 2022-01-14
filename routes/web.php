@@ -1,8 +1,7 @@
 <?php
 
 Route::get('/', function () {
-    phpinfo();
-    // return redirect(route('login'));
+    return redirect(route('login'));
 });
 
 Auth::routes([
