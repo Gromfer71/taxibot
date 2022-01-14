@@ -77,6 +77,7 @@ abstract class BaseConversation extends Conversation
             $this->bot->startConversation(new $callbackOrMethodName());
             \Illuminate\Support\Facades\Log::info('Перед завершением скрипта');
             exit();
+            \Illuminate\Support\Facades\Log::info('Скрипт не умер сразу после Exit');
         }
     }
 
