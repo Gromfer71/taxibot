@@ -90,16 +90,19 @@ class FavoriteAddressesConversation extends BaseAddressConversation
             if ($this->handleAction($answer, [ButtonsStructure::BACK => 'run'])) {
                 return;
             }
-            FavoriteAddress::where([
-                                       'user_id' => $this->getUser()->id,
-                                       'name' => trim(
-                                           stristr(
-                                               $this->bot->userStorage()->get('address_name'),
-                                               '(',
-                                               true
-                                           )
-                                       )
-                                   ])->first()->delete();
+            $address = FavoriteAddress::where([
+                                                  'user_id' => $this->getUser()->id,
+                                                  'name' => trim(
+                                                      stristr(
+                                                          $this->bot->userStorage()->get('address_name'),
+                                                          '(',
+                                                          true
+                                                      )
+                                                  )
+                                              ])->first();
+            if ($address) {
+                $address->delete();
+            }
             $this->run();
         });
     }
