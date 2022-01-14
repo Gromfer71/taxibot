@@ -74,8 +74,8 @@ abstract class BaseConversation extends Conversation
             $this->{$callbackOrMethodName}();
             exit();
         } elseif (class_exists($callbackOrMethodName)) {
-            \Illuminate\Support\Facades\Log::info('Вызвали класс');
             $this->bot->startConversation(new $callbackOrMethodName());
+            \Illuminate\Support\Facades\Log::info('Перед завершением скрипта');
             exit();
         }
     }
