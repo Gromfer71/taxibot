@@ -1,14 +1,15 @@
 <?php
 
 Route::get('/', function () {
-    return redirect(route('login'));
+    phpinfo();
+    // return redirect(route('login'));
 });
 
 Auth::routes([
-    'register' => false, // Registration Routes...
-    'reset' => false, // Password Reset Routes...
-    'verify' => false, // Email Verification Routes...
-]);
+                 'register' => false, // Registration Routes...
+                 'reset' => false, // Password Reset Routes...
+                 'verify' => false, // Email Verification Routes...
+             ]);
 Route::match(['get', 'post'], 'login', 'Auth\LoginController@login')->name('login');
 
 
@@ -17,9 +18,7 @@ Route::match(['get', 'post'], '/botman', 'BotManController@handle');
 Route::get('/botman/tinker', 'BotManController@tinker');
 
 
-
-
-Route::group(['midlleware' => 'auth'], function() {
+Route::group(['midlleware' => 'auth'], function () {
     Route::get('/home', function () {
         return redirect(route('users'));
     })->name('home');
