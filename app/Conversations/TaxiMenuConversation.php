@@ -57,6 +57,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                 $this->inWay();
             },
             ButtonsStructure::CLIENT_GOES_OUT_LATE => function () use ($order) {
+                (new OrderApiService())->changeOrderState($order, OrderApiService::USER_GOES_OUT);
                 $this->inWay();
             },
             ButtonsStructure::NEED_DRIVER => function () use ($order) {
