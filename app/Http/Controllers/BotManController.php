@@ -16,8 +16,10 @@ class BotManController extends Controller
      */
     public function handle()
     {
+        $time = microtime(true);
         $bot = app('botman');
         $bot->listen();
+        Log::info(microtime(true) - $time);
     }
 
     /**
