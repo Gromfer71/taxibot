@@ -195,15 +195,14 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function _addAddressHistoryButtons($question, $numberWithoutFavorite = false)
     {
-        $addressHistory = $this->getUser()->addresses->take(self::ADDRESSES_HISTORY_COUNT - $this->getUser()->favoriteAddresses->count());
+        if ($numberWithoutFavorite) {
+            $favoritesAddressesCount = 0;
+        } else {
+            $favoritesAddressesCount = $this->getUser()->favoriteAddresses->count();
+        }
+        $addressHistory = $this->getUser()->addresses->take(self::ADDRESSES_HISTORY_COUNT - $favoritesAddressesCount);
 
         if ($addressHistory->isNotEmpty()) {
-            if ($numberWithoutFavorite) {
-                $favoritesAddressesCount = 0;
-            } else {
-                $favoritesAddressesCount = $this->getUser()->favoriteAddresses->count();
-            }
-
             foreach ($addressHistory as $key => $address) {
                 $question = $question->addButton(
                     Button::create($address->address)->value($address->address)->additionalParameters(
