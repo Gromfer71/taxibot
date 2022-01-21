@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Conversations\StartConversation;
 use BotMan\BotMan\BotMan;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Контроллер управления ботом. Содержит главную точку входа чат-бота
