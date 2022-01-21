@@ -65,11 +65,9 @@ abstract class BaseConversation extends Conversation
         $callbackOrMethodName = $this->getActions($replaceActions)[$answer->getValue()] ?? '';
 
         if (is_callable($callbackOrMethodName)) {
-            \Illuminate\Support\Facades\Log::info('вызвали анонимную функцию');
             $callbackOrMethodName();
             return true;
         } elseif (method_exists($this, $callbackOrMethodName)) {
-            \Illuminate\Support\Facades\Log::info('Вызвали метод');
             $this->{$callbackOrMethodName}();
             return true;
         } elseif (class_exists($callbackOrMethodName)) {
