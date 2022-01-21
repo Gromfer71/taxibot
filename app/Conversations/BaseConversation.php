@@ -165,7 +165,7 @@ abstract class BaseConversation extends Conversation
 
             $key = $this->getUser()->favoriteAddresses->count();
 
-            foreach ($this->getUser()->addresses as $historyAddressKey => $address) {
+            foreach ($this->getUser()->addresses->take(BaseAddressConversation::ADDRESSES_HISTORY_COUNT - $key) as $historyAddressKey => $address) {
                 $questionText .= $this->numberToEmodji($historyAddressKey + $key + 1) . ' ' . $address->address . "\n";
             }
         }

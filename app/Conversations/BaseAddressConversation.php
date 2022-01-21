@@ -21,6 +21,8 @@ abstract class BaseAddressConversation extends BaseConversation
 {
     use TakingAddressTrait;
 
+    public const ADDRESSES_HISTORY_COUNT = 24;
+
 
     /**
      * Ввод начального адреса пользователя
@@ -193,7 +195,7 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public function _addAddressHistoryButtons($question, $numberWithoutFavorite = false)
     {
-        $addressHistory = $this->getUser()->addresses;
+        $addressHistory = $this->getUser()->addresses->take(self::ADDRESSES_HISTORY_COUNT - $this->getUser()->favoriteAddresses->count());
 
         if ($addressHistory->isNotEmpty()) {
             if ($numberWithoutFavorite) {
