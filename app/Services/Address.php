@@ -284,7 +284,7 @@ class Address
         $log->params = $params;
         $log->url = $url;
 
-        $log->result = substr($result, 0, 65000);
+        $log->result = substr($result, 0, 1000);
         $log->save();
     }
 
