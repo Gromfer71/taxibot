@@ -72,7 +72,7 @@ class Address
             }
         }
 
-        self::_log($endpoint, $cities->toJson(JSON_UNESCAPED_UNICODE), json_encode($addresses, JSON_UNESCAPED_UNICODE));
+        self::_log($endpoint, $cities->toJson(JSON_UNESCAPED_UNICODE), json_encode($addresses->take(25), JSON_UNESCAPED_UNICODE));
 
         $result = self::sortAddresses($addresses, $storage);
         return $result->values() ?? [];
@@ -284,7 +284,7 @@ class Address
         $log->params = $params;
         $log->url = $url;
 
-        $log->result = substr($result, 0, 1000);
+        $log->result = substr($result, 0, 65000);
         $log->save();
     }
 
