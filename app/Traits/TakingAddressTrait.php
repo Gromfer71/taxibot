@@ -172,7 +172,7 @@ trait TakingAddressTrait
         if ($address['kind'] == 'street') {
             $this->bot->userStorage()->save(['address' => $address['street']]);
             $this->forgetWriteHouse();
-            return;
+            die();
         }
         $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
         $this->_saveFirstAddress(
