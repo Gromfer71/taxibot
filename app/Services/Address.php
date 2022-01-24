@@ -283,7 +283,8 @@ class Address
         $log = new LogApi();
         $log->params = $params;
         $log->url = $url;
-        $log->result = $result;
+
+        $log->result = substr($result, 0, 65000);
         $log->save();
     }
 
