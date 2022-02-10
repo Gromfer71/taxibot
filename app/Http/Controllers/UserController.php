@@ -6,6 +6,7 @@ use App\Models\AddressHistory;
 use App\Models\Admin;
 use App\Models\Config;
 use App\Models\User;
+use Barryvdh\TranslationManager\Models\LangPackage;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -109,7 +110,7 @@ class UserController extends Controller
 
     public function addUser(Request $request)
     {
-        User::firstOrCreate(['phone' => $request->phone]);
+        User::firstOrCreate(['phone' => $request->phone, 'lang_id' => LangPackage::where('code', 'ru')->first()->id]);
 
         return back();
     }
