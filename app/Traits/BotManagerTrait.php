@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Conversations\MainMenu\MenuConversation;
 use App\Conversations\StartConversation;
 use App\Models\OrderHistory;
 use App\Models\User;
@@ -67,6 +68,10 @@ trait BotManagerTrait
                 $this->bot->getUser()->getId(),
                 $this->bot->getDriver()->getName()
             );
+            if(!$actualOrder) {
+                $this->say(Translator::trans('messages.error driver location'));
+                return;
+            }
             $actualOrder->updateOrderState();
             $auto = $actualOrder->getAutoInfo();
             $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
