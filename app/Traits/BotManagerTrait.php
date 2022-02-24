@@ -59,7 +59,7 @@ trait BotManagerTrait
                 OrderHistory::getActualOrder(
                     $this->getUser()->id,
                     $this->bot->getDriver()->getName()
-                )->id
+                )->id ?? null
             )->data->crew_id ?? null
         );
         if ($driverLocation) {
