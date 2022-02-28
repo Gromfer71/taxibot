@@ -93,6 +93,10 @@ class User extends Model
      */
     public function getBonusBalance()
     {
+        if(!$this->server_id) {
+            $this->registerServerId();
+        }
+
         return BonusesApi::getClientInfo($this->server_id)->data->bonus_balance;
     }
 
