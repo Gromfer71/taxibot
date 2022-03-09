@@ -287,7 +287,7 @@ class OrderHistory extends Model
         $oldState = $this->getCurrentOrderState()->state_id ?? self::NEW_ORDER;
         $newState = $this->updateOrderState($newState);
 
-        if ($newState == self::ORDER_NOT_FOUND) {
+        if ($newState === self::ORDER_NOT_FOUND) {
             return self::ORDER_NOT_FOUND;
         }
 
