@@ -51,7 +51,7 @@ class MessageGeneratorService
 
         if ($userStorage->get('second_address_will_say_to_driver_change_text_flag') && $userStorage->get('second_address_will_say_to_driver_change_text_flag') == 1) {
             $data = ['address' => collect($userStorage->get('address'))->first(), 'price' => $userStorage->get('price')];
-            $userStorage->save(['second_address_will_say_to_driver_change_text_flag' => 0]);
+            //$userStorage->save(['second_address_will_say_to_driver_change_text_flag' => 0]);
             if (collect($userStorage->get('address'))->last() == '') {
                 return Translator::trans('messages.menu without end address', $data);
             } else {
@@ -74,7 +74,7 @@ class MessageGeneratorService
 
             )) {
             $data = ['route' => MessageGeneratorService::implodeAddress(collect($userStorage->get('address'))), 'price' => $userStorage->get('price')];
-            $userStorage->save(['first_address_from_history_incorrect' => 0]);
+            //$userStorage->save(['first_address_from_history_incorrect' => 0]);
             return Translator::trans('messages.menu with first address from history incorrect', $data);
         }
 
