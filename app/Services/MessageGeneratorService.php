@@ -73,7 +73,7 @@ class MessageGeneratorService
 
 
             )) {
-            $data = ['address' => MessageGeneratorService::implodeAddress(collect($userStorage->get('address'))), 'price' => $userStorage->get('price')];
+            $data = ['route' => MessageGeneratorService::implodeAddress(collect($userStorage->get('address'))), 'price' => $userStorage->get('price')];
             $userStorage->save(['first_address_from_history_incorrect' => 0]);
             return Translator::trans('messages.menu with first address from history incorrect', $data);
         }
