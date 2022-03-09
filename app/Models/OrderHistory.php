@@ -62,7 +62,7 @@ class OrderHistory extends Model
     public const CLIENT_DONT_COME_OUT = 39;
     public const CLIENT_DONT_COME_OUT_2 = 12;
     public const CLIENT_DONT_COME_OUT_3 = 60;
-    public const ORDER_NOT_FOUND = -1;
+    public const ORDER_NOT_FOUND = -100;
     public const REQUEST_FOR_ABORT_BY_DRIVER = 65;
     public const IN_QUEUE = 3;
     public const QUEUE_ABORTED_BY_DRIVER = 36;
@@ -164,7 +164,7 @@ class OrderHistory extends Model
                 }
             }
             if (!$finded) {
-                return false;
+                return self::ORDER_NOT_FOUND;
             }
         }
 
@@ -287,15 +287,14 @@ class OrderHistory extends Model
         $oldState = $this->getCurrentOrderState()->state_id ?? self::NEW_ORDER;
         $newState = $this->updateOrderState($newState);
 
-        if (!$newState) {
+        if ($newState == self::ORDER_NOT_FOUND) {
             return self::ORDER_NOT_FOUND;
         }
 
         if ($newState === -1) {
             return -1;
         }
-//        \Illuminate\Support\Facades\Log::info($newState->state_id);
-//        \Illuminate\Support\Facades\Log::info($oldState);
+
         if ($newState->state_id != $oldState) {
             $this->state = json_encode($newState);
             if (empty($this->state_id_chain)) {
