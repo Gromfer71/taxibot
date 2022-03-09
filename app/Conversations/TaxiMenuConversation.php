@@ -176,8 +176,6 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            \Log::info('Msg ' . $answer->getText());
-            \Log::info('val ' . $answer->getValue());
             if ($this->handleAction($answer, [ButtonsStructure::CHANGE_PRICE => 'changePriceInOrderMenu'])) {
                 return;
             }

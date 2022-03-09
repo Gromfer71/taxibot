@@ -226,7 +226,6 @@ class Address
     public static function isAddressChangedFromState($oldState, $newState, $userId)
     {
         AddressHistory::createIfNotExistsEverywhere($userId, $oldState->source, $oldState->source_lat, $oldState->source_lon);
-        Log::info($oldState->source);
         $stops = array_reverse($newState->stops);
         foreach ($newState->stops as $stop) {
             AddressHistory::createIfNotExistsEverywhere($userId, $stop->address, $stop->lat, $stop->lon);
