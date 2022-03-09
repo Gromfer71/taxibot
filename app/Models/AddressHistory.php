@@ -77,7 +77,7 @@ class AddressHistory extends Model
         $exists = FavoriteAddress::where(['address' => $address, 'user_id' => $userId])->exists() || $exists;
         $routes = FavoriteRoute::where('user_id', $userId)->get();
         foreach ($routes as $route) {
-            $addresses = collect(json_decode($route->adress, false)->address);
+            $addresses = collect(json_decode($route->address, false)->address);
             foreach ($addresses as $routeAddress) {
                 if ($address == $routeAddress) {
                     $exists = true;
