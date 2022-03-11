@@ -23,7 +23,7 @@ class MessagesController extends Controller
         $file = null;
         if ($request->file('file')) {
             $request->file('file')->store('public/files');
-            $file = new File(env('APP_URL') . Storage::putFile('files', $request->file('file')));
+            $file = new File(env('APP_URL') . 'storage/' . Storage::putFile('files', $request->file('file')));
         }
 
         $users = User::where('isBlocked', 0)->get()->transform(function (User $user) {
