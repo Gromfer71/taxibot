@@ -19,14 +19,22 @@
                 <option value="by_city">По городам</option>
                 <option value="by_phone">Персонально</option>
             </select>
+            <div class="cities mb-2" hidden>
+                <select hidden name="cities[]" id="cities" class="uk-select" multiple>
+                    @foreach($cities as $city)
+                        <option value="{{ $city->name }}">{{ $city->name }}</option>
+                    @endforeach
+                </select>
+            </div>
 
-            <select hidden name="cities[]" id="cities" class="uk-select" multiple>
-                @foreach($cities as $city)
-                    <option value="{{ $city->name }}">{{ $city->name }}</option>
-                @endforeach
-            </select>
 
-            <input type="text" id="phone" hidden name="phone" class="form-control mb-2" placeholder="Номер телефона (без 7/8)">
+            <div class="phones mb-2" hidden>
+                <select name="phones[]" id="phones" class="uk-select" multiple>
+                    @foreach($phones as $phone)
+                        <option value="{{ $phone }}">{{ $phone }}</option>
+                    @endforeach
+                </select>
+            </div>
 
             <textarea name="message" class="form-control" cols="30" rows="10"></textarea>
             <input type="file" name="file" class="form-control-file mt-2">
@@ -37,20 +45,27 @@
 
     <script>
         $(document).ready(function () {
-            var multipleCancelButton = new Choices('#cities', {
+            new Choices('#cities', {
                 removeItemButton: true,
             });
-            $('.choices').hide()
-            $('#phone').hide()
+            new Choices('#phones', {
+                removeItemButton: true,
+            });
+
+
+            $('.cities').hide()
+            $('.phones').hide()
+
 
             $('#recipients').change(function () {
-                $('#phone').hide()
-                $('.choices').hide()
+                $('.phones').hide()
+                $('.cities').hide()
                 if ($(this).val() === 'by_city') {
-                    $('.choices').show()
+                    $('.cities').removeAttr('hidden')
+                    $('.cities').show()
                 } else if ($(this).val() === 'by_phone') {
-                    $('#phone').removeAttr('hidden')
-                    $('#phone').show()
+                    $('.phones').removeAttr('hidden')
+                    $('.phones').show()
                 }
             })
 

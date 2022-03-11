@@ -16,7 +16,7 @@ class MessagesController extends Controller
 {
     public function index()
     {
-        return view('adminPanel.messages', ['cities' => (new Options())->getCities()]);
+        return view('adminPanel.messages', ['cities' => (new Options())->getCities(), 'phones' => User::all()->pluck('phone')]);
     }
 
     public function send(Request $request)
@@ -34,7 +34,7 @@ class MessagesController extends Controller
         if ($request->recipients === 'by_city') {
             $users->whereIn('city', $request->cities);
         } elseif ($request->recipients === 'by_phone') {
-            $users->where('phone', $request->phone);
+            $users->whereIn('phone', $request->phones);
         }
 
         if ($users->count() === 0) {
