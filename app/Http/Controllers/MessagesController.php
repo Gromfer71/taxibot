@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\User;
+use App\Services\Options;
 use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 use BotMan\Drivers\Telegram\TelegramDriver;
@@ -15,7 +16,7 @@ class MessagesController extends Controller
 {
     public function index()
     {
-        return view('adminPanel.messages');
+        return view('adminPanel.messages', ['cities' => (new Options())->getCities()]);
     }
 
     public function send(Request $request)
@@ -26,14 +27,25 @@ class MessagesController extends Controller
             $file = new File(env('APP_URL') . 'storage/' . Storage::putFile('files', $request->file('file')));
         }
 
-        $users = User::where('isBlocked', 0)->get()->transform(function (User $user) {
+        $users = User::where('isBlocked', 0);
+        if ($request->recipients === 'by_city') {
+            $users->whereIn('city', $request->cities);
+        } elseif ($request->recipients === 'by_phone') {
+            $users->where('phone', $request->phone);
+        }
+
+        if ($users->count() === 0) {
+            return back()->with('ok', 'По данным критериям нет ни одного пользователя!');
+        }
+
+        $users = $users->get()->transform(function (User $user) {
             return [
                 'telegram_id' => $user->telegram_id,
                 'vk_id' => $user->vk_id,
             ];
         });
         $botman = resolve('botman');
-        $message = new OutgoingMessage($request->get('message'));
+        $message = new OutgoingMessage($request->get('message') ?: '  ');
         if ($file) {
             $message = $message->withAttachment($file);
         }
