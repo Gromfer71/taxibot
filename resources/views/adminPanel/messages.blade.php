@@ -42,9 +42,47 @@
             <button class="btn btn-success mb-2 mt-2" type="submit">Отправить</button>
         </form>
     </div>
+    <div class="layer uk-padding-large" style="overflow-x: scroll; white-space: nowrap;">
+        <table id="table_id" class="display">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Администратор отправитель</th>
+                <th>Платформа</th>
+                <th>Тип выборки пользователей</th>
+                <th>Пользователи/города</th>
+                <th>Сообщение</th>
+                <th>Прикрепленный файл</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($messages as $message)
+                <tr>
+                    <td>{{ $message->id }}</td>
+                    <td>{{ $message->admin_phone }}</td>
+                    <td>{{ $message->platform }}</td>
+                    <td>{{ $message->recipients_type }}</td>
+                    <td>{{ implode(', ', json_decode($message->recipients, true)) }}</td>
+                    <td>{{ $message->message }}</td>
+                    <td>{{ $message->file }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    </div>
 
     <script>
         $(document).ready(function () {
+            $.noConflict();
+            $('#table_id').DataTable({
+                "autoWidth": true,
+                order: [[0, 'desc']],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
+                },
+            });
+
+
             new Choices('#cities', {
                 removeItemButton: true,
             });

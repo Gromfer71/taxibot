@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\GlobalMessage;
 use App\Models\User;
 use App\Services\Options;
 use BotMan\BotMan\Messages\Attachments\File;
@@ -16,17 +17,26 @@ class MessagesController extends Controller
 {
     public function index()
     {
-        return view('adminPanel.messages', ['cities' => (new Options())->getCities(), 'phones' => User::all()->pluck('phone')]);
+        return view(
+            'adminPanel.messages',
+            [
+                'cities' => (new Options())->getCities(),
+                'phones' => User::all()->pluck('phone'),
+                'messages' => GlobalMessage::all(),
+            ]
+        );
     }
 
     public function send(Request $request)
     {
         $file = null;
         if ($request->file('file')) {
-            $request->file('file')->store('public/files');
+            Storage::putFileAs('/files', $request->file('file'), $request->file('file')->getClientOriginalName());
+            $url = env('APP_URL') . '/storage/files/' . $request->file('file')->getClientOriginalName();
+
             $file = new File(
-                env('APP_URL') . 'storage/' . Storage::putFileAs('files', $request->file('file')),
-                $request->file('file')->getClientOriginalName()
+                $url,
+                $request->file('file')
             );
         }
 
@@ -67,6 +77,15 @@ class MessagesController extends Controller
                 $botman->say($message, $users->pluck('vk_id')->filter()->toArray(), VkCommunityCallbackDriver::class);
             }
         }
+
+        GlobalMessage::create([
+                                  'admin_phone' => auth()->user()->phone,
+                                  'platform' => $request->type,
+                                  'recipients_type' => $request->recipients,
+                                  'recipients' => json_encode($request->cities ?? ($request->phones ?? [])),
+                                  'message' => $request->message ?? '',
+                                  'file' => $url ?? null,
+                              ]);
 
         return back()->with('ok', 'Рассылка выполнена успешно');
     }
