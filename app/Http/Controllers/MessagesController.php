@@ -50,15 +50,19 @@ class MessagesController extends Controller
             $message = $message->withAttachment($file);
         }
         if ($request->type === 'all' || $request->type === 'telegram') {
-            $botman->say(
-                $message,
-                $users->pluck('telegram_id')->toArray(),
-                TelegramDriver::class
-            );
+            if ($users->pluck('telegram_id')->isNotEmpty()) {
+                $botman->say(
+                    $message,
+                    $users->pluck('telegram_id')->toArray(),
+                    TelegramDriver::class
+                );
+            }
         }
 
         if ($request->type === 'all' || $request->type === 'vk') {
-            $botman->say($message, $users->pluck('vk_id')->toArray(), VkCommunityCallbackDriver::class);
+            if ($users->pluck('vk_id')->isNotEmpty()) {
+                $botman->say($message, $users->pluck('vk_id')->toArray(), VkCommunityCallbackDriver::class);
+            }
         }
 
         return back()->with('ok', 'Рассылка выполнена успешно');
