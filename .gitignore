@@ -19,3 +19,4 @@ composer.lock
 /madeline-74.phar.version
 
 storage/.ignore_locales
+.env.save
