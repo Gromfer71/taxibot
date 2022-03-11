@@ -24,7 +24,10 @@ class MessagesController extends Controller
         $file = null;
         if ($request->file('file')) {
             $request->file('file')->store('public/files');
-            $file = new File(env('APP_URL') . 'storage/' . Storage::putFile('files', $request->file('file')));
+            $file = new File(
+                env('APP_URL') . 'storage/' . Storage::putFileAs('files', $request->file('file')),
+                $request->file('file')->getClientOriginalName()
+            );
         }
 
         $users = User::where('isBlocked', 0);
