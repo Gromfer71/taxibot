@@ -50,7 +50,7 @@ class MessagesController extends Controller
             $message = $message->withAttachment($file);
         }
         if ($request->type === 'all' || $request->type === 'telegram') {
-            if ($users->pluck('telegram_id')->isNotEmpty()) {
+            if ($users->pluck('telegram_id')->filter()->isNotEmpty()) {
                 $botman->say(
                     $message,
                     $users->pluck('telegram_id')->toArray(),
@@ -60,7 +60,7 @@ class MessagesController extends Controller
         }
 
         if ($request->type === 'all' || $request->type === 'vk') {
-            if ($users->pluck('vk_id')->isNotEmpty()) {
+            if ($users->pluck('vk_id')->filter()->isNotEmpty()) {
                 $botman->say($message, $users->pluck('vk_id')->toArray(), VkCommunityCallbackDriver::class);
             }
         }
