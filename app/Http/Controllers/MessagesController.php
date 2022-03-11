@@ -53,7 +53,7 @@ class MessagesController extends Controller
             if ($users->pluck('telegram_id')->filter()->isNotEmpty()) {
                 $botman->say(
                     $message,
-                    $users->pluck('telegram_id')->toArray(),
+                    $users->pluck('telegram_id')->filter()->toArray(),
                     TelegramDriver::class
                 );
             }
@@ -61,7 +61,7 @@ class MessagesController extends Controller
 
         if ($request->type === 'all' || $request->type === 'vk') {
             if ($users->pluck('vk_id')->filter()->isNotEmpty()) {
-                $botman->say($message, $users->pluck('vk_id')->toArray(), VkCommunityCallbackDriver::class);
+                $botman->say($message, $users->pluck('vk_id')->filter()->toArray(), VkCommunityCallbackDriver::class);
             }
         }
 
