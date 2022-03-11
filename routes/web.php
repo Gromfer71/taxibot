@@ -54,5 +54,6 @@ Route::group(['midlleware' => 'auth'], function () {
     Route::match(['get', 'post'], 'bot_settings/edit_buttons', 'BotSettingsController@editButtons')->name('edit_buttons');
 
     Route::get('/messages/index', 'MessagesController@index')->name('messages.index');
+    Route::post('/messages/send', 'MessagesController@send')->name('messages.send');
 });
 

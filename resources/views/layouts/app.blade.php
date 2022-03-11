@@ -107,6 +107,12 @@
                                     Журнал ошибок
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link @if(request()->url() == route('messages.index')) active @endif"
+                                   href="{{ route('messages.index') }}">
+                                    Рассылка сообщений
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </nav>
