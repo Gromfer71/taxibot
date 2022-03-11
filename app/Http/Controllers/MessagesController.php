@@ -11,6 +11,7 @@ use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MessagesController extends Controller
 {
@@ -30,9 +31,9 @@ class MessagesController extends Controller
     {
         $file = null;
         if ($request->file('file')) {
-            $path = $request->file('file')->storeAs('public/files', $request->file('file')->getClientOriginalName());
+            $request->file('file')->storeAs('public/files', $request->file('file')->getClientOriginalName());
             $url = env('APP_URL') . '/storage/files/' . $request->file('file')->getClientOriginalName();
-
+            Storage::putFileAs('/files', $request->file('file'), $request->file('file')->getClientOriginalName());
             $file = new File(
                 $url,
                 $request->file('file')
