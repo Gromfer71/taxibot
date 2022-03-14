@@ -151,7 +151,7 @@ abstract class BaseConversation extends Conversation
         Log::newLogDebug($this->getUser()->id ?? null, $question->getText());
         $this->bot->reply($question, $additionalParameters);
         if (isset($additionalParameters['welcome_message']) && $file = Config::where('name', 'welcome_file')->first()) {
-            $this->say(OutgoingMessage::create('', new File(env('APP_URL') . 'storage/bot/' . $file)));
+            $this->say(OutgoingMessage::create('', new File(env('APP_URL') . 'storage/bot/' . $file->value)));
         }
         $this->bot->storeConversation($this, $next, $question, $additionalParameters);
 
