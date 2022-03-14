@@ -32,7 +32,7 @@ class MessagesController extends Controller
 
     public function send(Request $request)
     {
-        $validator = Validator::make($request->all(), ['file' => 'size:51200|mimes:jpeg,jpg,png,mp3,mp4,avi,webm,m4a']);
+        $validator = Validator::make($request->all(), ['file' => 'max:51200|mimes:jpeg,jpg,png,mp3,mp4,avi,webm,m4a']);
         if ($validator->fails()) {
             return back()->with('error', 'Размер файла слишком большой или файл имеет недопустимый формат!');
         }
