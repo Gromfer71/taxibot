@@ -24,7 +24,7 @@ class MessagesController extends Controller
             'adminPanel.messages',
             [
                 'cities' => (new Options())->getCities(),
-                'phones' => User::all()->pluck('phone'),
+                'phones' => User::whereNotNull('phone')->pluck('phone'),
                 'messages' => GlobalMessage::all(),
             ]
         );
@@ -56,7 +56,7 @@ class MessagesController extends Controller
             }
         }
 
-        $users = User::where('isBlocked', 0)->whereNotNull('phone');
+        $users = User::where('isBlocked', 0);
         if ($request->recipients === 'by_city') {
             $users->whereIn('city', $request->cities);
         } elseif ($request->recipients === 'by_phone') {
