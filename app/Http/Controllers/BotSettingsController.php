@@ -121,4 +121,12 @@ class BotSettingsController extends Controller
 
         return back()->with('ok', 'Файл успешно сохранен');
     }
+
+    public function deleteWelcomeFile()
+    {
+        Storage::deleteDirectory('bot');
+        Storage::deleteDirectory('public/bot');
+
+        return back()->with('ok', 'Файл успешно удален');
+    }
 }
