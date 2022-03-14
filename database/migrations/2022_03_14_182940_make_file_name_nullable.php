@@ -9,7 +9,7 @@ class MakeFileNameNullable extends Migration
     public function up()
     {
         Schema::create('global_messages', function (Blueprint $table) {
-            $table->string('file_name')->after('file')->nullable()->change();
+            $table->string('file_name')->nullable()->change();
         });
     }
 
