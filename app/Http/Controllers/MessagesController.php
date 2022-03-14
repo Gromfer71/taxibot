@@ -6,10 +6,12 @@ namespace App\Http\Controllers;
 use App\Models\GlobalMessage;
 use App\Models\User;
 use App\Services\Options;
+use BotMan\BotMan\Messages\Attachments\Audio;
 use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -29,15 +31,27 @@ class MessagesController extends Controller
 
     public function send(Request $request)
     {
+        $request->validate([
+                               'file' => 'size:51200|mimes:jpeg,jpg,png,mp3,mp4,avi,webm,m4a',
+                           ]);
+
+
         $file = null;
         if ($request->file('file')) {
-            $request->file('file')->storeAs('public/files', $request->file('file')->getClientOriginalName());
-            $url = env('APP_URL') . '/storage/files/' . $request->file('file')->getClientOriginalName();
+            $path = $request->file('file')->storeAs('public/files', $request->file('file')->getClientOriginalName());
             Storage::putFileAs('/files', $request->file('file'), $request->file('file')->getClientOriginalName());
-            $file = new File(
-                $url,
-                $request->file('file')
-            );
+            $url = env('APP_URL') . 'storage/files/' . $request->file('file')->getClientOriginalName();
+            if ($request->file('file')->extension() === 'mp3') {
+                $file = new Audio(
+                    $url,
+                    $request->file('file')
+                );
+            } else {
+                $file = new File(
+                    $url,
+                    $request->file('file')
+                );
+            }
         }
 
         $users = User::where('isBlocked', 0);
@@ -88,5 +102,24 @@ class MessagesController extends Controller
                               ]);
 
         return back()->with('ok', 'Рассылка выполнена успешно');
+    }
+
+    public function deleteMessage($id): RedirectResponse
+    {
+        $message = GlobalMessage::findOrFail($id);
+        Storage::delete($message->file);
+        $message->delete();
+
+        return back()->with('ok', 'Сообщение удалено');
+    }
+
+    public function clearAllMessages(): RedirectResponse
+    {
+        GlobalMessage::all()->each(function (GlobalMessage $message) {
+            Storage::delete($message->file);
+            $message->delete();
+        });
+
+        return back()->with('ok', 'Сообщения удалены');
     }
 }

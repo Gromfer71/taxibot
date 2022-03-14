@@ -39,6 +39,7 @@
             <textarea name="message" class="form-control" cols="30" rows="10"></textarea>
             <input type="file" name="file" class="form-control-file mt-2">
 
+
             <button class="btn btn-success mb-2 mt-2" type="submit">Отправить</button>
         </form>
     </div>
@@ -64,7 +65,7 @@
                     <td>{{ $message->recipients_type }}</td>
                     <td>{{ implode(', ', json_decode($message->recipients, true)) }}</td>
                     <td>{{ $message->message }}</td>
-                    <td>{{ $message->file }}</td>
+                    <td><a href="{{ $message->file }}" target="_blank">{{ $message->file }}</a></td>
                 </tr>
             @endforeach
             </tbody>
