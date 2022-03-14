@@ -126,6 +126,10 @@ class BotSettingsController extends Controller
     {
         Storage::deleteDirectory('bot');
         Storage::deleteDirectory('public/bot');
+        $file = Config::where('name', 'welcome_message')->first();
+        if ($file) {
+            $file->delete();
+        }
 
         return back()->with('ok', 'Файл успешно удален');
     }

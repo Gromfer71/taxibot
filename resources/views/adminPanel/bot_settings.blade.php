@@ -79,10 +79,11 @@
             @csrf
             <input type="file" name="file">
             <button type="submit" class="btn btn-success">Сохранить</button>
+            @if($welcomeFile)
+                <a href="{{ route('delete-welcome-file') }}" class="btn btn-danger">Удалить</a>
+            @endif
         </form>
-        @if($welcomeFile)
-            <a href="{{ route('delete_welcome_file') }}" class="btn btn-danger">Удалить</a>
-        @endif
+
     </div>
 
     {{--    Модальное окно для смены пароля --}}
