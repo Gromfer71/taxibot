@@ -56,6 +56,6 @@ Route::group(['midlleware' => 'auth'], function () {
     Route::get('/messages/index', 'MessagesController@index')->name('messages.index');
     Route::post('/messages/send', 'MessagesController@send')->name('messages.send');
     Route::get('/messages/delete/{id}', 'MessagesController@deleteMessage')->name('messages.delete-message');
-    Route::post('/messages/clearAllMessages', 'MessagesController@clearAllMessages')->name('messages.clear-all-messages');
+    Route::get('/messages/clearAllMessages', 'MessagesController@clearAllMessages')->name('messages.clear-all-messages');
 });
 
