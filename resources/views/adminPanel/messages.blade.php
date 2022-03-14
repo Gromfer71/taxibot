@@ -45,8 +45,8 @@
         </form>
     </div>
 
-    <div class="layer uk-padding-large" style="overflow-x: scroll; white-space: nowrap;">
-        <a href="{{ route('messages.clear-all-messages') }}" class="btn btn-success mb-2">Очистить историю</a>
+    <div class="layer" style="overflow-x: scroll; white-space: nowrap;">
+        <a href="{{ route('messages.clear-all-messages') }}" class="btn btn-success mb-2 float-right">Очистить историю</a>
         <table id="table_id" class="display">
             <thead>
             <tr>
