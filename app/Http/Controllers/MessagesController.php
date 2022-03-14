@@ -122,8 +122,8 @@ class MessagesController extends Controller
         GlobalMessage::all()->each(function (GlobalMessage $message) {
             $message->delete();
         });
-        Storage::delete('files');
-        Storage::delete('public/files');
+        Storage::deleteDirectory('files');
+        Storage::deleteDirectory('public/files');
 
         return back()->with('ok', 'Сообщения удалены');
     }
