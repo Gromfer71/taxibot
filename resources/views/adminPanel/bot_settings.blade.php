@@ -77,7 +77,7 @@
         @endif
         <form action="{{ route('upload-welcome-file') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            <input type="file" name="file">
+            <input type="file" name="file" required>
             <button type="submit" class="btn btn-success">Сохранить</button>
             @if($welcomeFile)
                 <a href="{{ route('delete-welcome-file') }}" class="btn btn-danger">Удалить</a>
