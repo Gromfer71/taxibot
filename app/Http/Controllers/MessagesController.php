@@ -101,6 +101,7 @@ class MessagesController extends Controller
                                   'recipients' => json_encode($request->cities ?? ($request->phones ?? [])),
                                   'message' => $request->message ?? '',
                                   'file' => $url ?? null,
+                                  'file_name' => $request->file('file')->getClientOriginalName(),
                               ]);
 
         return back()->with('ok', 'Рассылка выполнена успешно');
