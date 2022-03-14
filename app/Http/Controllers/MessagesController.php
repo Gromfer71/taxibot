@@ -14,6 +14,7 @@ use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Validator;
 
 class MessagesController extends Controller
 {
@@ -31,9 +32,10 @@ class MessagesController extends Controller
 
     public function send(Request $request)
     {
-        $request->validate([
-                               'file' => 'size:51200|mimes:jpeg,jpg,png,mp3,mp4,avi,webm,m4a',
-                           ]);
+        $validator = Validator::make($request->all(), ['file' => 'size:51200|mimes:jpeg,jpg,png,mp3,mp4,avi,webm,m4a']);
+        if ($validator->fails()) {
+            return back()->with('error', 'Размер файла слишком большой или файл имеет недопустимый формат!');
+        }
 
 
         $file = null;
@@ -107,7 +109,8 @@ class MessagesController extends Controller
     public function deleteMessage($id): RedirectResponse
     {
         $message = GlobalMessage::findOrFail($id);
-        Storage::delete($message->file);
+        Storage::delete('files/' . $message->file_name);
+        Storage::delete('public/files/' . $message->file_name);
         $message->delete();
 
         return back()->with('ok', 'Сообщение удалено');
@@ -116,9 +119,10 @@ class MessagesController extends Controller
     public function clearAllMessages(): RedirectResponse
     {
         GlobalMessage::all()->each(function (GlobalMessage $message) {
-            Storage::delete($message->file);
             $message->delete();
         });
+        Storage::delete('files');
+        Storage::delete('public/files');
 
         return back()->with('ok', 'Сообщения удалены');
     }

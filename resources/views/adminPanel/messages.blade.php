@@ -38,12 +38,15 @@
 
             <textarea name="message" class="form-control" cols="30" rows="10"></textarea>
             <input type="file" name="file" class="form-control-file mt-2">
+            <p style="font-size: 12px; margin: 0">Макс размер файла 50мб. Допустимые форматы: jpeg,jpg,png,mp3,mp4,avi,webm,m4a</p>
 
 
             <button class="btn btn-success mb-2 mt-2" type="submit">Отправить</button>
         </form>
     </div>
+
     <div class="layer uk-padding-large" style="overflow-x: scroll; white-space: nowrap;">
+        <a href="{{ route('messages.clear-all-messages') }}" class="btn btn-success mb-2">Очистить историю</a>
         <table id="table_id" class="display">
             <thead>
             <tr>
@@ -54,6 +57,7 @@
                 <th>Пользователи/города</th>
                 <th>Сообщение</th>
                 <th>Прикрепленный файл</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -66,12 +70,12 @@
                     <td>{{ implode(', ', json_decode($message->recipients, true)) }}</td>
                     <td>{{ $message->message }}</td>
                     <td><a href="{{ $message->file }}" target="_blank">{{ $message->file }}</a></td>
+                    <td><a href="{{ route('messages.delete-message', $message->id) }}" class="btn btn-danger">Удалить</a></td>
                 </tr>
             @endforeach
             </tbody>
         </table>
     </div>
-
     <script>
         $(document).ready(function () {
             $.noConflict();
