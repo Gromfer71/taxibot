@@ -78,6 +78,7 @@
         <form action="{{ route('upload-welcome-file') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="file" name="file" required>
+            <p style="font-size: 12px; margin: 0">Макс размер файла 50мб. Допустимые форматы: jpeg,jpg,png,mp3,mp4,avi,webm,m4a</p>
             <button type="submit" class="btn btn-success">Сохранить</button>
             @if($welcomeFile)
                 <a href="{{ route('delete-welcome-file') }}" class="btn btn-danger">Удалить</a>
