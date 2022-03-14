@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use App\Models\Config;
+use App\Services\Translator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 
 /**
@@ -29,7 +32,8 @@ class BotSettingsController extends Controller
                           [
                               'admins' => Admin::all(),
                               'token' => Config::getToken(),
-                              'config' => Config::getTaxibotConfig()
+                              'config' => Config::getTaxibotConfig(),
+                              'welcomeFile' => Config::where(['name' => 'welcome_file'])->first(),
                           ]
         );
     }
@@ -75,7 +79,7 @@ class BotSettingsController extends Controller
      */
     public function editMessages(Request $request)
     {
-        $translator = \App\Services\Translator::createMessagesEditor();
+        $translator = Translator::createMessagesEditor();
         if ($request->isMethod('POST')) {
             $translator->setWords(collect($request->get('messages')));
             $translator->save();
@@ -92,7 +96,7 @@ class BotSettingsController extends Controller
      */
     public function editButtons(Request $request)
     {
-        $translator = \App\Services\Translator::createButtonsEditor();
+        $translator = Translator::createButtonsEditor();
         if ($request->isMethod('POST')) {
             $translator->setWords(collect($request->get('buttons')));
             $translator->save();
@@ -101,5 +105,20 @@ class BotSettingsController extends Controller
         }
 
         return view('adminPanel.edit_buttons', ['labels' => $translator->getWords()]);
+    }
+
+    public function uploadWelcomeFile(Request $request)
+    {
+        $validator = Validator::make($request->all(), ['file' => 'max:51200|mimes:jpeg,jpg,png,mp3,mp4,avi,webm,m4a']);
+        if ($validator->fails()) {
+            return back()->with('error', 'Размер файла слишком большой или файл имеет недопустимый формат!');
+        }
+        Storage::deleteDirectory('bot');
+        Storage::deleteDirectory('public/bot');
+        $path = $request->file('file')->storeAs('public/bot', $request->file('file')->getClientOriginalName());
+        Storage::putFileAs('/bot', $request->file('file'), $request->file('file')->getClientOriginalName());
+        Config::updateOrCreate(['name' => 'welcome_file'], ['value' => $request->file('file')->getClientOriginalName()]);
+
+        return back()->with('ok', 'Файл успешно сохранен');
     }
 }

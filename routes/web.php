@@ -25,6 +25,7 @@ Route::group(['midlleware' => 'auth'], function () {
     Route::get('bot_settings', 'BotSettingsController@index')->name('bot_settings');
     Route::post('change_token', 'BotSettingsController@changeToken')->name('change_token');
     Route::post('change_config_file', 'BotSettingsController@changeConfigFile')->name('change_config_file');
+    Route::post('upload_welcome_file', 'BotSettingsController@uploadWelcomeFile')->name('upload-welcome-file');
 
     Route::post('admins/create', 'AdminController@create')->name('admins_create');
     Route::get('admins/destroy/{phone}', 'AdminController@destroy')->name('admins_destroy');

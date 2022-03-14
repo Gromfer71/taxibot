@@ -44,7 +44,7 @@
         </form>
     </div>
 
-    <div class="layer uk-margin-top" style="overflow-x: scroll; white-space: nowrap;">
+    <div class="layer uk-margin-top mb-5" style="overflow-x: scroll; white-space: nowrap;">
         <table id="admins-table" class="display">
             <thead>
             <tr>
@@ -68,6 +68,18 @@
             @endforeach
             </tbody>
         </table>
+    </div>
+
+    <div class="mb-5">
+        <h4>Файл для приветственного сообщения</h4>
+        @if($welcomeFile)
+            <a href="{{ asset('storage/bot/' .$welcomeFile->value) }}" target="_blank">{{ $welcomeFile->value }}</a>
+        @endif
+        <form action="{{ route('upload-welcome-file') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="file" name="file">
+            <button type="submit" class="btn btn-success">Сохранить</button>
+        </form>
     </div>
 
     {{--    Модальное окно для смены пароля --}}
