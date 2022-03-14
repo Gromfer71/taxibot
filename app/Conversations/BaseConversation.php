@@ -4,6 +4,7 @@ namespace App\Conversations;
 
 use App\Conversations\FavoriteRoutes\AddedRouteMenuConversation;
 use App\Conversations\MainMenu\MenuConversation;
+use App\Models\Config;
 use App\Models\Log;
 use App\Models\OrderHistory;
 use App\Models\User;
@@ -15,9 +16,11 @@ use App\Services\Options;
 use App\Services\OrderApiService;
 use App\Services\Translator;
 use App\Traits\UserManagerTrait;
+use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
+use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 use BotMan\BotMan\Messages\Outgoing\Question;
 
 /**
@@ -147,6 +150,9 @@ abstract class BaseConversation extends Conversation
     {
         Log::newLogDebug($this->getUser()->id ?? null, $question->getText());
         $this->bot->reply($question, $additionalParameters);
+        if (isset($additionalParameters['welcome_message']) && $file = Config::where('name', 'welcome_file')->first()) {
+            $this->say(OutgoingMessage::create('', new File(env('APP_URL') . 'storage/bot/' . $file)));
+        }
         $this->bot->storeConversation($this, $next, $question, $additionalParameters);
 
         return $this;
