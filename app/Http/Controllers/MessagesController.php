@@ -44,9 +44,9 @@ class MessagesController extends Controller
 
         $file = null;
         if ($request->file('file')) {
-            $path = $request->file('file')->storeAs('public/files', $request->file('file')->getClientOriginalName());
-            Storage::putFileAs('/files', $request->file('file'), $request->file('file')->getClientOriginalName());
-            $url = env('APP_URL') . 'storage/files/' . $request->file('file')->getClientOriginalName();
+            $path = $request->file('file')->storeAs('public/files/' . now()->timestamp, $request->file('file')->getClientOriginalName());
+            Storage::putFileAs('/files/' . now()->timestamp, $request->file('file'), $request->file('file')->getClientOriginalName());
+            $url = env('APP_URL') . 'storage/files/' . now()->timestamp . $request->file('file')->getClientOriginalName();
             if ($request->file('file')->extension() === 'mp3') {
                 $file = new Audio(
                     $url,
