@@ -43,10 +43,11 @@ class MessagesController extends Controller
 
 
         $file = null;
+        $now = now()->timestamp;
         if ($request->file('file')) {
-            $path = $request->file('file')->storeAs('public/files/' . now()->timestamp, $request->file('file')->getClientOriginalName());
-            Storage::putFileAs('/files/' . now()->timestamp, $request->file('file'), $request->file('file')->getClientOriginalName());
-            $url = env('APP_URL') . 'storage/files/' . now()->timestamp . $request->file('file')->getClientOriginalName();
+            $path = $request->file('file')->storeAs('public/files/' . $now . '/', $request->file('file')->getClientOriginalName());
+            Storage::putFileAs('/files/' . $now . '/', $request->file('file'), $request->file('file')->getClientOriginalName());
+            $url = env('APP_URL') . 'storage/files/' . $now . '/' . $request->file('file')->getClientOriginalName();
             if ($request->file('file')->extension() === 'mp3') {
                 $file = new Audio(
                     $url,
@@ -106,6 +107,7 @@ class MessagesController extends Controller
                                   'message' => $request->message ?? '',
                                   'file' => $url ?? null,
                                   'file_name' => $request->file('file') ? $request->file('file')->getClientOriginalName() : null,
+                                  'created_at' => $now
                               ]);
 
         return back()->with('ok', 'Рассылка выполнена успешно');
@@ -114,8 +116,9 @@ class MessagesController extends Controller
     public function deleteMessage($id): RedirectResponse
     {
         $message = GlobalMessage::findOrFail($id);
-        Storage::delete('files/' . $message->file_name);
-        Storage::delete('public/files/' . $message->file_name);
+        Storage::deleteDirectory('files/'  . $message->created_at->timestamp);
+        Storage::deleteDirectory('public/files/' . $message->created_at->timestamp . '/');
+
         $message->delete();
 
         return back()->with('ok', 'Сообщение удалено');
