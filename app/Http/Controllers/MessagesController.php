@@ -63,9 +63,9 @@ class MessagesController extends Controller
 
         $users = User::where('isBlocked', 0);
         if ($request->recipients === 'by_city') {
-            $users->whereIn('city', $request->cities);
+            $users->whereIn('city', $request->cities ?? []);
         } elseif ($request->recipients === 'by_phone') {
-            $users->whereIn('phone', $request->phones);
+            $users->whereIn('phone', $request->phones ?? []);
         }
 
         if ($users->count() === 0) {
