@@ -96,7 +96,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             },
             ButtonsStructure::NEED_MAP => function () {
                 $this->sendDriverMap();
-                $this->confirmOrder(true);
+                //$this->confirmOrder(true);
             },
             ButtonsStructure::GET_DRIVER_LOCATION => function () {
                 $this->sendDriverMap();
@@ -263,7 +263,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     },
                     ButtonsStructure::NEED_MAP => function () {
                         $this->sendDriverMap();
-                        $this->inWay(true);
+                        //$this->inWay(true);
                     }
                 ]
             )) {
