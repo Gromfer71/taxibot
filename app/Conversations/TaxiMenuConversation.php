@@ -100,7 +100,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             },
             ButtonsStructure::GET_DRIVER_LOCATION => function () {
                 $this->sendDriverMap();
-                $this->inWay(true);
+                //$this->inWay(true);
             }
         ];
 
