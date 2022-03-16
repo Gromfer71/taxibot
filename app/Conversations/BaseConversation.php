@@ -61,6 +61,10 @@ abstract class BaseConversation extends Conversation
 
     public function handleAction($answer, $replaceActions = [])
     {
+        if(!User::find($this->getUser()->id)) {
+            $this->bot->startConversation(new StartConversation());
+        }
+
         if (Translator::trans('buttons.' . $answer->getValue()) != 'buttons.') {
             $value = Translator::trans('buttons.' . $answer->getValue());
         }
