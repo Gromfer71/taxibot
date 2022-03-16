@@ -22,6 +22,8 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 use BotMan\BotMan\Messages\Outgoing\Question;
+use BotMan\Drivers\Telegram\TelegramDriver;
+use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 
 /**
  * Базовый класс диалога, от него наследуются все диалоги
@@ -155,9 +157,15 @@ abstract class BaseConversation extends Conversation
     {
         Log::newLogDebug($this->getUser()->id ?? null, $question->getText());
         $this->bot->reply($question, $additionalParameters);
-        if (isset($additionalParameters['welcome_message']) && $file = Config::where('name', 'welcome_file')->first()) {
-            $this->say(OutgoingMessage::create('', new File(env('APP_URL') . 'storage/bot/' . $file->value)));
+
+        if(isset($additionalParameters['welcome_message'])) {
+            if(get_class($this->bot->getDriver()) === TelegramDriver::class && $file = Config::where('name', 'welcome_file_telegram')->first()) {
+                $this->say(OutgoingMessage::create('', new File(env('APP_URL') . 'storage/telegram/' . $file->value)));
+            } elseif(get_class($this->bot->getDriver()) === VkCommunityCallbackDriver::class && $file = Config::where('name', 'welcome_file_vk')->first()) {
+                $this->say(OutgoingMessage::create('', new File(env('APP_URL') . 'storage/vk/' . $file->value)));
+            }
         }
+
         $this->bot->storeConversation($this, $next, $question, $additionalParameters);
 
         return $this;

@@ -71,20 +71,35 @@
     </div>
 
     <div class="mb-5">
-        <h4>Файл для приветственного сообщения</h4>
-        @if($welcomeFile)
-            <a href="{{ asset('storage/bot/' .$welcomeFile->value) }}" target="_blank">{{ $welcomeFile->value }}</a>
+        <h4>Файл для приветственного сообщения (Телеграм)</h4>
+        @if($welcomeFileTelegram)
+            <a href="{{ asset('storage/telegram/' .$welcomeFileTelegram->value) }}" target="_blank">{{ $welcomeFileTelegram->value }}</a>
         @endif
-        <form action="{{ route('upload-welcome-file') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('upload-welcome-file-telegram') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="file" name="file" required>
             <button type="submit" class="btn btn-success">Сохранить</button>
-            @if($welcomeFile)
-                <a href="{{ route('delete-welcome-file') }}" class="btn btn-danger">Удалить</a>
+            @if($welcomeFileTelegram)
+                <a href="{{ route('delete-welcome-file-telegram') }}" class="btn btn-danger">Удалить</a>
             @endif
-            <p style="font-size: 12px; margin: 0">Макс размер файла 50мб. Допустимые форматы: jpeg,jpg,png,mp3,mp4,avi,webm,m4a</p>
+            <p style="font-size: 12px; margin: 0">Макс размер файла 12мб. Допустимые форматы: jpeg,jpg,png,mp3,mp4,avi,webm,m4a</p>
         </form>
+    </div>
 
+    <div class="mb-5">
+        <h4>Файл для приветственного сообщения (Вконтакте)</h4>
+        @if($welcomeFileVk)
+            <a href="{{ asset('storage/vk/' .$welcomeFileVk->value) }}" target="_blank">{{ $welcomeFileVk->value }}</a>
+        @endif
+        <form action="{{ route('upload-welcome-file-vk') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="file" name="file" required>
+            <button type="submit" class="btn btn-success">Сохранить</button>
+            @if($welcomeFileVk)
+                <a href="{{ route('delete-welcome-file-vk') }}" class="btn btn-danger">Удалить</a>
+            @endif
+            <p style="font-size: 12px; margin: 0">Макс размер файла 12мб. Допустимые форматы: jpeg,jpg,png,mp3,mp4,avi,webm,m4a</p>
+        </form>
     </div>
 
     {{--    Модальное окно для смены пароля --}}

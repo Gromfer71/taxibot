@@ -25,8 +25,13 @@ Route::group(['midlleware' => 'auth'], function () {
     Route::get('bot_settings', 'BotSettingsController@index')->name('bot_settings');
     Route::post('change_token', 'BotSettingsController@changeToken')->name('change_token');
     Route::post('change_config_file', 'BotSettingsController@changeConfigFile')->name('change_config_file');
-    Route::post('upload_welcome_file', 'BotSettingsController@uploadWelcomeFile')->name('upload-welcome-file');
-    Route::get('delete_welcome_file', 'BotSettingsController@deleteWelcomeFile')->name('delete-welcome-file');
+    Route::post('upload_welcome_file_telegram', 'BotSettingsController@uploadWelcomeFileTelegram')->name('upload-welcome-file-telegram');
+    Route::get('delete_welcome_file', 'BotSettingsController@deleteWelcomeFileTelegram')->name('delete-welcome-file-telegram');
+
+
+    Route::post('upload_welcome_file_vk', 'BotSettingsController@uploadWelcomeFileVk')->name('upload-welcome-file-vk');
+    Route::get('delete_welcome_file_vk', 'BotSettingsController@deleteWelcomeFileVk')->name('delete-welcome-file-vk');
+
 
     Route::post('admins/create', 'AdminController@create')->name('admins_create');
     Route::get('admins/destroy/{phone}', 'AdminController@destroy')->name('admins_destroy');

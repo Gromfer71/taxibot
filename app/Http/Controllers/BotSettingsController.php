@@ -33,7 +33,8 @@ class BotSettingsController extends Controller
                               'admins' => Admin::all(),
                               'token' => Config::getToken(),
                               'config' => Config::getTaxibotConfig(),
-                              'welcomeFile' => Config::where(['name' => 'welcome_file'])->first(),
+                              'welcomeFileTelegram' => Config::where(['name' => 'welcome_file_telegram'])->first(),
+                              'welcomeFileVk' => Config::where(['name' => 'welcome_file_vk'])->first(),
                           ]
         );
     }
@@ -107,30 +108,61 @@ class BotSettingsController extends Controller
         return view('adminPanel.edit_buttons', ['labels' => $translator->getWords()]);
     }
 
-    public function uploadWelcomeFile(Request $request)
+    public function uploadWelcomeFileTelegram(Request $request)
     {
-        $validator = Validator::make($request->all(), ['file' => 'max:51200|mimes:jpeg,jpg,png,mp3,mp4,avi,webm,m4a']);
+        $validator = Validator::make($request->all(), ['file' => 'max:12288|mimes:jpeg,jpg,png,mp3,mp4,avi,webm,m4a']);
         if ($validator->fails()) {
             return back()->with('error', 'Размер файла слишком большой или файл имеет недопустимый формат!');
         }
-        Storage::deleteDirectory('bot');
-        Storage::deleteDirectory('public/bot');
-        $path = $request->file('file')->storeAs('public/bot', $request->file('file')->getClientOriginalName());
-        Storage::putFileAs('/bot', $request->file('file'), $request->file('file')->getClientOriginalName());
-        Config::updateOrCreate(['name' => 'welcome_file'], ['value' => $request->file('file')->getClientOriginalName()]);
+        Storage::deleteDirectory('telegram');
+        Storage::deleteDirectory('public/telegram');
+        $path = $request->file('file')->storeAs('public/telegram', $request->file('file')->getClientOriginalName());
+        Storage::putFileAs('/telegram', $request->file('file'), $request->file('file')->getClientOriginalName());
+        Config::updateOrCreate(['name' => 'welcome_file_telegram'], ['value' => $request->file('file')->getClientOriginalName()]);
 
         return back()->with('ok', 'Файл успешно сохранен');
     }
 
-    public function deleteWelcomeFile()
+    public function deleteWelcomeFileTelegram()
     {
-        Storage::deleteDirectory('bot');
-        Storage::deleteDirectory('public/bot');
-        $file = Config::where('name', 'welcome_file')->first();
+        Storage::deleteDirectory('telegram');
+        Storage::deleteDirectory('public/telegram');
+        $file = Config::where('name', 'welcome_file_telegram')->first();
         if ($file) {
             $file->delete();
         }
 
         return back()->with('ok', 'Файл успешно удален');
     }
+
+    public function uploadWelcomeFileVk(Request $request)
+    {
+        $validator = Validator::make($request->all(), ['file' => 'max:12288|mimes:jpeg,jpg,png,mp3,mp4,avi,webm,m4a']);
+        if ($validator->fails()) {
+            return back()->with('error', 'Размер файла слишком большой или файл имеет недопустимый формат!');
+        }
+        Storage::deleteDirectory('vk');
+        Storage::deleteDirectory('public/vk');
+        $path = $request->file('file')->storeAs('public/vk', $request->file('file')->getClientOriginalName());
+        Storage::putFileAs('/vk', $request->file('file'), $request->file('file')->getClientOriginalName());
+        Config::updateOrCreate(['name' => 'welcome_file_vk'], ['value' => $request->file('file')->getClientOriginalName()]);
+
+        return back()->with('ok', 'Файл успешно сохранен');
+    }
+
+    public function deleteWelcomeFileVk()
+    {
+        Storage::deleteDirectory('vk');
+        Storage::deleteDirectory('public/vk');
+        $file = Config::where('name', 'welcome_file_vk')->first();
+        if ($file) {
+            $file->delete();
+        }
+
+        return back()->with('ok', 'Файл успешно удален');
+    }
+
+
+
+
 }
