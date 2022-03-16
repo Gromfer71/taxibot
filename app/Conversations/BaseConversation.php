@@ -84,10 +84,10 @@ abstract class BaseConversation extends Conversation
     public function getUser()
     {
         $user = User::find($this->bot->getUser()->getId());
-        if(!$user) {
-            $this->bot->startConversation(new StartConversation());
-            die();
-        }
+//        if(!$user) {
+//            $this->bot->startConversation(new StartConversation());
+//            die();
+//        }
 
         return $user;
     }
