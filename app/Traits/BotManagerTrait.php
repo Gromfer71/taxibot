@@ -93,6 +93,6 @@ trait BotManagerTrait
         } else {
             $this->say(Translator::trans('messages.error driver location'));
         }
-        $this->confirmOrder(true);
+        //$this->confirmOrder(true);
     }
 }
