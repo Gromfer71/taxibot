@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Services\Address;
 use App\Services\BonusesApi;
 use Barryvdh\TranslationManager\Models\LangPackage;
+use BotMan\BotMan\Storages\Storage;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
 use Exception;
@@ -248,11 +249,12 @@ class User extends Model
         return $this->hasOne(LangPackage::class, 'id', 'lang_id');
     }
 
-    public function getOrderInfoByImplodedAddress($address)
+    public function getOrderInfoByImplodedAddress($address, Storage $storage)
     {
         if (!$address) {
             return null;
         }
+        $storage->save(['crew_group_id' => collect($storage->get('crews'))->get($address)]);
         $address = Address::removeEllipsisFromAddressIfExists($address);
         $addresses = $this->orders->map(function ($item) {
             return collect(json_decode($item->address));
@@ -283,6 +285,7 @@ class User extends Model
             )) {
             throw new Exception('Количество адресов маршрута и координат отличается');
         }
+
 
         return $addressInfo;
     }

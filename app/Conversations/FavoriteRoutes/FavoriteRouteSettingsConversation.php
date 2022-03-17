@@ -8,6 +8,7 @@ use App\Models\FavoriteRoute;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
+use App\Services\Options;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
 
@@ -77,7 +78,7 @@ class FavoriteRouteSettingsConversation extends BaseConversation
                 $address = $answer->getText();
             }
 
-            $addressToSave = $this->getUser()->getOrderInfoByImplodedAddress($address);
+            $addressToSave = $this->getUser()->getOrderInfoByImplodedAddress($address, $this->bot->userStorage());
             if (!$addressToSave) {
                 $this->addRoute();
             } else {
@@ -117,13 +118,15 @@ class FavoriteRouteSettingsConversation extends BaseConversation
 
         return $this->ask($question, function (Answer $answer) use ($address) {
             if (!$answer->isInteractiveMessageReply()) {
+
                 FavoriteRoute::create([
                                           'user_id' => $this->getUser()->id,
                                           'name' => $answer->getText(),
                                           'address' => json_encode(
                                               $address,
                                               JSON_UNESCAPED_UNICODE
-                                          )
+                                          ),
+                                          'crew_group_id' => $this->getFromStorage('crew_group_id') ?: null,
                                       ]);
 
                 $this->run();
