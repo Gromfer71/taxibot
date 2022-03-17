@@ -270,7 +270,7 @@ class CheckOrderStateCommand extends Command
             } elseif ($newStateId == OrderHistory::CLIENT_DONT_COME_OUT || $newStateId == OrderHistory::CLIENT_DONT_COME_OUT_2) {
                 $question = ComplexQuestion::createWithSimpleButtons(
                     Translator::trans('messages.dont come out'),
-                    [ButtonsStructure::CLIENT_GOES_OUT_LATE, ButtonsStructure::CANCEL_ORDER],
+                    [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::CLIENT_GOES_OUT_LATE],
                     ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
                 );
                 $botMan->say($question, $recipientId, $driverName);
