@@ -36,16 +36,11 @@ class RegisterConversation extends BaseConversation
     public function confirmPhone(?string $message = ''): RegisterConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            $message ?: Translator::trans('messages.enter phone first'),
-            ['restart']
+            $message ?: Translator::trans('messages.enter phone first')
         );
 
         return $this->ask($question, function (Answer $answer) {
-            if($answer->getValue() === 'restart') {
-                $this->bot->startConversation(new StartConversation());
-            } else {
-                $this->tryToSendSmsCode($answer->getText());
-            }
+            $this->tryToSendSmsCode($answer->getText());
         });
     }
 
@@ -56,11 +51,13 @@ class RegisterConversation extends BaseConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
             $message ?: Translator::trans('messages.enter sms code'),
-            ['call']
+            ['call', 'restart']
         );
 
         return $this->ask($question, function (Answer $answer) {
-            if ($answer->getValue() == 'call') {
+            if($answer->getValue() === 'restart') {
+                $this->bot->startConversation(new StartConversation());
+            } elseif ($answer->getValue() == 'call') {
                 $this->callSmsCode();
                 $this->saveToStorage(['is_call' => 1]);
                 $this->confirmSms(Translator::trans('messages.enter call code'));
