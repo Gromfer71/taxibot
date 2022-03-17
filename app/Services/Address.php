@@ -230,7 +230,10 @@ class Address
         foreach ($newState->stops as $stop) {
             AddressHistory::createIfNotExistsEverywhere($userId, $stop->address, $stop->lat, $stop->lon);
         }
-        AddressHistory::createIfNotExistsEverywhere($userId, $newState->destination, $newState->destination_lat, $newState->destination_lon);
+        if($newState->destination) {
+            AddressHistory::createIfNotExistsEverywhere($userId, $newState->destination, $newState->destination_lat, $newState->destination_lon);
+        }
+
 
 
         if ($newState->source != $oldState->source || $newState->destination != $oldState->destination) {
