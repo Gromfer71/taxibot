@@ -36,11 +36,16 @@ class RegisterConversation extends BaseConversation
     public function confirmPhone(?string $message = ''): RegisterConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            $message ?: Translator::trans('messages.enter phone first')
+            $message ?: Translator::trans('messages.enter phone first'),
+            ['restart']
         );
 
         return $this->ask($question, function (Answer $answer) {
-            $this->tryToSendSmsCode($answer->getText());
+            if($answer->getValue() === 'restart') {
+                $this->bot->startConversation(new StartConversation());
+            } else {
+                $this->tryToSendSmsCode($answer->getText());
+            }
         });
     }
 
