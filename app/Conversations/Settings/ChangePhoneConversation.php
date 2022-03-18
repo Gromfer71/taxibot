@@ -21,7 +21,7 @@ class ChangePhoneConversation extends BaseConversation
      */
     public function run()
     {
-        $this->sendSmsCode(['called' => null]);
+        $this->saveToStorage(['called' => null]);
         $this->confirmPhone(Translator::trans('messages.enter phone'));
     }
 
