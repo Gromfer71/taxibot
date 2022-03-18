@@ -255,6 +255,7 @@ class User extends Model
             return null;
         }
         $storage->save(['crew_group_id' => collect($storage->get('crews'))->get($address)]);
+        \Illuminate\Support\Facades\Log::debug($storage->get('crew_group_id'));
         $address = Address::removeEllipsisFromAddressIfExists($address);
         $addresses = $this->orders->map(function ($item) {
             return collect(json_decode($item->address));

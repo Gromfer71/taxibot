@@ -104,7 +104,6 @@ class ComplexQuestion extends Question
             }
             if($storage) {
                 $storage->save(['crews' => collect($storage->get('crews'))->put(implode(' – ', $addressInfo->get('address')), json_decode($order->state, false)->order_crew_group_id)]);
-                Log::debug($storage->get('crews'));
             }
 
         }
