@@ -6,7 +6,9 @@ use App\Services\Address;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
+use BotMan\BotMan\Storages\Storage;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Более удобный класс для генерации вопросов чат-бота
@@ -83,7 +85,7 @@ class ComplexQuestion extends Question
         return $question;
     }
 
-    public static function addOrderHistoryButtons($question, $orders)
+    public static function addOrderHistoryButtons($question, $orders, Storage $storage = null)
     {
         $num = 0;
         foreach ($orders as $order) {
@@ -100,6 +102,11 @@ class ComplexQuestion extends Question
                 );
                 $num++;
             }
+            if($storage) {
+                $storage->save(['crews' => collect($storage->get('crews'))->put(implode(' – ', $addressInfo->get('address')), json_decode($order->state, false)->order_crew_group_id)]);
+                Log::debug($storage->get('crews'));
+            }
+
         }
 
 

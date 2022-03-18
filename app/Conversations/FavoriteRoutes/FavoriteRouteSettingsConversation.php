@@ -5,6 +5,7 @@ namespace App\Conversations\FavoriteRoutes;
 use App\Conversations\BaseConversation;
 use App\Conversations\Settings\SettingsConversation;
 use App\Models\FavoriteRoute;
+use App\Models\OrderHistory;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;

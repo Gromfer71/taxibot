@@ -265,7 +265,6 @@ abstract class BaseConversation extends Conversation
                     );
                     $message .= $text . "\n";
                     $this->saveToStorage(['address_in_number' => collect($this->getFromStorage('address_in_number'))->put($num + 1, $textForSave)]);
-                    $this->saveToStorage(['crews' => [$textForSave => json_decode($order->state, false)->order_crew_group_id]]);
                     $num++;
                 }
             }
