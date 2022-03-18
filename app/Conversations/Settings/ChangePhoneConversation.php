@@ -21,6 +21,7 @@ class ChangePhoneConversation extends BaseConversation
      */
     public function run()
     {
+        $this->sendSmsCode(['called' => null]);
         $this->confirmPhone(Translator::trans('messages.enter phone'));
     }
 
@@ -65,7 +66,7 @@ class ChangePhoneConversation extends BaseConversation
                 $this->say(Translator::trans('messages.phone changed', ['phone' => $this->getFromStorage('phone')]));
                 $this->bot->startConversation(new SettingsConversation());
             } else {
-                $this->confirmSms(Translator::trans('messages.wrong sms code'));
+                $this->confirmSms(Translator::trans($this->getFromStorage('called') ? 'messages.wrong sms code' : 'incorrect phone code'));
             }
         });
     }

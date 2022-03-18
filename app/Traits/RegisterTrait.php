@@ -77,6 +77,7 @@ trait RegisterTrait
         $api = new OrderApiService();
         $smsCode = $api->getRandomSMSCode();
         $api->callSMSCode('7' . $this->getFromStorage('phone'), $smsCode);
+        $this->saveToStorage(['called' => true]);
         $this->saveSmsCode($smsCode);
     }
 
