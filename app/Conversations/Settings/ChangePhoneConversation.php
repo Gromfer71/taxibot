@@ -51,13 +51,15 @@ class ChangePhoneConversation extends BaseConversation
     public function confirmSms(string $message = ''): ChangePhoneConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            $message ?: Translator::trans('messages.enter sms code'), ['call']
+            $message ?: Translator::trans('messages.enter sms code'), ['call'. 'back']
         );
 
         return $this->ask($question, function (Answer $answer) {
             if ($answer->getValue() == 'call') {
                 $this->callSmsCode();
                 $this->confirmSms(Translator::trans('messages.enter call code'));
+            } elseif($answer->getValue() =='back') {
+              $this->run();
             } elseif ($this->isSmsCodeCorrect($answer->getText())) {
                 $this->getUser()->updatePhone($this->getFromStorage('phone'));
                 $this->say(Translator::trans('messages.phone changed', ['phone' => $this->getFromStorage('phone')]));
