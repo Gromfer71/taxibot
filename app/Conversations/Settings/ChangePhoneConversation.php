@@ -66,7 +66,7 @@ class ChangePhoneConversation extends BaseConversation
                 $this->say(Translator::trans('messages.phone changed', ['phone' => $this->getFromStorage('phone')]));
                 $this->bot->startConversation(new SettingsConversation());
             } else {
-                $this->confirmSms(Translator::trans($this->getFromStorage('called') ? 'messages.wrong sms code' : 'incorrect phone code'));
+                $this->confirmSms(Translator::trans($this->getFromStorage('called') ? 'messages.incorrect phone code' : 'messages.wrong sms code'));
             }
         });
     }
