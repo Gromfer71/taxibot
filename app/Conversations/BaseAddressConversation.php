@@ -305,7 +305,7 @@ abstract class BaseAddressConversation extends BaseConversation
     public function _saveSecondAddress($address, $lat = 0, $lon = 0)
     {
         $this->_saveSecondAddressByText($address, $lat, $lon);
-        OrderApiService::sendDriverLocation($this->getBot(), $address['lat'], $address['lon']);
+        OrderApiService::sendDriverLocation($this->getBot(), $lat, $lon);
     }
 
     public function _saveSecondAddressByText($text, $lat = 0, $lon = 0)
