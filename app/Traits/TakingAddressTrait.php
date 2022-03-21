@@ -6,6 +6,7 @@ use App\Conversations\FavoriteRoutes\TakingAddressForFavoriteRouteConversation;
 use App\Models\AddressHistory;
 use App\Services\Address;
 use App\Services\Options;
+use App\Services\OrderApiService;
 use App\Services\Translator;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use Throwable;
@@ -47,6 +48,7 @@ trait TakingAddressTrait
             $address['lon'],
             $address['city']
         );
+        OrderApiService::sendDriverLocation($this->getBot(), $address['lat'], $address['lon']);
     }
 
     public function handleFirstAddress(Answer $answer, $withFavoriteAddresses = false)
@@ -111,7 +113,7 @@ trait TakingAddressTrait
                 'address' => collect($this->bot->userStorage()->get('address'))->put(
                     1,
                     $address['street']
-                )->toArray()
+                )->toArray(),
             ]
         );
     }
@@ -235,7 +237,7 @@ trait TakingAddressTrait
                 $addressName,
                 [
                     'lat' => $this->bot->userStorage()->get('lat'),
-                    'lon' => $this->bot->userStorage()->get('lon')
+                    'lon' => $this->bot->userStorage()->get('lon'),
                 ],
                 $this->bot->userStorage()->get('address_city')
             );

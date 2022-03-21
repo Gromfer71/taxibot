@@ -11,6 +11,7 @@ use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Options;
+use App\Services\OrderApiService;
 use App\Services\Translator;
 use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
@@ -246,7 +247,7 @@ abstract class BaseAddressConversation extends BaseConversation
         $data = [
             'address' => collect($this->bot->userStorage()->get('address')),
             'lat' => collect($this->bot->userStorage()->get('lat')),
-            'lon' => collect($this->bot->userStorage()->get('lon'))
+            'lon' => collect($this->bot->userStorage()->get('lon')),
         ];
         foreach ($data as $item) {
             $item->pop();
@@ -264,7 +265,7 @@ abstract class BaseAddressConversation extends BaseConversation
             $data = [
                 'address' => collect($this->bot->userStorage()->get('address')),
                 'lat' => collect($this->bot->userStorage()->get('lat')),
-                'lon' => collect($this->bot->userStorage()->get('lon'))
+                'lon' => collect($this->bot->userStorage()->get('lon')),
             ];
             foreach ($data as $item) {
                 $item->pop();
@@ -273,7 +274,7 @@ abstract class BaseAddressConversation extends BaseConversation
             $data = [
                 'address' => collect($this->bot->userStorage()->get('address')),
                 'lat' => collect($this->bot->userStorage()->get('lat')),
-                'lon' => collect($this->bot->userStorage()->get('lon'))
+                'lon' => collect($this->bot->userStorage()->get('lon')),
             ];
         }
         $data['address'] = $data['address']->push($answer);
@@ -304,6 +305,7 @@ abstract class BaseAddressConversation extends BaseConversation
     public function _saveSecondAddress($address, $lat = 0, $lon = 0)
     {
         $this->_saveSecondAddressByText($address, $lat, $lon);
+        OrderApiService::sendDriverLocation($this->getBot(), $address['lat'], $address['lon']);
     }
 
     public function _saveSecondAddressByText($text, $lat = 0, $lon = 0)
