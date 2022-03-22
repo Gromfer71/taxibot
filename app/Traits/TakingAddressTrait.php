@@ -87,6 +87,7 @@ trait TakingAddressTrait
                 $this->bot->userStorage()->save(['second_address_from_history_incorrect_change_text_flag' => 1]
                 );
             }
+            OrderApiService::sendDriverLocation($this->getBot(),  $address['lat'], $address['lon']);
             $this->bot->startConversation(new $this->conversationAfterTakeAddress());
             return;
         } else {
