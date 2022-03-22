@@ -141,6 +141,7 @@ trait TakingAddressTrait
                     $address['coords']['lat'],
                     $address['coords']['lon']
                 );
+                OrderApiService::sendDriverLocation($this->getBot(),  $address['coords']['lat'], $address['coords']['lon']);
                 $this->bot->startConversation(new $this->conversationAfterTakeAddress());
             }
         } else {
