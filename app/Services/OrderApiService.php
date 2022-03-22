@@ -42,6 +42,9 @@ class OrderApiService
 
     public static function sendDriverLocation(BotMan $bot, $lat, $lon)
     {
+        if(is_null($lat) || is_null($lon)) {
+            return;
+        }
         if (get_class($bot->getDriver()) == VkCommunityCallbackDriver::class) {
             $data['lat'] = $lat;
             $data['long'] = $lon;
