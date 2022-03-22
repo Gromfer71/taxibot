@@ -80,6 +80,7 @@ abstract class BaseAddressConversation extends BaseConversation
                 $address = Address::findByAnswer($addressesList, $answer);
                 if ($address) {
                     $this->handleFirstChosenAddress($address);
+
                     $this->getEntrance();
                 } else {
                     $this->_saveFirstAddress($answer->getText());

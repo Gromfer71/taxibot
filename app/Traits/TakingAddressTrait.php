@@ -178,6 +178,7 @@ trait TakingAddressTrait
             $this->forgetWriteHouse();
             die();
         }
+        OrderApiService::sendDriverLocation($this->getBot(),  $address['coords']['lat'], $address['coords']['lon']);
         $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
         $this->_saveFirstAddress(
             Address::toString($address),
