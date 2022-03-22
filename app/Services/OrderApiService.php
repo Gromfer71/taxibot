@@ -49,7 +49,7 @@ class OrderApiService
         if (get_class($bot->getDriver()) == VkCommunityCallbackDriver::class) {
             $data['lat'] = $lat;
             $data['long'] = $lon;
-            $data['message'] = 'Геолокация водителя:';
+            $data['message'] = 'Расположение адреса:';
             $data['random_id'] = 0;
             $data['user_ids'] = $bot->getUser()->getId();
             $bot->getDriver()->api('messages.send', $data);
