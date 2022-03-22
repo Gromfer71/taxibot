@@ -79,7 +79,7 @@ class MessagesController extends Controller
             ];
         });
         $botman = resolve('botman');
-        $message = new OutgoingMessage($request->get('message') ?: '  ');
+        $message = new OutgoingMessage(($request->get('message') ?: '  ') . isset($url) ? ' Резервная ссылка на скачивание файла - ' . $url : '');
         if ($file) {
             $message = $message->withAttachment($file);
         }
