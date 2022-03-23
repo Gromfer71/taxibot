@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Dadata\DadataClient;
-use Illuminate\Support\Facades\Log;
 
 class DadataAddress
 {
@@ -11,6 +10,17 @@ class DadataAddress
     {
         $dadata = new DadataClient(config('dadata.token'), config('dadata.secret'));
         $addresses = $dadata->geolocate('address', $lat, $lon, 100, 1);
-        return collect($addresses)->pluck('value')->toJson(JSON_UNESCAPED_UNICODE);
+
+        //return collect($addresses)->pluck('value', 'data.city');
+        return collect($addresses)->transform(function ($item) use ($lat, $lon) {
+            return [
+                'address' => $item['value'],
+                'city' => $item['data']['city'],
+                'coords' => [
+                    'lat' => $lat,
+                    'lon' => $lon,
+                ],
+            ];
+        })->first();
     }
 }

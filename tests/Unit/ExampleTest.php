@@ -8,8 +8,6 @@ use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\DadataAddress;
 use App\Traits\TakingAddressTrait;
-use BotMan\BotMan\Storages\Drivers\FileStorage;
-use BotMan\BotMan\Storages\Storage;
 use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Foundation\Testing\TestCase;
 
@@ -27,7 +25,7 @@ class ExampleTest extends TestCase
      */
     public function testBasicTest()
     {
-        DadataAddress::getAddressByCoords(55.989153,56.57819);
+        dd(DadataAddress::getAddressByCoords(54.741795, 55.989153));
     }
 
     public function getUser()
@@ -46,7 +44,7 @@ class ExampleTest extends TestCase
                                   'name' => 'name',
                                   'address' => User::first()->getOrderInfoByImplodedAddress(
                                       'фажоэа - алжывл – Ленина пр-т 2 (Якутск), *п 2'
-                                  )->toJson(JSON_UNESCAPED_UNICODE)
+                                  )->toJson(JSON_UNESCAPED_UNICODE),
                               ]);
     }
 
