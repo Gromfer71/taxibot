@@ -337,7 +337,7 @@ abstract class BaseConversation extends Conversation
         $address = DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLongitude());
         if (!$address) {
             $this->say('По заданными координатам в радиусе не найден ни один адрес!');
-            return null;
+            die();
         }
 
         return $address;
