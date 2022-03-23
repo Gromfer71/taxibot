@@ -16,10 +16,8 @@ class DadataAddress
             return [
                 'address' => $item['value'],
                 'city' => $item['data']['city'],
-                'coords' => [
-                    'lat' => $lat,
-                    'lon' => $lon,
-                ],
+                'lat' => $lat,
+                'lon' => $lon,
             ];
         })->first();
     }
