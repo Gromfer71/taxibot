@@ -12,6 +12,7 @@ use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
+use App\Services\DadataAddress;
 use App\Services\Options;
 use App\Services\OrderApiService;
 use App\Services\Translator;
@@ -63,7 +64,7 @@ abstract class BaseConversation extends Conversation
 
     public function handleAction($answer, $replaceActions = [])
     {
-        if(!$this->getUser()) {
+        if (!$this->getUser()) {
             $this->bot->startConversation(new StartConversation());
             die();
         }
@@ -158,10 +159,10 @@ abstract class BaseConversation extends Conversation
         Log::newLogDebug($this->getUser()->id ?? null, $question->getText());
         $this->bot->reply($question, $additionalParameters);
 
-        if(isset($additionalParameters['welcome_message'])) {
-            if(get_class($this->bot->getDriver()) === TelegramDriver::class && $file = Config::where('name', 'welcome_file_telegram')->first()) {
+        if (isset($additionalParameters['welcome_message'])) {
+            if (get_class($this->bot->getDriver()) === TelegramDriver::class && $file = Config::where('name', 'welcome_file_telegram')->first()) {
                 $this->say(OutgoingMessage::create('', new File(env('APP_URL') . 'storage/telegram/' . $file->value)));
-            } elseif(get_class($this->bot->getDriver()) === VkCommunityCallbackDriver::class && $file = Config::where('name', 'welcome_file_vk')->first()) {
+            } elseif (get_class($this->bot->getDriver()) === VkCommunityCallbackDriver::class && $file = Config::where('name', 'welcome_file_vk')->first()) {
                 $this->say(OutgoingMessage::create('', new File(env('APP_URL') . 'storage/vk/' . $file->value)));
             }
         }
@@ -329,5 +330,16 @@ abstract class BaseConversation extends Conversation
         $orderStatus = $actualOrder->getCurrentOrderState();
 
         return $orderStatus->state_id ?? null;
+    }
+
+    public function getLocation($answer)
+    {
+        $address = DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLongitude());
+        if (!$address) {
+            $this->say('По заданными координатам в радиусе не найден ни один адрес!');
+            return null;
+        }
+
+        return $address;
     }
 }

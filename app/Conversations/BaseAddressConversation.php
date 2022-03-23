@@ -10,7 +10,6 @@ use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
-use App\Services\DadataAddress;
 use App\Services\Options;
 use App\Services\Translator;
 use App\Traits\TakingAddressTrait;
@@ -46,7 +45,7 @@ abstract class BaseAddressConversation extends BaseConversation
         $question = $this->_addAddressHistoryButtons($question, !$withFavoriteAddresses);
 
         return $this->askForLocation($question, function ($answer) use ($withFavoriteAddresses) {
-            $address = DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLongitude());
+            $address = $this->getLocation($answer);
             $this->saveFirstAddress($address);
             $this->getEntrance();
         }, function (Answer $answer) use ($withFavoriteAddresses) {
@@ -76,7 +75,7 @@ abstract class BaseAddressConversation extends BaseConversation
         }
 
         return $this->askForLocation($question, function ($answer) {
-            $address = DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLongitude());
+            $address = $this->getLocation($answer);
             $this->saveFirstAddress($address);
             $this->getEntrance();
         }, function (Answer $answer) use ($addressesList) {
@@ -105,7 +104,7 @@ abstract class BaseAddressConversation extends BaseConversation
         );
 
         return $this->askForLocation($question, function ($answer) {
-            $address = DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLongitude());
+            $address = $this->getLocation($answer);
             $this->saveFirstAddress($address);
             $this->getEntrance();
         }, function (Answer $answer) {

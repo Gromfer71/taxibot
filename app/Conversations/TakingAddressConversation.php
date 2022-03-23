@@ -9,7 +9,6 @@ use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
-use App\Services\DadataAddress;
 use App\Services\Translator;
 use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
@@ -98,7 +97,7 @@ class TakingAddressConversation extends BaseAddressConversation
         $question = $this->_addAddressHistoryButtons($question);
 
         return $this->askForLocation($question, function ($answer) {
-            $address = DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLongitude());
+            $address = $this->getLocation($answer);
             $this->_saveSecondAddress($address['address'] . $address['lat'], $address['lon']);
             $this->bot->startConversation(new $this->conversationAfterTakeAddress());
         }, function (Answer $answer) {
@@ -129,7 +128,7 @@ class TakingAddressConversation extends BaseAddressConversation
         }
 
         return $this->askForLocation($question, function ($answer) {
-            $address = DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLongitude());
+            $address = $this->getLocation($answer);
             $this->_saveSecondAddress($address['address'] . $address['lat'], $address['lon']);
             $this->bot->startConversation(new $this->conversationAfterTakeAddress());
         }, function (Answer $answer) use ($addressesList) {
@@ -148,7 +147,7 @@ class TakingAddressConversation extends BaseAddressConversation
         );
 
         return $this->askForLocation($question, function ($answer) {
-            $address = DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLongitude());
+            $address = $this->getLocation($answer);
             $this->_saveSecondAddress($address['address'] . $address['lat'], $address['lon']);
             $this->bot->startConversation(new $this->conversationAfterTakeAddress());
         }, function (Answer $answer) {
