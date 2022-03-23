@@ -75,22 +75,24 @@ abstract class BaseAddressConversation extends BaseConversation
             return;
         }
 
-        return $this->ask(
-            $question,
-            function (Answer $answer) use ($addressesList) {
-                if ($this->handleAction($answer)) {
-                    return;
-                }
-                $address = Address::findByAnswer($addressesList, $answer);
-                if ($address) {
-                    $this->handleFirstChosenAddress($address);
-
-                    $this->getEntrance();
-                } else {
-                    $this->_saveFirstAddress($answer->getText());
-                    $this->getAddressAgain();
-                }
+        return $this->askForLocation($question, function ($answer) {
+            $address = DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLongitude());
+            $this->saveFirstAddress($address);
+            $this->getEntrance();
+        }, function (Answer $answer) use ($addressesList) {
+            if ($this->handleAction($answer)) {
+                return;
             }
+            $address = Address::findByAnswer($addressesList, $answer);
+            if ($address) {
+                $this->handleFirstChosenAddress($address);
+
+                $this->getEntrance();
+            } else {
+                $this->_saveFirstAddress($answer->getText());
+                $this->getAddressAgain();
+            }
+        }
         );
     }
 
