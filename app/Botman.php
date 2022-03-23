@@ -37,7 +37,6 @@ use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
-
 use Throwable;
 
 use function call_user_func;
@@ -48,7 +47,7 @@ use function is_bool;
 use function is_null;
 use function is_string;
 
-class Botman extends \BotMan\BotMan\BotMan
+class Botman
 {
     use HandlesConversations;
     use HandlesExceptions;
