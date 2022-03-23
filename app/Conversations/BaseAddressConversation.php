@@ -46,7 +46,7 @@ abstract class BaseAddressConversation extends BaseConversation
         $question = $this->_addAddressHistoryButtons($question, !$withFavoriteAddresses);
 
         return $this->askForLocation($question, function ($answer) use ($withFavoriteAddresses) {
-            $address = DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLontitude());
+            $address = DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLongitude());
             $this->saveFirstAddress($address);
             $this->getEntrance();
         }, function (Answer $answer) use ($withFavoriteAddresses) {
