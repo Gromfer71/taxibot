@@ -11,6 +11,6 @@ class DadataAddress
     {
         $dadata = new DadataClient(config('dadata.token'), config('dadata.secret'));
         $addresses = $dadata->geolocate('address', $lat, $lon);
-        return collect($addresses)->pluck('value')->toJson();
+        return collect($addresses)->pluck('value')->toJson(JSON_UNESCAPED_UNICODE);
     }
 }
