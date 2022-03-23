@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\Config;
+use App\Botman;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,6 +29,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(\BotMan\BotMan\BotMan::class, function () {
+            return new Botman();
+        });
+        $this->app->instance(\BotMan\BotMan\BotMan::class, new Botman());
     }
 }
