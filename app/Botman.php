@@ -2,7 +2,7 @@
 
 namespace App;
 
-class Botman extends \BotMan
+class Botman extends \BotMan\BotMan\BotMan
 {
     public function loadActiveConversation()
     {
