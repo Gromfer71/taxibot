@@ -104,22 +104,24 @@ abstract class BaseAddressConversation extends BaseConversation
             ['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT]
         );
 
-        return $this->ask(
-            $question,
-            function (Answer $answer) {
-                if ($this->handleAction(
-                    $answer,
-                    [ButtonsStructure::GO_AS_INDICATED => 'getEntrance']
-                )) {
-                    return;
-                }
-                if ($answer->getValue() == ButtonsStructure::BACK) {
-                    $this->getAddress(Translator::trans('messages.give me your address'), true);
-                    return;
-                }
-                $this->_saveFirstAddress($answer->getText());
-                $this->getAddressAgain();
+        return $this->askForLocation($question, function ($answer) {
+            $address = DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLongitude());
+            $this->saveFirstAddress($address);
+            $this->getEntrance();
+        }, function (Answer $answer) {
+            if ($this->handleAction(
+                $answer,
+                [ButtonsStructure::GO_AS_INDICATED => 'getEntrance']
+            )) {
+                return;
             }
+            if ($answer->getValue() == ButtonsStructure::BACK) {
+                $this->getAddress(Translator::trans('messages.give me your address'), true);
+                return;
+            }
+            $this->_saveFirstAddress($answer->getText());
+            $this->getAddressAgain();
+        }
         );
     }
 
