@@ -10,12 +10,14 @@ use App\Services\Address;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
+use App\Services\DadataAddress;
 use App\Services\Options;
 use App\Services\OrderApiService;
 use App\Services\Translator;
 use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 abstract class BaseAddressConversation extends BaseConversation
@@ -45,7 +47,10 @@ abstract class BaseAddressConversation extends BaseConversation
         }
         $question = $this->_addAddressHistoryButtons($question, !$withFavoriteAddresses);
 
-        return $this->ask($question, function (Answer $answer) use ($withFavoriteAddresses) {
+        return $this->askForLocation($question, function ($answer) use ($withFavoriteAddresses) {
+            $this->say(DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLongitude()));
+            $this->run();
+        }, function (Answer $answer) use ($withFavoriteAddresses) {
             $this->handleAction($answer) ?: $this->handleFirstAddress($answer, $withFavoriteAddresses);
         });
     }

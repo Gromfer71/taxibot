@@ -6,6 +6,7 @@ use App\Models\FavoriteRoute;
 use App\Models\User;
 use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
+use App\Services\DadataAddress;
 use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Storages\Drivers\FileStorage;
 use BotMan\BotMan\Storages\Storage;
@@ -26,10 +27,7 @@ class ExampleTest extends TestCase
      */
     public function testBasicTest()
     {
-        $storage = new Storage(new FileStorage());
-        $storage->save([1]);
-
-        $storage2 = new Storage(new FileStorage());
+        DadataAddress::getAddressByCoords(55.989153,56.57819);
     }
 
     public function getUser()
