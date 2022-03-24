@@ -98,7 +98,7 @@ class TakingAddressConversation extends BaseAddressConversation
 
         return $this->askForLocation($question, function ($answer) {
             $address = $this->getLocation($answer);
-            $this->_saveSecondAddress($address['address'] . $address['lat'], $address['lon']);
+            $this->_saveSecondAddress($address['address'], $address['lat'], $address['lon']);
             $this->bot->startConversation(new $this->conversationAfterTakeAddress());
         }, function (Answer $answer) {
             $this->handleAction($answer) ?: $this->handleSecondAddress($answer);
