@@ -42,6 +42,11 @@ class OrderApiService
 
     public static function sendDriverLocation(BotMan $bot, $lat, $lon)
     {
+        if($bot->userStorage()->get('got_location')) {
+            $bot->userStorage()->save(['got_location' => null]);
+            return null;
+        }
+
         if($lat == 0 || $lon == 0) {
             return;
         }

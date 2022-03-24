@@ -339,6 +339,7 @@ abstract class BaseConversation extends Conversation
             $this->say('По заданными координатам в радиусе не найден ни один адрес!');
             die();
         }
+        $this->saveToStorage(['got_location' => true]);
 
         return $address;
     }
