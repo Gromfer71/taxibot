@@ -129,7 +129,7 @@ class TakingAddressConversation extends BaseAddressConversation
 
         return $this->askForLocation($question, function ($answer) {
             $address = $this->getLocation($answer);
-            $this->_saveSecondAddress($address['address'] . $address['lat'], $address['lon']);
+            $this->_saveSecondAddress($address['address'], $address['lat'], $address['lon']);
             $this->bot->startConversation(new $this->conversationAfterTakeAddress());
         }, function (Answer $answer) use ($addressesList) {
             $this->handleAction($answer) ?:
@@ -148,7 +148,7 @@ class TakingAddressConversation extends BaseAddressConversation
 
         return $this->askForLocation($question, function ($answer) {
             $address = $this->getLocation($answer);
-            $this->_saveSecondAddress($address['address'] . $address['lat'], $address['lon']);
+            $this->_saveSecondAddress($address['address'], $address['lat'], $address['lon']);
             $this->bot->startConversation(new $this->conversationAfterTakeAddress());
         }, function (Answer $answer) {
             if ($this->handleAction($answer, [ButtonsStructure::BACK => 'getAddressTo'])) {
