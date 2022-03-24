@@ -66,7 +66,6 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
         return $this->askForLocation($question, function ($answer) {
             $address = $this->getLocation($answer);
             $this->saveAnotherAddressFromList($address);
-            $this->exit();
         }, function (Answer $answer) {
             if ($this->handleAction(
                 $answer,
