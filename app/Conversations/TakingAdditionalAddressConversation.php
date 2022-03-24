@@ -63,7 +63,11 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
         $question = $this->_addAddressFavoriteButtons($question);
         $question = $this->_addAddressHistoryButtons($question);
 
-        return $this->ask($question, function (Answer $answer) {
+        return $this->askForLocation($question, function ($answer) {
+            $address = $this->getLocation($answer);
+            $this->saveAnotherAddressFromList($address);
+            $this->exit();
+        }, function (Answer $answer) {
             if ($this->handleAction(
                 $answer,
                 [
@@ -121,7 +125,11 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
             return;
         }
 
-        return $this->ask($question, function (Answer $answer) use ($addressesList) {
+        return $this->askForLocation($question, function ($answer) {
+            $address = $this->getLocation($answer);
+            $this->saveAnotherAddressFromList($address);
+            $this->exit();
+        }, function (Answer $answer) use ($addressesList) {
             if ($this->handleAction($answer)) {
                 return;
             }
@@ -163,7 +171,11 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
             ['config' => ButtonsFormatterService::AS_INDICATED_MENU_FORMAT]
         );
 
-        return $this->ask($question, function (Answer $answer) {
+        return $this->askForLocation($question, function ($answer) {
+            $address = $this->getLocation($answer);
+            $this->saveAnotherAddressFromList($address);
+            $this->exit();
+        }, function (Answer $answer) {
             if ($this->handleAction($answer)) {
                 return;
             }
@@ -196,7 +208,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
             $this->bot->userStorage()->save(['additional_address_is_incorrect_change_text_flag' => 1]);
         }
         OrderApiService::sendDriverLocation($this->getBot(),  $address['lat'], $address['lon']);
-        $this->_saveAnotherAddress($address->address, $address['lat'], $address['lon']);
+        $this->_saveAnotherAddress($address['address'], $address['lat'], $address['lon']);
         $this->exit();
     }
 }
