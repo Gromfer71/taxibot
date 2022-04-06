@@ -14,7 +14,7 @@ class DadataAddress
         //return collect($addresses)->pluck('value', 'data.city');
         return collect($addresses)->transform(function ($item) use ($lat, $lon) {
             return [
-                'address' => $item['value'],
+                'address' => ($item['data']['street'] ?? '') . ' ' . ($item['data']['house'] ?? '') . ' (' . ($item['data']['city'] ?? '') . ')',
                 'city' => $item['data']['city'],
                 'lat' => $lat,
                 'lon' => $lon,
