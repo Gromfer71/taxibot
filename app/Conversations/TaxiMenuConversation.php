@@ -101,7 +101,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             ButtonsStructure::GET_DRIVER_LOCATION => function () {
                 $this->sendDriverMap();
                 $this->inWay(true);
-            }
+            },
         ];
 
         return parent::getActions(array_replace_recursive($actions, $replaceActions));
@@ -145,7 +145,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             [
 
                 ButtonsStructure::WISHES,
-                ButtonsStructure::CHANGE_PRICE
+                ButtonsStructure::CHANGE_PRICE,
             ]
         );
 
@@ -170,7 +170,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                 ButtonsStructure::NEED_DISPATCHER,
                 ButtonsStructure::ORDER_INFO,
                 ButtonsStructure::CANCEL_ORDER,
-                ButtonsStructure::CHANGE_PRICE
+                ButtonsStructure::CHANGE_PRICE,
             ],
             ['config' => ButtonsFormatterService::CURRENT_ORDER_MENU_FORMAT]
         );
@@ -196,7 +196,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                                                                  ButtonsStructure::NEED_DISPATCHER,
                                                                  ButtonsStructure::NEED_DRIVER,
                                                                  ButtonsStructure::CANCEL_ORDER,
-                                                                 ButtonsStructure::NEED_MAP
+                                                                 ButtonsStructure::NEED_MAP,
                                                              ],
                                                              ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
         );
@@ -213,7 +213,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     $this->getUser()->setUserNeedDispatcher();
                     $this->say(Translator::trans('messages.wait for dispatcher'));
                     $this->confirmOrder(true);
-                }
+                },
             ])) {
                 return;
             }
@@ -264,7 +264,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     ButtonsStructure::NEED_MAP => function () {
                         $this->sendDriverMap();
                         $this->inWay(true);
-                    }
+                    },
                 ]
             )) {
                 return;
@@ -291,7 +291,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                 ButtonsStructure::GO_FOR_CASH,
             ],
             [
-                'config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT
+                'config' => ButtonsFormatterService::ONE_TWO_DIALOG_MENU_FORMAT,
             ]
         );
         if (Address::haveEndAddressFromStorageAndAllAdressesIsReal($this->bot->userStorage())) {
@@ -332,28 +332,38 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
-            if($answer->getValue() === ButtonsStructure::CONFIRM) {
+            if ($answer->getValue() === ButtonsStructure::CONFIRM) {
                 $this->cancelOrder();
             } else {
-                $actualOrder = OrderHistory::getActualOrder(
-                    $this->bot->getUser()->getId(),
-                    $this->bot->getDriver()->getName()
-                );
-                if(($actualOrder->getCurrentOrderState()->state_id ?? null) === OrderHistory::NEW_ORDER) {
-                    $this->currentOrderMenu();
-                    die();
-                }
-                $api = new OrderApiService();
-                $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
-                $auto = $actualOrder->getAutoInfo();
-                $question = ComplexQuestion::createWithSimpleButtons(
-                    Translator::trans('messages.auto info with time', ['time' => $time, 'auto' => $auto]),
-                    [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::ORDER_CONFIRM],
-                    ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
-                );
-
-                return $this->ask($question, $this->getDefaultCallback());
+                $this->confirmDriver();
             }
+        });
+    }
+
+    public function confirmDriver()
+    {
+        $actualOrder = OrderHistory::getActualOrder(
+            $this->bot->getUser()->getId(),
+            $this->bot->getDriver()->getName()
+        );
+        if (($actualOrder->getCurrentOrderState()->state_id ?? null) === OrderHistory::NEW_ORDER) {
+            $this->currentOrderMenu();
+            die();
+        }
+        $api = new OrderApiService();
+        $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
+        $auto = $actualOrder->getAutoInfo();
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.auto info with time', ['time' => $time, 'auto' => $auto]),
+            [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::ORDER_CONFIRM],
+            ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
+        );
+
+        return $this->ask($question, function (Answer $answer) {
+            if ($this->handleAction($answer)) {
+                return;
+            }
+            $this->confirmDriver();
         });
     }
 
@@ -389,7 +399,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             if ($this->handleAction($answer, [
                 ButtonsStructure::BACK => function () {
                     $this->currentOrderMenu(true);
-                }
+                },
             ])) {
                 return;
             }
@@ -441,7 +451,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                 ButtonsStructure::CANCEL_CHANGE_PRICE => function () {
                     $this->bot->userStorage()->save(['changed_price' => null]);
                     $this->run();
-                }
+                },
             ])) {
                 return;
             }
