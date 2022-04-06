@@ -357,6 +357,20 @@ class TaxiMenuConversation extends BaseAddressConversation
             $this->confirmOrder();
             die();
         }
+        if (($actualOrder->getCurrentOrderState()->state_id ?? null) === OrderHistory::CAR_AT_PLACE) {
+            $question = ComplexQuestion::createWithSimpleButtons(
+                Translator::trans(
+                    'messages.auto waits for client',
+                    ['auto' => $actualOrder->getAutoInfo()]
+                ),
+                [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::CLIENT_GOES_OUT],
+                ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
+            );
+            return $this->ask($question, $this->getDefaultCallback());
+        }
+
+
+
         $api = new OrderApiService();
         $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
         $auto = $actualOrder->getAutoInfo();
