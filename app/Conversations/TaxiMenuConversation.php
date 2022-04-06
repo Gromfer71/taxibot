@@ -350,7 +350,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             $this->currentOrderMenu();
             die();
         }
-        if (($actualOrder->getCurrentOrderState()->state_id ?? null) === OrderHistory::DRIVER_ASSIGNED) {
+        if (($actualOrder->getCurrentOrderState()->state_id ?? null) === OrderApiService::ORDER_CONFIRMED_BY_USER) {
             $this->confirmOrder();
             die();
         }
