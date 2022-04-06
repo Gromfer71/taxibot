@@ -335,7 +335,12 @@ class TaxiMenuConversation extends BaseAddressConversation
             if($answer->getValue() === ButtonsStructure::CONFIRM) {
                 $this->cancelOrder();
             } else {
-                $this->run();
+                $order = OrderHistory::getActualOrder(
+                    $this->bot->getUser()->getId(),
+                    $this->bot->getDriver()->getName()
+                );
+                (new OrderApiService())->changeOrderState($order, OrderHistory::NEW_ORDER);
+                $this->currentOrderMenu();
             }
         });
     }
