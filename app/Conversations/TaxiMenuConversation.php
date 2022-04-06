@@ -366,7 +366,12 @@ class TaxiMenuConversation extends BaseAddressConversation
                 [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::CLIENT_GOES_OUT],
                 ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
             );
-            return $this->ask($question, $this->getDefaultCallback());
+            return $this->ask($question, function (Answer $answer) {
+                if ($this->handleAction($answer)) {
+                    return;
+                }
+                $this->confirmDriver();
+            });
         }
 
 
