@@ -37,7 +37,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             ButtonsStructure::WRITE_COMMENT => 'writeComment',
             ButtonsStructure::WISHES => 'wishes',
             ButtonsStructure::CHANGE_PRICE => 'changePrice',
-            ButtonsStructure::CANCEL_ORDER => 'cancelOrder',
+            ButtonsStructure::CANCEL_ORDER => 'confirmCancelOrder',
             ButtonsStructure::BACK => 'run',
             ButtonsStructure::ORDER_INFO => function () {
                 $this->say(Translator::trans('messages.pls wait we are searching auto now'));
@@ -324,9 +324,26 @@ class TaxiMenuConversation extends BaseAddressConversation
         });
     }
 
+    public function confirmCancelOrder()
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.confirm cancel order'),
+            [ButtonsStructure::CONFIRM]
+        );
+
+        return $this->ask($question, function (Answer $answer) {
+            if($answer->getValue() === ButtonsStructure::CONFIRM) {
+                $this->cancelOrder();
+            } else {
+                $this->run();
+            }
+        });
+    }
+
     public function cancelOrder()
     {
         $order = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
+
         if ($order) {
             $order->cancelOrder();
         }

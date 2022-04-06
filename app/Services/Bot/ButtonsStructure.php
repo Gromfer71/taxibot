@@ -32,6 +32,7 @@ class ButtonsStructure extends Button
     public const NO_ENTRANCE = 'no entrance';
     public const CANCEL = 'cancel';
     public const CLEAR_ORDERS_HISTORY_MENU = 'clear orders history menu';
+    public const CONFIRM = 'confirm';
     //routes
     public const ADD_ROUTE = 'add route';
     public const CREATE_ROUTE = 'create route';
