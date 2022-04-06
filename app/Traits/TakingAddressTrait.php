@@ -48,7 +48,7 @@ trait TakingAddressTrait
             $address['lon'],
             $address['city']
         );
-        OrderApiService::sendDriverLocation($this->getBot(), $address['lat'], $address['lon']);
+        //OrderApiService::sendDriverLocation($this->getBot(), $address['lat'], $address['lon']);
     }
 
     public function handleFirstAddress(Answer $answer, $withFavoriteAddresses = false)
@@ -87,7 +87,7 @@ trait TakingAddressTrait
                 $this->bot->userStorage()->save(['second_address_from_history_incorrect_change_text_flag' => 1]
                 );
             }
-            OrderApiService::sendDriverLocation($this->getBot(), $address['lat'], $address['lon']);
+            //OrderApiService::sendDriverLocation($this->getBot(), $address['lat'], $address['lon']);
             $this->bot->startConversation(new $this->conversationAfterTakeAddress());
             return;
         } else {
@@ -142,7 +142,7 @@ trait TakingAddressTrait
                     $address['coords']['lat'],
                     $address['coords']['lon']
                 );
-                OrderApiService::sendDriverLocation($this->getBot(), $address['coords']['lat'], $address['coords']['lon']);
+                //OrderApiService::sendDriverLocation($this->getBot(), $address['coords']['lat'], $address['coords']['lon']);
                 $this->bot->startConversation(new $this->conversationAfterTakeAddress());
             }
         } else {
@@ -178,7 +178,7 @@ trait TakingAddressTrait
             $this->forgetWriteHouse();
             die();
         }
-        OrderApiService::sendDriverLocation($this->getBot(), $address['coords']['lat'], $address['coords']['lon']);
+        //OrderApiService::sendDriverLocation($this->getBot(), $address['coords']['lat'], $address['coords']['lon']);
         $crew_group_id = $this->_getCrewGroupIdByCity($address['city']);
         $this->_saveFirstAddress(
             Address::toString($address),

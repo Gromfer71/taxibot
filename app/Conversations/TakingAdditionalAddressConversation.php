@@ -148,7 +148,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
                         $address['city']
                     );
                 }
-                OrderApiService::sendDriverLocation($this->getBot(),  $address['coords']['lat'], $address['coords']['lon']);
+                //OrderApiService::sendDriverLocation($this->getBot(),  $address['coords']['lat'], $address['coords']['lon']);
                 $this->_saveAnotherAddress($answer, $address['coords']['lat'], $address['coords']['lon'], true);
                 $this->exit();
             } else {
@@ -206,7 +206,7 @@ class TakingAdditionalAddressConversation extends BaseAddressConversation
             )) {
             $this->bot->userStorage()->save(['additional_address_is_incorrect_change_text_flag' => 1]);
         }
-        OrderApiService::sendDriverLocation($this->getBot(),  $address['lat'], $address['lon']);
+        //OrderApiService::sendDriverLocation($this->getBot(),  $address['lat'], $address['lon']);
         $this->_saveAnotherAddress($address['address'], $address['lat'], $address['lon']);
         $this->exit();
     }
