@@ -332,6 +332,9 @@ class TaxiMenuConversation extends BaseAddressConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
+            if ($this->handleAction($answer)) {
+                return;
+            }
             if ($answer->getValue() === ButtonsStructure::CONFIRM) {
                 $this->cancelOrder();
             } else {
