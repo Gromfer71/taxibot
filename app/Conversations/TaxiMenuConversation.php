@@ -346,7 +346,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             $this->bot->getUser()->getId(),
             $this->bot->getDriver()->getName()
         );
-        if (($actualOrder->getCurrentOrderState()->state_id ?? null) === OrderHistory::NEW_ORDER) {
+        if (($actualOrder->getCurrentOrderState()->state_id ?? null) !== OrderHistory::DRIVER_ASSIGNED) {
             $this->currentOrderMenu();
             die();
         }
