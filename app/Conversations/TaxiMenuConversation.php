@@ -339,6 +339,10 @@ class TaxiMenuConversation extends BaseAddressConversation
                     $this->bot->getUser()->getId(),
                     $this->bot->getDriver()->getName()
                 );
+                if(($actualOrder->getCurrentOrderState()->state_id ?? null) === OrderHistory::NEW_ORDER) {
+                    $this->currentOrderMenu();
+                    die();
+                }
                 $api = new OrderApiService();
                 $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
                 $auto = $actualOrder->getAutoInfo();
@@ -347,6 +351,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                     [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::ORDER_CONFIRM],
                     ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
                 );
+
                 return $this->ask($question, $this->getDefaultCallback());
             }
         });
