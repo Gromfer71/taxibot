@@ -335,12 +335,19 @@ class TaxiMenuConversation extends BaseAddressConversation
             if($answer->getValue() === ButtonsStructure::CONFIRM) {
                 $this->cancelOrder();
             } else {
-                $order = OrderHistory::getActualOrder(
+                $actualOrder = OrderHistory::getActualOrder(
                     $this->bot->getUser()->getId(),
                     $this->bot->getDriver()->getName()
                 );
-                (new OrderApiService())->changeOrderState($order, OrderHistory::NEW_ORDER);
-                $this->currentOrderMenu();
+                $api = new OrderApiService();
+                $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
+                $auto = $actualOrder->getAutoInfo();
+                $question = ComplexQuestion::createWithSimpleButtons(
+                    Translator::trans('messages.auto info with time', ['time' => $time, 'auto' => $auto]),
+                    [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::ORDER_CONFIRM],
+                    ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
+                );
+                return $this->ask($question, $this->getDefaultCallback());
             }
         });
     }
