@@ -38,8 +38,11 @@ abstract class BaseAddressConversation extends BaseConversation
      *
      * @return \App\Conversations\BaseAddressConversation
      */
-    public function getAddress($message, $withFavoriteAddresses = false)
+    public function getAddress($message = null, $withFavoriteAddresses = false)
     {
+        if(!$message) {
+            $message = Translator::trans('messages.give me your address');
+        }
         $this->saveCityInformation();
 
         $question = ComplexQuestion::createWithSimpleButtons(
