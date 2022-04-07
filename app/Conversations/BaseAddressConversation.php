@@ -40,14 +40,14 @@ abstract class BaseAddressConversation extends BaseConversation
      */
     public function getAddress($message = null, $withFavoriteAddresses = false)
     {
-        if(!$message) {
+        if (!$message) {
             $message = Translator::trans('messages.give me your address');
         }
         $this->saveCityInformation();
 
         $question = ComplexQuestion::createWithSimpleButtons(
             $withFavoriteAddresses ? $this->addAddressesToMessage($message) : $this->addAddressesToMessageOnlyFromHistory($message),
-            [$this->backButton(), ButtonsStructure::ORDER_BY_LOCATION],
+            [$this->backButton(), ['text' => ButtonsStructure::ORDER_BY_LOCATION, 'additional' => ['request_location' => true]]],
             ['location' => 'addresses']
         );
         // Добавляем в кнопки избранные адреса и адреса из истории
@@ -64,25 +64,6 @@ abstract class BaseAddressConversation extends BaseConversation
             $this->handleAction($answer) ?: $this->handleFirstAddress($answer, $withFavoriteAddresses);
         });
     }
-
-    public function orderByLocation()
-    {
-        $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.order by location message'),
-            [ButtonsStructure::BACK]
-        );
-
-        return $this->askForLocation($question, function ($answer) {
-            $address = $this->getLocation($answer);
-            $this->saveFirstAddress($address);
-            $this->getEntrance();
-        }, function (Answer $answer) {
-            $this->handleAction($answer, [
-                ButtonsStructure::BACK => 'getAddress',
-            ]) ?: $this->orderByLocation();
-        });
-    }
-
 
     public function getAddressAgain()
     {

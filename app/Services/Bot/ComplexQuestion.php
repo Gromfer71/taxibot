@@ -8,7 +8,8 @@ use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Storages\Storage;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
+
+use function is_array;
 
 /**
  * Более удобный класс для генерации вопросов чат-бота
@@ -50,10 +51,17 @@ class ComplexQuestion extends Question
         bool $withoutTrans = false
     ): Question {
         foreach ($buttonTexts as $buttonText) {
+            if (is_array($buttonText)) {
+                $buttonAdditional = $buttonText['additional'] ?? null;
+                if ($buttonAdditional) {
+                    $buttonText = $buttonText['text'] ?? '';
+                }
+            }
+
             $value = array_get(explode('.', $buttonText), 1);
             $button = Button::create(
                 $withoutTrans ? $buttonText : Translator::trans('buttons.' . $buttonText)
-            )->additionalParameters($additionalParameters);
+            )->additionalParameters($buttonAdditional ?? $additionalParameters);
             if ($value) {
                 $button->value($value);
             } else {
@@ -102,10 +110,9 @@ class ComplexQuestion extends Question
                 );
                 $num++;
             }
-            if($storage) {
+            if ($storage) {
                 $storage->save(['crews' => collect($storage->get('crews'))->put(implode(' – ', $addressInfo->get('address')), json_decode($order->state, false)->order_crew_group_id)]);
             }
-
         }
 
 
