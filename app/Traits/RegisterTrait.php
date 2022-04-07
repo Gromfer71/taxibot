@@ -137,7 +137,7 @@ trait RegisterTrait
                                  'lastname' => $this->bot->getUser()->getLastName(),
                                  'userinfo' => json_encode($this->bot->getUser()->getInfo()),
                                  'phone' => $this->getFromStorage('phone'),
-                                 'lang_id' => LangPackage::getDefaultLangId(),
+                                 'lang_id' => LangPackage::getByCode(Translator::$lang)->id ?? LangPackage::getDefaultLangId(),
                              ]);
         $user->setPlatformId($this->bot);
         $user->registerServerId();
