@@ -3,8 +3,6 @@
 namespace App\Conversations;
 
 use App\Conversations\MainMenu\MenuConversation;
-use App\Conversations\Settings\SettingsConversation;
-use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
 use App\Traits\BotManagerTrait;
@@ -37,7 +35,7 @@ class StartConversation extends BaseConversation
     public function chooseLang()
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.choose lang', ['lang' => LangPackage::find(LangPackage::getDefaultLangId())->name ?? ''])
+            Translator::trans('messages.choose lang', ['lang' => LangPackage::getByCode($this->getFromStorage('lang'))->name ?? (LangPackage::find(LangPackage::getDefaultLangId())->name ?? '')])
         );
 
         $question = ComplexQuestion::setButtons(
@@ -50,6 +48,7 @@ class StartConversation extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             if ($langPackage = LangPackage::getByName($answer->getText())) {
                 $this->saveToStorage(['lang' => $langPackage->code]);
+                Translator::$lang = $langPackage->code;
                 $this->register();
             } else {
                 $this->chooseLang();
