@@ -23,6 +23,15 @@ abstract class BaseAddressConversation extends BaseConversation
 
     public const ADDRESSES_HISTORY_COUNT = 24;
 
+    public function getActions($replaceActions = []): array
+    {
+        $actions = [
+            ButtonsStructure::ORDER_BY_LOCATION => 'orderByLocation',
+        ];
+
+        return parent::getActions(array_replace_recursive($actions, $replaceActions));
+    }
+
 
     /**
      * Ввод начального адреса пользователя
@@ -35,7 +44,7 @@ abstract class BaseAddressConversation extends BaseConversation
 
         $question = ComplexQuestion::createWithSimpleButtons(
             $withFavoriteAddresses ? $this->addAddressesToMessage($message) : $this->addAddressesToMessageOnlyFromHistory($message),
-            [$this->backButton()],
+            [$this->backButton(), ButtonsStructure::ORDER_BY_LOCATION],
             ['location' => 'addresses']
         );
         // Добавляем в кнопки избранные адреса и адреса из истории
@@ -50,6 +59,24 @@ abstract class BaseAddressConversation extends BaseConversation
             $this->getEntrance();
         }, function (Answer $answer) use ($withFavoriteAddresses) {
             $this->handleAction($answer) ?: $this->handleFirstAddress($answer, $withFavoriteAddresses);
+        });
+    }
+
+    public function orderByLocation()
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.order by location message'),
+            [ButtonsStructure::BACK]
+        );
+
+        return $this->askForLocation($question, function ($answer) {
+            $address = $this->getLocation($answer);
+            $this->saveFirstAddress($address);
+            $this->getEntrance();
+        }, function (Answer $answer) {
+            $this->handleAction($answer, [
+                ButtonsStructure::BACK => 'getAddress',
+            ]) ?: $this->orderByLocation();
         });
     }
 
