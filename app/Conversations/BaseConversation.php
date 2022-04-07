@@ -18,6 +18,7 @@ use App\Services\OrderApiService;
 use App\Services\Translator;
 use App\Traits\UserManagerTrait;
 use BotMan\BotMan\Messages\Attachments\File;
+use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -334,17 +335,18 @@ abstract class BaseConversation extends Conversation
 
     public function getLocation($answer)
     {
-        try {
-            $coords = [
-                'lat' => $answer->getMessage()->getLocation()->getLatitude(),
-                'lon' => $answer->getMessage()->getLocation()->getLongitude(),
-            ];
-        } catch (\Exception $exception) {
+        if($answer instanceof Location) {
             $coords = [
                 'lat' => $answer->getLatitude(),
                 'lon' => $answer->getLongitude()
             ];
+        } else {
+            $coords = [
+                'lat' => $answer->getMessage()->getLocation()->getLatitude(),
+                'lon' => $answer->getMessage()->getLocation()->getLongitude(),
+            ];
         }
+
         $address = DadataAddress::getAddressByCoords($coords['lat'], $coords['lon']);
         if (!$address) {
             $this->say('По заданными координатам в радиусе не найден ни один адрес!');
