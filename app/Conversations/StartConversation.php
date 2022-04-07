@@ -3,9 +3,13 @@
 namespace App\Conversations;
 
 use App\Conversations\MainMenu\MenuConversation;
+use App\Conversations\Settings\SettingsConversation;
+use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
 use App\Traits\BotManagerTrait;
+use Barryvdh\TranslationManager\Models\LangPackage;
+use BotMan\BotMan\Messages\Incoming\Answer;
 
 /**
  * Первый класс диалога. Запускается в первую очередь для нового пользователя
@@ -26,8 +30,31 @@ class StartConversation extends BaseConversation
         if ($this->isUserRegistered()) {
             $this->bot->startConversation(new MenuConversation());
         } else {
-            $this->register();
+            $this->chooseLang();
         }
+    }
+
+    public function chooseLang()
+    {
+        $question = ComplexQuestion::createWithSimpleButtons(
+            Translator::trans('messages.choose lang', ['lang' => LangPackage::find(LangPackage::getDefaultLangId())->name ?? ''])
+        );
+
+        $question = ComplexQuestion::setButtons(
+            $question,
+            LangPackage::getOnlyEnablesPackagesName(),
+            [],
+            true
+        );
+
+        return $this->ask($question, function (Answer $answer) {
+            if ($langPackage = LangPackage::getByName($answer->getText())) {
+                $this->saveToStorage(['lang' => $langPackage->code]);
+                $this->register();
+            } else {
+                $this->chooseLang();
+            }
+        });
     }
 
     /**
