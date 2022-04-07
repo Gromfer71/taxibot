@@ -60,7 +60,7 @@ class ComplexQuestion extends Question
 
             $value = array_get(explode('.', $buttonText), 1);
             $button = Button::create(
-                $withoutTrans ? $buttonText : Translator::trans('buttons.' . $buttonText)
+                $withoutTrans ? $buttonText : Translator::trans($buttonText === '' ? '' : ('buttons.' . $buttonText))
             )->additionalParameters($buttonAdditional ?? $additionalParameters);
             if ($value) {
                 $button->value($value);
