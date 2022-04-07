@@ -334,7 +334,18 @@ abstract class BaseConversation extends Conversation
 
     public function getLocation($answer)
     {
-        $address = DadataAddress::getAddressByCoords($answer->getLatitude(), $answer->getLongitude());
+        try {
+            $coords = [
+                'lat' => $answer->getMessage()->getLocation()->getLatitude(),
+                'lon' => $answer->getMessage()->getLocation()->getLongitude(),
+            ];
+        } catch (\Exception $exception) {
+            $coords = [
+                'lat' => $answer->getLatitude(),
+                'lon' => $answer->getLongitude()
+            ];
+        }
+        $address = DadataAddress::getAddressByCoords($coords['lat'], $coords['lon']);
         if (!$address) {
             $this->say('По заданными координатам в радиусе не найден ни один адрес!');
             die();

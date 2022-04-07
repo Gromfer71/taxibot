@@ -15,6 +15,8 @@ use App\Services\Translator;
 use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
+use BotMan\Drivers\VK\VkCommunityCallbackDriver;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 abstract class BaseAddressConversation extends BaseConversation
@@ -44,11 +46,16 @@ abstract class BaseAddressConversation extends BaseConversation
             $message = Translator::trans('messages.give me your address');
         }
         $this->saveCityInformation();
-
+        if(get_class($this->getBot()->getDriver())=== VkCommunityCallbackDriver::class) {
+            $config = ['location' => 'addresses', 'config' => ButtonsFormatterService::SPLIT_BY_THREE_EXCLUDE_TWO_LINES];
+        } else {
+            $config = ['location' => 'addresses'];
+        }
         $question = ComplexQuestion::createWithSimpleButtons(
             $withFavoriteAddresses ? $this->addAddressesToMessage($message) : $this->addAddressesToMessageOnlyFromHistory($message),
-            [$this->backButton(), ['text' => ButtonsStructure::ORDER_BY_LOCATION, 'additional' => ['request_location' => true]]],
-            ['location' => 'addresses']
+            [$this->backButton(), ['text' => ButtonsStructure::ORDER_BY_LOCATION,
+                                   'additional' => ['request_location' => true, 'action' => ['type' => 'location']]]],
+            $config
         );
         // Добавляем в кнопки избранные адреса и адреса из истории
         if ($withFavoriteAddresses) {
@@ -61,7 +68,25 @@ abstract class BaseAddressConversation extends BaseConversation
             $this->saveFirstAddress($address);
             $this->getEntrance();
         }, function (Answer $answer) use ($withFavoriteAddresses) {
-            $this->handleAction($answer) ?: $this->handleFirstAddress($answer, $withFavoriteAddresses);
+            if ($this->handleAction($answer)) {
+                return;
+            }
+
+            try {
+                $coords = [
+                    'lat' => $answer->getMessage()->getLocation()->getLatitude(),
+                    'lon' => $answer->getMessage()->getLocation()->getLongitude(),
+                ];
+            } catch (\Exception $exception) {
+                $coords = null;
+            }
+            if(is_array($coords)) {
+                $address = $this->getLocation($answer);
+                $this->saveFirstAddress($address);
+                $this->getEntrance();
+                return;
+            }
+             $this->handleFirstAddress($answer, $withFavoriteAddresses);
         });
     }
 
