@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Dadata\DadataClient;
+use Illuminate\Support\Arr;
 
 class DadataAddress
 {
@@ -10,15 +11,25 @@ class DadataAddress
     {
         $dadata = new DadataClient(config('dadata.token'), config('dadata.secret'));
         $addresses = $dadata->geolocate('address', $lat, $lon, 100, 1);
+        $firstAddress = collect($addresses)->first();
+        if (!$firstAddress) {
+            return null;
+        }
+        if (!Arr::get($firstAddress, 'data.street')) {
+            return null;
+        }
+        if (!Arr::get($firstAddress, 'data.house')) {
+            return null;
+        }
 
-        //return collect($addresses)->pluck('value', 'data.city');
-        return collect($addresses)->transform(function ($item) use ($lat, $lon) {
-            return [
-                'address' => ($item['data']['street'] ?? '') . ' ' . ($item['data']['house'] ?? '') . ' (' . ($item['data']['city'] ?? '') . ')',
-                'city' => $item['data']['city'],
-                'lat' => $lat,
-                'lon' => $lon,
-            ];
-        })->first();
+        return [
+            'address' => Arr::get($firstAddress, 'data.street') . ' ' . Arr::get($firstAddress, 'data.house') . Arr::get($firstAddress, 'data.city') ? (' (' . Arr::get(
+                    $firstAddress,
+                    'data.city'
+                ) . ')') : '',
+            'city' => Arr::get($firstAddress, 'data.city'),
+            'lat' => $lat,
+            'lon' => $lon,
+        ];
     }
 }
