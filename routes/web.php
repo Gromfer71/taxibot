@@ -27,6 +27,7 @@ Route::group(['midlleware' => 'auth'], function () {
     Route::post('change_config_file', 'BotSettingsController@changeConfigFile')->name('change_config_file');
     Route::post('upload_welcome_file_telegram', 'BotSettingsController@uploadWelcomeFileTelegram')->name('upload-welcome-file-telegram');
     Route::get('delete_welcome_file', 'BotSettingsController@deleteWelcomeFileTelegram')->name('delete-welcome-file-telegram');
+    Route::post('update-addresses-search-radius', 'BotSettingsController@updateAddressesSearchRadius')->name('update-addresses-search-radius');
 
 
     Route::post('upload_welcome_file_vk', 'BotSettingsController@uploadWelcomeFileVk')->name('upload-welcome-file-vk');

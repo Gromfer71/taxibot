@@ -162,6 +162,13 @@ class BotSettingsController extends Controller
         return back()->with('ok', 'Файл успешно удален');
     }
 
+    public function updateAddressesSearchRadius(Request $request)
+    {
+        Config::updateOrCreate(['name' => 'addresses_search_radius', 'value' => $request->radius]);
+
+        return back()->with('ok', 'Сохранено');
+    }
+
 
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Config;
 use Dadata\DadataClient;
 use Illuminate\Support\Arr;
 
@@ -10,7 +11,7 @@ class DadataAddress
     public static function getAddressByCoords($lat, $lon)
     {
         $dadata = new DadataClient(config('dadata.token'), config('dadata.secret'));
-        $addresses = $dadata->geolocate('address', $lat, $lon, 100, 1);
+        $addresses = $dadata->geolocate('address', $lat, $lon, Config::where('name', 'addresses_search_radius')->first()->value ?? 100, 1);
         $firstAddress = collect($addresses)->first();
         if (!$firstAddress) {
             return null;
