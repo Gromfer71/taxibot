@@ -104,6 +104,7 @@
 
     <div class="mb-3">
         <form action="{{ route('update-addresses-search-radius') }}" method="POST">
+            @csrf
             <label for="radius" class="form-label">Радиус поиска адресов по геолокации в метрах (максимум 1000)</label>
             <input id="radius" min="1" value="{{ \App\Models\Config::where('name', 'addresses_search_radius')->first()->value ?? 100 }}" type="number" max="1000" class="form-control w-25 mb-2" name="radius">
 
