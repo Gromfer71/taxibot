@@ -66,8 +66,7 @@ abstract class BaseAddressConversation extends BaseConversation
         return $this->askForLocation($question, function ($answer) use ($withFavoriteAddresses) {
             $address = $this->getLocation($answer);
             $this->saveFirstAddress($address);
-            $this->say($this->getAddressToMessage());
-            $this->getEntrance();
+            $this->redirectAfterGetEntrance();
         }, function (Answer $answer) use ($withFavoriteAddresses) {
             if ($this->handleAction($answer)) {
                 return;
@@ -84,7 +83,6 @@ abstract class BaseAddressConversation extends BaseConversation
             if(is_array($coords)) {
                 $address = $this->getLocation($answer);
                 $this->saveFirstAddress($address);
-                $this->say($this->getAddressToMessage());
                 $this->getEntrance();
                 return;
             }
