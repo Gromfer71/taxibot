@@ -164,7 +164,7 @@ class BotSettingsController extends Controller
 
     public function updateAddressesSearchRadius(Request $request)
     {
-        Config::updateOrCreate(['name' => 'addresses_search_radius', 'value' => $request->radius]);
+        Config::where(['name' => 'addresses_search_radius'])->first()->update(['value' => $request->radius]);
 
         return back()->with('ok', 'Сохранено');
     }
