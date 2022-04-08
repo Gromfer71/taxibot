@@ -328,7 +328,7 @@ class TaxiMenuConversation extends BaseAddressConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans('messages.confirm cancel order'),
-            [ButtonsStructure::CONFIRM, ButtonsStructure::CANCEL]
+            [ButtonsStructure::CONFIRM, ButtonsStructure::NO]
         );
 
         return $this->ask($question, function (Answer $answer) {

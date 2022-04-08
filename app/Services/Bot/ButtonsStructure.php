@@ -35,6 +35,7 @@ class ButtonsStructure extends Button
     public const CONFIRM = 'confirm';
     public const ORDER_BY_LOCATION = 'order by location';
     public const RESTART = 'restart';
+    public const NO = 'no';
     //routes
     public const ADD_ROUTE = 'add route';
     public const CREATE_ROUTE = 'create route';
