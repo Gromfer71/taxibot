@@ -3,6 +3,7 @@
 namespace App\Conversations;
 
 use App\Conversations\MainMenu\MenuConversation;
+use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\Translator;
 use App\Traits\BotManagerTrait;
@@ -65,10 +66,15 @@ class StartConversation extends BaseConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
             Translator::trans('messages.welcome message'),
-            ['start menu']
+            ['start menu', ButtonsStructure::RESTART]
         );
 
-        return $this->ask($question, function () {
+        return $this->ask($question, function (Answer $answer) {
+            if($answer->getValue() === ButtonsStructure::RESTART) {
+                $this->run();
+                return;
+            }
+
             $this->bot->startConversation(new RegisterConversation());
         },                ['welcome_message' => true]);
     }

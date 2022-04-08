@@ -3,6 +3,7 @@
 namespace App\Conversations;
 
 use App\Conversations\MainMenu\MenuConversation;
+use App\Services\Bot\ButtonsStructure;
 use App\Services\Bot\ComplexQuestion;
 use App\Services\ButtonsFormatterService;
 use App\Services\Translator;
@@ -40,6 +41,11 @@ class RegisterConversation extends BaseConversation
         );
 
         return $this->ask($question, function (Answer $answer) {
+            if($answer->getValue() === ButtonsStructure::RESTART) {
+                $this->run();
+                return;
+            }
+
             $this->tryToSendSmsCode($answer->getText());
         });
     }
