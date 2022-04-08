@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Dadata\DadataClient;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 
 class DadataAddress
 {
@@ -22,12 +21,10 @@ class DadataAddress
         if (!Arr::get($firstAddress, 'data.house')) {
             return null;
         }
+        $city = Arr::get($firstAddress, 'data.city') ?: Arr::get($firstAddress, 'data.settlement');
 
         return [
-            'address' => Arr::get($firstAddress, 'data.street') . ' ' . Arr::get($firstAddress, 'data.house') . (Arr::get($firstAddress, 'data.city') ? (' (' . Arr::get(
-                        $firstAddress,
-                        'data.city'
-                    ) . ')') : ''),
+            'address' => Arr::get($firstAddress, 'data.street') . ' ' . Arr::get($firstAddress, 'data.house') . ($city ? (' (' . $city . ')') : ''),
             'city' => Arr::get($firstAddress, 'data.city'),
             'lat' => $lat,
             'lon' => $lon,

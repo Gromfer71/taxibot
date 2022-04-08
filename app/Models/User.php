@@ -98,7 +98,7 @@ class User extends Model
             $this->registerServerId();
         }
 
-        return BonusesApi::getClientInfo($this->server_id)->data->bonus_balance;
+        return BonusesApi::getClientInfo($this->server_id)->data->bonus_balance ?? 0;
     }
 
     /**
