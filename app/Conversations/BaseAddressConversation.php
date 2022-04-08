@@ -16,6 +16,7 @@ use App\Traits\TakingAddressTrait;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\Drivers\VK\VkCommunityCallbackDriver;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -66,7 +67,8 @@ abstract class BaseAddressConversation extends BaseConversation
         return $this->askForLocation($question, function ($answer) use ($withFavoriteAddresses) {
             $address = $this->getLocation($answer);
             $this->saveFirstAddress($address);
-            $this->redirectAfterGetEntrance();
+            $this->say(Translator::trans('messages.user address') . ' ' . Arr::get($address, 'address'));
+            $this->getEntrance();
         }, function (Answer $answer) use ($withFavoriteAddresses) {
             if ($this->handleAction($answer)) {
                 return;
@@ -83,6 +85,7 @@ abstract class BaseAddressConversation extends BaseConversation
             if(is_array($coords)) {
                 $address = $this->getLocation($answer);
                 $this->saveFirstAddress($address);
+                $this->say(Translator::trans('messages.user address') . ' ' . Arr::get($address, 'address'));
                 $this->getEntrance();
                 return;
             }
