@@ -42,7 +42,7 @@ class RegisterConversation extends BaseConversation
 
         return $this->ask($question, function (Answer $answer) {
             if($answer->getValue() === ButtonsStructure::RESTART) {
-                $this->run();
+                $this->bot->startConversation(new StartConversation());
                 return;
             }
 
