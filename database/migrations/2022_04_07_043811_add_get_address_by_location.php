@@ -22,15 +22,6 @@ class AddGetAddressByLocation extends Migration
                 'value' => 'Заказать по геолокации',
             ]
         );
-
-        Translation::firstOrCreate(
-            [
-                'locale' => 'ru',
-                'group' => 'messages',
-                'key' => 'order by location message',
-                'value' => 'Отправьте геолокацию или вернитесь назад',
-            ]
-        );
     }
 
     /**
