@@ -56,7 +56,7 @@ class RegisterConversation extends BaseConversation
     public function confirmSms($message = ''): RegisterConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            $message ?: Translator::trans('messages.enter sms code'),
+            $message ?: Translator::trans('messages.enter sms code', ['phone' => $this->getFromStorage('phone')]),
             ['call', 'restart']
         );
 

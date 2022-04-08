@@ -32,7 +32,7 @@ class ChangePhoneConversation extends BaseConversation
     public function confirmPhone(string $message = ''): ChangePhoneConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            $message ?: Translator::trans('messages.enter phone first'),
+            $message ?: Translator::trans('messages.enter phone first', ['phone' => $this->getUser()->phone]),
             [ButtonsStructure::BACK]
         );
 
@@ -52,7 +52,7 @@ class ChangePhoneConversation extends BaseConversation
     public function confirmSms(string $message = ''): ChangePhoneConversation
     {
         $question = ComplexQuestion::createWithSimpleButtons(
-            $message ?: Translator::trans('messages.enter sms code'), ['call', 'back']
+            $message ?: Translator::trans('messages.enter sms code', ['phone' => $this->getUser()->phone]), ['call', 'back']
         );
 
         return $this->ask($question, function (Answer $answer) {
