@@ -24,8 +24,26 @@ class OrderApiService
     public const ORDER_FROM_VK_OPTION = 150;
     public const ORDER_FROM_TELEGRAM_OPTION = 149;
 
-    // TODO: переписать все запросы используя этот метод
-    // TODO: разобраться чтобы шторм не менял методы местами сам
+    public function getNearestAddress($lat, $lon, $radius = 100)
+    {
+        $params = [
+            'method' => 'POST',
+            'header' => 'Content-Type: application/json',
+            'content' => json_encode(
+                [
+                    'lat' => $lat,
+                    'lon' => $lon,
+                    'radius' => $radius
+                ]
+            ),
+        ];
+
+        $response = $this->file_get_contents_with_logging(
+            'https://sk-taxi.ru/tmapi/api.php?method=%2Ftm_tapi%2F1.0%find_nearest_address',
+            $params
+        );
+        return json_decode($response, true);
+    }
 
     public static function replacePhoneCountyCode($phone)
     {

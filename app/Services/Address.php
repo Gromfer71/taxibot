@@ -79,6 +79,7 @@ class Address
         return $result->values() ?? [];
     }
 
+
     public static function getCitiesWithOneDistrict($cities, $cityName, $district)
     {
         $cities = collect($cities);
