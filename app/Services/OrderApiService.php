@@ -27,7 +27,7 @@ class OrderApiService
     public function getNearestAddress($lat, $lon, $radius = 100)
     {
         $params = [
-            'method' => 'POST',
+            'method' => 'GET',
             'header' => 'Content-Type: application/json',
             'content' => json_encode(
                 [
@@ -42,6 +42,7 @@ class OrderApiService
             'https://sk-taxi.ru/tmapi/api.php?method=%2Ftm_tapi%2F1.0%find_nearest_address',
             $params
         );
+
         return json_decode($response, true);
     }
 
