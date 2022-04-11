@@ -19,6 +19,6 @@ class BonusesApi
 
     public static function getClientInfo($id)
     {
-        return json_decode(file_get_contents('https://sk-taxi.ru/tmapi/get_client_info.php?client_id=' . $id, false));
+        return json_decode(file_get_contents('https://sk-taxi.ru/tmapi/get_client_info.php?client_id=' . $id, false), true);
     }
 }

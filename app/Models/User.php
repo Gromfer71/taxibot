@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Arr;
 
 /**
  * App\Models\User
@@ -97,8 +98,12 @@ class User extends Model
         if(!$this->server_id) {
             $this->registerServerId();
         }
+        $response = BonusesApi::getClientInfo($this->server_id);
+        if(Arr::get($response, 'code') === 0) {
+            return Arr::get($response, 'data.bonus_balance', 0);
+        }
 
-        return BonusesApi::getClientInfo($this->server_id)->data->bonus_balance ?? 0;
+        return 0;
     }
 
     /**
