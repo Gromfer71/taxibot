@@ -158,11 +158,14 @@ class OrderHistory extends Model
         if ($newState->data->finish_time && $newState->data->state_id != self::FINISHED && $newState->data->state_id != self::FINISHED_BY_DRIVER && $newState->data->state_id != self::ABORTED) {
             $currentOrders = $api->getCurrentOrders(User::where('id', $this->user_id)->first());
             $finded = false;
-            foreach ($currentOrders->data->orders as $currentOrder) {
-                if ($currentOrder->id == $this->id) {
-                    $finded = true;
+            if(isset($currentOrders->data->orders)) {
+                foreach ($currentOrders->data->orders as $currentOrder) {
+                    if ($currentOrder->id == $this->id) {
+                        $finded = true;
+                    }
                 }
             }
+
             if (!$finded) {
                 return self::ORDER_NOT_FOUND;
             }
