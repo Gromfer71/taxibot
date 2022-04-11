@@ -95,9 +95,9 @@ class User extends Model
      */
     public function getBonusBalance()
     {
-        if(!$this->server_id) {
-            $this->registerServerId();
-        }
+
+        $this->registerServerId();
+
         $response = BonusesApi::getClientInfo($this->server_id);
         if(Arr::get($response, 'code') === 0) {
             return Arr::get($response, 'data.bonus_balance', 0);
