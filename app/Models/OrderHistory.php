@@ -194,12 +194,15 @@ class OrderHistory extends Model
     public function getAutoInfo()
     {
         $state = $this->getCurrentOrderState();
+        if(!isset($state->car_color) && !isset($state->car_mark) && !isset($state->car_model) && !isset($state->car_number)) {
+            return null;
+        }
 
         if ($state) {
             return $state->car_color . ' ' . $state->car_mark . ' ' . $state->car_model . ' ' . $state->car_number;
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     public function getCurrentOrderState()
