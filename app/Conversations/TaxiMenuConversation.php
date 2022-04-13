@@ -379,11 +379,17 @@ class TaxiMenuConversation extends BaseAddressConversation
         $api = new OrderApiService();
         $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
         $auto = $actualOrder->getAutoInfo();
-        $question = ComplexQuestion::createWithSimpleButtons(
-            Translator::trans('messages.auto info with time', ['time' => $time, 'auto' => $auto]),
-            [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::ORDER_CONFIRM],
-            ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
-        );
+        if(is_string($time) && is_string($auto)) {
+            $question = ComplexQuestion::createWithSimpleButtons(
+                Translator::trans('messages.auto info with time', ['time' => $time, 'auto' => $auto]),
+                [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::ORDER_CONFIRM],
+                ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
+            );
+        } else {
+            $this->currentOrderMenu();
+            die();
+        }
+
 
         return $this->ask($question, function (Answer $answer) {
             if ($this->handleAction($answer)) {
