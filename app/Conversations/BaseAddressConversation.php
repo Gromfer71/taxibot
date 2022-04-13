@@ -54,8 +54,9 @@ abstract class BaseAddressConversation extends BaseConversation
         }
         $question = ComplexQuestion::createWithSimpleButtons(
             $withFavoriteAddresses ? $this->addAddressesToMessage($message) : $this->addAddressesToMessageOnlyFromHistory($message),
-            [$this->backButton(), ['text' => ButtonsStructure::ORDER_BY_LOCATION,
-                                   'additional' => ['request_location' => true, 'action' => ['type' => 'location']]]],
+            [$this->backButton() ],
+            //['text' => ButtonsStructure::ORDER_BY_LOCATION,
+            //                                   'additional' => ['request_location' => true, 'action' => ['type' => 'location']]]
             $config
         );
         // Добавляем в кнопки избранные адреса и адреса из истории
