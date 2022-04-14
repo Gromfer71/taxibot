@@ -349,7 +349,7 @@ abstract class BaseConversation extends Conversation
 
         $address = DadataAddress::getAddressByCoords($coords['lat'], $coords['lon']);
         if (!$address) {
-            $this->say(Translator::trans('messages.order location error'));
+            $this->say(Translator::trans('messages.address location error'));
             die();
         }
         $this->saveToStorage(['got_location' => true]);
