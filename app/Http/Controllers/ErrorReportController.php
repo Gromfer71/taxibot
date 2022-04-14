@@ -21,6 +21,8 @@ class ErrorReportController extends Controller
                         'emails' => Config::find('errorReportEmails')->value,
                         'errors' => ErrorReport::orderByDesc('id')->get()->transform(function ($item) {
                             $item->created_at = Carbon::make($item->created_at)->timezone('Asia/Irkutsk');
+
+                            return $item;
                         }),
                     ]
         );
