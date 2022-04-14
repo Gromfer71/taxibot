@@ -62,11 +62,17 @@
             $.noConflict();
 
             $('table.display').DataTable({
-                "autoWidth": true,
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
-                },
-            });
+                "order": [],
+                "autoWidth":
+                    true,
+                "language":
+                    {
+                        "url":
+                            "//cdn.datatables.net/plug-ins/1.11.1/i18n/ru.json"
+                    }
+                ,
+            })
+
 
             $('.stack-trace').on('click', function () {
                 alert($(this).data('trace'))

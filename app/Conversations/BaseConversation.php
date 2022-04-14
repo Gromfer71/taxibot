@@ -335,10 +335,10 @@ abstract class BaseConversation extends Conversation
 
     public function getLocation($answer)
     {
-        if($answer instanceof Location) {
+        if ($answer instanceof Location) {
             $coords = [
                 'lat' => $answer->getLatitude(),
-                'lon' => $answer->getLongitude()
+                'lon' => $answer->getLongitude(),
             ];
         } else {
             $coords = [
@@ -349,7 +349,7 @@ abstract class BaseConversation extends Conversation
 
         $address = DadataAddress::getAddressByCoords($coords['lat'], $coords['lon']);
         if (!$address) {
-            $this->say('По заданными координатам в радиусе не найден ни один адрес!');
+            $this->say(Translator::trans('messages.order location error'));
             die();
         }
         $this->saveToStorage(['got_location' => true]);
