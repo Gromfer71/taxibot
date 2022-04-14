@@ -350,7 +350,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             $this->bot->getDriver()->getName()
         );
         if (($actualOrder->getCurrentOrderState()->state_id ?? null) === OrderHistory::NEW_ORDER) {
-            $this->currentOrderMenu();
+            $this->currentOrderMenu(true);
             die();
         }
         if (($actualOrder->getCurrentOrderState()->state_id ?? null) === OrderApiService::ORDER_CONFIRMED_BY_USER) {
@@ -386,7 +386,7 @@ class TaxiMenuConversation extends BaseAddressConversation
                 ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
             );
         } else {
-            $this->currentOrderMenu();
+            $this->currentOrderMenu(true);
             die();
         }
 
