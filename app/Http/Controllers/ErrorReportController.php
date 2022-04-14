@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Config;
 use App\Models\ErrorReport;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ErrorReportController extends Controller
@@ -15,11 +16,12 @@ class ErrorReportController extends Controller
 
     public function index()
     {
-
         return view('adminPanel.error_reports',
                     [
                         'emails' => Config::find('errorReportEmails')->value,
-                        'errors' => ErrorReport::orderByDesc('id')->get()
+                        'errors' => ErrorReport::orderByDesc('id')->get()->transform(function ($item) {
+                            $item->created_at = Carbon::make($item->created_at)->timezone('UTC+9');
+                        }),
                     ]
         );
     }
