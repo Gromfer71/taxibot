@@ -83,9 +83,9 @@ class TaxiMenuConversation extends BaseAddressConversation
 
                 $this->saveToStorage(['changed_price_in_order' => null, 'changed_price' => null]);
                 $order->changePrice($this->bot);
-                $this->saveToStorage(['price' => $order->price]);
                 $order->updateOrderState();
                 $order->save();
+                $this->saveToStorage(['price' => (new OrderApiService())->driverTimeCount($order->id)->data->DISCOUNTEDSUMM]);
                 $this->currentOrderMenu(true);
             },
             ButtonsStructure::CANCEL_LAST_WISH => function () {
@@ -461,7 +461,7 @@ class TaxiMenuConversation extends BaseAddressConversation
             $order->save();
             $this->saveToStorage(['changed_price_in_order' => $price]);
             $order->changePrice($this->bot);
-            $this->saveToStorage(['price' => $order->price + $price->value]);
+            $this->saveToStorage(['price' => (new OrderApiService())->driverTimeCount($order->id)->data->DISCOUNTEDSUMM]);
             $this->currentOrderMenu(true);
         });
     }

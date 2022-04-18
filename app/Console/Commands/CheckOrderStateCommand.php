@@ -56,7 +56,7 @@ class CheckOrderStateCommand extends Command
         $this->info('Запустили команду проверки статусов заказов');
 
         $finishTime = time() + 57;
-        $targetTimeToEveryExecute = 1000000;//В микросекундах
+        $targetTimeToEveryExecute = 2000000;//В микросекундах
 
         $botMan = resolve('botman');
 
@@ -151,19 +151,23 @@ class CheckOrderStateCommand extends Command
                     $orderService = new OrderService($storage);
                     $orderService->calcPrice();
                 }
-
+                $counter = 1;
                 if ($newPrice != $storage->get('price')) {
-                    $isPriceChanged = true;
-                    $storage->save(['wishes' => []]);
-                    $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
-                    foreach ($newState->order_params as $param) {
-                        if ($changedPrice = (array)$options->getChangedPrice($param)) {
-                            $storage->save(['changed_price' => $changedPrice]);
-                        } elseif ($options->isOrderParamWish($param)) {
-                            $storage->save(['wishes' => collect($storage->get('wishes'))->push($param)->unique()]);
+                    sleep(1);
+                    if($newPrice != $storage->get('price')) {
+                        $isPriceChanged = true;
+                        $storage->save(['wishes' => []]);
+                        $storage->save(['changed_price_in_order' => null, 'changed_price' => null]);
+                        foreach ($newState->order_params as $param) {
+                            if ($changedPrice = (array)$options->getChangedPrice($param)) {
+                                $storage->save(['changed_price' => $changedPrice]);
+                            } elseif ($options->isOrderParamWish($param)) {
+                                $storage->save(['wishes' => collect($storage->get('wishes'))->push($param)->unique()]);
+                            }
                         }
+                        $storage->save(['price' => $newPrice]);
                     }
-                    $storage->save(['price' => $newPrice]);
+
                 }
                 if ($isAddressChanged || $isPriceChanged) {
                     $botMan->say(Translator::trans('messages.order state changed'), $recipientId, $driverName);
