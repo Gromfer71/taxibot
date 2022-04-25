@@ -111,7 +111,7 @@ class ComplexQuestion extends Question
                 $num++;
             }
             if ($storage) {
-                $storage->save(['crews' => collect($storage->get('crews'))->put(implode(' – ', $addressInfo->get('address')), json_decode($order->state, false)->order_crew_group_id ?? null)]);
+                $storage->save(['crews' => collect($storage->get('crews'))->put(implode(' – ', $addressInfo->get('address')), json_decode($order->state, false)->order_crew_group_id)]);
             }
         }
 
