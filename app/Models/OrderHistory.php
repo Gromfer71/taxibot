@@ -86,7 +86,7 @@ class OrderHistory extends Model
                                         [
                                             'address' => $bot->userStorage()->get('address'),
                                             'lat' => $bot->userStorage()->get('lat'),
-                                            'lon' => $bot->userStorage()->get('lon')
+                                            'lon' => $bot->userStorage()->get('lon'),
                                         ],
                                         JSON_UNESCAPED_UNICODE
                                     ),
@@ -98,7 +98,7 @@ class OrderHistory extends Model
                                     ),
                                     'relevance' => 0,
                                     'usebonus' => $useBonus,
-                                    'platform' => $bot->getDriver()->getName()
+                                    'platform' => $bot->getDriver()->getName(),
                                 ]);
         } else {
             return null;
@@ -129,6 +129,7 @@ class OrderHistory extends Model
 
     public function cancelOrder()
     {
+        $this->updateOrderState();
         $this->relevance = -1;
         $this->fail_reason = 'Пользователь сам отменил заявку';
         $this->save();
@@ -158,7 +159,7 @@ class OrderHistory extends Model
         if ($newState->data->finish_time && $newState->data->state_id != self::FINISHED && $newState->data->state_id != self::FINISHED_BY_DRIVER && $newState->data->state_id != self::ABORTED) {
             $currentOrders = $api->getCurrentOrders(User::where('id', $this->user_id)->first());
             $finded = false;
-            if(isset($currentOrders->data->orders)) {
+            if (isset($currentOrders->data->orders)) {
                 foreach ($currentOrders->data->orders as $currentOrder) {
                     if ($currentOrder->id == $this->id) {
                         $finded = true;
@@ -194,7 +195,7 @@ class OrderHistory extends Model
     public function getAutoInfo()
     {
         $state = $this->getCurrentOrderState();
-        if(!isset($state->car_color) && !isset($state->car_mark) && !isset($state->car_model) && !isset($state->car_number)) {
+        if (!isset($state->car_color) && !isset($state->car_mark) && !isset($state->car_model) && !isset($state->car_number)) {
             return null;
         }
 
