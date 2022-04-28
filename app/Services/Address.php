@@ -8,7 +8,6 @@ use BotMan\BotMan\Storages\Storage;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise\Utils;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Throwable;
 use Tightenco\Collect\Support\Collection;
@@ -163,12 +162,15 @@ class Address
     public static function findByAnswer($addressesList, $answer)
     {
         return collect($addressesList)->filter(function ($item) use ($answer) {
-            if (stripos(
-                    Address::toString($item),
-                    self::removeEllipsisFromAddressIfExists($answer->getText())
-                ) !== false) {
+            if (Address::toString($item) === self::removeEllipsisFromAddressIfExists($answer->getText())) {
                 return $item;
             }
+//            if (stripos(
+//                    Address::toString($item),
+//                    self::removeEllipsisFromAddressIfExists($answer->getText())
+//                ) !== false) {
+//                return $item;
+//            }
         })->first();
     }
 
@@ -231,10 +233,9 @@ class Address
         foreach ($newState->stops as $stop) {
             AddressHistory::createIfNotExistsEverywhere($userId, $stop->address, $stop->lat, $stop->lon);
         }
-        if($newState->destination) {
+        if ($newState->destination) {
             AddressHistory::createIfNotExistsEverywhere($userId, $newState->destination, $newState->destination_lat, $newState->destination_lon);
         }
-
 
 
         if ($newState->source != $oldState->source || $newState->destination != $oldState->destination) {
