@@ -300,6 +300,9 @@ abstract class BaseConversation extends Conversation
     public function getQuestionInOrderFromCron()
     {
         $actualOrder = OrderHistory::getActualOrder($this->getUser()->id, $this->bot->getDriver()->getName());
+        if(!$actualOrder) {
+            return null;
+        }
         $orderStatus = $actualOrder->getCurrentOrderState();
 
         if ($orderStatus->state_id == OrderHistory::DRIVER_ASSIGNED) {
