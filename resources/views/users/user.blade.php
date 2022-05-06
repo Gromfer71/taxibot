@@ -63,7 +63,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($user->orders()->latest()->get() as $order)
+                @foreach($user->orders->sortByDesc('id') as $order)
                     <tr>
                         <td>{{ $order->id }}</td>
                         <td>{{ $order->address }}</td>
