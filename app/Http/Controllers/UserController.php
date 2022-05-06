@@ -7,6 +7,7 @@ use App\Models\Admin;
 use App\Models\Config;
 use App\Models\User;
 use Barryvdh\TranslationManager\Models\LangPackage;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -32,6 +33,11 @@ class UserController extends Controller
         if ($user = User::where('id', $id)->with(['orders', 'addresses'])->first()) {
             $config = json_decode(Config::getTaxibotConfig());
             $prices = collect(array_merge($config->overpriceOptions, $config->overpriceOptionsAfterOrderCreated));
+            $user->orders->transform(function ($item) {
+                $item->created_at = Carbon::make($item->created_at)->timezone('Asia/Irkutsk');
+
+                return $item;
+            });
 
             return view('users.user', ['user' => $user, 'prices' => $prices]);
         } else {
