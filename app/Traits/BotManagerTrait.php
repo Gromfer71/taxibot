@@ -19,6 +19,11 @@ trait BotManagerTrait
      */
     public function _go_for_cash()
     {
+        if(OrderHistory::where(['user_id' => User::find($this->bot->getUser()->getId())->id])->where('relevance', 0)->exists()) {
+            $this->currentOrderMenu(true);
+            return;
+        }
+
         if (!OrderHistory::newOrder($this->bot)) {
             $this->say(Translator::trans('messages.create order error'));
             $this->bot->startConversation(new StartConversation());
