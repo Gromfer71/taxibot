@@ -266,6 +266,11 @@ class Address
         $lat->push($orderState->source_lat);
         $lon->push($orderState->source_lon);
 
+        foreach ($orderState->stops as $stop) {
+            $addresses->push($stop->address);
+            $lat->push($stop->lat);
+            $lon->push($stop->lon);
+        }
 
         if ($orderState->destination) {
             $addresses->push($orderState->destination);
@@ -275,11 +280,7 @@ class Address
             $storage->save(['second_address_will_say_to_driver_flag' => 1]);
         }
 
-        foreach ($orderState->stops as $stop) {
-            $addresses->push($stop->address);
-            $lat->push($stop->lat);
-            $lon->push($stop->lon);
-        }
+
 
         $storage->save(['address' => $addresses->toArray(), 'lat' => $lat->toArray(), 'lon' => $lon->toArray()]);
     }

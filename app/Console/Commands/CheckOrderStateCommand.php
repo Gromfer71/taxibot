@@ -175,6 +175,28 @@ class CheckOrderStateCommand extends Command
                 }
             }
 
+
+            $time = cache()->get('say_driver_assigned_delay'.$actualOrder->id);
+            if ($oldStateId == OrderHistory::DRIVER_ASSIGNED && !$newStateId && !$time) {
+                cache()->put('say_driver_assigned_delay'.$actualOrder->id, time(), 1);
+
+                $api = new OrderApiService();
+                $time = $api->driverTimeCount($actualOrder->id)->data->DRIVER_TIMECOUNT;
+                if ($time == 0) {
+                    continue;
+                }
+                $auto = $actualOrder->getAutoInfo();
+                $question = ComplexQuestion::createWithSimpleButtons(
+                    Translator::trans('messages.auto info with time', ['time' => $time, 'auto' => $auto]),
+                    [ButtonsStructure::CANCEL_ORDER, ButtonsStructure::ORDER_CONFIRM],
+                    ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
+                );
+                $botMan->say($question, $recipientId, $driverName);
+
+                // водитель взял в очередь заказ
+            }
+
+
             if (!$newStateId) {
                 continue;
             }
@@ -202,6 +224,8 @@ class CheckOrderStateCommand extends Command
                     ['config' => ButtonsFormatterService::TWO_LINES_DIALOG_MENU_FORMAT]
                 );
                 $botMan->say($question, $recipientId, $driverName);
+                cache()->put('say_driver_assigned_delay'.$actualOrder->id, time(), 1);
+
                 // водитель взял в очередь заказ
             } elseif ($newStateId == OrderHistory::IN_QUEUE) {
                 $auto = $actualOrder->getAutoInfo();
